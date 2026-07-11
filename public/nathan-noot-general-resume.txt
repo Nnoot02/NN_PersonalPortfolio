@@ -1,0 +1,122 @@
+Nathan No-ot
+Electrical and electronics engineering student
+South Australia | nathannoott@gmail.com | C-Class Driver's Licence
+
+SUMMARY
+
+Electrical and electronics engineering student in South Australia, completing
+an Associate Degree in Electronics Engineering at TAFE SA and articulating to a
+Bachelor of Electrical and Electronic Engineering at Adelaide University,
+expected 2028. I am building toward graduate electrical engineering work across
+power, embedded systems, controls, UAV systems, manufacturing, DFMA, and
+verification. My strongest evidence combines standards-informed power-system
+coursework, solar manufacturing exposure, practical electronics projects, and
+technical documentation.
+
+TARGET ROLES
+
+- Graduate electrical engineer
+- Power engineering graduate
+- Defence engineering graduate
+- Embedded systems, controls, or systems engineering graduate
+
+SKILLS
+
+- Standards and documentation: AS/NZS 3000, AS/NZS 3008, AS/NZS 4777.2,
+  SA Power Networks TS132/TS133, AS1100 technical drawing, GD&T, single-line
+  diagrams, wiring schedules, drawing and specification review.
+- CAD and design: AutoCAD, Autodesk Inventor, Fusion 360, KiCAD.
+- Instrumentation and analysis: multimeter, oscilloscope, function generator,
+  LTSpice, Logisim.
+- Programming and embedded systems: Python, MATLAB, C, ROS 2,
+  Arduino/Espressif IDE, ESP and AVR microcontrollers, MAVLink telemetry.
+- Manufacturing and quality: 5S, Kaizen, Root Cause Analysis, 8D
+  problem-solving, inspections, soldering, 3D printing, MS Office.
+
+EXPERIENCE
+
+Production Worker - Tindo Solar
+Nov 2025 - Present
+
+- Work on the production line of an Australian solar-panel manufacturer within
+  a Kaizen and 5S continuous-improvement culture.
+- Shadowed engineers applying Root Cause Analysis and 8D processes to diagnose
+  and resolve equipment faults, building practical exposure to quality,
+  process reliability, and fault-finding.
+- Developed a stronger understanding of how renewable-energy hardware depends
+  on manufacturing constraints, operator work, documentation, inspection, and
+  supply-chain reality.
+
+Kitchen Supervisor - Plus 82 Pocha
+Aug 2022 - Aug 2025
+
+- Led a back-of-house team of 5 through 200-300 covers per night, resolving
+  operational issues quickly enough to maintain about a 10-minute order
+  turnaround.
+- Maintained stock control using Excel and ERP/MRP tools.
+- Trained new hires to competency within 3 months while building respectful
+  working relationships across the kitchen and front-of-house team.
+
+PROJECT EVIDENCE
+
+Solar Farm Grid Connection and Commercial Electrical Design - TAFE SA
+
+- Authored a technical report on connecting a 1 MW solar farm to the SA Power
+  Networks distribution grid, assessing LV versus HV connection under SAPN
+  TS132/TS133.
+- Checked reactive-power control, Volt-VAr response, frequency ride-through,
+  anti-islanding, and harmonic limits against AS/NZS 4777.2.
+- Designed a low-voltage cable and protection system for a four-tenancy
+  commercial complex to AS/NZS 3000 and AS/NZS 3008.1.1.
+- Sized 35 mm2 consumer mains for a 123.6 A demand, held total voltage drop to
+  <=3.4% against a 5% limit, and verified 9.2 kA prospective fault current and
+  AS/NZS 3000 Table 8.1 earth-fault-loop impedance in a compliance matrix.
+
+GPS-Denied Autonomous UAV - Current TAFE SA capstone
+
+- Architecting an autonomous quadcopter that holds position without GPS using
+  onboard visual-inertial odometry, with optical-flow/rangefinder fallback and
+  staged verification before flight claims.
+- Planning obstacle detection through stereo-depth perception and local
+  replanning with D* Lite running through ROS 2 on a Raspberry Pi companion
+  computer.
+- Partitioned the system into functional layers with simulation-first testing
+  in ArduPilot SITL and Gazebo, binary pass/fail gates, and mandatory manual
+  override.
+
+Multi-purpose Environmental Monitoring Station
+
+- Designed wiring schematics for 240 V to 24 V conversion and 5 V distribution
+  in AutoCAD, applying AS/NZS 3000 and electrical design practice.
+- Developed a 2-layer Raspberry Pi HAT PCB in KiCAD using I2C internal sensors
+  and Modbus RTU over RS485 for external sensors, with SPICE simulation plus
+  ERC/DRC checks.
+- Designed an IP66 enclosure and DIN-rail layout in Autodesk Inventor using
+  DFMA, documented to AS1100 and GD&T.
+
+ESP32 Drone and 3D-Printed RC Car
+
+- Established MAVLink telemetry between an ESP32 drone and a ground-control
+  station.
+- Designed parametric PET-CF drone airframes intended for 5 m drop survival
+  while optimising toward a 3:1 thrust-to-weight ratio.
+- Built a 3D-printed RWD RC car reaching about 30 km/h on asphalt.
+- Designed a PWM motor speed controller for a 1000 KV BLDC motor on a 3S LiPo
+  using LM324 op-amps and BC547 transistors.
+- Manufactured PLA-CF, PETG, and TPU parts to about +/-0.1 mm by tuning the
+  printer and design decisions to material technical data sheets.
+
+EDUCATION
+
+Associate Degree in Electronics Engineering - TAFE SA
+Final year
+
+Bachelor of Electrical and Electronic Engineering - Adelaide University
+Expected 2028 through articulation pathway
+
+PUBLIC DISCLOSURE NOTE
+
+This general resume is prepared for a public portfolio. It omits phone number
+and street address, keeps employer-sensitive details at a high level, and marks
+current project outcomes as pending where measured evidence is not yet ready
+for publication.

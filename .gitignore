@@ -1,0 +1,14 @@
+.next/
+out/
+node_modules/
+.npm-cache/
+*.tsbuildinfo
+.dev-server.*.log
+
+# internal working docs — kept local, not published to the public repo
+AUDIT-PLAN-*.md
+HANDOFF-*.md
+design-qa.md
+PRE-PUBLISH-GATE.md
+audits/
+design/
