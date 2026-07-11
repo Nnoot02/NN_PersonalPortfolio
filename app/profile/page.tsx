@@ -4,7 +4,7 @@ import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { projects } from "@/lib/projects";
+import { featuredProjects } from "@/lib/projects";
 import { absoluteUrl, personStructuredData, profile } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -101,7 +101,7 @@ export default function ProfilePage() {
           </p>
         </div>
         <div className="project-list">
-          {projects.map((project) => <ProjectRow project={project} key={project.slug} />)}
+          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} />)}
         </div>
       </section>
 

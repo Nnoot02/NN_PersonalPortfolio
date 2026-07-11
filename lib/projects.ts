@@ -122,3 +122,27 @@ export const projects: Project[] = [
     evidenceStatus: "Sanitized public details and defensible examples are pending.",
   },
 ];
+
+// Featured projects for the Home and Profile pages — a maximum of three,
+// shown in this explicit order (not the case-study numbering order).
+export const featuredSlugs = [
+  "gps-denied-autonomous-uav",
+  "lv-cabling-design-commercial-complex",
+  "solar-grid-connection-assessment",
+] as const;
+
+export const featuredProjects: Project[] = featuredSlugs
+  .map((slug) => projects.find((project) => project.slug === slug))
+  .filter((project): project is Project => Boolean(project));
+
+// Ordered slugs shown in the "Featured projects" sections on Home and Profile.
+// Max three, in this display order.
+export const featuredSlugs = [
+  "gps-denied-autonomous-uav",
+  "lv-cabling-design-commercial-complex",
+  "solar-grid-connection-assessment",
+] as const;
+
+export const featuredProjects: Project[] = featuredSlugs
+  .map((slug) => projects.find((project) => project.slug === slug))
+  .filter((project): project is Project => Boolean(project));

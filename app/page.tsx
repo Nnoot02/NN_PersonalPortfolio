@@ -4,7 +4,7 @@ import { ArrowDown, ArrowRight, DownloadSimple } from "@phosphor-icons/react/dis
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { projects } from "@/lib/projects";
+import { featuredProjects } from "@/lib/projects";
 import { profile } from "@/lib/site";
 
 export default function HomePage() {
@@ -52,7 +52,7 @@ export default function HomePage() {
           <p>Three systems. Clear decisions. Resume-backed evidence ready for verified problem, approach, result, and measurement details.</p>
         </div>
         <div className="project-list">
-          {projects.map((project) => <ProjectRow project={project} key={project.slug} />)}
+          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} />)}
         </div>
       </section>
 
