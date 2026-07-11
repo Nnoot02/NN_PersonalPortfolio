@@ -40,8 +40,30 @@ export const projects: Project[] = [
     evidenceVerified: true,
   },
   {
-    slug: "gps-denied-autonomous-uav",
+    slug: "solar-grid-connection-assessment",
     number: "02",
+    title: "1 MW Solar Grid-Connection Assessment",
+    summary:
+      "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid — connection voltage, power-quality compliance, protection, and storage, decided against AS/NZS inverter standards and SAPN TS132/TS133.",
+    image: "/images/solar-grid-connection.webp",
+    imageAlt: "Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling",
+    scope: "Power systems, grid connection, compliance",
+    role: "Sole author (coursework technical assessment)",
+    status: "Evidence verified - sanitized write-up",
+    tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
+    problem:
+      "Determine how a new 1 MW solar plant could be connected to the SA Power Networks distribution grid — the viable connection voltage, the power-quality and protection obligations, and whether storage is warranted — and justify each conclusion against the controlling standards and network requirements.",
+    approach:
+      "Framed the connection against SA Power Networks TS132/TS133/TS134 and the AS/NZS inverter, PV and wiring standards (4777.1/4777.2, 5033, 3000, 61000.4.7): compared LV and HV connection options, tested the reactive-power, frequency ride-through, anti-islanding and harmonic obligations at the point of common coupling, and weighed a battery energy storage system against curtailment, export limits and possible FCAS value.",
+    result:
+      "A 1 MW AC plant — roughly a 1.2 MWp array at a ~1.2 inverter loading ratio — can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study — feeder thermal limit, voltage rise, fault level, protection grading — not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
+    evidenceStatus:
+      "Verified. Sanitized public write-up complete; coursework is university-generated and unrestricted, and standards tables are cited by clause and number rather than reproduced (Standards Australia copyright).",
+    evidenceVerified: true,
+  },
+  {
+    slug: "gps-denied-autonomous-uav",
+    number: "03",
     title: "GPS-Denied Autonomous UAV",
     summary:
       "Indoor autonomy capstone combining non-GPS positioning, local planning, obstacle detection, and disciplined verification.",
@@ -61,7 +83,7 @@ export const projects: Project[] = [
   },
   {
     slug: "esp32-drone",
-    number: "03",
+    number: "04",
     title: "ESP32 Drone",
     summary:
       "Embedded flight-control platform used to explore real-time control, electronics integration, and iterative testing.",
@@ -81,7 +103,7 @@ export const projects: Project[] = [
   },
   {
     slug: "solar-manufacturing-dfma",
-    number: "04",
+    number: "05",
     title: "Solar Manufacturing & DFMA",
     summary:
       "Production experience viewed through design-for-manufacture, process reliability, and systems-thinking lenses.",

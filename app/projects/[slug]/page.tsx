@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { notFound } from "next/navigation";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
+import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { projects } from "@/lib/projects";
@@ -11,6 +12,7 @@ import { projectStructuredData } from "@/lib/site";
 
 const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
+  "solar-grid-connection-assessment": PvConnectionWriteUp,
 };
 
 type ProjectParams = {
