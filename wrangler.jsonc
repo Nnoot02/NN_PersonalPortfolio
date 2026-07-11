@@ -1,0 +1,8 @@
+{
+  "name": "noot-portfolio",
+  "compatibility_date": "2025-07-12",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
