@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { List, X } from "@phosphor-icons/react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const links = [
   ["Home", "/"],
@@ -17,6 +17,19 @@ const links = [
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   return (
     <header className="site-header">
@@ -25,6 +38,7 @@ export function SiteHeader() {
         N<span>.</span>
       </Link>
       <button
+        ref={menuButtonRef}
         className="menu-button"
         type="button"
         aria-label={open ? "Close navigation" : "Open navigation"}
