@@ -101,7 +101,7 @@ export default function ProfilePage() {
           </p>
         </div>
         <div className="project-list">
-          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} />)}
+          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} featured />)}
         </div>
       </section>
 

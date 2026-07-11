@@ -3,10 +3,12 @@ import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import type { Project } from "@/lib/projects";
 
-export function ProjectRow({ project }: { project: Project }) {
+export function ProjectRow({ project, featured = false }: { project: Project; featured?: boolean }) {
   return (
     <article className="project-row">
-      <p className="project-number">{project.number}</p>
+      <p className={featured ? "project-number is-featured" : "project-number"}>
+        {featured ? "Featured" : project.number}
+      </p>
       <Link className="project-image" href={`/projects/${project.slug}`} aria-label={`View ${project.title} case study`}>
         <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 760px) 100vw, 34vw" />
       </Link>

@@ -52,7 +52,7 @@ export default function HomePage() {
           <p>Three systems. Clear decisions. Resume-backed evidence ready for verified problem, approach, result, and measurement details.</p>
         </div>
         <div className="project-list">
-          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} />)}
+          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} featured />)}
         </div>
       </section>
 
