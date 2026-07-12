@@ -13,7 +13,6 @@ export default function HomePage() {
       <SiteHeader />
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Electrical engineering portfolio</p>
           <h1>Nathan</h1>
           <p className="hero-role">Systems-minded electrical engineer</p>
           <span className="accent-rule" aria-hidden="true" />

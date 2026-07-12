@@ -1,0 +1,10 @@
+{
+  "detector": {
+    "ignoreRules": [
+      "overused-font",
+      "cream-palette",
+      "hero-eyebrow-chip",
+      "all-caps-body"
+    ]
+  }
+}

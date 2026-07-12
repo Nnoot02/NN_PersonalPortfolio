@@ -6,7 +6,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div>
-        <p className="footer-kicker">Available for graduate engineering opportunities</p>
+        <p className="footer-kicker">Available for graduate roles</p>
         <p className="footer-title">Build evidence. Explain decisions. Improve systems.</p>
       </div>
       <div className="footer-links">
