@@ -57,9 +57,9 @@ export default function HomePage() {
       </section>
 
       <section className="principles" aria-label="Engineering strengths">
-        <div><span>01</span><h3>Systems thinker</h3><p>Connect requirements, interfaces, risks, and verification.</p></div>
-        <div><span>02</span><h3>Hands-on builder</h3><p>Move from schematics and firmware to integration and test.</p></div>
-        <div><span>03</span><h3>Clear communicator</h3><p>Document decisions so teams can review and improve them.</p></div>
+        <div><span className="accent-rule" aria-hidden="true" /><h3>Systems thinker</h3><p>Connect requirements, interfaces, risks, and verification.</p></div>
+        <div><span className="accent-rule" aria-hidden="true" /><h3>Hands-on builder</h3><p>Move from schematics and firmware to integration and test.</p></div>
+        <div><span className="accent-rule" aria-hidden="true" /><h3>Clear communicator</h3><p>Document decisions so teams can review and improve them.</p></div>
       </section>
       <SiteFooter />
     </main>

@@ -21,7 +21,7 @@ export default function ProjectsPage() {
       </section>
       <section className="featured compact">
         <div className="project-list">
-          {projects.map((project) => <ProjectRow project={project} key={project.slug} />)}
+          {projects.map((project) => <ProjectRow project={project} key={project.slug} headingLevel="h2" />)}
         </div>
       </section>
       <SiteFooter />

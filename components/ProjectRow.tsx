@@ -3,19 +3,29 @@ import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import type { Project } from "@/lib/projects";
 
-export function ProjectRow({ project, featured = false }: { project: Project; featured?: boolean }) {
+export function ProjectRow({
+  project,
+  featured = false,
+  headingLevel: Heading = "h3",
+}: {
+  project: Project;
+  featured?: boolean;
+  headingLevel?: "h2" | "h3";
+}) {
   return (
     <article className="project-row">
-      <p className={featured ? "project-number is-featured" : "project-number"}>
-        {featured ? "Featured" : project.number}
-      </p>
+      {featured ? (
+        <p className="project-number is-featured">Featured</p>
+      ) : (
+        <span className="project-number-rule" aria-hidden="true" />
+      )}
       <Link className="project-image" href={`/projects/${project.slug}`} aria-label={`View ${project.title} case study`}>
         <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 760px) 100vw, 34vw" />
       </Link>
       <div className="project-copy">
         <div>
           <p className="eyebrow">Featured project</p>
-          <h3>{project.title}</h3>
+          <Heading className="project-title">{project.title}</Heading>
           <p>{project.summary}</p>
         </div>
         <ul className="tag-list" aria-label={`${project.title} skills`}>

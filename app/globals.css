@@ -77,9 +77,10 @@ button { font: inherit; }
 .project-row { display: grid; grid-template-columns: 54px minmax(260px, 34%) minmax(320px, 1fr) 42px; gap: clamp(1rem, 2.5vw, 2.5rem); align-items: center; padding: 1.6rem 0; border-bottom: 1px solid var(--line); }
 .project-number { color: var(--accent); font: 600 2.6rem/1 var(--display); margin: 0; align-self: start; padding-top: .35rem; }
 .project-number.is-featured { font-size: .78rem; text-transform: uppercase; letter-spacing: .14em; padding-top: .6rem; }
+.project-number-rule { display: block; width: 34px; height: 3px; background: var(--accent); align-self: start; margin-top: .75rem; }
 .project-image { min-height: 230px; background: var(--paper-deep); }
 .project-copy { display: grid; gap: 1.4rem; }
-.project-copy h3 { font: 600 clamp(2rem, 3.5vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 .8rem; }
+.project-copy .project-title { font: 600 clamp(2rem, 3.5vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 .8rem; }
 .project-copy > div > p:last-child { max-width: 58ch; color: var(--muted); line-height: 1.65; margin: 0; }
 .project-meta { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; }
 .project-meta div { padding-right: 1rem; border-right: 1px solid var(--line); }
@@ -125,7 +126,7 @@ button { font: inherit; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: 1.15rem; line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
-.placeholder-panel { margin: 5rem 0 0; max-width: 820px; border-left: 4px solid var(--accent); padding: 1rem 0 1rem 2rem; }
+.placeholder-panel { margin: 5rem 0 0; max-width: 820px; border-left: 1px solid var(--line); padding: 1rem 0 1rem 2rem; }
 .placeholder-panel p:last-child { color: var(--muted); line-height: 1.7; }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
@@ -146,7 +147,7 @@ button { font: inherit; }
 .writeup p { color: var(--muted); line-height: 1.75; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
 .writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; }
-.writeup pre { background: var(--paper-deep); border-left: 4px solid var(--accent); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: .82rem; line-height: 1.65; color: var(--ink); }
+.writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: .82rem; line-height: 1.65; color: var(--ink); }
 .table-scroll { overflow-x: auto; }
 .writeup table { border-collapse: collapse; width: 100%; font-size: .84rem; margin: 1.4rem 0; }
 .writeup th, .writeup td { border-bottom: 1px solid var(--line); padding: .55rem .8rem .55rem 0; text-align: left; white-space: nowrap; }
@@ -179,7 +180,7 @@ button { font: inherit; }
   .button { width: 100%; }
   .featured { padding: 5rem 1.25rem; }
   .project-row { grid-template-columns: 44px 1fr; gap: 1rem; padding: 1.5rem 0 2rem; }
-  .project-number { grid-column: 1; grid-row: 1; font-size: 2.2rem; }
+  .project-number, .project-number-rule { grid-column: 1; grid-row: 1; font-size: 2.2rem; }
   .project-image { grid-column: 2; grid-row: 1; min-height: 210px; }
   .project-copy { grid-column: 1 / -1; grid-row: 2; }
   .principles { grid-template-columns: 1fr; padding: 0 1.25rem; }
