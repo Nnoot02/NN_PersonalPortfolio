@@ -4,22 +4,22 @@ export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:300
 
 export const profile = {
   name: "Nathan No-ot",
-  title: "Electrical and electronics engineering student",
-  location: "South Australia",
+  title: "Electrical engineering student focused on solar power systems and grid integration",
+  location: "Adelaide, South Australia",
   summary:
-    "Electrical and electronics engineering student building public evidence across power systems, embedded systems, controls, UAVs, solar manufacturing, DFMA, and verification.",
+    "Electrical engineering student in Adelaide focused on solar power systems and grid integration, with verified standards-based power design and Australian solar manufacturing experience.",
   resumePath: "/nathan-noot-general-resume.pdf",
   resumeTextPath: "/nathan-noot-general-resume.txt",
   targetRoles: [
-    "Graduate electrical engineer",
-    "Power engineering graduate",
-    "Defence engineering graduate",
-    "Embedded systems or controls graduate",
+    "Electrical engineering student placement",
+    "Power systems internship",
+    "Solar and grid-integration internship",
+    "Electrical engineering student opportunity",
   ],
   strengths: [
     "Standards-informed power-system design using AS/NZS 3000, AS/NZS 3008, AS/NZS 4777.2, and SAPN TS132/TS133",
-    "Embedded systems, UAV, controls, and practical electronics projects",
-    "Solar manufacturing exposure through Kaizen, 5S, RCA, and 8D problem-solving",
+    "Solar manufacturing experience in a Kaizen and 5S production culture",
+    "Broader systems work across embedded systems, UAVs, controls, and practical electronics",
     "Technical writing, documentation, DFMA, and evidence-based engineering decisions",
   ],
   publicBoundary:

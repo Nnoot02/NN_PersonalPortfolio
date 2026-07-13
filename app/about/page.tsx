@@ -14,8 +14,8 @@ export default function AboutPage() {
       <SiteHeader />
       <section className="page-hero">
         <p className="eyebrow">About</p>
-        <h1>Engineering across<br />{" "}the whole system.</h1>
-        <p>I am an electrical and electronics engineering student in South Australia, building toward graduate work across power systems, embedded systems, controls, manufacturing, and verification.</p>
+        <h1>Solar systems,<br />{" "}from grid to factory.</h1>
+        <p>I am an electrical engineering student in Adelaide focused on solar power systems and grid integration, supported by standards-based design work and Australian solar manufacturing experience.</p>
       </section>
       <section className="content-grid">
         <div><p className="eyebrow">Approach</p><h2>Start with constraints.</h2></div>
@@ -36,10 +36,10 @@ export default function AboutPage() {
         </div>
         <div>
           <p className="eyebrow">Technical direction</p>
-          <h2>Power path and defence path share evidence.</h2>
+          <h2>Solar and grid integration first.</h2>
           <ul>
             <li>Power evidence: AS/NZS 3000, AS/NZS 3008, AS/NZS 4777.2, SAPN TS132/TS133, solar manufacturing, and distribution-focused coursework.</li>
-            <li>Defence and systems evidence: GPS-denied UAV planning, ROS 2, ArduPilot SITL, MAVLink telemetry, embedded electronics, controls, and DFMA.</li>
+            <li>Broader systems evidence: GPS-denied UAV planning, embedded electronics, controls, and DFMA.</li>
             <li>Public portfolio evidence is kept sanitized so useful engineering claims are visible without exposing restricted detail.</li>
           </ul>
         </div>

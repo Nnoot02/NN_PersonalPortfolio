@@ -16,8 +16,8 @@ export default function ProjectsPage() {
       <SiteHeader />
       <section className="page-hero">
         <p className="eyebrow">Project index</p>
-        <h1>Engineering work,<br />{" "}shown as evidence.</h1>
-        <p>Case-study structure is ready. Verified ownership, decisions, outcomes, and evidence status are visible for human review and machine extraction.</p>
+        <h1>Solar and grid<br />{" "}work as evidence.</h1>
+        <p>Verified power work leads this index. Broader electrical-engineering projects keep their own honest evidence status.</p>
       </section>
       <section className="featured compact">
         <div className="project-list">

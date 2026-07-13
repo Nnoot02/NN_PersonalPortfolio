@@ -14,6 +14,7 @@ export type Project = {
   result: string;
   evidenceStatus: string;
   evidenceVerified?: boolean;
+  evidenceMarkers?: string[];
 };
 
 export const projects: Project[] = [
@@ -22,13 +23,14 @@ export const projects: Project[] = [
     number: "01",
     title: "Commercial LV Cabling Design",
     summary:
-      "Standards-traceable 400 V cabling design for a three-tenancy commercial complex — maximum demand, cable selection, earthing, and fault verification to AS/NZS 3000 and AS/NZS 3008.1.1.",
+      "Standards-traceable 400 V cabling design for a three-tenancy commercial complex: maximum demand, cable selection, earthing, and fault verification to AS/NZS 3000 and AS/NZS 3008.1.1.",
     image: "/images/lv-cabling-design.webp",
     imageAlt: "One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards",
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
     status: "Evidence verified - sanitized write-up",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
+    evidenceMarkers: ["400 V", "AS/NZS 3000", "Cable sizing"],
     problem:
       "Design the complete LV cabling system for a three-tenancy commercial complex supplied at 400 V from a 500 kVA transformer, and prove every cable and protective device against AS/NZS 3000:2018 and AS/NZS 3008.1.1:2025.",
     approach:
@@ -44,19 +46,20 @@ export const projects: Project[] = [
     number: "02",
     title: "1 MW Solar Grid-Connection Assessment",
     summary:
-      "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid — connection voltage, power-quality compliance, protection, and storage, decided against AS/NZS inverter standards and SAPN TS132/TS133.",
+      "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid: connection voltage, power-quality compliance, protection, and storage, decided against AS/NZS inverter standards and SAPN TS132/TS133.",
     image: "/images/solar-grid-connection.webp",
     imageAlt: "Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling",
     scope: "Power systems, grid connection, compliance",
     role: "Sole author (coursework technical assessment)",
     status: "Evidence verified - sanitized write-up",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
+    evidenceMarkers: ["1 MW", "Grid connection", "Standards"],
     problem:
-      "Determine how a new 1 MW solar plant could be connected to the SA Power Networks distribution grid — the viable connection voltage, the power-quality and protection obligations, and whether storage is warranted — and justify each conclusion against the controlling standards and network requirements.",
+      "Determine how a new 1 MW solar plant could be connected to the SA Power Networks distribution grid (the viable connection voltage, the power-quality and protection obligations, and whether storage is warranted), and justify each conclusion against the controlling standards and network requirements.",
     approach:
       "Framed the connection against SA Power Networks TS132/TS133/TS134 and the AS/NZS inverter, PV and wiring standards (4777.1/4777.2, 5033, 3000, 61000.4.7): compared LV and HV connection options, tested the reactive-power, frequency ride-through, anti-islanding and harmonic obligations at the point of common coupling, and weighed a battery energy storage system against curtailment, export limits and possible FCAS value.",
     result:
-      "A 1 MW AC plant — roughly a 1.2 MWp array at a ~1.2 inverter loading ratio — can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study — feeder thermal limit, voltage rise, fault level, protection grading — not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
+      "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
       "Verified. Sanitized public write-up complete; coursework is university-generated and unrestricted, and standards tables are cited by clause and number rather than reproduced (Standards Australia copyright).",
     evidenceVerified: true,
@@ -71,7 +74,7 @@ export const projects: Project[] = [
     imageAlt: "Quadcopter prototype with companion computer and depth camera on a lab bench",
     scope: "Autonomy, controls, estimation",
     role: "Systems planning and verification",
-    status: "Planning - evidence pending",
+    status: "Active capstone—systems design in progress",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
     problem:
       "Demonstrate credible indoor UAV autonomy without relying on GPS, while keeping safety, sensing limits, and verification visible.",
@@ -125,12 +128,17 @@ export const projects: Project[] = [
 
 // Featured projects for the Home and Profile pages — a maximum of three,
 // shown in this explicit order (not the case-study numbering order).
-export const featuredSlugs = [
-  "gps-denied-autonomous-uav",
-  "lv-cabling-design-commercial-complex",
+export const verifiedPowerSlugs = [
   "solar-grid-connection-assessment",
+  "lv-cabling-design-commercial-complex",
 ] as const;
 
-export const featuredProjects: Project[] = featuredSlugs
+export const verifiedPowerProjects: Project[] = verifiedPowerSlugs
   .map((slug) => projects.find((project) => project.slug === slug))
   .filter((project): project is Project => Boolean(project));
+
+export const broaderEngineeringProjects: Project[] = projects.filter(
+  (project) => !verifiedPowerSlugs.includes(project.slug as (typeof verifiedPowerSlugs)[number]),
+);
+
+export const featuredProjects = verifiedPowerProjects;

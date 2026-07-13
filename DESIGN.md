@@ -463,6 +463,12 @@ Barlow Condensed wordmark (700, the "." in accent) at left and horizontal nav
 at right. Nav links get a 2px transparent bottom border that turns accent on
 hover / focus / active. Collapses to a hamburger sheet at ≤ 720px.
 
+Wordmark route matrix: homepage uses `NN.` at every width so it does not
+duplicate the full name in the hero; non-home pages use `Nathan No-ot` on
+desktop and `NN.` at 720px or narrower. In both `NN.` variants, only the period
+uses `{colors.accent}`. Keep the link's accessible label based on Nathan's full
+name.
+
 ### Buttons
 
 **`button-primary`** — Accent-filled CTA. Background + border `{colors.accent}`,
@@ -556,6 +562,24 @@ links wrap rather than clip on narrow screens.
   multi-line display ≥ 1.1).
 - Keep body copy to **≤ 2 em-dashes per page.**
 - Don't set Inter as a display face or Barlow Condensed as body.
+
+### Personality layer: miniature evidence windows
+
+- Selected personality direction: **curious systems world-builder**. Use an
+  occasional, project-specific isometric low-resolution miniature engineering
+  scene inside an evidence-image frame.
+- Pair every miniature with its related authentic engineering artifact, diagram,
+  or calculation. The real artifact remains primary evidence; the miniature is
+  interpretive context, never proof or a replacement for evidence.
+- Contain dither or pixel texture inside that illustration frame only. Keep the
+  surrounding paper, typography, navigation, rules, and controls in the
+  approved field-notes system.
+- Preserve Barlow Condensed, Inter, square geometry, hairlines, and restrained
+  orange. Do not use pixel fonts, CRT effects, game HUD chrome, fake technical
+  decoration, site-wide dithering, or auto-rotating content.
+- Treat miniature scenes as authored, static illustrations. If meaningful,
+  alt text must identify them as illustrative; do not imply measured or
+  verified engineering content.
 
 ## Responsive Behavior
 

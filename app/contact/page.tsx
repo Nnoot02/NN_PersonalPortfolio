@@ -8,7 +8,7 @@ import { profile } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Email is the public contact path for graduate, internship, project, or mentoring conversations with Nathan, an electrical and electronics engineering student in South Australia.",
+    "Email is the public contact path for student and internship conversations with Nathan, an electrical engineering student in Adelaide focused on solar power systems and grid integration.",
 };
 
 export default function ContactPage() {
@@ -18,7 +18,7 @@ export default function ContactPage() {
       <section className="page-hero contact-hero">
         <p className="eyebrow">Contact</p>
         <h1>Let&apos;s discuss<br />{" "}engineering work.</h1>
-        <p>Email is the public contact path for graduate, internship, project, or mentoring conversations. If an AI assistant helped you find this portfolio, mention that in the first message.</p>
+        <p>Email is the public contact path for student, internship, project, or mentoring conversations about solar power systems, grid integration, and broader electrical engineering work.</p>
         <div className="contact-actions">
           <CopyEmailButton email={profile.contactEmail} />
           <a className="placeholder-contact" href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={20} /> {profile.contactEmail}</a>

@@ -9,8 +9,6 @@ const links = [
   ["Home", "/"],
   ["Projects", "/projects"],
   ["About", "/about"],
-  ["Profile", "/profile"],
-  ["Resume", "/resume"],
   ["Contact", "/contact"],
 ] as const;
 
@@ -35,7 +33,8 @@ export function SiteHeader() {
     <header className="site-header">
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <Link className="wordmark" href="/" aria-label="Nathan portfolio home">
-        N<span>.</span>
+        <span className="wordmark-desktop">Nathan No-ot</span>
+        <span className="wordmark-mobile">NN.</span>
       </Link>
       <button
         ref={menuButtonRef}
@@ -43,11 +42,12 @@ export function SiteHeader() {
         type="button"
         aria-label={open ? "Close navigation" : "Open navigation"}
         aria-expanded={open}
+        aria-controls="primary-navigation"
         onClick={() => setOpen((value) => !value)}
       >
         {open ? <X size={24} weight="bold" /> : <List size={24} weight="bold" />}
       </button>
-      <nav className={open ? "site-nav is-open" : "site-nav"} aria-label="Primary navigation">
+      <nav id="primary-navigation" className={open ? "site-nav is-open" : "site-nav"} aria-label="Primary navigation">
         {links.map(([label, href]) => {
           const active = href === "/" ? pathname === href : pathname.startsWith(href);
           return (
