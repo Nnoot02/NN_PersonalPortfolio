@@ -27,8 +27,8 @@ export function LvCablingWriteUp() {
       <div className="writeup-block">
         <h3>Design basis</h3>
         <p>
-          Three-tenancy commercial complex — a small supermarket, a hairdresser and
-          a butcher, plus communal services — supplied at 400 V three-phase (230 V
+          Three-tenancy commercial complex (a small supermarket, a hairdresser and
+          a butcher, plus communal services), supplied at 400 V three-phase (230 V
           line-to-neutral) from a 500 kVA transformer with a stated prospective
           fault current of 15 kA at the transformer. Cable selection to AS/NZS
           3008.1.1:2025; installation, earthing, protection and maximum demand to
@@ -45,13 +45,13 @@ export function LvCablingWriteUp() {
           per phase; three-phase loads add their per-phase current to all three
           phases. The heaviest phase sets the design current: <strong>123.6 A</strong> on
           phase A, with 7.5 % phase imbalance. Per board: communal 39.9 A,
-          supermarket 39.1 A, hairdresser 24.5 A, butcher 41.8 A — the butcher is
+          supermarket 39.1 A, hairdresser 24.5 A, butcher 41.8 A. The butcher is
           simultaneously the heaviest-loaded and longest (15 m) submain.
         </p>
       </div>
 
       <div className="writeup-block">
-        <h3>Consumer mains — worked chain</h3>
+        <h3>Consumer mains: worked chain</h3>
         <p>
           X-90 single-core copper, separate conduits laid in trefoil, buried 600 mm,
           soil 20 °C, 15 m route. AS/NZS 3008.1.1:2025 Table 3.8 routes this
@@ -77,10 +77,10 @@ SELECT  25 mm2 X-90 Cu active and neutral; 6 mm2 Cu earth`}</pre>
       </div>
 
       <div className="writeup-block">
-        <h3>Submains — worst case worked</h3>
+        <h3>Submains: worst case worked</h3>
         <p>
-          V-75 single-insulated copper, one conduit, buried 1 m, soil 20 °C —
-          Table 3.8 to Table 3.12, Column 17. Combined correction k = 1.05 × 0.95
+          V-75 single-insulated copper, one conduit, buried 1 m, soil 20 °C. Table
+          3.8 routes this to Table 3.12, Column 17. Combined correction k = 1.05 × 0.95
           = 1.00. The butcher submain governs.
         </p>
         <pre>{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
@@ -93,16 +93,16 @@ SELECT  10 mm2 V-75 Cu; 4 mm2 Cu earth
       </div>
 
       <div className="writeup-block">
-        <h3>Final subcircuits — the thermal-insulation catch</h3>
+        <h3>Final subcircuits: the thermal-insulation catch</h3>
         <p>
           The specification states thermal insulation in all ceiling spaces, and the
-          final subcircuits clip across the ceiling joists — so the cables are not
+          final subcircuits clip across the ceiling joists, so the cables are not
           in free air. A cable clipped to a structural member within bulk insulation
           is a partially-surrounded thermal-insulation installation under AS/NZS
           3008.1.1 Clause 3.4.3. Ratings were therefore read from the
           partially-surrounded column with the 45 °C ambient correction (Table 3.44,
           factor 0.93). This condition raised most power circuits from 2.5 mm² to
-          4 mm² — the single most consequential installation-condition decision in
+          4 mm², the single most consequential installation-condition decision in
           the design.
         </p>
         <div className="table-scroll">
@@ -142,10 +142,11 @@ SELECT  10 mm2 V-75 Cu; 4 mm2 Cu earth
           on the MEN system, main earth connected at the MSB neutral bar. Because
           the 25 mm² consumer-mains active was set by current-carrying capacity and
           not upsized for voltage drop, the 6 mm² main earth follows directly from
-          Table 5.1. Type C circuit breakers were used throughout — suited to the
-          low inrush of LED lighting, resistive heating and small motors — with
+          Table 5.1. Type C circuit breakers were used throughout (suited to the
+          low inrush of LED lighting, resistive heating and small motors), with
           30 mA RCDs on all final subcircuits up to 32 A supplying socket-outlets
-          and lighting. Nominal-current grading (125 A → 40–50 A → 10–20 A) gives
+          and lighting. Nominal-current grading (125 A, then 40 to 50 A, then
+          10 to 20 A) gives
           current discrimination; full selectivity is to be confirmed against
           manufacturer time–current curves, a stated limitation of scope.
         </p>
@@ -163,7 +164,7 @@ PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
           each conductor size against AS/NZS 3000:2018 Table 8.1 for Type C
           breakers; the worst-case loop (4 mm² general-power final, 24 m, on the
           butcher submain) gives Zs ≈ 0.57 Ω against a limit of ≈ 1.15 Ω. The
-          external loop impedance Ze = 0.0345 Ω is a declared assumption — the real
+          external loop impedance Ze = 0.0345 Ω is a declared assumption; the real
           figure comes from the network operator&apos;s connection-point fault data or
           an on-site loop-impedance measurement.
         </p>
@@ -179,7 +180,7 @@ PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
           partially-surrounded ratings used were cross-checked against the 2017
           edition and confirmed unchanged in the 2025 edition. Final values are to
           be verified against the controlling standards and network authority at
-          installation. This write-up is sanitized from graded coursework — the
+          installation. This write-up is sanitized from graded coursework: the
           design scenario is paraphrased, and no standards table content is
           reproduced.
         </p>

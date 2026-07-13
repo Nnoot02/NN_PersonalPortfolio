@@ -7,7 +7,7 @@ import { profile } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Resume",
   description:
-    "General engineering resume spanning power systems, embedded systems, controls, UAVs, manufacturing, DFMA, and verification. Download as PDF or plain text.",
+    "Electrical engineering student resume focused on solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience.",
 };
 
 export default function ResumePage() {
@@ -16,8 +16,8 @@ export default function ResumePage() {
       <SiteHeader />
       <section className="page-hero resume-hero">
         <p className="eyebrow">Resume</p>
-        <h1>General engineering<br />{" "}resume.</h1>
-        <p>This public resume generalises the strongest current application material across power, embedded systems, controls, UAVs, manufacturing, DFMA, and verification. It omits phone number and street address for public portfolio use.</p>
+        <h1>Solar power<br />{" "}student resume.</h1>
+        <p>This public resume foregrounds solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. It omits phone number and street address for public portfolio use.</p>
         <a className="button button-primary" href={profile.resumePath} download>
           Download resume <DownloadSimple size={20} />
         </a>
@@ -25,13 +25,13 @@ export default function ResumePage() {
       <section className="profile-summary" aria-labelledby="resume-summary-heading">
         <div>
           <p className="eyebrow">Positioning</p>
-          <h2 id="resume-summary-heading">Systems-minded electrical engineer.</h2>
+          <h2 id="resume-summary-heading">Electrical engineering student.</h2>
           <p>{profile.summary}</p>
         </div>
         <dl className="profile-facts">
           <div>
             <dt>Status</dt>
-            <dd>Associate Degree final year; Bachelor articulation expected 2028</dd>
+            <dd>Electrical engineering student seeking student and internship opportunities</dd>
           </div>
           <div>
             <dt>Location</dt>
@@ -50,20 +50,18 @@ export default function ResumePage() {
       <section className="profile-grid">
         <div>
           <p className="eyebrow">Core skills</p>
-          <h2>Evidence-backed capability</h2>
+          <h2>Solar-first capability</h2>
           <ul>
             {profile.strengths.map((strength) => <li key={strength}>{strength}</li>)}
           </ul>
         </div>
         <div>
           <p className="eyebrow">Resume base</p>
-          <h2>Generalised from strongest source</h2>
+          <h2>Built from verified evidence</h2>
           <p>
-            The SAPN resume was the strongest base because it carries the broadest
-            reusable evidence: power-system design, solar manufacturing,
-            embedded UAV systems, documentation, and measured coursework details.
-            Defence/UAV and hands-on electronics details were then blended from
-            the LMA, QuantX, and production-technician material.
+            This public version foregrounds verified power-system design and
+            solar manufacturing experience. Broader embedded, UAV, and hands-on
+            electronics work remains available as supporting context.
           </p>
         </div>
       </section>

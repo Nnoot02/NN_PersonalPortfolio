@@ -5,44 +5,32 @@ import type { Project } from "@/lib/projects";
 
 export function ProjectRow({
   project,
-  featured = false,
   headingLevel: Heading = "h3",
 }: {
   project: Project;
-  featured?: boolean;
   headingLevel?: "h2" | "h3";
 }) {
+  const markers = project.evidenceMarkers ?? project.tags;
+
   return (
     <article className="project-row">
-      {featured ? (
-        <p className="project-number is-featured">Featured</p>
-      ) : (
-        <span className="project-number-rule" aria-hidden="true" />
-      )}
-      <Link className="project-image" href={`/projects/${project.slug}`} aria-label={`View ${project.title} case study`}>
-        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 760px) 100vw, 34vw" />
-      </Link>
-      <div className="project-copy">
-        <div>
-          <p className="eyebrow">Featured project</p>
-          <Heading className="project-title">{project.title}</Heading>
-          <p>{project.summary}</p>
-        </div>
-        <ul className="tag-list" aria-label={`${project.title} skills`}>
-          {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
-        </ul>
-        <dl className="project-meta">
-          <div><dt>Scope</dt><dd>{project.scope}</dd></div>
-          <div><dt>Role</dt><dd>{project.role}</dd></div>
-          <div><dt>Status</dt><dd>{project.status}</dd></div>
-        </dl>
-        <Link className="row-action" href={`/projects/${project.slug}`}>
-          Read case study <ArrowRight size={20} weight="regular" />
-        </Link>
+      <div className="project-image">
+        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />
       </div>
-      <Link className="row-arrow" href={`/projects/${project.slug}`} aria-label={`Open ${project.title} case study`}>
-        <ArrowRight size={29} weight="regular" />
-      </Link>
+      <div className="project-copy">
+        <Heading className="project-title">
+          <Link className="project-link" href={`/projects/${project.slug}`}>
+            {project.title}
+          </Link>
+        </Heading>
+        <p className="project-outcome">{project.summary}</p>
+        <ul className="tag-list" aria-label={`${project.title} evidence markers`}>
+          {markers.map((marker) => <li key={marker}>{marker}</li>)}
+        </ul>
+        <span className="row-action" aria-hidden="true">
+          Read case study <ArrowRight size={20} weight="regular" />
+        </span>
+      </div>
     </article>
   );
 }

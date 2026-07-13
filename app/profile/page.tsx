@@ -10,7 +10,7 @@ import { absoluteUrl, personStructuredData, profile } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Recruiter & AI Brief",
   description:
-    "Plain-text professional profile: target roles, location, technical strengths, project evidence, and public disclosure boundary for recruiters and AI agents.",
+    "Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration.",
 };
 
 const profileStructuredData = {
@@ -46,10 +46,10 @@ export default function ProfilePage() {
       <section className="profile-summary" aria-labelledby="profile-fit-heading">
         <div>
           <p className="eyebrow">Fit</p>
-          <h2 id="profile-fit-heading">Target roles and evidence signals</h2>
+          <h2 id="profile-fit-heading">Student and internship fit</h2>
           <p>
             This page exists so recruiters, search engines, and AI agents can
-            extract the same facts a human visitor sees: role target, location,
+            extract the same facts a human visitor sees: student and internship target, location,
             technical strengths, project evidence, public disclosure limits,
             resume path, and contact path.
           </p>
@@ -101,7 +101,7 @@ export default function ProfilePage() {
           </p>
         </div>
         <div className="project-list">
-          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} featured />)}
+          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} />)}
         </div>
       </section>
 

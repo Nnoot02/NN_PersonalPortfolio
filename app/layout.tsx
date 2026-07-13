@@ -11,21 +11,23 @@ import { personStructuredData, profile, siteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Nathan | Electrical Engineering Portfolio",
-    template: "%s | Nathan Engineering Portfolio",
+    default: "Nathan No-ot | Solar Power Systems Portfolio",
+    template: "%s | Nathan No-ot - Solar Power Systems",
   },
   description: profile.summary,
   keywords: [
     "electrical engineering portfolio",
-    "South Australia graduate engineer",
+    "Adelaide electrical engineering student",
     "power systems",
+    "solar power systems",
+    "grid integration",
     "embedded systems",
     "control systems",
     "GPS-denied UAV",
     "DFMA",
   ],
   openGraph: {
-    title: "Nathan | Electrical Engineering Portfolio",
+    title: "Nathan No-ot | Solar Power Systems Portfolio",
     description: profile.summary,
     type: "profile",
     url: "/",
