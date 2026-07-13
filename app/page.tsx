@@ -1,65 +1,97 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { featuredProjects } from "@/lib/projects";
+import { broaderEngineeringProjects, verifiedPowerProjects } from "@/lib/projects";
 import { profile } from "@/lib/site";
 
 export default function HomePage() {
+  const uavCapstone = broaderEngineeringProjects.find((project) => project.slug === "gps-denied-autonomous-uav");
+
   return (
     <main id="main-content">
       <SiteHeader />
       <section className="hero">
         <div className="hero-copy">
-          <h1>Nathan</h1>
-          <p className="hero-role">Systems-minded electrical engineer</p>
+          <p className="eyebrow">Electrical engineering student · Adelaide</p>
+          <h1 className="hero-name"><span>Nathan</span><span className="hero-surname">No-ot</span></h1>
           <span className="accent-rule" aria-hidden="true" />
-          <p className="hero-summary">Power. Embedded. Controls. Verification.</p>
+          <p className="hero-role">Solar power systems &amp; grid integration</p>
+          <p className="hero-summary">Standards-based power design backed by Australian solar manufacturing experience.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/projects">
-              View projects <ArrowRight size={20} />
-            </Link>
+            <a className="button button-primary" href="#verified-work">
+              View verified work <ArrowRight size={20} />
+            </a>
             <a className="button button-secondary" href={profile.resumePath} download>
-              Download resume <DownloadSimple size={20} />
+              Download résumé <DownloadSimple size={20} />
             </a>
           </div>
-          <p className="placeholder-note">
-            General resume is live. Some project evidence remains pending where marked.
-            <Link className="text-link" href="/profile"> Read the plain-text recruiter brief.</Link>
-          </p>
         </div>
-        <div className="hero-image">
-          <Image
-            src="/images/pcb-hero.webp"
-            alt="Probe and soldering iron positioned over a populated circuit board"
-            fill
-            priority
-            sizes="(max-width: 800px) 100vw, 54vw"
-          />
-        </div>
-        <a className="scroll-cue" href="#featured" aria-label="Scroll to featured projects">
-          <span>Selected work</span><ArrowDown size={19} />
-        </a>
+        <Link className="hero-image" href="/projects/solar-grid-connection-assessment" aria-label="View 1 MW Solar Grid-Connection Assessment case study">
+          <span className="hero-artifact">
+            <Image
+              src="/images/solar-grid-connection.webp"
+              alt="Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling"
+              fill
+              priority
+              sizes="(max-width: 960px) 100vw, 54vw"
+            />
+          </span>
+          <span className="miniature-evidence-window" data-miniature-evidence-window="solar-grid-connection" aria-hidden="true">
+            <Image
+              src="/images/solar-grid-miniature.png"
+              alt=""
+              width={1254}
+              height={1254}
+              sizes="(max-width: 720px) 30vw, 16vw"
+            />
+          </span>
+        </Link>
       </section>
 
-      <section className="featured" id="featured">
+      <section className="featured evidence-ledger-section" id="verified-work" aria-labelledby="verified-work-heading">
         <div className="section-heading">
-          <p className="eyebrow">Featured projects</p>
-          <h2>Selected engineering work</h2>
-          <p>Three systems. Clear decisions. Resume-backed evidence ready for verified problem, approach, result, and measurement details.</p>
+          <p className="eyebrow">Verified power engineering</p>
+          <h2 id="verified-work-heading">Evidence ledger</h2>
+          <p>Completed power work, ordered by direct relevance to solar systems and grid integration.</p>
         </div>
-        <div className="project-list">
-          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} featured />)}
-        </div>
+        <ol className="project-list" data-evidence-ledger>
+          {verifiedPowerProjects.map((project) => (
+            <li data-project-slug={project.slug} key={project.slug}><ProjectRow project={project} /></li>
+          ))}
+        </ol>
       </section>
 
-      <section className="principles" aria-label="Engineering strengths">
-        <div><span className="accent-rule" aria-hidden="true" /><h3>Systems thinker</h3><p>Connect requirements, interfaces, risks, and verification.</p></div>
-        <div><span className="accent-rule" aria-hidden="true" /><h3>Hands-on builder</h3><p>Move from schematics and firmware to integration and test.</p></div>
-        <div><span className="accent-rule" aria-hidden="true" /><h3>Clear communicator</h3><p>Document decisions so teams can review and improve them.</p></div>
+      <section className="tindo-strip" aria-labelledby="tindo-heading">
+        <div>
+          <p className="footer-kicker">Experience</p>
+          <h2 id="tindo-heading">Tindo Solar</h2>
+        </div>
+        <dl>
+          <div><dt>Role</dt><dd>Production Worker</dd></div>
+          <div><dt>Since</dt><dd>Nov 2025–present</dd></div>
+          <div><dt>Context</dt><dd>Australian solar-panel manufacturing experience</dd></div>
+        </dl>
+        <p>Production-line work in a Kaizen and 5S culture.</p>
       </section>
+
+      {uavCapstone ? (
+        <section className="featured broader-work" aria-labelledby="broader-work-heading">
+          <div className="section-heading">
+            <p className="eyebrow">Current and broader engineering work</p>
+            <h2 id="broader-work-heading">Systems design in progress</h2>
+            <p>Active work stays visible without displacing completed, verified power evidence.</p>
+          </div>
+          <ol className="project-list">
+            <li data-project-slug={uavCapstone.slug}>
+              <p className="project-status-label">Active capstone—systems design in progress</p>
+              <ProjectRow project={uavCapstone} />
+            </li>
+          </ol>
+        </section>
+      ) : null}
       <SiteFooter />
     </main>
   );
