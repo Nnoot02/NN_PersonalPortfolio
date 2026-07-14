@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
 const failures = [];
 
@@ -17,11 +17,17 @@ const profile = readExport("/profile.html");
 check(home.includes("Electrical engineering student · Adelaide"), "home hero eyebrow must state electrical-engineering student and Adelaide");
 check(home.includes("Solar power systems &amp; grid integration"), "home hero must state solar power systems and grid integration");
 check(home.includes("Nathan") && home.includes("No-ot"), "home hero must render Nathan No-ot");
-check(home.includes("/images/solar-grid-connection.webp"), "home hero must use solar grid-connection artifact");
-check(existsSync(new URL("../public/images/solar-grid-miniature.png", import.meta.url)), "approved solar miniature asset must exist");
+const homeWordmark = home.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+const resumeWordmark = resume.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+check(homeWordmark.includes('class="wordmark-home"'), "home wordmark must use homepage identity treatment");
+check(homeWordmark.includes("NN") && homeWordmark.includes('class="wordmark-period"'), "home wordmark must render NN. with accent period");
+check(!homeWordmark.includes("Nathan No-ot"), "home wordmark must not repeat full hero name");
+check(resumeWordmark.includes('class="wordmark-desktop"') && resumeWordmark.includes("Nathan No-ot"), "non-home desktop wordmark must render Nathan No-ot");
+check(resumeWordmark.includes('class="wordmark-mobile"') && resumeWordmark.includes("NN") && resumeWordmark.includes('class="wordmark-period"'), "non-home mobile wordmark must render NN. with accent period");
 const heroMedia = home.match(/<a[^>]*class="hero-image"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
 check(heroMedia.length > 0, "home must expose hero media link");
-check(heroMedia.includes('data-miniature-evidence-window="solar-grid-connection"'), "home hero must pair approved solar miniature with verified solar artifact");
+check(heroMedia.includes("/images/solar-grid-connection.webp"), "home hero must use solar grid-connection artifact");
+check(!heroMedia.includes("data-miniature-evidence-window") && !heroMedia.includes("/images/solar-grid-miniature.png"), "home hero must defer miniature content");
 check((heroMedia.match(/<a\b/g) ?? []).length === 1, "home hero media must retain one destination link");
 check(home.includes("Tindo Solar") && home.includes("Production Worker") && home.includes("Nov 2025–present"), "home must contain public-safe Tindo experience strip");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");

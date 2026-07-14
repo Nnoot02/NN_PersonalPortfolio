@@ -39,15 +39,6 @@ export default function HomePage() {
               sizes="(max-width: 960px) 100vw, 54vw"
             />
           </span>
-          <span className="miniature-evidence-window" data-miniature-evidence-window="solar-grid-connection" aria-hidden="true">
-            <Image
-              src="/images/solar-grid-miniature.png"
-              alt=""
-              width={1254}
-              height={1254}
-              sizes="(max-width: 720px) 30vw, 16vw"
-            />
-          </span>
         </Link>
       </section>
 

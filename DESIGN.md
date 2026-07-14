@@ -563,7 +563,11 @@ links wrap rather than clip on narrow screens.
 - Keep body copy to **≤ 2 em-dashes per page.**
 - Don't set Inter as a display face or Barlow Condensed as body.
 
-### Personality layer: miniature evidence windows
+### Deferred personality layer: miniature evidence windows
+
+Status: deferred as of 2026-07-14. Current public UI contains no miniature
+content. The existing solar miniature asset remains dormant for possible future
+exploration; any reintroduction requires a new design session before code work.
 
 - Selected personality direction: **curious systems world-builder**. Use an
   occasional, project-specific isometric low-resolution miniature engineering

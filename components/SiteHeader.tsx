@@ -14,6 +14,7 @@ const links = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -33,8 +34,14 @@ export function SiteHeader() {
     <header className="site-header">
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <Link className="wordmark" href="/" aria-label="Nathan portfolio home">
-        <span className="wordmark-desktop">Nathan No-ot</span>
-        <span className="wordmark-mobile">NN.</span>
+        {isHome ? (
+          <span className="wordmark-home">NN<span className="wordmark-period">.</span></span>
+        ) : (
+          <>
+            <span className="wordmark-desktop">Nathan No-ot</span>
+            <span className="wordmark-mobile">NN<span className="wordmark-period">.</span></span>
+          </>
+        )}
       </Link>
       <button
         ref={menuButtonRef}
