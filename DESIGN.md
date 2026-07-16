@@ -623,3 +623,18 @@ under `prefers-reduced-motion: reduce`, which also switches
   `all-caps-body`) are codified in `.impeccable/config.json`. This file explains
   *why* they hold (deliberate palette, deliberate type pairing, informative
   eyebrows, label/display-only caps); it does not re-litigate them.
+
+### Workbench pattern
+
+Workbench uses compact editorial build records, not cards: paper surface,
+hairline dividers, square image frames, and one stretched title link per
+preview. Build type appears before title; non-original builds show text-only
+source credit so each preview still has one destination. Homepage shows two
+previews in a two-column region that stacks below 960px; Workbench stays out of
+primary navigation.
+
+Detail pages place attribution near the heading, then show motivation,
+contribution, constraint, observed outcome, shortfall, and next iteration
+before owned evidence. Workbench photos use existing `cover` treatment; the
+technical hero artifact remains the deliberate `contain` exception. Footer
+keeps Workbench as a normal action and Recruiter / AI brief as a quiet utility.

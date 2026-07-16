@@ -4,11 +4,14 @@ import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { WorkbenchEntryPreview } from "@/components/WorkbenchEntryPreview";
 import { broaderEngineeringProjects, verifiedPowerProjects } from "@/lib/projects";
 import { profile } from "@/lib/site";
+import { getWorkbenchEntry, homepageWorkbenchSlugs } from "@/lib/workbench";
 
 export default function HomePage() {
   const uavCapstone = broaderEngineeringProjects.find((project) => project.slug === "gps-denied-autonomous-uav");
+  const homepageWorkbenchEntries = homepageWorkbenchSlugs.map(getWorkbenchEntry).filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
   return (
     <main id="main-content">
@@ -22,7 +25,7 @@ export default function HomePage() {
           <p className="hero-summary">Standards-based power design backed by Australian solar manufacturing experience.</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#verified-work">
-              View verified work <ArrowRight size={20} />
+              View selected work <ArrowRight size={20} />
             </a>
             <a className="button button-secondary" href={profile.resumePath} download>
               Download résumé <DownloadSimple size={20} />
@@ -45,7 +48,7 @@ export default function HomePage() {
       <section className="featured evidence-ledger-section" id="verified-work" aria-labelledby="verified-work-heading">
         <div className="section-heading">
           <p className="eyebrow">Verified power engineering</p>
-          <h2 id="verified-work-heading">Evidence ledger</h2>
+          <h2 id="verified-work-heading">Power Systems Work</h2>
           <p>Completed power work, ordered by direct relevance to solar systems and grid integration.</p>
         </div>
         <ol className="project-list" data-evidence-ledger>
@@ -68,11 +71,23 @@ export default function HomePage() {
         <p>Production-line work in a Kaizen and 5S culture.</p>
       </section>
 
+      <section className="featured workbench-home" data-workbench-home aria-labelledby="workbench-home-heading">
+        <div className="section-heading">
+          <p className="eyebrow">After hours</p>
+          <h2 id="workbench-home-heading">Workbench</h2>
+          <p>Personal builds that keep my hands in the details: what I made, what worked, and what I would change next.</p>
+        </div>
+        <div className="workbench-home-grid">
+          {homepageWorkbenchEntries.map((entry) => <WorkbenchEntryPreview entry={entry} headingLevel="h3" key={entry.slug} />)}
+        </div>
+        <Link className="text-link workbench-collection-link" href="/workbench">See all bench builds <ArrowRight size={18} /></Link>
+      </section>
+
       {uavCapstone ? (
         <section className="featured broader-work" aria-labelledby="broader-work-heading">
           <div className="section-heading">
             <p className="eyebrow">Current and broader engineering work</p>
-            <h2 id="broader-work-heading">Systems design in progress</h2>
+            <h2 id="broader-work-heading">GPS-Denied UAV Capstone</h2>
             <p>Active work stays visible without displacing completed, verified power evidence.</p>
           </div>
           <ol className="project-list">

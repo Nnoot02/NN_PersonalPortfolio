@@ -7,12 +7,23 @@ function check(condition, message) {
 }
 
 function readExport(path) {
-  return readFileSync(new URL(`../out${path}`, import.meta.url), "utf8");
+  try {
+    return readFileSync(new URL(`../out${path}`, import.meta.url), "utf8");
+  } catch {
+    failures.push(`missing static export ${path}; implement the route and run pnpm build`);
+    return "";
+  }
 }
 
-const home = readExport("/index.html");
+function renderedMain(markup) {
+  return markup.match(/<main[\s\S]*?<\/main>/)?.[0] ?? markup;
+}
+
+const home = renderedMain(readExport("/index.html"));
 const resume = readExport("/resume.html");
 const profile = readExport("/profile.html");
+const workbench = renderedMain(readExport("/workbench.html"));
+const sitemap = readExport("/sitemap.xml");
 
 check(home.includes("Electrical engineering student · Adelaide"), "home hero eyebrow must state electrical-engineering student and Adelaide");
 check(home.includes("Solar power systems &amp; grid integration"), "home hero must state solar power systems and grid integration");
@@ -50,6 +61,46 @@ for (const slug of ["solar-grid-connection-assessment", "lv-cabling-design-comme
   const row = ledger.match(new RegExp(`<li[^>]*data-project-slug="${slug}"[\\s\\S]*?<\\/li>`))?.[0] ?? "";
   check(row.length > 0, `ledger must include ${slug}`);
   check((row.match(new RegExp(`/projects/${slug}`, "g")) ?? []).length === 1, `${slug} ledger row must have one destination link`);
+}
+
+check(home.includes("Power Systems Work"), "home must replace Evidence ledger with Power Systems Work");
+check(!home.includes("Evidence ledger"), "home must not retain the clinical Evidence ledger title");
+check(home.includes("View selected work"), "home jump action must read View selected work");
+check(!home.includes("View verified work"), "home must not retain View verified work");
+check(home.includes("data-workbench-home"), "home must expose the Workbench preview region");
+check(home.includes("data-workbench-home") && (home.match(/data-workbench-entry/g) ?? []).length === 2, "home Workbench preview must expose exactly two entries");
+check(home.includes("data-workbench-home") && (home.match(/href=\"\/workbench\//g) ?? []).length === 2, "home Workbench previews must have one detail destination each");
+check(home.includes("data-workbench-home") && home.includes('href="/workbench"'), "home Workbench preview must link to the collection");
+const tindoIndex = home.indexOf("tindo-strip");
+const workbenchIndex = home.indexOf("data-workbench-home");
+const broaderWorkIndex = home.indexOf("broader-work");
+check(tindoIndex < workbenchIndex && workbenchIndex < broaderWorkIndex, "home must place Workbench after Tindo and before current work");
+check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
+check(/href="\/workbench"(?![^>]*footer-utility)/.test(home), "footer must expose Workbench as an action link");
+check(home.includes("data-footer-utility"), "footer must expose recruiter profile as a quiet utility link");
+
+const workbenchEntries = [...workbench.matchAll(/data-workbench-entry(?:=\"[^\"]*\")?/g)];
+check(workbench.includes("data-workbench-collection"), "Workbench collection must expose its semantic marker");
+check(workbenchEntries.length >= 4 && workbenchEntries.length <= 6, "Workbench collection must contain 4-6 publishable entries");
+check(workbench.includes("I spend a lot of spare time at my bench building things"), "Workbench collection must use the approved introduction");
+check((workbench.match(/data-build-type/g) ?? []).length === workbenchEntries.length, "each Workbench collection entry must expose a build-type marker");
+
+const detailSlugs = [...new Set([...workbench.matchAll(/href=\"\/workbench\/([^\"]+)\"/g)].map((match) => match[1]))];
+check(detailSlugs.length === workbenchEntries.length, "Workbench collection must link once to every detail page");
+for (const slug of detailSlugs) {
+  const detail = renderedMain(readExport(`/workbench/${slug}.html`));
+  check(detail.includes("data-build-type"), `${slug} detail page must expose a build-type marker`);
+  check(detail.includes("data-workbench-evidence"), `${slug} detail page must expose owned evidence`);
+  check(detail.includes("data-workbench-reflection"), `${slug} detail page must expose motivation, contribution, outcome, failure, and next iteration`);
+  if (detail.includes('data-requires-source="true"')) {
+    check(detail.includes("data-source-attribution"), `${slug} attributed detail page must expose source attribution`);
+    check(/data-source-attribution[\s\S]*?href=\"https?:\/\//.test(detail), `${slug} attributed detail page must link its canonical source`);
+  }
+}
+
+check(sitemap.includes("/workbench"), "sitemap must include the Workbench collection");
+for (const slug of detailSlugs) {
+  check(sitemap.includes(`/workbench/${slug}`), `sitemap must include ${slug}`);
 }
 
 if (failures.length) {

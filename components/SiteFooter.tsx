@@ -15,7 +15,8 @@ export function SiteFooter() {
         <a href={`mailto:${profile.contactEmail}`}>Email</a>
         {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
         <a href={profile.resumePath} download>Résumé</a>
-        <Link href="/profile">Recruiter profile</Link>
+        <Link href="/workbench">Workbench</Link>
+        <Link className="footer-utility" data-footer-utility href="/profile">Recruiter / AI brief</Link>
         <Link href="/projects">Projects</Link>
       </div>
     </footer>

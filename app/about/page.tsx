@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -20,7 +21,8 @@ export default function AboutPage() {
       <section className="content-grid">
         <div><p className="eyebrow">Approach</p><h2>Start with constraints.</h2></div>
         <div className="prose">
-          <p>I prefer evidence-producing work: define the requirement, expose assumptions, build the smallest useful test, then communicate what the result means. That habit comes from combining study, manufacturing work, hospitality leadership, and personal projects rather than treating engineering as only coursework.</p>
+          <p>I prefer evidence-producing work: define the requirement, expose assumptions, build the smallest useful test, then communicate what the result means. Moving from comfortable hospitality work into a degree-adjacent solar-manufacturing role was a deliberate choice to stay closer to engineering practice.</p>
+          <p>Outside work and study, I keep that practice physical through <Link className="text-link" href="/workbench">personal bench builds</Link>: small systems where the limitations are visible and useful.</p>
           <p>At TAFE SA I have worked through standards-informed electrical design, including cable sizing, protection, grid-connection reasoning, single-line diagrams, wiring schedules, and compliance matrices. My current path articulates into Electrical and Electronic Engineering at Adelaide University, expected 2028.</p>
         </div>
       </section>
