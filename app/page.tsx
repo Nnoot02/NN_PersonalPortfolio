@@ -22,7 +22,7 @@ export default function HomePage() {
           <h1 className="hero-name"><span>Nathan</span><span className="hero-surname">No-ot</span></h1>
           <span className="accent-rule" aria-hidden="true" />
           <p className="hero-role">Solar power systems &amp; grid integration</p>
-          <p className="hero-summary">Standards-based power design backed by Australian solar manufacturing experience.</p>
+          <p className="hero-summary">My power design starts with standards and draws on Australian solar manufacturing experience.</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#verified-work">
               View selected work <ArrowRight size={20} />
@@ -32,7 +32,7 @@ export default function HomePage() {
             </a>
           </div>
         </div>
-        <Link className="hero-image" href="/projects/solar-grid-connection-assessment" aria-label="View 1 MW Solar Grid-Connection Assessment case study">
+        <figure className="hero-image">
           <span className="hero-artifact">
             <Image
               src="/images/solar-grid-connection.webp"
@@ -42,7 +42,7 @@ export default function HomePage() {
               sizes="(max-width: 960px) 100vw, 54vw"
             />
           </span>
-        </Link>
+        </figure>
       </section>
 
       <section className="featured evidence-ledger-section" id="verified-work" aria-labelledby="verified-work-heading">
@@ -58,18 +58,21 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <section className="tindo-strip" aria-labelledby="tindo-heading">
-        <div>
-          <p className="footer-kicker">Experience</p>
-          <h2 id="tindo-heading">Tindo Solar</h2>
-        </div>
-        <dl>
-          <div><dt>Role</dt><dd>Production Worker</dd></div>
-          <div><dt>Since</dt><dd>Nov 2025–present</dd></div>
-          <div><dt>Context</dt><dd>Australian solar-panel manufacturing experience</dd></div>
-        </dl>
-        <p>Production-line work in a Kaizen and 5S culture.</p>
-      </section>
+      {uavCapstone ? (
+        <section className="featured broader-work" aria-labelledby="broader-work-heading">
+          <div className="section-heading">
+            <p className="eyebrow">In progress</p>
+            <h2 id="broader-work-heading">GPS-Denied UAV Capstone</h2>
+            <p>An indoor autonomy capstone combining non-GPS positioning, local planning, obstacle detection, and disciplined verification.</p>
+          </div>
+          <ol className="project-list">
+            <li data-project-slug={uavCapstone.slug}>
+              <p className="project-status-label">Active capstone—systems design in progress</p>
+              <ProjectRow project={uavCapstone} />
+            </li>
+          </ol>
+        </section>
+      ) : null}
 
       <section className="featured workbench-home" data-workbench-home aria-labelledby="workbench-home-heading">
         <div className="section-heading">
@@ -83,21 +86,18 @@ export default function HomePage() {
         <Link className="text-link workbench-collection-link" href="/workbench">See all bench builds <ArrowRight size={18} /></Link>
       </section>
 
-      {uavCapstone ? (
-        <section className="featured broader-work" aria-labelledby="broader-work-heading">
-          <div className="section-heading">
-            <p className="eyebrow">Current and broader engineering work</p>
-            <h2 id="broader-work-heading">GPS-Denied UAV Capstone</h2>
-            <p>Active work stays visible without displacing completed, verified power evidence.</p>
-          </div>
-          <ol className="project-list">
-            <li data-project-slug={uavCapstone.slug}>
-              <p className="project-status-label">Active capstone—systems design in progress</p>
-              <ProjectRow project={uavCapstone} />
-            </li>
-          </ol>
-        </section>
-      ) : null}
+      <section className="tindo-strip" aria-labelledby="tindo-heading">
+        <div>
+          <p className="eyebrow">Currently</p>
+          <h2 id="tindo-heading">Tindo Solar</h2>
+        </div>
+        <dl>
+          <div><dt>Role</dt><dd>Production Worker</dd></div>
+          <div><dt>Since</dt><dd>Nov 2025–present</dd></div>
+          <div><dt>Context</dt><dd>Australian solar-panel manufacturing experience</dd></div>
+        </dl>
+        <p>I work on the production line in a Kaizen and 5S culture.</p>
+      </section>
       <SiteFooter />
     </main>
   );

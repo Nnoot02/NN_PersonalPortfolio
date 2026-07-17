@@ -67,7 +67,7 @@ button { font: inherit; }
 .button-secondary { background: transparent; }
 .button-secondary:hover, .button-secondary:focus-visible { background: var(--ink); color: var(--white); }
 .hero-image, .case-image, .project-image { position: relative; overflow: hidden; }
-.hero-image { display: grid; }
+.hero-image { display: grid; margin: 0; }
 .hero-artifact { position: relative; min-width: 0; min-height: 0; }
 .case-image img, .project-image img { object-fit: cover; filter: sepia(.08); transition: transform .45s ease; }
 .hero-artifact { background: var(--paper-deep); }
@@ -97,12 +97,12 @@ button { font: inherit; }
 .tag-list li { border: 1px solid var(--line); color: var(--muted); font-size: .72rem; line-height: 1; padding: .55rem .7rem; text-transform: uppercase; letter-spacing: .08em; }
 .row-action { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent-dark); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; width: fit-content; }
 
-.tindo-strip { display: grid; grid-template-columns: minmax(200px, .8fr) minmax(0, 1.3fr) minmax(220px, 1fr); gap: 2.5rem; align-items: end; padding: clamp(3rem, 6vw, 5rem) 6vw; background: var(--ink); color: var(--white); }
+.tindo-strip { display: grid; grid-template-columns: minmax(200px, .8fr) minmax(0, 1.3fr) minmax(220px, 1fr); gap: 2.5rem; align-items: end; padding: clamp(3rem, 6vw, 5rem) 6vw; background: var(--paper); border-top: 1px solid var(--line); color: var(--ink); }
 .tindo-strip h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); margin: .7rem 0 0; text-transform: uppercase; }
 .tindo-strip dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0; }
-.tindo-strip dt { color: #d88868; font: 600 .68rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
+.tindo-strip dt { color: var(--accent-dark); font: 600 .68rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .tindo-strip dd { margin: .45rem 0 0; line-height: 1.45; }
-.tindo-strip > p { color: var(--white); line-height: 1.65; margin: 0; max-width: 32ch; }
+.tindo-strip > p { color: var(--muted); line-height: 1.65; margin: 0; max-width: 32ch; }
 .broader-work { border-top: 1px solid var(--line); }
 .project-status-label { color: var(--accent-dark); font: 600 .78rem/1.2 var(--display); letter-spacing: .13em; margin: 1.4rem 0 0; text-transform: uppercase; }
 
@@ -158,12 +158,13 @@ button { font: inherit; }
 .footer-links .footer-utility { border: 0; color: #d88868; min-height: auto; padding: .45rem 0; text-decoration: underline; text-underline-offset: .18em; }
 
 .page-hero { padding: clamp(5rem, 10vw, 9rem) 6vw; min-height: 520px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.page-hero--about { min-height: 400px; }
 .page-hero h1, .case-study h1 { font: 600 clamp(4.6rem, 9vw, 9rem)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; }
 .page-hero > p:last-of-type { max-width: 670px; color: var(--muted); line-height: 1.7; }
 .resume-hero .button { margin-top: 1.4rem; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.5rem; }
 .placeholder-contact { color: var(--muted); display: inline-flex; align-items: center; gap: .5rem; }
-.content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 7rem 6vw; }
+.content-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 4rem; padding: clamp(4rem, 6vw, 5.5rem) 6vw; }
 .prose { max-width: 620px; color: var(--muted); font-size: 1.05rem; line-height: 1.8; }
 
 .case-study { padding: 4rem 6vw 7rem; }
@@ -183,6 +184,7 @@ button { font: inherit; }
 .profile-facts dt { font: 600 .72rem/1.2 var(--display); text-transform: uppercase; letter-spacing: .13em; margin-bottom: .5rem; }
 .profile-facts dd { margin: 0; color: var(--muted); line-height: 1.45; }
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
+.profile-grid--about { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: clamp(4rem, 6vw, 5.5rem) 6vw; }
 .profile-grid ul, .disclosure-panel ul { margin: 1.5rem 0 0; padding-left: 1.2rem; }
 .disclosure-panel { padding: 5rem 6vw 6rem; max-width: 980px; }
 .case-tags { margin: -1.2rem 0 3rem; }
@@ -247,6 +249,7 @@ button { font: inherit; }
   .tindo-strip { gap: 2rem; padding-left: 1.25rem; padding-right: 1.25rem; }
   .tindo-strip dl { grid-template-columns: 1fr; gap: 1.1rem; }
   .page-hero { min-height: 500px; padding: 5rem 1.25rem; }
+  .page-hero--about { min-height: 320px; }
   .page-hero h1, .case-study h1 { font-size: clamp(4rem, 21vw, 6rem); }
   .workbench-hero h1 { font-size: clamp(4rem, 20vw, 6rem); }
   .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.25rem; }

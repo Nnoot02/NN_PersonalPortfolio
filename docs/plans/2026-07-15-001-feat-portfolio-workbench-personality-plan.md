@@ -49,7 +49,7 @@ Nathan has stronger personality evidence than the site exposes: regular garage b
 
 - R1. The homepage must keep verified power work ahead of Workbench content so professional evidence remains dominant.
 - R2. The homepage must preview exactly two Workbench entries in a compact composition suitable for mobile scanning.
-- R3. The Workbench preview must follow the Tindo Solar context and precede broader or in-progress engineering work.
+- R3. The Workbench preview must follow broader or in-progress engineering work and precede the Tindo Solar context.
 - R4. A dedicated Workbench collection must hold 4-6 curated entries and provide a detail view for each build.
 - R5. Workbench must remain distinct from Projects and must not enter primary navigation in the initial release; discovery comes from the homepage, About, and footer.
 
@@ -121,7 +121,7 @@ flowchart TB
 - AE3. **Covers R7.** Given Nathan cannot trace a non-original build's creator or source, when preparing the entry, then the entry remains unpublished until attribution is resolved.
 - AE4. **Covers R8.** Given the original source is known but redistribution permission is unclear, when the entry is published, then it links and attributes the source while showing only Nathan's own photos, observations, and permitted material.
 - AE5. **Covers R10-R11.** Given a build operates but formal test results are missing, when the entry is drafted, then the observed behaviour is stated narrowly and testing remains labelled pending.
-- AE6. **Covers R1-R5, R24.** Given a visitor opens the homepage at 390 pixels wide, when they scroll beyond Tindo Solar, then they see two compact Workbench previews before current work, with no horizontal overflow and without full detail-page content expanding the homepage.
+- AE6. **Covers R1-R5, R24.** Given a visitor opens the homepage at 390 pixels wide, when they scroll beyond current work, then they see two compact Workbench previews before Tindo Solar context, with no horizontal overflow and without full detail-page content expanding the homepage.
 - AE7. **Covers R19.** Given a visitor reaches the footer, when they scan the actions, then contact, resume, project, and Workbench actions remain prominent while the plain-text profile remains discoverable as secondary utility.
 
 ### Success Criteria
@@ -307,9 +307,9 @@ flowchart TB
 - **Goal:** Make curiosity visible in the recruiter scan while preserving the power-work hierarchy and correcting the current clinical/cropped surfaces.
 - **Requirements:** R1-R3, R5, R13-R25; F1; AE6-AE7.
 - **Files:** Modify `app/page.tsx`, `app/about/page.tsx`, `components/SiteFooter.tsx`, and `app/globals.css`; consume `components/WorkbenchEntryPreview.tsx` and `lib/workbench.ts`.
-- **Approach:** Insert a compact two-entry Workbench section after `tindo-strip` and before `broader-work`, with a clear collection link. Add an About link and restrained first-person explanation of choosing degree-adjacent solar manufacturing over comfortable hospitality work. Add Workbench as a normal footer action, move `/profile` to a visually secondary utility link, and leave primary navigation unchanged. Rename the power section and jump action. Rename the broader-work heading to avoid repeating its stage while retaining the existing verified capstone status once. Separate `.hero-artifact > img` from the shared cover selector and use contained diagram treatment on paper-deep at all breakpoints.
+- **Approach:** Insert a compact two-entry Workbench section after `broader-work` and before `tindo-strip`, with a clear collection link. Add an About link and restrained first-person explanation of choosing degree-adjacent solar manufacturing over comfortable hospitality work. Add Workbench as a normal footer action, move `/profile` to a visually secondary utility link, and leave primary navigation unchanged. Rename the power section and jump action. Rename the broader-work heading to avoid repeating its stage while retaining the existing verified capstone status once. Separate `.hero-artifact > img` from the shared cover selector and use contained diagram treatment on paper-deep at all breakpoints.
 - **Patterns to follow:** `app/page.tsx` section ordering and semantic labels; `components/SiteFooter.tsx` action links; `app/about/page.tsx` two-column narrative; `app/globals.css` `featured`, `tindo-strip`, footer, and 960/720 px breakpoints.
-- **Test scenarios:** DOM order is Power Systems Work, Tindo, Workbench, current work; the homepage Workbench preview region contains exactly two detail links plus one collection link; Workbench is absent from `primary-navigation`; footer contains Workbench as an action and profile as secondary utility; old strings `Evidence ledger` and `View verified work` are absent; "systems design in progress" appears once in the homepage current-work region; technical diagram edges remain visible at desktop/mobile; keyboard and screen-reader reading order follows visual order.
+- **Test scenarios:** DOM order is Power Systems Work, current work, Workbench, Tindo; the homepage Workbench preview region contains exactly two detail links plus one collection link; Workbench is absent from `primary-navigation`; footer contains Workbench as an action and profile as secondary utility; old strings `Evidence ledger` and `View verified work` are absent; "systems design in progress" appears once in the homepage current-work region; technical diagram edges remain visible at desktop/mobile; keyboard and screen-reader reading order follows visual order.
 - **Verification:** `pnpm check`, `pnpm build`, and `pnpm test:contract` pass. Browser QA at 1440 px, 390 px, 320 px, and 200% zoom confirms compact length, no overflow, diagram legibility, visible focus, and unchanged mobile-menu behaviour.
 
 ### U5. Complete discovery, design documentation, and release verification
@@ -353,7 +353,7 @@ Browser QA must capture or record the homepage, Workbench collection, soldering 
 - Every detail page displays its build type, Nathan's contribution, owned evidence, observed outcome, failure, and next iteration; previews retain only the compact fields required by R2, R6, and R7.
 - Adapted and reproduced entries identify and link the source without redistributing unlicensed material.
 - The soldering fume extractor page contains approved build notes and test results, or a narrowly approved observed-behaviour statement with formal testing visibly pending.
-- Homepage order is verified power work, Tindo, Workbench, then current/broader work.
+- Homepage order is verified power work, current/broader work, Workbench, then Tindo context.
 - Workbench is discoverable from homepage, About, footer, and sitemap but absent from primary navigation and Projects.
 - `Power Systems Work` and `View selected work` replace the clinical homepage labels.
 - The recruiter/AI profile remains public and crawlable but is visually secondary in the footer.

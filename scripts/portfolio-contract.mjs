@@ -35,11 +35,11 @@ check(homeWordmark.includes("NN") && homeWordmark.includes('class="wordmark-peri
 check(!homeWordmark.includes("Nathan No-ot"), "home wordmark must not repeat full hero name");
 check(resumeWordmark.includes('class="wordmark-desktop"') && resumeWordmark.includes("Nathan No-ot"), "non-home desktop wordmark must render Nathan No-ot");
 check(resumeWordmark.includes('class="wordmark-mobile"') && resumeWordmark.includes("NN") && resumeWordmark.includes('class="wordmark-period"'), "non-home mobile wordmark must render NN. with accent period");
-const heroMedia = home.match(/<a[^>]*class="hero-image"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
-check(heroMedia.length > 0, "home must expose hero media link");
+const heroMedia = home.match(/<figure[^>]*class="hero-image"[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
+check(heroMedia.length > 0, "home must expose hero media figure");
 check(heroMedia.includes("/images/solar-grid-connection.webp"), "home hero must use solar grid-connection artifact");
 check(!heroMedia.includes("data-miniature-evidence-window") && !heroMedia.includes("/images/solar-grid-miniature.png"), "home hero must defer miniature content");
-check((heroMedia.match(/<a\b/g) ?? []).length === 1, "home hero media must retain one destination link");
+check((heroMedia.match(/<a\b/g) ?? []).length === 0, "home hero media must not contain a destination link");
 check(home.includes("Tindo Solar") && home.includes("Production Worker") && home.includes("Nov 2025–present"), "home must contain public-safe Tindo experience strip");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
 check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(home), "home must provide resume PDF download");
@@ -74,10 +74,14 @@ check(home.includes("data-workbench-home") && home.includes('href="/workbench"')
 const tindoIndex = home.indexOf("tindo-strip");
 const workbenchIndex = home.indexOf("data-workbench-home");
 const broaderWorkIndex = home.indexOf("broader-work");
-check(tindoIndex < workbenchIndex && workbenchIndex < broaderWorkIndex, "home must place Workbench after Tindo and before current work");
+const ledgerIndex = home.indexOf("data-evidence-ledger");
+check(ledgerIndex < broaderWorkIndex && broaderWorkIndex < workbenchIndex && workbenchIndex < tindoIndex, "home must place verified work before current work, Workbench, and Tindo context");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
-check(/href="\/workbench"(?![^>]*footer-utility)/.test(home), "footer must expose Workbench as an action link");
-check(home.includes("data-footer-utility"), "footer must expose recruiter profile as a quiet utility link");
+const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
+const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
+const footerWorkbenchLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes('href="/workbench"'));
+const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
+check(footerWorkbenchLinkIndex >= 0 && footerUtilityLinkIndex === footerAnchors.length - 1 && footerWorkbenchLinkIndex < footerUtilityLinkIndex, "footer must place Workbench before recruiter utility, which must be last");
 
 const workbenchEntries = [...workbench.matchAll(/data-workbench-entry(?:=\"[^\"]*\")?/g)];
 check(workbench.includes("data-workbench-collection"), "Workbench collection must expose its semantic marker");
