@@ -75,7 +75,7 @@ const tindoIndex = home.indexOf("tindo-strip");
 const workbenchIndex = home.indexOf("data-workbench-home");
 const broaderWorkIndex = home.indexOf("broader-work");
 const ledgerIndex = home.indexOf("data-evidence-ledger");
-check(ledgerIndex < broaderWorkIndex && broaderWorkIndex < workbenchIndex && workbenchIndex < tindoIndex, "home must place verified work before current work, Workbench, and Tindo context");
+check(tindoIndex < ledgerIndex && ledgerIndex < broaderWorkIndex && broaderWorkIndex < workbenchIndex, "home must place Tindo context under the hero, then verified work, current work, and Workbench");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
 const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);

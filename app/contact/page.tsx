@@ -18,7 +18,7 @@ export default function ContactPage() {
       <section className="page-hero contact-hero">
         <p className="eyebrow">Contact</p>
         <h1>Let&apos;s discuss<br />{" "}engineering work.</h1>
-        <p>Email is the public contact path for student, internship, project, or mentoring conversations about solar power systems, grid integration, and broader electrical engineering work.</p>
+        <p>Email me about student placements, internships, projects, or mentoring. Solar power systems and grid integration come first; broader electrical engineering work is welcome.</p>
         <div className="contact-actions">
           <CopyEmailButton email={profile.contactEmail} />
           <a className="placeholder-contact" href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={20} /> {profile.contactEmail}</a>

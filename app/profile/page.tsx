@@ -107,7 +107,7 @@ export default function ProfilePage() {
 
       <section className="disclosure-panel" aria-labelledby="disclosure-heading">
         <p className="eyebrow">Disclosure boundary</p>
-        <h2 id="disclosure-heading">Public, sanitized, and pending content</h2>
+        <h2 id="disclosure-heading">Public, sanitised, and pending content</h2>
         <p>{profile.publicBoundary}</p>
         <ul>
           <li>Resume and email contact are public; phone number and street address are intentionally omitted.</li>

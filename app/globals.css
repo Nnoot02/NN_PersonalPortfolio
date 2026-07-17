@@ -96,14 +96,17 @@ button { font: inherit; }
 .tag-list { display: flex; flex-wrap: wrap; gap: .55rem; padding: 0; margin: 0; list-style: none; }
 .tag-list li { border: 1px solid var(--line); color: var(--muted); font-size: .72rem; line-height: 1; padding: .55rem .7rem; text-transform: uppercase; letter-spacing: .08em; }
 .row-action { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent-dark); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; width: fit-content; }
+.row-action svg { transition: transform .2s ease; }
+.project-row:hover .row-action svg, .project-row:focus-within .row-action svg { transform: translateX(3px); }
 
-.tindo-strip { display: grid; grid-template-columns: minmax(200px, .8fr) minmax(0, 1.3fr) minmax(220px, 1fr); gap: 2.5rem; align-items: end; padding: clamp(3rem, 6vw, 5rem) 6vw; background: var(--paper); border-top: 1px solid var(--line); color: var(--ink); }
+.tindo-strip { display: grid; grid-template-columns: minmax(200px, .8fr) minmax(0, 1.3fr) minmax(220px, 1fr); gap: 2.5rem; align-items: end; padding: clamp(2rem, 3.5vw, 3rem) 6vw; background: var(--paper); border-bottom: 1px solid var(--line); color: var(--ink); }
 .tindo-strip h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); margin: .7rem 0 0; text-transform: uppercase; }
 .tindo-strip dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0; }
 .tindo-strip dt { color: var(--accent-dark); font: 600 .68rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .tindo-strip dd { margin: .45rem 0 0; line-height: 1.45; }
 .tindo-strip > p { color: var(--muted); line-height: 1.65; margin: 0; max-width: 32ch; }
-.broader-work { border-top: 1px solid var(--line); }
+.broader-work { border-top: 1px solid var(--line); padding-top: clamp(2.5rem, 4vw, 4rem); }
+.evidence-ledger-section { padding-bottom: clamp(2.5rem, 4vw, 4rem); }
 .project-status-label { color: var(--accent-dark); font: 600 .78rem/1.2 var(--display); letter-spacing: .13em; margin: 1.4rem 0 0; text-transform: uppercase; }
 
 .workbench-home { border-top: 1px solid var(--line); }
@@ -157,7 +160,7 @@ button { font: inherit; }
 .footer-links a:hover, .footer-links button:hover { border-color: #d88868; color: #d88868; }
 .footer-links .footer-utility { border: 0; color: #d88868; min-height: auto; padding: .45rem 0; text-decoration: underline; text-underline-offset: .18em; }
 
-.page-hero { padding: clamp(5rem, 10vw, 9rem) 6vw; min-height: 520px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.page-hero { padding: clamp(4rem, 7vw, 6.5rem) 6vw clamp(2.5rem, 4vw, 3.5rem); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 .page-hero--about { min-height: 400px; }
 .page-hero h1, .case-study h1 { font: 600 clamp(4.6rem, 9vw, 9rem)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; }
 .page-hero > p:last-of-type { max-width: 670px; color: var(--muted); line-height: 1.7; }
@@ -248,7 +251,7 @@ button { font: inherit; }
   .site-footer { align-items: flex-start; flex-direction: column; padding: 4rem 1.25rem; }
   .tindo-strip { gap: 2rem; padding-left: 1.25rem; padding-right: 1.25rem; }
   .tindo-strip dl { grid-template-columns: 1fr; gap: 1.1rem; }
-  .page-hero { min-height: 500px; padding: 5rem 1.25rem; }
+  .page-hero { padding: 4rem 1.25rem 2.5rem; }
   .page-hero--about { min-height: 320px; }
   .page-hero h1, .case-study h1 { font-size: clamp(4rem, 21vw, 6rem); }
   .workbench-hero h1 { font-size: clamp(4rem, 20vw, 6rem); }
@@ -265,4 +268,13 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+@media print {
+  .site-header, .hero-actions, .row-action, .scroll-cue { display: none !important; }
+  .project-row, .workbench-preview, .tindo-strip { break-inside: avoid; }
+  .featured, .page-hero, .tindo-strip { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .site-footer { background: none; color: #000; min-height: 0; }
+  .site-footer a { color: #000; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72rem; color: #555; }
 }

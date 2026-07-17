@@ -23,7 +23,7 @@ export const profile = {
     "Technical writing, documentation, DFMA, and evidence-based engineering decisions",
   ],
   publicBoundary:
-    "Public portfolio content is sanitized. Phone, street address, employer-sensitive process detail, university-restricted material, and defence-related details are omitted unless cleared.",
+    "Public portfolio content is sanitised. Phone, street address, employer-sensitive process detail, university-restricted material, and defence-related details are omitted unless cleared.",
   contactEmail: "nathannoott@gmail.com",
   links: {
     // Footer links and Person JSON-LD sameAs render only when a URL is non-empty.

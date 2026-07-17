@@ -199,7 +199,7 @@ motifs:
 
 layout:
   page-inset: "6vw (1.25rem at ≤720px)"
-  section-padding: "clamp(5rem, 8vw, 8rem) vertical"
+  section-padding: "clamp(5rem, 8vw, 8rem) vertical; adjacent related sections collapse to clamp(2.5rem, 4vw, 4rem) on facing edges (evidence ledger ↔ broader work); page-hero bottom edge clamp(2.5rem, 4vw, 3.5rem)"
   body-measure-max: "62ch"
 
 components:

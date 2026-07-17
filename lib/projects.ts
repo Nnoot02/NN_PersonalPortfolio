@@ -28,7 +28,7 @@ export const projects: Project[] = [
     imageAlt: "One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards",
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
-    status: "Evidence verified - sanitized write-up",
+    status: "Evidence verified - sanitised write-up",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
     evidenceMarkers: ["400 V", "AS/NZS 3000", "Cable sizing"],
     problem:
@@ -38,7 +38,7 @@ export const projects: Project[] = [
     result:
       "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit passed the AS/NZS 3000 Table 8.1 earth-fault-loop limits.",
     evidenceStatus:
-      "Verified. Sanitized public write-up complete; full tabulated working held privately because standards tables are Standards Australia copyright.",
+      "Verified. Sanitised public write-up complete; full tabulated working held privately because standards tables are Standards Australia copyright.",
     evidenceVerified: true,
   },
   {
@@ -51,7 +51,7 @@ export const projects: Project[] = [
     imageAlt: "Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling",
     scope: "Power systems, grid connection, compliance",
     role: "Sole author (coursework technical assessment)",
-    status: "Evidence verified - sanitized write-up",
+    status: "Evidence verified - sanitised write-up",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
     evidenceMarkers: ["1 MW", "Grid connection", "Standards"],
     problem:
@@ -61,7 +61,7 @@ export const projects: Project[] = [
     result:
       "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
-      "Verified. Sanitized public write-up complete; coursework is university-generated and unrestricted, and standards tables are cited by clause and number rather than reproduced (Standards Australia copyright).",
+      "Verified. Sanitised public write-up complete; coursework is university-generated and unrestricted, and standards tables are cited by clause and number rather than reproduced (Standards Australia copyright).",
     evidenceVerified: true,
   },
   {
@@ -69,7 +69,7 @@ export const projects: Project[] = [
     number: "03",
     title: "GPS-Denied Autonomous UAV",
     summary:
-      "Indoor autonomy capstone combining non-GPS positioning, local planning, obstacle detection, and disciplined verification.",
+      "Indoor autonomy capstone combining non-GPS positioning, local planning, obstacle detection, and staged test gates before any flight claims.",
     image: "/images/gps-denied-uav.webp",
     imageAlt: "Quadcopter prototype with companion computer and depth camera on a lab bench",
     scope: "Autonomy, controls, estimation",
@@ -81,7 +81,7 @@ export const projects: Project[] = [
     approach:
       "Document requirements, architecture, estimator choices, obstacle detection, local planning, and staged test gates before flight claims.",
     result:
-      "Capstone evidence is still being assembled. Publish only measured test results, logs, and sanitized design decisions.",
+      "Capstone evidence is still being assembled. I will publish only measured test results, logs, and sanitised design decisions.",
     evidenceStatus: "Planning material exists; flight and verification results are pending.",
   },
   {
@@ -99,9 +99,9 @@ export const projects: Project[] = [
     problem:
       "Build practical understanding of flight electronics, real-time control, firmware iteration, and integration failure modes.",
     approach:
-      "Use an ESP32-based drone platform to connect firmware, sensors, electronics, power, control behavior, and bench/flight testing.",
+      "Use an ESP32-based drone platform to connect firmware, sensors, electronics, power, control behaviour, and bench/flight testing.",
     result:
-      "Measured outcomes need to be added before publishing, including flight behavior, control stability, failures, and improvements.",
+      "I will publish measured outcomes once I have them: flight behaviour, control stability, failures, and improvements.",
     evidenceStatus: "Project exists; measured public outcomes need final copy and proof.",
   },
   {
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     number: "05",
     title: "Solar Manufacturing & DFMA",
     summary:
-      "Production experience viewed through design-for-manufacture, process reliability, and systems-thinking lenses.",
+      "Production experience read through design for manufacture, process reliability, and systems thinking.",
     image: "/images/solar-manufacturing.webp",
     imageAlt: "Photovoltaic module moving through a precision manufacturing line",
     scope: "DFMA, process, manufacturing",
@@ -119,10 +119,10 @@ export const projects: Project[] = [
     problem:
       "Translate solar manufacturing work into public engineering evidence without disclosing employer-sensitive process details.",
     approach:
-      "Describe manufacturing constraints, process reliability, quality thinking, operator experience, and DFMA lessons at a sanitized level.",
+      "Describe manufacturing constraints, process reliability, quality thinking, operator experience, and DFMA lessons at a sanitised level.",
     result:
-      "Public copy must be reviewed before publishing. The useful outcome is a clear link between production work and engineering judgment.",
-    evidenceStatus: "Sanitized public details and defensible examples are pending.",
+      "I will publish once the copy passes employer review. The useful outcome is a clear link between production work and engineering judgement.",
+    evidenceStatus: "Sanitised public details and defensible examples are pending.",
   },
 ];
 

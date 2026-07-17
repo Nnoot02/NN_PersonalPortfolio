@@ -42,7 +42,7 @@ export default function AboutPage() {
           <ul>
             <li>Power evidence: AS/NZS 3000, AS/NZS 3008, AS/NZS 4777.2, SAPN TS132/TS133, solar manufacturing, and distribution-focused coursework.</li>
             <li>Broader systems work: GPS-denied UAV planning, embedded electronics, controls, and DFMA.</li>
-            <li>I keep public portfolio evidence sanitized: useful engineering claims stay visible without exposing restricted detail.</li>
+            <li>I keep public portfolio evidence sanitised: useful engineering claims stay visible without exposing restricted detail.</li>
           </ul>
         </div>
       </section>

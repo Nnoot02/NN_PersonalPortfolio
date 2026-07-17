@@ -17,7 +17,6 @@ export default function ProjectsPage() {
       <section className="page-hero">
         <p className="eyebrow">Project index</p>
         <h1>Solar and grid<br />{" "}work as evidence.</h1>
-        <p>Verified power work leads this index. Broader electrical-engineering projects keep their own honest evidence status.</p>
       </section>
       <section className="featured compact">
         <div className="project-list">
