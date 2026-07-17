@@ -10,5 +10,7 @@ AUDIT-PLAN-*.md
 HANDOFF-*.md
 design-qa.md
 PRE-PUBLISH-GATE.md
+PLAN.md
+PLAN-REVIEW-LOG.md
 audits/
 design/
