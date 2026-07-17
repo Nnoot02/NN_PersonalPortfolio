@@ -607,12 +607,11 @@ under `prefers-reduced-motion: reduce`, which also switches
 - **Token truth is `app/globals.css` :root.** This file documents the measured
   system as of 2026-07-12; if the two ever disagree, `globals.css` wins and this
   file should be re-synced.
-- **Process rules live elsewhere.** `design-qa.md` (QA checklist) and
-  `PRE-PUBLISH-GATE.md` remain authoritative for process; this file is
-  authoritative only for tokens and visual rules. No process policy is copied
-  here.
-- **Contrast figures** are the measured values from the 2026-07-12 UI audit
-  (`audits/ui-audit-2026-07-12/audit-notes.md`): accent on paper 4.12:1,
+- **Detailed QA and pre-publish records stay local.** They are excluded by
+  `.gitignore`; this public file remains authoritative for visual tokens and
+  rules.
+- **Contrast figures** are the measured values from the 2026-07-12 UI audit:
+  accent on paper 4.12:1,
   accent-dark on paper 6.17:1, accent-dark on paper-deep 5.49:1, muted on paper
   4.80:1, footer-warm on ink 5.71:1.
 - **Waivers** (`overused-font: Inter`, `cream-palette`, `hero-eyebrow-chip`,

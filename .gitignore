@@ -4,6 +4,12 @@ node_modules/
 .npm-cache/
 *.tsbuildinfo
 .dev-server.*.log
+.wrangler/
+
+# local environment and Cloudflare secret files
+.env*
+!.env.example
+.dev.vars*
 
 # internal working docs — kept local, not published to the public repo
 AUDIT-PLAN-*.md
@@ -12,3 +18,4 @@ design-qa.md
 PRE-PUBLISH-GATE.md
 audits/
 design/
+docs/superpowers/

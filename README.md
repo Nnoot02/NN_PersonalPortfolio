@@ -19,7 +19,9 @@ pnpm dev
 ## Build
 
 ```powershell
-pnpm build   # static site written to ./out
+pnpm build       # static site + portfolio contract checks
+pnpm audit:deps  # live production-dependency advisory check
+pnpm verify      # typecheck + hygiene tests/check + build + dependency audit
 ```
 
 ## Deploy (Cloudflare Pages)
