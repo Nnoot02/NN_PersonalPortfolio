@@ -496,6 +496,22 @@ darkens to accent-dark on hover. Image cell is `{colors.paper-deep}`-backed,
 square, `sepia(0.08)`. Featured rows swap the accent-rule marker for a small
 uppercase "Featured" label in `{colors.accent-dark}`.
 
+### Homepage narrative and photo epilogue
+
+Homepage has four movements after header: broad power hero with compact factual
+Tindo credential; LV-first Power Systems Work; compact authentic-photo
+epilogue; ink footer. Standalone Tindo, full UAV, and full Workbench homepage
+sections are retired.
+
+`homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
+context track plus exactly two single-link portals (UAV, then Workbench), using
+118px authentic square photos and a minimum desktop height of 142px. Below
+760px it stacks in DOM order with 92px photos. Footer follows immediately.
+
+Homepage excludes miniature art. Future miniature work requires a separate
+design cycle and must not reuse generated brainstorming comparisons as public
+assets.
+
 ### Meta & tags
 
 **`project-meta` / `case-meta`** — Definition lists in a 3-up grid, columns
@@ -572,9 +588,13 @@ exploration; any reintroduction requires a new design session before code work.
 - Selected personality direction: **curious systems world-builder**. Use an
   occasional, project-specific isometric low-resolution miniature engineering
   scene inside an evidence-image frame.
-- Pair every miniature with its related authentic engineering artifact, diagram,
-  or calculation. The real artifact remains primary evidence; the miniature is
-  interpretive context, never proof or a replacement for evidence.
+- On an evidence surface, pair and subordinate every miniature to its related
+  authentic artifact, diagram, calculation, or measured result. The real
+  artifact remains primary proof.
+- On a dedicated navigation or teaser surface, a miniature may stand alone only
+  when the title, status, and destination are explicit and the destination page
+  carries the proof. Treat this as a coherent authored system, not scattered
+  decoration.
 - Contain dither or pixel texture inside that illustration frame only. Keep the
   surrounding paper, typography, navigation, rules, and controls in the
   approved field-notes system.

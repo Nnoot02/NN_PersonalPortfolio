@@ -9,6 +9,12 @@ product_contract_source: ce-brainstorm
 execution: code
 ---
 
+> **Homepage status (2026-07-19):** Requirements for two full homepage
+> Workbench previews and the older homepage order are superseded by
+> `docs/superpowers/specs/2026-07-19-homepage-focus-and-photo-ribbon-design.md`.
+> Workbench collection/detail, attribution, evidence, public-safety, and
+> accessibility requirements remain authoritative.
+
 # Portfolio Workbench Personality Layer - Plan
 
 ## Goal Capsule
