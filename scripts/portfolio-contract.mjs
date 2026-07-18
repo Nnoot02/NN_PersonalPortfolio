@@ -26,7 +26,8 @@ const workbench = renderedMain(readExport("/workbench.html"));
 const sitemap = readExport("/sitemap.xml");
 
 check(home.includes("Electrical engineering student · Adelaide"), "home hero eyebrow must state electrical-engineering student and Adelaide");
-check(home.includes("Solar power systems &amp; grid integration"), "home hero must state solar power systems and grid integration");
+check(home.includes("Power systems · networks · renewable integration"), "home hero must state broad power, networks, and renewable-integration positioning");
+check(home.includes("I design from standards and verify decisions with calculations—backed by Australian solar-manufacturing exposure."), "home hero must use approved standards-and-manufacturing support copy");
 check(home.includes("Nathan") && home.includes("No-ot"), "home hero must render Nathan No-ot");
 const homeWordmark = home.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
 const resumeWordmark = resume.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
@@ -37,10 +38,14 @@ check(resumeWordmark.includes('class="wordmark-desktop"') && resumeWordmark.incl
 check(resumeWordmark.includes('class="wordmark-mobile"') && resumeWordmark.includes("NN") && resumeWordmark.includes('class="wordmark-period"'), "non-home mobile wordmark must render NN. with accent period");
 const heroMedia = home.match(/<figure[^>]*class="hero-image"[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
 check(heroMedia.length > 0, "home must expose hero media figure");
-check(heroMedia.includes("/images/solar-grid-connection.webp"), "home hero must use solar grid-connection artifact");
-check(!heroMedia.includes("data-miniature-evidence-window") && !heroMedia.includes("/images/solar-grid-miniature.png"), "home hero must defer miniature content");
-check((heroMedia.match(/<a\b/g) ?? []).length === 0, "home hero media must not contain a destination link");
-check(home.includes("Tindo Solar") && home.includes("Production Worker") && home.includes("Nov 2025–present"), "home must contain public-safe Tindo experience strip");
+check(heroMedia.includes("/images/lv-cabling-design.webp"), "home hero must use LV cabling artifact");
+check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"), "home hero must exclude miniature content");
+check((heroMedia.match(/<a\b/g) ?? []).length === 0, "home hero media must remain passive");
+
+const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+check(hero.includes("Currently · Production Worker · Tindo Solar · Nov 2025–present"), "home hero must contain compact factual Tindo credential");
+check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
+check(!home.includes("tindo-strip"), "home must not render standalone Tindo section");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
 check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(home), "home must provide resume PDF download");
 check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(resume), "resume page must provide resume PDF download");
@@ -57,11 +62,16 @@ if (navMatch) {
 
 const ledger = home.match(/<ol[^>]*data-evidence-ledger[^>]*>[\s\S]*?<\/ol>/)?.[0] ?? "";
 check(ledger.length > 0, "home must expose ordered verified evidence ledger");
-for (const slug of ["solar-grid-connection-assessment", "lv-cabling-design-commercial-complex"]) {
+const ledgerSlugs = [...ledger.matchAll(/data-project-slug="([^"]+)"/g)].map((match) => match[1]);
+check(
+  ledgerSlugs.join(",") === "lv-cabling-design-commercial-complex,solar-grid-connection-assessment",
+  "home power ledger must contain LV first and solar second, with no extra rows",
+);
+for (const slug of ledgerSlugs) {
   const row = ledger.match(new RegExp(`<li[^>]*data-project-slug="${slug}"[\\s\\S]*?<\\/li>`))?.[0] ?? "";
-  check(row.length > 0, `ledger must include ${slug}`);
   check((row.match(new RegExp(`/projects/${slug}`, "g")) ?? []).length === 1, `${slug} ledger row must have one destination link`);
 }
+check(!ledger.includes("project-number") && !/>0[12]</.test(ledger), "home power rows must not render numeric editorial markers");
 
 check(home.includes("Power Systems Work"), "home must replace Evidence ledger with Power Systems Work");
 check(!home.includes("Evidence ledger"), "home must not retain the clinical Evidence ledger title");
@@ -71,11 +81,10 @@ check(home.includes("data-workbench-home"), "home must expose the Workbench prev
 check(home.includes("data-workbench-home") && (home.match(/data-workbench-entry/g) ?? []).length === 2, "home Workbench preview must expose exactly two entries");
 check(home.includes("data-workbench-home") && (home.match(/href=\"\/workbench\//g) ?? []).length === 2, "home Workbench previews must have one detail destination each");
 check(home.includes("data-workbench-home") && home.includes('href="/workbench"'), "home Workbench preview must link to the collection");
-const tindoIndex = home.indexOf("tindo-strip");
 const workbenchIndex = home.indexOf("data-workbench-home");
 const broaderWorkIndex = home.indexOf("broader-work");
 const ledgerIndex = home.indexOf("data-evidence-ledger");
-check(tindoIndex < ledgerIndex && ledgerIndex < broaderWorkIndex && broaderWorkIndex < workbenchIndex, "home must place Tindo context under the hero, then verified work, current work, and Workbench");
+check(ledgerIndex >= 0 && ledgerIndex < broaderWorkIndex && broaderWorkIndex < workbenchIndex, "temporary Task 1 home must place proof before current work and Workbench");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
 const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);

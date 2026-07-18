@@ -21,8 +21,9 @@ export default function HomePage() {
           <p className="eyebrow">Electrical engineering student · Adelaide</p>
           <h1 className="hero-name"><span>Nathan</span><span className="hero-surname">No-ot</span></h1>
           <span className="accent-rule" aria-hidden="true" />
-          <p className="hero-role">Solar power systems &amp; grid integration</p>
-          <p className="hero-summary">I start power design from the standards and back it with Australian solar-manufacturing experience.</p>
+          <p className="hero-role">Power systems · networks · renewable integration</p>
+          <p className="hero-summary">I design from standards and verify decisions with calculations—backed by Australian solar-manufacturing exposure.</p>
+          <p className="hero-credential">Currently · Production Worker · Tindo Solar · Nov 2025–present</p>
           <div className="hero-actions">
             <a className="button button-primary" href="#verified-work">
               View selected work <ArrowRight size={20} />
@@ -35,8 +36,8 @@ export default function HomePage() {
         <figure className="hero-image">
           <span className="hero-artifact">
             <Image
-              src="/images/solar-grid-connection.webp"
-              alt="Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling"
+              src="/images/lv-cabling-design.webp"
+              alt="One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards"
               fill
               priority
               sizes="(max-width: 960px) 100vw, 54vw"
@@ -45,24 +46,11 @@ export default function HomePage() {
         </figure>
       </section>
 
-      <section className="tindo-strip" aria-labelledby="tindo-heading">
-        <div>
-          <p className="eyebrow">Currently</p>
-          <h2 id="tindo-heading">Tindo Solar</h2>
-        </div>
-        <dl>
-          <div><dt>Role</dt><dd>Production Worker</dd></div>
-          <div><dt>Since</dt><dd>Nov 2025–present</dd></div>
-          <div><dt>Context</dt><dd>Australian solar-panel manufacturing experience</dd></div>
-        </dl>
-        <p>I work on the production line in a Kaizen and 5S culture.</p>
-      </section>
-
       <section className="featured evidence-ledger-section" id="verified-work" aria-labelledby="verified-work-heading">
         <div className="section-heading">
           <p className="eyebrow">Verified power engineering</p>
           <h2 id="verified-work-heading">Power Systems Work</h2>
-          <p>Completed power systems work.</p>
+          <p>Completed studies showing decisions, standards, calculations, and limitations.</p>
         </div>
         <ol className="project-list" data-evidence-ledger>
           {verifiedPowerProjects.map((project) => (

@@ -129,8 +129,8 @@ export const projects: Project[] = [
 // Featured projects for the Home and Profile pages — a maximum of three,
 // shown in this explicit order (not the case-study numbering order).
 export const verifiedPowerSlugs = [
-  "solar-grid-connection-assessment",
   "lv-cabling-design-commercial-complex",
+  "solar-grid-connection-assessment",
 ] as const;
 
 export const verifiedPowerProjects: Project[] = verifiedPowerSlugs
