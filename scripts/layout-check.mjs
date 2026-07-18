@@ -169,6 +169,17 @@ async function main() {
   if (reducedDuration > 0.01) failures.push(`/ reduced motion: portal image transition remains ${reducedDuration}s`);
   await accessibilityPage.close();
 
+  const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await mobilePage.goto(`${base}/`, { waitUntil: "networkidle" });
+  const menuButton = mobilePage.locator(".menu-button");
+  await menuButton.click();
+  if ((await menuButton.getAttribute("aria-expanded")) !== "true") failures.push(`/ mobile menu: button does not report expanded state`);
+  await mobilePage.keyboard.press("Escape");
+  if ((await menuButton.getAttribute("aria-expanded")) !== "false") failures.push(`/ mobile menu: Escape does not close navigation`);
+  const menuRetainsFocus = await menuButton.evaluate((node) => document.activeElement === node);
+  if (!menuRetainsFocus) failures.push(`/ mobile menu: Escape does not return focus to menu button`);
+  await mobilePage.close();
+
   await browser.close();
   server.close();
 
