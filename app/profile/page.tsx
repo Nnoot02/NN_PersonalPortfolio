@@ -31,7 +31,7 @@ export default function ProfilePage() {
       />
       <section className="page-hero profile-hero">
         <p className="eyebrow">Recruiter / AI brief</p>
-        <h1>Professional profile,<br />{" "}in plain text.</h1>
+        <h1>My profile,<br />{" "}in plain text.</h1>
         <p>{profile.summary}</p>
         <div className="hero-actions">
           <Link className="button button-primary" href="/projects">
