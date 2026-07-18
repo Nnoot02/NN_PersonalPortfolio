@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1 --port 3000",
     "check": "tsc --noEmit",
-    "test:contract": "node scripts/portfolio-contract.mjs"
+    "test:contract": "node scripts/portfolio-contract.mjs",
+    "test:layout": "node scripts/layout-check.mjs"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "5.2.8",
@@ -21,6 +22,7 @@
     "@types/node": "26.0.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "playwright": "^1.61.1",
     "typescript": "6.0.3"
   }
 }
