@@ -110,10 +110,16 @@ check(heroIndex >= 0 && heroIndex < ledgerIndex && ledgerIndex < epilogueIndex &
 check(/data-homepage-epilogue[\s\S]*?<\/section>\s*<footer\b/.test(home), "footer must immediately follow homepage epilogue");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
 const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
+check(footer.includes("Build power infrastructure with me."), "footer must use approved power-infrastructure lead");
+check(footer.includes("Available for South Australian internships."), "footer must use approved internship availability support");
+for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
+  check(footer.includes(`href="${destination}"`), `footer must link ${destination}`);
+}
+check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(footer), "footer must provide resume download");
+check(footer.includes("linkedin.com"), "footer must provide LinkedIn action");
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
-const footerWorkbenchLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes('href="/workbench"'));
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
-check(footerWorkbenchLinkIndex >= 0 && footerUtilityLinkIndex === footerAnchors.length - 1 && footerWorkbenchLinkIndex < footerUtilityLinkIndex, "footer must place Workbench before recruiter utility, which must be last");
+check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
 
 const workbenchEntries = [...workbench.matchAll(/data-workbench-entry(?:=\"[^\"]*\")?/g)];
 check(workbench.includes("data-workbench-collection"), "Workbench collection must expose its semantic marker");

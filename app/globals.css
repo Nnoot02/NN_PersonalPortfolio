@@ -154,13 +154,14 @@ button { font: inherit; }
 .principles p { color: var(--muted); line-height: 1.6; font-size: .88rem; margin: 0; }
 
 .site-footer { min-height: 250px; display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 4rem 6vw; background: var(--ink); color: var(--white); position: relative; }
+.site-footer > div, .footer-links { min-width: 0; }
 .footer-kicker { color: #d88868; font: 600 .75rem/1.2 var(--display); letter-spacing: .15em; text-transform: uppercase; }
-.footer-title { font: 600 clamp(2rem, 4vw, 3.8rem)/1.1 var(--display); text-transform: uppercase; max-width: 700px; margin: .8rem 0 0; }
+.footer-title { font: 600 clamp(2rem, 4vw, 3.8rem)/1.1 var(--display); text-transform: uppercase; max-width: 700px; margin: .8rem 0 0; overflow-wrap: anywhere; }
 .footer-summary, .footer-location { margin: .75rem 0 0; max-width: 54ch; line-height: 1.65; }
 .footer-location { color: #d88868; }
-.footer-links { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.footer-links { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; max-width: 100%; }
 .footer-links a, .footer-links button { color: var(--white); background: transparent; border: 1px solid #5d5a55; min-width: 46px; min-height: 46px; display: grid; place-items: center; text-align: center; cursor: pointer; }
-.footer-links a { gap: .45rem; padding: 0 1rem; white-space: nowrap; }
+.footer-links a { gap: .45rem; padding: 0 1rem; white-space: normal; }
 .footer-links a:hover, .footer-links button:hover { border-color: #d88868; color: #d88868; }
 .footer-links .footer-utility { border: 0; color: #d88868; min-height: auto; padding: .45rem 0; text-decoration: underline; text-underline-offset: .18em; }
 
@@ -226,6 +227,7 @@ button { font: inherit; }
   .homepage-epilogue-context { min-height: 124px; padding: 1.25rem 0; }
   .homepage-portal { border-left: 0; border-top: 1px solid var(--line); grid-template-columns: 92px minmax(0, 1fr) 20px; min-height: 124px; padding: 16px 0; }
   .homepage-portal-image { height: 92px; width: 92px; }
+  .homepage-portal-title, .homepage-portal-summary { overflow-wrap: anywhere; }
 }
 
 @media (max-width: 720px) {
