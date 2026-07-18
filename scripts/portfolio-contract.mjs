@@ -77,14 +77,37 @@ check(home.includes("Power Systems Work"), "home must replace Evidence ledger wi
 check(!home.includes("Evidence ledger"), "home must not retain the clinical Evidence ledger title");
 check(home.includes("View selected work"), "home jump action must read View selected work");
 check(!home.includes("View verified work"), "home must not retain View verified work");
-check(home.includes("data-workbench-home"), "home must expose the Workbench preview region");
-check(home.includes("data-workbench-home") && (home.match(/data-workbench-entry/g) ?? []).length === 2, "home Workbench preview must expose exactly two entries");
-check(home.includes("data-workbench-home") && (home.match(/href=\"\/workbench\//g) ?? []).length === 2, "home Workbench previews must have one detail destination each");
-check(home.includes("data-workbench-home") && home.includes('href="/workbench"'), "home Workbench preview must link to the collection");
-const workbenchIndex = home.indexOf("data-workbench-home");
-const broaderWorkIndex = home.indexOf("broader-work");
+
+const epilogue = home.match(/<section[^>]*data-homepage-epilogue[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+check(epilogue.length > 0, "home must expose compact photo epilogue");
+check(epilogue.includes("Beyond the ledger") && epilogue.includes("Other systems"), "home epilogue must expose approved context label");
+check(epilogue.includes('href="/projects"') && epilogue.includes("View all"), "home epilogue must link to all projects");
+
+const portalAnchors = [...epilogue.matchAll(/<a\b[^>]*data-homepage-portal="([^"]+)"[^>]*>[\s\S]*?<\/a>/g)];
+check(portalAnchors.length === 2, "home epilogue must contain exactly two portal anchors");
+const portalKinds = portalAnchors.map((match) => match[1]);
+check(portalKinds.join(",") === "uav,workbench", "home epilogue portals must keep UAV then Workbench order");
+const uavPortal = portalAnchors.find((match) => match[1] === "uav")?.[0] ?? "";
+const workbenchPortal = portalAnchors.find((match) => match[1] === "workbench")?.[0] ?? "";
+check(uavPortal.includes('href="/projects/gps-denied-autonomous-uav"'), "UAV portal must target its project detail route");
+check(uavPortal.includes("In progress") && uavPortal.includes("GPS-Denied UAV") && uavPortal.includes("Indoor autonomy and staged verification."), "UAV portal must use approved visible copy");
+check(uavPortal.includes("/images/gps-denied-uav.webp"), "UAV portal must use authentic project photo");
+check(workbenchPortal.includes('href="/workbench"'), "Workbench portal must target Workbench collection");
+check(workbenchPortal.includes("After hours") && workbenchPortal.includes("Builds, failures, and next iterations."), "Workbench portal must use approved visible copy");
+check(workbenchPortal.includes("/images/workbench/bench-fume-extractor/bench-fume-extractor.jpg"), "Workbench portal must use approved authentic fume-extractor photo");
+for (const [kind, portal] of [["uav", uavPortal], ["workbench", workbenchPortal]]) {
+  check((portal.match(/<a\b/g) ?? []).length === 1, `${kind} portal must contain one anchor and no nested link`);
+}
+check(!home.includes("data-workbench-home"), "home must not render full Workbench preview section");
+check(!home.includes("broader-work"), "home must not render full UAV section");
+check(!home.includes("data-miniature-evidence-window") && !home.includes("solar-grid-miniature.png") && !home.includes("generated_images"), "home must exclude miniature assets and markers");
+
+const heroIndex = home.indexOf('class="hero"');
 const ledgerIndex = home.indexOf("data-evidence-ledger");
-check(ledgerIndex >= 0 && ledgerIndex < broaderWorkIndex && broaderWorkIndex < workbenchIndex, "temporary Task 1 home must place proof before current work and Workbench");
+const epilogueIndex = home.indexOf("data-homepage-epilogue");
+const footerIndex = home.indexOf("<footer");
+check(heroIndex >= 0 && heroIndex < ledgerIndex && ledgerIndex < epilogueIndex && epilogueIndex < footerIndex, "home narrative must be hero, power work, epilogue, footer");
+check(/data-homepage-epilogue[\s\S]*?<\/section>\s*<footer\b/.test(home), "footer must immediately follow homepage epilogue");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
 const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);

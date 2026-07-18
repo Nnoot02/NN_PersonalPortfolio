@@ -1,17 +1,28 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { HomepageEpilogue } from "@/components/HomepageEpilogue";
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { WorkbenchEntryPreview } from "@/components/WorkbenchEntryPreview";
 import { broaderEngineeringProjects, verifiedPowerProjects } from "@/lib/projects";
 import { profile } from "@/lib/site";
-import { getWorkbenchEntry, homepageWorkbenchSlugs } from "@/lib/workbench";
+import { getWorkbenchEntry } from "@/lib/workbench";
+
+function requireHomepageProject(slug: string) {
+  const project = broaderEngineeringProjects.find((candidate) => candidate.slug === slug);
+  if (!project) throw new Error(`Missing required homepage project: ${slug}`);
+  return project;
+}
+
+function requireHomepageWorkbenchEntry(slug: string) {
+  const entry = getWorkbenchEntry(slug);
+  if (!entry) throw new Error(`Missing required homepage Workbench entry: ${slug}`);
+  return entry;
+}
 
 export default function HomePage() {
-  const uavCapstone = broaderEngineeringProjects.find((project) => project.slug === "gps-denied-autonomous-uav");
-  const homepageWorkbenchEntries = homepageWorkbenchSlugs.map(getWorkbenchEntry).filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
+  const uavProject = requireHomepageProject("gps-denied-autonomous-uav");
+  const workbenchEntry = requireHomepageWorkbenchEntry("bench-fume-extractor");
 
   return (
     <main id="main-content">
@@ -59,34 +70,7 @@ export default function HomePage() {
         </ol>
       </section>
 
-      {uavCapstone ? (
-        <section className="featured broader-work" aria-labelledby="broader-work-heading">
-          <div className="section-heading">
-            <p className="eyebrow">In progress</p>
-            <h2 id="broader-work-heading">GPS-Denied UAV Capstone</h2>
-            <p>An indoor autonomy capstone combining non-GPS positioning, local planning, obstacle detection, and staged test gates before any flight claims.</p>
-          </div>
-          <ol className="project-list">
-            <li data-project-slug={uavCapstone.slug}>
-              <p className="project-status-label">Active capstone—systems design in progress</p>
-              <ProjectRow project={uavCapstone} />
-            </li>
-          </ol>
-        </section>
-      ) : null}
-
-      <section className="featured workbench-home" data-workbench-home aria-labelledby="workbench-home-heading">
-        <div className="section-heading">
-          <p className="eyebrow">After hours</p>
-          <h2 id="workbench-home-heading">Workbench</h2>
-          <p>Personal builds that keep my hands in the details: what I made, what worked, and what I would change next.</p>
-        </div>
-        <div className="workbench-home-grid">
-          {homepageWorkbenchEntries.map((entry) => <WorkbenchEntryPreview entry={entry} headingLevel="h3" key={entry.slug} />)}
-        </div>
-        <Link className="text-link workbench-collection-link" href="/workbench">See all bench builds <ArrowRight size={18} /></Link>
-      </section>
-
+      <HomepageEpilogue uavProject={uavProject} workbenchEntry={workbenchEntry} />
       <SiteFooter />
     </main>
   );

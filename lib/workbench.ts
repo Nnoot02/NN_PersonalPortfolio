@@ -171,9 +171,6 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
   },
 ];
 
-// Kept separate from collection order so the homepage stays intentionally curated.
-export const homepageWorkbenchSlugs = ["bench-fume-extractor", "tarmo5"] as const;
-
 export function getWorkbenchEntry(slug: string): WorkbenchEntry | undefined {
   return workbenchEntries.find((entry) => entry.slug === slug);
 }
