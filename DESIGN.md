@@ -2,25 +2,26 @@
 version: 1.0
 name: engineering-field-notes
 description: >
-  A warm-paper editorial interface for a solo electrical-engineering portfolio.
-  The system anchors on a deep warm-paper canvas with an uppercase condensed
+  A green-ward paper editorial interface for a solo electrical-engineering portfolio.
+  The system anchors on a muted green-ward canvas with an uppercase condensed
   industrial display face (Barlow Condensed) and a quiet humanist sans body
   (Inter). Brand voltage comes from a single burnt-orange accent used scarcely
   and structurally — bars, buttons, borders, and large display text only.
   Depth is color-block, not shadow: sharp hairline structure on paper, one dark
-  ink footer, sepia-toned photography. The voice is a workshop field notebook,
+  ink footer, and warm artefact panels. Sepia-toned photography sits inside
+  those panels rather than trying to match the canvas. The voice is a workshop field notebook,
   not a SaaS marketing page. Tokens below are measured from app/globals.css
-  :root as of 2026-07-12 and are the authoritative source for this repo.
+  :root as of 2026-08-02 and are the authoritative source for this repo.
 
 colors:
   accent: "#c84b1a"
   accent-dark: "#9f3510"
-  paper: "#f3f0e9"
-  paper-deep: "#e8e3d9"
+  paper: "#e8ebe4"
+  paper-deep: "#e3e4da"
   ink: "#242321"
-  muted: "#6d6962"
-  line: "#d1cbc0"
-  white: "#fffdfa"
+  muted: "#64655e"
+  line: "#cdccc1"
+  white: "#fafefb"
   footer-warm: "#d88868"
   footer-line: "#5d5a55"
 
@@ -245,7 +246,7 @@ components:
     typography: "{typography.tag}"
     rounded: "{rounded.none}"
   site-header:
-    background: "rgba(243, 240, 233, 0.96)"
+    background: "rgba(232, 235, 228, 0.96)"
     borderBottom: "{motifs.hairline}"
     minHeight: 76px
     sticky: true
@@ -259,12 +260,12 @@ components:
 
 ## Overview
 
-This is an electrical-engineering portfolio built as a warm **field notebook**,
-not a SaaS marketing page. The base atmosphere is a **deep warm paper canvas**
-(`{colors.paper}` — #f3f0e9) — warmer and deeper than the tinted-cream most
-warm-canvas systems settle on — carrying dark warm-ink text (`{colors.ink}` —
-#242321). Photography is toned to match with a light `sepia(0.08)` filter so no
-image reads cooler than the paper.
+This is an electrical-engineering portfolio built as a workshop **field
+notebook**, not a SaaS marketing page. The base atmosphere is a **muted
+green-ward paper canvas** (`{colors.paper}` — #e8ebe4), carrying dark warm-ink
+text (`{colors.ink}` — #242321). It breaks from the common AI-brand cream
+cluster without reading as environmental branding. Photography keeps a light
+`sepia(0.08)` treatment and reads as warm evidence mounted on the cooler canvas.
 
 Brand voltage comes from a single **burnt-orange accent** (`{colors.accent}` —
 #c84b1a), used scarcely and *structurally*: the 34×3px accent-rule bar, button
@@ -287,14 +288,14 @@ The system has two surface modes:
    page, where the accent warms to `{colors.footer-warm}` (#d88868).
 
 There is a third quiet surface, **paper-deep** (`{colors.paper-deep}` —
-#e8e3d9), used only as an image/placeholder backing and code-block background —
+#e3e4da), used only as an image/placeholder backing and code-block background —
 one elevation step down from paper, never a full band.
 
 **Key characteristics:**
 
-- Warm paper canvas with warm-ink text — the deliberate brand palette, backed
-  by system support (sepia photography, warm `{colors.line}` hairlines, a
-  `{colors.paper-deep}` secondary tone, an ink footer), not a reflex default.
+- Green-ward paper canvas with warm-ink text — the deliberate brand palette,
+  backed by warm artefact imagery, green-shifted `{colors.line}` hairlines, a
+  `{colors.paper-deep}` secondary tone, and an ink footer.
 - A single burnt-orange accent used structurally and scarcely. Never sprinkled
   as decoration; it earns its place on bars, buttons, borders, and big type.
 - Uppercase Barlow Condensed display over Inter body. The condensed industrial
@@ -315,35 +316,36 @@ one elevation step down from paper, never a full band.
   Used on the accent-rule bar, `{component.button-primary}` fill, 1px accent
   borders (`{component.case-status-pill}` outline), row arrows, and **large**
   uppercase display text (hero role, project titles). Measured contrast on
-  paper is **4.12:1** — this clears AA for large text and non-text UI (3:1) but
+  paper is **3.89:1** — this clears AA for large text and non-text UI (3:1) but
   **not** small text (4.5:1). Keep it off anything under large-text size.
 - **Accent-dark** (`{colors.accent-dark}` — #9f3510): The small-text accent.
-  Measured **6.17:1** on paper and **5.49:1** on paper-deep — both clear AA for
+  Measured **5.83:1** on paper and **5.48:1** on paper-deep — both clear AA for
   small text. Every small accent-colored string uses this: `.eyebrow`,
   `.text-link`, `.row-action`, `.project-number.is-featured`, `.case-status`
   text.
 
 ### Surface
 
-- **Paper** (`{colors.paper}` — #f3f0e9): The default page floor. The sticky
-  header sits on the same paper at 96% alpha (`rgba(243, 240, 233, 0.96)`).
-- **Paper-deep** (`{colors.paper-deep}` — #e8e3d9): One step down. Backs
+- **Paper** (`{colors.paper}` — #e8ebe4): The default page floor. The sticky
+  header sits on the same paper at 96% alpha (`rgba(232, 235, 228, 0.96)`).
+- **Paper-deep** (`{colors.paper-deep}` — #e3e4da): One step down. Backs
   images/placeholders (`.project-image`, `.case-image`) and code blocks
   (`.writeup pre`). Never used as a full-width band.
 - **Ink** (`{colors.ink}` — #242321): The footer surface and all primary text
   on paper. Warm near-black.
-- **Line** (`{colors.line}` — #d1cbc0): The 1px hairline tone that carries
-  almost all structure — header/section/row/meta dividers and tag borders. The
-  system is built from hairlines, so this token is load-bearing.
+- **Line** (`{colors.line}` — #cdccc1): Decorative 1px hairlines for
+  header/section/row/meta dividers, tag outlines, atlas guides, and table rhythm.
+  At **1.34:1** on paper it is not a required UI or graphical boundary. Required
+  component boundaries use ink, accent, accent-dark, or footer-line instead.
 
 ### Text
 
 - **Ink** (`{colors.ink}`): Headlines and primary body text on paper.
-- **Muted** (`{colors.muted}` — #6d6962): Secondary/supporting copy — section
-  intros, project descriptions, meta values, prose. Measured **4.80:1** on
+- **Muted** (`{colors.muted}` — #64655e): Secondary/supporting copy — section
+  intros, project descriptions, meta values, prose. Measured **4.89:1** on
   paper (clears AA small text).
-- **White** (`{colors.white}` — #fffdfa): Text on accent buttons and on the ink
-  footer. A warm off-white, not pure #ffffff, to sit inside the warm palette.
+- **White** (`{colors.white}` — #fafefb): Text on accent buttons and on the ink
+  footer. A restrained off-white, not pure #ffffff.
 
 ### On the ink footer
 
@@ -388,7 +390,7 @@ display roles; Barlow Condensed is never set as body copy.
 - **Display line-height runs tight on purpose.** Single-line display may go as
   low as 0.76. Any display that *wraps* must sit at ≥ 1.1 (the footer title is
   the reference case). Never ship a wrapping headline at lh 1.0.
-- **Body line-height stays open**, 1.55–1.8, for readability at the warm
+- **Body line-height stays open**, 1.55–1.8, for readability at the measured
   contrast levels.
 - **Body measure is capped at ~62ch** (`{layout.body-measure-max}`). Section
   intros, prose, and project descriptions carry an explicit `max-width` in `ch`
@@ -448,8 +450,9 @@ footer carries all other depth.
 ### Photography
 
 Images (hero, project, case) are cropped `object-fit: cover` and toned with
-`filter: sepia(0.08)` so they never introduce a color cooler than the paper.
-Project images scale to 1.025 on hover; motion respects
+`filter: sepia(0.08)`. Against the green-ward canvas, their warmer panels read
+as mounted evidence rather than a canvas match. Project images scale to 1.025
+on hover; motion respects
 `prefers-reduced-motion`. Backing color under any loading/placeholder image is
 `{colors.paper-deep}`.
 
@@ -458,7 +461,7 @@ Project images scale to 1.025 on hover; motion respects
 ### Header & nav
 
 **`site-header`** — Sticky bar, `min-height: 76px`, paper at 96% alpha
-(`rgba(243, 240, 233, 0.96)`), 1px `{colors.line}` bottom border. Carries the
+(`rgba(232, 235, 228, 0.96)`), 1px `{colors.line}` bottom border. Carries the
 Barlow Condensed wordmark (700, the "." in accent) at left and horizontal nav
 at right. Nav links get a 2px transparent bottom border that turns accent on
 hover / focus / active. Collapses to a hamburger sheet at ≤ 720px.
@@ -532,9 +535,9 @@ links wrap rather than clip on narrow screens.
 
 ### Do
 
-- Anchor every page on `{colors.paper}`. The warm paper is the brand — it has
-  system support (sepia imagery, warm hairlines, paper-deep, ink footer), so
-  treat it as deliberate, not swappable.
+- Anchor every page on `{colors.paper}`. The green-ward paper is the brand. Warm
+  artefact imagery, green-shifted hairlines, paper-deep, and the ink footer make
+  it a system, not a swappable tint.
 - Keep the accent **scarce and structural**: accent-rule, button fills, 1px
   borders, arrows, large display. Use `{colors.accent-dark}` for any accent
   string at small-text size (contrast, see Colors).
@@ -547,8 +550,8 @@ links wrap rather than clip on narrow screens.
 
 ### Don't
 
-- Don't reach for cool grays or pure white as the canvas, and don't retone
-  photography cooler than the paper.
+- Don't replace the canvas with a generic cool gray, cream, or pure white, and
+  don't neutralise the warm artefact treatment.
 - Don't paint the burnt-orange accent as decoration or use `{colors.accent}`
   on small text — step down to `{colors.accent-dark}`.
 - **Don't use numbered section markers (01–04).** They are a banned editorial
