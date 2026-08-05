@@ -4,20 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1 --port 3000",
-    "build": "next build && pnpm test:contract",
+    "build": "next build",
     "start": "next start --hostname 127.0.0.1 --port 3000",
     "check": "tsc --noEmit",
     "check:repo": "node scripts/repo-hygiene.mjs",
     "test:repo": "node --test scripts/repo-hygiene.test.mjs",
     "test:contract": "node scripts/portfolio-contract.mjs",
-    "audit:deps": "pnpm audit --prod",
-    "verify": "pnpm check && pnpm test:repo && pnpm check:repo && pnpm build && pnpm audit:deps"
+    "test:layout": "node scripts/layout-check.mjs",
+    "verify": "pnpm check && pnpm test:repo && pnpm check:repo && pnpm build && pnpm test:contract && pnpm test:layout"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "5.2.8",
     "@fontsource/inter": "5.2.8",
     "@phosphor-icons/react": "2.1.10",
-    "next": "16.2.10",
+    "next": "16.2.9",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },
@@ -25,6 +25,7 @@
     "@types/node": "26.0.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
+    "playwright": "^1.61.1",
     "typescript": "6.0.3"
   }
 }

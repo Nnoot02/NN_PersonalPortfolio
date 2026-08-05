@@ -2,6 +2,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 
 const failures = [];
 const MAX_PUBLIC_IMAGE_BYTES = 500 * 1024;
+const MAX_GIT_BLOB_BUFFER = 64 * 1024 * 1024;
 
 function gitFiles(args) {
   return execFileSync("git", [...args, "-z"], { encoding: "utf8" })
@@ -10,7 +11,7 @@ function gitFiles(args) {
 }
 
 function indexBlob(path) {
-  return execFileSync("git", ["show", `:${path}`]);
+  return execFileSync("git", ["show", `:${path}`], { maxBuffer: MAX_GIT_BLOB_BUFFER });
 }
 
 function indexBlobSize(path) {

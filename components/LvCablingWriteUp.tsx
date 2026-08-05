@@ -180,7 +180,7 @@ PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
           partially-surrounded ratings used were cross-checked against the 2017
           edition and confirmed unchanged in the 2025 edition. Final values are to
           be verified against the controlling standards and network authority at
-          installation. This write-up is sanitized from graded coursework: the
+          installation. This write-up is sanitised from graded coursework: the
           design scenario is paraphrased, and no standards table content is
           reproduced.
         </p>

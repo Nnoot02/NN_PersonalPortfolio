@@ -96,6 +96,18 @@ test("does not accept documentation-only image references", (t) => {
   assert.match(result.stderr, /no runtime or contract reference/);
 });
 
+test("reports oversized public images without exhausting the Git blob buffer", (t) => {
+  const directory = repository({
+    "app/page.tsx": 'const image = "/images/large.png";\n',
+    "public/images/large.png": Buffer.alloc(1024 * 1024 + 1),
+  });
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+
+  const result = runHygiene(directory);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Public images exceed 512000 bytes/);
+});
+
 test("rejects unstaged ignore rules that mask staged content", (t) => {
   const directory = repository(
     { "internal.txt": "staged content\n" },

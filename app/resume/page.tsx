@@ -17,7 +17,7 @@ export default function ResumePage() {
       <section className="page-hero resume-hero">
         <p className="eyebrow">Resume</p>
         <h1>Solar power<br />{" "}student resume.</h1>
-        <p>This public resume foregrounds solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. It omits phone number and street address for public portfolio use.</p>
+        <p>This public resume leads with solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. Phone number and street address are left off the public copy.</p>
         <a className="button button-primary" href={profile.resumePath} download>
           Download resume <DownloadSimple size={20} />
         </a>
@@ -59,9 +59,9 @@ export default function ResumePage() {
           <p className="eyebrow">Resume base</p>
           <h2>Built from verified evidence</h2>
           <p>
-            This public version foregrounds verified power-system design and
+            This public version leads with verified power-system design and
             solar manufacturing experience. Broader embedded, UAV, and hands-on
-            electronics work remains available as supporting context.
+            electronics work sits behind it as supporting context.
           </p>
         </div>
       </section>

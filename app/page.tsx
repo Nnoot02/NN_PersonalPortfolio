@@ -1,14 +1,28 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { HomepageEpilogue } from "@/components/HomepageEpilogue";
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { broaderEngineeringProjects, verifiedPowerProjects } from "@/lib/projects";
 import { profile } from "@/lib/site";
+import { getWorkbenchEntry } from "@/lib/workbench";
+
+function requireHomepageProject(slug: string) {
+  const project = broaderEngineeringProjects.find((candidate) => candidate.slug === slug);
+  if (!project) throw new Error(`Missing required homepage project: ${slug}`);
+  return project;
+}
+
+function requireHomepageWorkbenchEntry(slug: string) {
+  const entry = getWorkbenchEntry(slug);
+  if (!entry) throw new Error(`Missing required homepage Workbench entry: ${slug}`);
+  return entry;
+}
 
 export default function HomePage() {
-  const uavCapstone = broaderEngineeringProjects.find((project) => project.slug === "gps-denied-autonomous-uav");
+  const uavProject = requireHomepageProject("gps-denied-autonomous-uav");
+  const workbenchEntry = requireHomepageWorkbenchEntry("bench-fume-extractor");
 
   return (
     <main id="main-content">
@@ -18,44 +32,42 @@ export default function HomePage() {
           <p className="eyebrow">Electrical engineering student · Adelaide</p>
           <h1 className="hero-name"><span>Nathan</span><span className="hero-surname">No-ot</span></h1>
           <span className="accent-rule" aria-hidden="true" />
-          <p className="hero-role">Solar power systems &amp; grid integration</p>
-          <p className="hero-summary">Standards-based power design backed by Australian solar manufacturing experience.</p>
+          <p className="hero-role">Power systems and grid integration</p>
+          <p className="hero-summary">I design from standards and verify decisions with calculations, backed by Australian solar-manufacturing experience.</p>
+          <dl className="hero-credential">
+            <div>
+              <dt>Currently</dt>
+              <dd>Production Worker, Tindo Solar</dd>
+            </div>
+            <div>
+              <dt>Since</dt>
+              <dd>Nov 2025</dd>
+            </div>
+          </dl>
           <div className="hero-actions">
-            <a className="button button-primary" href="#verified-work">
-              View verified work <ArrowRight size={20} />
-            </a>
-            <a className="button button-secondary" href={profile.resumePath} download>
+            <a className="button button-primary" href={profile.resumePath} download>
               Download résumé <DownloadSimple size={20} />
             </a>
           </div>
         </div>
-        <Link className="hero-image" href="/projects/solar-grid-connection-assessment" aria-label="View 1 MW Solar Grid-Connection Assessment case study">
+        <figure className="hero-image">
           <span className="hero-artifact">
             <Image
-              src="/images/solar-grid-connection.webp"
-              alt="Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling"
+              src="/images/lv-cabling-design.webp"
+              alt="One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards"
               fill
               priority
               sizes="(max-width: 960px) 100vw, 54vw"
             />
           </span>
-          <span className="miniature-evidence-window" data-miniature-evidence-window="solar-grid-connection" aria-hidden="true">
-            <Image
-              src="/images/solar-grid-miniature.png"
-              alt=""
-              width={512}
-              height={512}
-              sizes="(max-width: 720px) 30vw, 16vw"
-            />
-          </span>
-        </Link>
+        </figure>
       </section>
 
       <section className="featured evidence-ledger-section" id="verified-work" aria-labelledby="verified-work-heading">
         <div className="section-heading">
           <p className="eyebrow">Verified power engineering</p>
-          <h2 id="verified-work-heading">Evidence ledger</h2>
-          <p>Completed power work, ordered by direct relevance to solar systems and grid integration.</p>
+          <h2 id="verified-work-heading">Power Systems Work</h2>
+          <p>Completed studies showing decisions, standards, calculations, and limitations.</p>
         </div>
         <ol className="project-list" data-evidence-ledger>
           {verifiedPowerProjects.map((project) => (
@@ -64,34 +76,7 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <section className="tindo-strip" aria-labelledby="tindo-heading">
-        <div>
-          <p className="footer-kicker">Experience</p>
-          <h2 id="tindo-heading">Tindo Solar</h2>
-        </div>
-        <dl>
-          <div><dt>Role</dt><dd>Production Worker</dd></div>
-          <div><dt>Since</dt><dd>Nov 2025–present</dd></div>
-          <div><dt>Context</dt><dd>Australian solar-panel manufacturing experience</dd></div>
-        </dl>
-        <p>Production-line work in a Kaizen and 5S culture.</p>
-      </section>
-
-      {uavCapstone ? (
-        <section className="featured broader-work" aria-labelledby="broader-work-heading">
-          <div className="section-heading">
-            <p className="eyebrow">Current and broader engineering work</p>
-            <h2 id="broader-work-heading">Systems design in progress</h2>
-            <p>Active work stays visible without displacing completed, verified power evidence.</p>
-          </div>
-          <ol className="project-list">
-            <li data-project-slug={uavCapstone.slug}>
-              <p className="project-status-label">Active capstone—systems design in progress</p>
-              <ProjectRow project={uavCapstone} />
-            </li>
-          </ol>
-        </section>
-      ) : null}
+      <HomepageEpilogue uavProject={uavProject} workbenchEntry={workbenchEntry} />
       <SiteFooter />
     </main>
   );

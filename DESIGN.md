@@ -126,7 +126,10 @@ typography:
     textTransform: uppercase
   meta-label:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
-    fontSize: "0.68rem"
+    # 0.75rem = 12px. Do not lower: functional text below 11px fails the
+    # legibility floor, and micro-labels count as functional. Was 0.68rem
+    # (10.88px) until 2026-08-03.
+    fontSize: "0.75rem"
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: "0.13em"
@@ -199,7 +202,7 @@ motifs:
 
 layout:
   page-inset: "6vw (1.25rem at ≤720px)"
-  section-padding: "clamp(5rem, 8vw, 8rem) vertical"
+  section-padding: "clamp(5rem, 8vw, 8rem) vertical; adjacent related sections collapse to clamp(2.5rem, 4vw, 4rem) on facing edges (evidence ledger ↔ broader work); page-hero bottom edge clamp(2.5rem, 4vw, 3.5rem)"
   body-measure-max: "62ch"
 
 components:
@@ -377,7 +380,7 @@ display roles; Barlow Condensed is never set as body copy.
 | Footer title | Barlow Condensed | clamp(2rem, 4vw, 3.8rem) | 600 | 1.1 | — | Uppercase; **wraps to 2 lines, so lh ≥ 1.1** (never 1.0). |
 | Hero role | Barlow Condensed | clamp(1.25rem, 2.2vw, 2rem) | 600 | 1 | 0.08em | Uppercase, accent-colored (large → #c84b1a OK). |
 | Eyebrow | Barlow Condensed | 0.78rem | 600 | 1.2 | 0.18em | Uppercase, **accent-dark**. Must carry information. |
-| Meta label (dt) | Barlow Condensed | 0.68rem | 600 | 1.2 | 0.13em | Uppercase. |
+| Meta label (dt) | Barlow Condensed | 0.75rem | 600 | 1.2 | 0.13em | Uppercase. 12px is the floor, do not lower. |
 | Button | Inter | 0.86rem | 600 | — | 0.06em | Uppercase. |
 | Body / summary | Inter | clamp(1rem, 1.4vw, 1.25rem) | 400 | 1.65 | — | Sentence case. |
 | Prose (about/contact) | Inter | 1.05rem | 400 | 1.8 | — | Sentence case. |
@@ -496,11 +499,27 @@ darkens to accent-dark on hover. Image cell is `{colors.paper-deep}`-backed,
 square, `sepia(0.08)`. Featured rows swap the accent-rule marker for a small
 uppercase "Featured" label in `{colors.accent-dark}`.
 
+### Homepage narrative and photo epilogue
+
+Homepage has four movements after header: broad power hero with compact factual
+Tindo credential; LV-first Power Systems Work; compact authentic-photo
+epilogue; ink footer. Standalone Tindo, full UAV, and full Workbench homepage
+sections are retired.
+
+`homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
+context track plus exactly two single-link portals (UAV, then Workbench), using
+118px authentic square photos and a minimum desktop height of 142px. Below
+760px it stacks in DOM order with 92px photos. Footer follows immediately.
+
+Homepage excludes miniature art. Future miniature work requires a separate
+design cycle and must not reuse generated brainstorming comparisons as public
+assets.
+
 ### Meta & tags
 
 **`project-meta` / `case-meta`** — Definition lists in a 3-up grid, columns
 divided by vertical `{colors.line}` rules. `dt` is `{typography.meta-label}`
-(Barlow Condensed 0.68rem uppercase, 0.13em); `dd` is muted 0.78rem.
+(Barlow Condensed 0.75rem uppercase, 0.13em); `dd` is muted 0.78rem.
 
 **`tag`** — Square outlined chip, 1px `{colors.line}` border, muted text,
 `{typography.tag}` (Inter 0.72rem uppercase). Never filled.
@@ -563,14 +582,42 @@ links wrap rather than clip on narrow screens.
 - Keep body copy to **≤ 2 em-dashes per page.**
 - Don't set Inter as a display face or Barlow Condensed as body.
 
-### Personality layer: miniature evidence windows
+### Projects Process Atlas miniature system
+
+Status: approved for `/projects` on 2026-07-19. Homepage, About, Contact,
+Workbench, and project-detail miniature use remains excluded unless a separate
+design cycle approves it.
+
+- `/projects` uses three project-specific 1280 by 720 WebP triptychs, each no
+  larger than 160 KB, as navigation and interpretation.
+- Verified journeys resolve theory, system decision, and verification.
+- Active journeys resolve only the current frontier; later stages remain quiet
+  linework and cannot imply completion.
+- Raster art contains no text, values, graphs, pass marks, or fabricated
+  evidence. HTML carries title, ownership, state, stage labels, and CTA.
+- Desktop uses a static asymmetric atlas. Mobile, keyboard, screen-reader, and
+  print order remains LV, Solar, UAV, then the non-linked manufacturing
+  lens.
+- GPS uses the current production miniature under Nathan's explicit interim
+  illustration waiver. It remains navigation, never evidence, and may be
+  replaced later without markup changes. HTML stages remain planning resolved,
+  build/integration current, and verification future.
+- ESP32 Drone is not a Projects destination. Its future Workbench
+  `Reproduction` entry remains unpublished until Nathan supplies an owned photo
+  of the assembled replica. Third-party product graphics, existing illustrative
+  assets, generated art, and empty evidence galleries cannot satisfy that gate.
+- Project-detail pages retain authentic evidence and receive no miniature coda.
 
 - Selected personality direction: **curious systems world-builder**. Use an
   occasional, project-specific isometric low-resolution miniature engineering
   scene inside an evidence-image frame.
-- Pair every miniature with its related authentic engineering artifact, diagram,
-  or calculation. The real artifact remains primary evidence; the miniature is
-  interpretive context, never proof or a replacement for evidence.
+- On an evidence surface, pair and subordinate every miniature to its related
+  authentic artifact, diagram, calculation, or measured result. The real
+  artifact remains primary proof.
+- On a dedicated navigation or teaser surface, a miniature may stand alone only
+  when the title, status, and destination are explicit and the destination page
+  carries the proof. Treat this as a coherent authored system, not scattered
+  decoration.
 - Contain dither or pixel texture inside that illustration frame only. Keep the
   surrounding paper, typography, navigation, rules, and controls in the
   approved field-notes system.
@@ -607,14 +654,30 @@ under `prefers-reduced-motion: reduce`, which also switches
 - **Token truth is `app/globals.css` :root.** This file documents the measured
   system as of 2026-07-12; if the two ever disagree, `globals.css` wins and this
   file should be re-synced.
-- **Detailed QA and pre-publish records stay local.** They are excluded by
-  `.gitignore`; this public file remains authoritative for visual tokens and
-  rules.
-- **Contrast figures** are the measured values from the 2026-07-12 UI audit:
-  accent on paper 4.12:1,
+- **Process rules live elsewhere.** `design-qa.md` (QA checklist) and
+  `PRE-PUBLISH-GATE.md` remain authoritative for process; this file is
+  authoritative only for tokens and visual rules. No process policy is copied
+  here.
+- **Contrast figures** are the measured values from the 2026-07-12 UI audit
+  (`audits/ui-audit-2026-07-12/audit-notes.md`): accent on paper 4.12:1,
   accent-dark on paper 6.17:1, accent-dark on paper-deep 5.49:1, muted on paper
   4.80:1, footer-warm on ink 5.71:1.
 - **Waivers** (`overused-font: Inter`, `cream-palette`, `hero-eyebrow-chip`,
   `all-caps-body`) are codified in `.impeccable/config.json`. This file explains
   *why* they hold (deliberate palette, deliberate type pairing, informative
   eyebrows, label/display-only caps); it does not re-litigate them.
+
+### Workbench pattern
+
+Workbench uses compact editorial build records, not cards: paper surface,
+hairline dividers, square image frames, and one stretched title link per
+preview. Build type appears before title; non-original builds show text-only
+source credit so each preview still has one destination. Homepage shows two
+previews in a two-column region that stacks below 960px; Workbench stays out of
+primary navigation.
+
+Detail pages place attribution near the heading, then show motivation,
+contribution, constraint, observed outcome, shortfall, and next iteration
+before owned evidence. Workbench photos use existing `cover` treatment; the
+technical hero artifact remains the deliberate `contain` exception. Footer
+keeps Workbench as a normal action and Recruiter / AI brief as a quiet utility.

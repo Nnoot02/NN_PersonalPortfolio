@@ -1,29 +1,27 @@
 import type { Metadata } from "next";
-import { ProjectRow } from "@/components/ProjectRow";
+import { ProjectAtlas } from "@/components/ProjectAtlas";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { projects } from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Engineering case studies shown as evidence — verified ownership, decisions, outcomes, and honest evidence status for each project.",
+    "Engineering projects moving from theory towards proof, with verified power studies, active embedded and autonomy work, and honest evidence boundaries.",
 };
 
 export default function ProjectsPage() {
   return (
     <main id="main-content">
       <SiteHeader />
-      <section className="page-hero">
-        <p className="eyebrow">Project index</p>
-        <h1>Solar and grid<br />{" "}work as evidence.</h1>
-        <p>Verified power work leads this index. Broader electrical-engineering projects keep their own honest evidence status.</p>
+      <section className="page-hero projects-hero">
+        <p className="eyebrow">Power · verification</p>
+        <h1>I learn by taking systems from theory towards proof.</h1>
+        <p>
+          Completed power studies sit beside active embedded and autonomy work.
+          Each project shows what I decided, what I produced, and where the evidence currently stops.
+        </p>
       </section>
-      <section className="featured compact">
-        <div className="project-list">
-          {projects.map((project) => <ProjectRow project={project} key={project.slug} headingLevel="h2" />)}
-        </div>
-      </section>
+      <ProjectAtlas />
       <SiteFooter />
     </main>
   );

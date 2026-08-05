@@ -15,7 +15,7 @@ export function PvConnectionWriteUp() {
           Power Networks distribution grid: the viable connection voltage, the
           power-quality and protection obligations, and whether battery storage is
           warranted. Every conclusion is argued against the controlling standard or
-          network requirement. The write-up is sanitized from graded coursework
+          network requirement. The write-up is sanitised from graded coursework
           (university-generated and unrestricted), and standards content is cited by
           clause and number, not reproduced, because those tables are Standards
           Australia copyright.
@@ -174,7 +174,7 @@ site-specific SA Power Networks study of:
           confirmed against that study. The recommended next step is that application:
           single-line diagrams, inverter specifications, protection settings, proposed
           export limits, a power-quality assessment, communications requirements and
-          BESS documentation where storage is included. This write-up is sanitized from
+          BESS documentation where storage is included. This write-up is sanitised from
           university-generated coursework; no standards table content is reproduced,
           and no employer, SA Power Networks or Office of the Technical Regulator
           confidential material is involved.
