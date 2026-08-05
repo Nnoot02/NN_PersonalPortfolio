@@ -31,9 +31,9 @@ export default function AboutPage() {
           <p className="eyebrow">Work evidence</p>
           <h2>Manufacturing made it practical.</h2>
           <ul>
-            <li>At Tindo Solar, production work gives me direct exposure to solar-panel manufacturing, 5S, Kaizen, quality checks, and fault-finding culture.</li>
-            <li>Shadowing RCA and 8D problem-solving has connected engineering decisions with process reliability and operator reality.</li>
-            <li>Kitchen supervision taught me team coordination, training, stock control, and calm decisions under pressure.</li>
+            <li>I pay attention to how solar panels are made because 5S, Kaizen, quality checks, and fault-finding culture show me where process reliability meets operator reality.</li>
+            <li>I have shadowed RCA and 8D problem-solving, and I am still learning how teams connect a fault with process reliability and operator reality.</li>
+            <li>Supervising kitchens taught me to coordinate people, train others, control stock, and make calm decisions when pressure changed the plan.</li>
           </ul>
         </div>
         <div>
