@@ -195,6 +195,22 @@ check(manufacturingLensMarkup.includes("Solar module production gives me practic
 check((manufacturingLensMarkup.match(/<a\b/g) ?? []).length === 0, "manufacturing lens must not be a project destination");
 check(!projectAtlas.includes("solar-manufacturing-dfma"), "manufacturing entry must not appear in project atlas");
 
+// Internal editorial scaffolding leaked to production on two case-study routes
+// (audit 2026-08-07, P1). Case-study evidence state is public copy only.
+const caseStudySlugs = [...projectsSource.matchAll(/slug: "([^"]+)"/g)].map((match) => match[1]);
+check(caseStudySlugs.length > 0, "project data must declare at least one case-study slug");
+for (const slug of caseStudySlugs) {
+  const caseStudy = renderedMain(readExport(`/projects/${slug}.html`));
+  check(!/Evidence interview required|Content gate/i.test(caseStudy), `${slug} must not publish internal content-gate scaffolding`);
+  check(!caseStudy.includes("Replace this panel"), `${slug} must not publish internal editorial instructions`);
+}
+
+// The one-line diagram is unreadable at mobile widths without the full-size file.
+const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
+const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-design\.webp"[^>]*>/)?.[0] ?? "";
+check(fullSizeDiagramLink.length > 0, "LV case study must link the full-size one-line diagram");
+check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.includes("noopener"), "full-size diagram link must open in a new tab with noopener");
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",

@@ -66,6 +66,7 @@ button { font: inherit; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: .9rem; }
 .button { min-height: 50px; display: inline-flex; align-items: center; justify-content: center; gap: .65rem; padding: 0 1.5rem; border: 1px solid var(--ink); font-weight: 600; font-size: .86rem; text-transform: uppercase; letter-spacing: .06em; cursor: pointer; transition: background-color .2s, color .2s, transform .2s; }
 .button:hover, .button:focus-visible { transform: translateY(-2px); }
+.button:disabled { opacity: .5; cursor: default; transform: none; }
 .button-primary { background: var(--accent); border-color: var(--accent); color: var(--white); }
 .button-primary:hover, .button-primary:focus-visible { background: var(--accent-dark); }
 .button-secondary { background: transparent; }
@@ -81,7 +82,7 @@ button { font: inherit; }
 .featured { padding: clamp(5rem, 8vw, 8rem) 6vw; }
 .featured.compact { padding-top: 1rem; }
 .section-heading { max-width: 720px; margin-bottom: 3.5rem; }
-.section-heading h2, .content-grid h2, .placeholder-panel h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
+.section-heading h2, .content-grid h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 .section-heading > p:last-child { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .project-list { border-top: 1px solid var(--line); list-style: none; margin: 0; padding: 0; }
 .project-row { display: grid; grid-template-columns: minmax(260px, 34%) minmax(0, 1fr); gap: clamp(1rem, 2.5vw, 2.5rem); align-items: center; padding: 1.6rem 0; position: relative; border-bottom: 1px solid var(--line); }
@@ -222,6 +223,11 @@ button { font: inherit; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.5rem; }
 .placeholder-contact { color: var(--muted); display: inline-flex; align-items: center; gap: .5rem; }
 .content-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 4rem; padding: clamp(4rem, 6vw, 5.5rem) 6vw; }
+.content-grid > div > p:last-child { color: var(--muted); line-height: 1.65; max-width: 62ch; }
+.capability-list { display: grid; gap: 1.4rem; margin: 0; }
+.capability-list > div { border-top: 1px solid var(--line); padding-top: .9rem; }
+.capability-list dt { font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; margin-bottom: .45rem; }
+.capability-list dd { margin: 0; color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .prose { max-width: 620px; color: var(--muted); font-size: 1.05rem; line-height: 1.8; }
 
 .case-study { padding: 4rem 6vw 7rem; }
@@ -230,9 +236,8 @@ button { font: inherit; }
 .case-status { display: inline-block; margin: -1.2rem 0 2rem; padding: .4rem .85rem; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent-dark); font: 600 .72rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: 1.15rem; line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
+.case-image-note { margin: .9rem 0 0; font-size: .82rem; }
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
-.placeholder-panel { margin: 5rem 0 0; max-width: 820px; border-left: 1px solid var(--line); padding: 1rem 0 1rem 2rem; }
-.placeholder-panel p:last-child { color: var(--muted); line-height: 1.7; }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 .profile-summary p, .profile-grid li, .disclosure-panel p, .disclosure-panel li, .case-sections p { color: var(--muted); line-height: 1.7; }
@@ -250,8 +255,17 @@ button { font: inherit; }
 .writeup { max-width: 860px; padding: 5rem 0 0; }
 .writeup-heading { border-top: 1px solid var(--ink); padding-top: 2rem; }
 .writeup-heading h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
-.writeup p { color: var(--muted); line-height: 1.75; }
+/* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
+.writeup p { color: var(--muted); line-height: 1.75; max-width: 62ch; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
+.gate-list { display: grid; gap: 1.8rem; list-style: none; margin: 1.4rem 0 0; padding: 0; }
+.gate-list > li { border-top: 1px solid var(--line); padding-top: 1rem; }
+.gate-list h4 { font: 600 1.1rem/1.15 var(--display); text-transform: uppercase; letter-spacing: .04em; margin: .2rem 0 .9rem; }
+.gate-marker { font: 600 .75rem/1.2 var(--display); letter-spacing: .14em; text-transform: uppercase; margin: 0; }
+.writeup .gate-marker { color: var(--accent-dark); }
+.gate-list dl { display: grid; gap: .7rem; margin: 0; }
+.gate-list dt { font: 600 .72rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.gate-list dd { margin: 0; color: var(--muted); line-height: 1.7; max-width: 62ch; }
 .writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; }
 .writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: .82rem; line-height: 1.65; color: var(--ink); }
 .table-scroll { overflow-x: auto; }
@@ -321,7 +335,6 @@ button { font: inherit; }
   .back-link { margin-bottom: 4rem; }
   .case-image { min-height: 70vw; }
   .case-meta { grid-template-columns: 1fr; gap: 1.2rem; }
-  .placeholder-panel { padding-left: 1.2rem; }
   .projects-hero { min-height: 0; }
   .projects-hero h1 { font-size: clamp(2.75rem, 19vw, 6rem); line-height: .9; }
   .project-process-section { padding: 2.5rem 1.25rem 5rem; }

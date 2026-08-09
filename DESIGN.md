@@ -33,16 +33,16 @@ typography:
   code-family: 'ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace'
   hero-display:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
-    fontSize: "clamp(6rem, 11vw, 10rem)"
+    fontSize: "clamp(2.75rem, 6vw, 5.5rem)"
     fontWeight: 700
-    lineHeight: 0.76
+    lineHeight: 0.86
     letterSpacing: "-0.025em"
     textTransform: uppercase
   hero-display-mobile:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
-    fontSize: "clamp(5.4rem, 27vw, 8rem)"
+    fontSize: "clamp(2.75rem, 13vw, 4.25rem)"
     fontWeight: 700
-    lineHeight: 0.76
+    lineHeight: 0.9
     textTransform: uppercase
   page-hero-display:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
@@ -373,7 +373,7 @@ display roles; Barlow Condensed is never set as body copy.
 
 | Role | Family | Size | Weight | Line height | Tracking | Notes |
 |---|---|---|---|---|---|---|
-| Home hero h1 | Barlow Condensed | clamp(6rem, 11vw, 10rem) | 700 | 0.76 | -0.025em | Uppercase. The one place lh drops this tight; single-line only. |
+| Home hero h1 | Barlow Condensed | clamp(2.75rem, 6vw, 5.5rem) | 700 | 0.86 | -0.025em | Uppercase. Two-line lock (`.hero-name` wraps the given/family spans). |
 | Page/case h1 | Barlow Condensed | clamp(4.6rem, 9vw, 9rem) | 600 | 0.82 | -0.02em | Uppercase. |
 | Section heading h2 | Barlow Condensed | clamp(2.4rem, 4vw, 4rem) | 600 | 0.95 | — | Uppercase. |
 | Project title | Barlow Condensed | clamp(2rem, 3.5vw, 3.2rem) | 600 | 0.95 | — | Uppercase. |
@@ -635,7 +635,7 @@ design cycle approves it.
 | Width | Key changes |
 |---|---|
 | ≤ 960px | Hero collapses 2-col → 1-col (image below copy); scroll cue hidden; project rows drop the arrow track; project meta stacks 1-up; profile/case grids go single-column. |
-| ≤ 720px | Header inset tightens to 1.25rem; nav collapses to a hamburger **sheet** (the one shadowed surface) that closes on link activation and on Escape (focus returns to the menu button); hero h1 clamps to `clamp(5.4rem, 27vw, 8rem)`; buttons go full-width; project rows reflow to marker+image over full-width copy; principles stack; footer stacks. |
+| ≤ 720px | Header inset tightens to 1.25rem; nav collapses to a hamburger **sheet** (the one shadowed surface) that closes on link activation and on Escape (focus returns to the menu button); hero h1 clamps to `clamp(2.75rem, 13vw, 4.25rem)` at line-height 0.9; buttons go full-width; project rows reflow to marker+image over full-width copy; principles stack; footer stacks. |
 
 ### Touch targets
 
@@ -654,10 +654,18 @@ under `prefers-reduced-motion: reduce`, which also switches
 - **Token truth is `app/globals.css` :root.** This file documents the measured
   system as of 2026-07-12; if the two ever disagree, `globals.css` wins and this
   file should be re-synced.
-- **Process rules live elsewhere.** `design-qa.md` (QA checklist) and
-  `PRE-PUBLISH-GATE.md` remain authoritative for process; this file is
-  authoritative only for tokens and visual rules. No process policy is copied
-  here.
+- **Process rules live elsewhere.** `design-qa.md` and `PRE-PUBLISH-GATE.md`
+  remain authoritative for process; this file is authoritative only for tokens
+  and visual rules. No process policy is copied here.
+  > **`PRE-PUBLISH-GATE.md` is missing from this clone** (checked 2026-08-09).
+  > Both it and `design-qa.md` are excluded by `.gitignore` as local-only
+  > working docs, but `design-qa.md` was already tracked when that rule landed
+  > (`039bd4d`, 2026-07-17) so it survived; `PRE-PUBLISH-GATE.md` was never
+  > tracked in this repository and therefore cannot arrive through git at all.
+  > It likely exists only on Nathan's main machine. Until it is recovered, the
+  > executable process authority here is the pre-ship gate in `CLAUDE.md` /
+  > `AGENTS.md` plus `.impeccable/config.json`; `design-qa.md` is an evidence
+  > log, not a checklist. Do not treat a gate you cannot read as satisfied.
 - **Contrast figures** are the measured values from the 2026-07-12 UI audit
   (`audits/ui-audit-2026-07-12/audit-notes.md`): accent on paper 4.12:1,
   accent-dark on paper 6.17:1, accent-dark on paper-deep 5.49:1, muted on paper

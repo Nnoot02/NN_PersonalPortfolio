@@ -7,12 +7,14 @@ import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { projects } from "@/lib/projects";
 import { projectStructuredData } from "@/lib/site";
 
 const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
   "solar-grid-connection-assessment": PvConnectionWriteUp,
+  "gps-denied-autonomous-uav": UavTestGatesWriteUp,
 };
 
 type ProjectParams = {
@@ -68,6 +70,13 @@ export default async function ProjectPage({ params }: ProjectParams) {
           {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
         </ul>
         <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
+        {project.imageIsDiagram ? (
+          <p className="case-image-note">
+            <a className="text-link" href={project.image} target="_blank" rel="noopener">
+              Open the full-size diagram<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          </p>
+        ) : null}
         <dl className="case-meta">
           <div><dt>Scope</dt><dd>{project.scope}</dd></div>
           <div><dt>Role</dt><dd>{project.role}</dd></div>
@@ -96,13 +105,6 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </div>
         </section>
         {WriteUp ? <WriteUp /> : null}
-        {!project.evidenceVerified ? (
-          <div className="placeholder-panel">
-            <p className="eyebrow">Content gate</p>
-            <h2>Evidence interview required</h2>
-            <p>Replace this panel with verified measurements, your individual contribution, test evidence, failures, revisions, and public-safe images before publishing.</p>
-          </div>
-        ) : null}
       </article>
       <SiteFooter />
     </main>

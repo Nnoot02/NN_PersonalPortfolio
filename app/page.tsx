@@ -30,7 +30,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Electrical engineering student · Adelaide</p>
-          <h1 className="hero-name"><span>Nathan</span><span className="hero-surname">No-ot</span></h1>
+           <h1 className="hero-name"><span>Nathan</span>{" "}<span className="hero-surname">No-ot</span></h1>
           <span className="accent-rule" aria-hidden="true" />
           <p className="hero-role">Power systems and grid integration</p>
           <p className="hero-summary">I design from standards and verify decisions with calculations, backed by Australian solar-manufacturing experience.</p>
@@ -43,6 +43,14 @@ export default function HomePage() {
               <dt>Since</dt>
               <dd>Nov 2025</dd>
             </div>
+            <div>
+              <dt>Studying</dt>
+              <dd>Associate Degree in Electronics Engineering, TAFE SA</dd>
+            </div>
+            <div>
+              <dt>Articulating</dt>
+              <dd>BE Electrical &amp; Electronic, Adelaide University — expected 2028</dd>
+            </div>
           </dl>
           <div className="hero-actions">
             <a className="button button-primary" href={profile.resumePath} download>
@@ -54,7 +62,7 @@ export default function HomePage() {
           <span className="hero-artifact">
             <Image
               src="/images/lv-cabling-design.webp"
-              alt="One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards"
+              alt="Featured artifact: one-line diagram of the 400 V three-tenancy design, from a 500 kVA supply transformer through the main switchboard to the three tenancy distribution boards"
               fill
               priority
               sizes="(max-width: 960px) 100vw, 54vw"

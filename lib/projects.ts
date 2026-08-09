@@ -13,8 +13,9 @@ export type Project = {
   approach: string;
   result: string;
   evidenceStatus: string;
-  evidenceVerified?: boolean;
   evidenceMarkers?: string[];
+  // Diagram artifacts are unreadable at mobile widths; offer the full-size file.
+  imageIsDiagram?: boolean;
 };
 
 export const projects: Project[] = [
@@ -26,6 +27,7 @@ export const projects: Project[] = [
       "Standards-traceable 400 V cabling design for a three-tenancy commercial complex: maximum demand, cable selection, earthing, and fault verification to AS/NZS 3000 and AS/NZS 3008.1.1.",
     image: "/images/lv-cabling-design.webp",
     imageAlt: "One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards",
+    imageIsDiagram: true,
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
     status: "Evidence verified - sanitised write-up",
@@ -39,7 +41,6 @@ export const projects: Project[] = [
       "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit passed the AS/NZS 3000 Table 8.1 earth-fault-loop limits.",
     evidenceStatus:
       "Verified. Sanitised public write-up complete; full tabulated working held privately because standards tables are Standards Australia copyright.",
-    evidenceVerified: true,
   },
   {
     slug: "solar-grid-connection-assessment",
@@ -49,6 +50,7 @@ export const projects: Project[] = [
       "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid: connection voltage, power-quality compliance, protection, and storage, decided against AS/NZS inverter standards and SAPN TS132/TS133.",
     image: "/images/solar-grid-connection.webp",
     imageAlt: "Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling",
+    imageIsDiagram: true,
     scope: "Power systems, grid connection, compliance",
     role: "Sole author (coursework technical assessment)",
     status: "Evidence verified - sanitised write-up",
@@ -62,7 +64,6 @@ export const projects: Project[] = [
       "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
       "Verified. Sanitised public write-up complete; coursework is university-generated and unrestricted, and standards tables are cited by clause and number rather than reproduced (Standards Australia copyright).",
-    evidenceVerified: true,
   },
   {
     slug: "gps-denied-autonomous-uav",
@@ -81,7 +82,7 @@ export const projects: Project[] = [
     approach:
       "Document requirements, architecture, estimator choices, obstacle detection, local planning, and staged test gates before flight claims.",
     result:
-      "Capstone evidence is still being assembled. I will publish only measured test results, logs, and sanitised design decisions.",
+      "Propulsion analysis puts the as-shipped 2212 (~920 KV) motors at roughly 1.9–2.2:1 thrust-to-weight carrying the full ~1.27 kg autonomy payload, hovering near 55 % throttle — under the ≥2.3:1 full-payload gate this project set for integrated flight. A 2216-class motor upgrade is budgeted, and the final part stays unordered until as-delivered thrust is measured on the bench. Flight results follow the same rule: I publish measured data, logs, and sanitised design decisions only.",
     evidenceStatus: "Planning material exists; flight and verification results are pending.",
   },
   {

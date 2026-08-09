@@ -133,6 +133,24 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
+        <h3>Why this binds harder in South Australia</h3>
+        <p>
+          The hosting-capacity conclusion is sharper here than in the general case.
+          South Australia carries the highest share of rooftop solar in the country,
+          and AEMO has reported it as the first gigawatt-scale grid in the world to
+          reach zero operational demand, when distributed generation briefly exceeded
+          all local customer load. The midday condition this assessment treats as the
+          limiting case &mdash; high PV output against low local demand &mdash; is
+          therefore not an edge case on many South Australian feeders; it is a
+          recurring operating state. SA Power Networks already operates a solar
+          curtailment mechanism for minimum system demand events, which is the same
+          constraint this assessment reaches from the connection side: what limits a
+          new 1 MW plant is voltage rise, feeder hosting capacity and minimum-demand
+          management where it connects, not the plant&apos;s nameplate.
+        </p>
+      </div>
+
+      <div className="writeup-block">
         <h3>Storage and hybridisation</h3>
         <p>
           A battery energy storage system may be recommended where network studies,
