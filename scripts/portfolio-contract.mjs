@@ -29,6 +29,7 @@ function renderedMain(markup) {
 }
 
 const home = renderedMain(readExport("/index.html"));
+const contact = renderedMain(readExport("/contact.html"));
 const resume = readExport("/resume.html");
 const profile = readExport("/profile.html");
 const projectsIndex = renderedMain(readExport("/projects.html"));
@@ -132,6 +133,35 @@ check(footer.includes("linkedin.com"), "footer must provide LinkedIn action");
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
 check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
+
+check(contact.includes('class="contact-hero"'), "contact must use the two-column contact composition");
+check(contact.includes("EMAIL WORKS BEST."), "contact must use the approved email-first hero");
+check(contact.includes("Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering."), "contact must use the approved intro copy");
+check(contact.includes('href="mailto:nathannoott@gmail.com"'), "contact email must be the visible mailto action");
+check(contact.includes('class="button button-secondary"') && contact.includes("Copy address"), "contact copy action must remain secondary and separately labelled");
+for (const snapshotText of [
+  "Production Worker · Tindo Solar",
+  "Associate Degree in Electronics Engineering · TAFE SA",
+  "400 V commercial LV design",
+  "1 MW grid assessment",
+  "GPS-denied autonomous UAV",
+  "SITL / ROS 2 setup + subsystem validation",
+  "Commercial kitchens → power systems",
+]) {
+  check(contact.includes(snapshotText), `contact technical snapshot must retain: ${snapshotText}`);
+}
+check(contact.includes('href="/projects/lv-cabling-design-commercial-complex"'), "contact LV snapshot link must target existing project route");
+check(contact.includes('href="/projects/solar-grid-connection-assessment"'), "contact grid snapshot link must target existing project route");
+const contactFooter = contact.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
+check(contactFooter.includes("site-footer--compact"), "contact must use compact footer variant");
+check(contactFooter.includes("NATHAN NO-OT · ADELAIDE, SA"), "compact contact footer must use approved identity");
+for (const destination of ["/projects", "/workbench"]) {
+  check(contactFooter.includes(`href="${destination}"`), `compact contact footer must link ${destination}`);
+}
+check(contactFooter.includes("LinkedIn") && contactFooter.includes("Résumé"), "compact contact footer must retain LinkedIn and resume links");
+check(!contactFooter.includes('href="/contact"'), "compact contact footer must omit current Contact link");
+check(!contactFooter.includes("Build power infrastructure with me."), "compact contact footer must omit large footer treatment");
+check(!contactFooter.includes("Recruiter / AI brief"), "compact contact footer must omit recruiter utility link");
 
 check(projectsIndex.includes("Power · verification"), "projects hero must expose approved scope eyebrow");
 check(projectsIndex.includes("I learn by taking systems from theory towards proof."), "projects hero must use approved headline");

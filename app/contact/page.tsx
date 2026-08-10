@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { EnvelopeSimple, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
 import { CopyEmailButton } from "@/components/CopyEmailButton";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -15,17 +15,67 @@ export default function ContactPage() {
   return (
     <main id="main-content">
       <SiteHeader />
-      <section className="page-hero contact-hero">
-        <p className="eyebrow">Contact</p>
-        <h1>Let&apos;s talk<br />{" "}about the work.</h1>
-        <p>I&apos;m interested in hearing about South Australian student placements and internships, particularly where power systems, grid integration, or practical electrical engineering are part of the work. Broader electrical engineering roles are worth a conversation too.</p>
-        <div className="contact-actions">
-          <a className="placeholder-contact" href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={20} /> Email Nathan</a>
-          <CopyEmailButton email={profile.contactEmail} />
-          {profile.links.linkedin ? <a className="placeholder-contact" href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={20} /> LinkedIn</a> : null}
+      <section className="contact-hero">
+        <div className="contact-copy">
+          <p className="eyebrow">CONTACT</p>
+          <h1>EMAIL WORKS BEST.</h1>
+          <p>
+            Adelaide-based electrical engineering student open to placements,
+            internships, and project conversations—especially around power
+            systems, grid integration, and practical electrical engineering.
+          </p>
+          <div className="contact-actions">
+            <a className="button button-primary contact-email" href={`mailto:${profile.contactEmail}`}>
+              <EnvelopeSimple size={20} aria-hidden="true" />
+              {profile.contactEmail}
+            </a>
+            <CopyEmailButton email={profile.contactEmail} label="Copy address" variant="secondary" />
+          </div>
         </div>
+        <aside className="contact-snapshot" aria-labelledby="contact-snapshot-heading">
+          <h2 id="contact-snapshot-heading">Technical snapshot</h2>
+          <dl className="contact-snapshot-list">
+            <div className="contact-snapshot-group">
+              <dt>Current role</dt>
+              <dd>Production Worker · Tindo Solar</dd>
+            </div>
+            <div className="contact-snapshot-group">
+              <dt>Studying</dt>
+              <dd>Associate Degree in Electronics Engineering · TAFE SA</dd>
+            </div>
+            <div className="contact-snapshot-group">
+              <dt>Verified power</dt>
+              <dd>
+                <ul>
+                  <li>
+                    <a href="/projects/lv-cabling-design-commercial-complex">
+                      400 V commercial LV design <span aria-hidden="true">↗</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/projects/solar-grid-connection-assessment">
+                      1 MW grid assessment <span aria-hidden="true">↗</span>
+                    </a>
+                  </li>
+                </ul>
+              </dd>
+            </div>
+            <div className="contact-snapshot-group">
+              <dt>Current build</dt>
+              <dd>
+                GPS-denied autonomous UAV
+                <br />
+                SITL / ROS 2 setup + subsystem validation
+              </dd>
+            </div>
+            <div className="contact-snapshot-group">
+              <dt>Path</dt>
+              <dd>Commercial kitchens → power systems</dd>
+            </div>
+          </dl>
+        </aside>
       </section>
-      <SiteFooter />
+      <SiteFooter compact />
     </main>
   );
 }

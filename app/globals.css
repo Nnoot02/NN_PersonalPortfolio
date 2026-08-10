@@ -220,8 +220,26 @@ button { font: inherit; }
 .manufacturing-lens { border-left: 4px solid var(--accent); margin: 2rem auto 0; max-width: 760px; padding: .4rem 0 .4rem 1.2rem; }
 .manufacturing-lens > p:last-child { color: var(--muted); line-height: 1.65; margin: .6rem 0 0; }
 .resume-hero .button { margin-top: 1.4rem; }
-.contact-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.5rem; }
-.placeholder-contact { color: var(--muted); display: inline-flex; align-items: center; gap: .5rem; }
+.contact-hero { align-items: start; border-bottom: 1px solid var(--line); display: grid; gap: clamp(3rem, 8vw, 8rem); grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); padding: clamp(4.5rem, 8vw, 8rem) 6vw clamp(4rem, 6vw, 6rem); }
+.contact-copy { min-width: 0; }
+.contact-copy h1 { font: 600 clamp(4.25rem, 7vw, 7rem)/.84 var(--display); letter-spacing: -.02em; margin: 1.5rem 0 2rem; max-width: 12ch; overflow-wrap: normal; text-transform: uppercase; text-wrap: balance; }
+.contact-copy > p:not(.eyebrow) { color: var(--muted); line-height: 1.75; margin: 0; max-width: 48ch; }
+.contact-actions { align-items: stretch; display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+.contact-actions .button { white-space: nowrap; }
+.contact-actions .contact-email { letter-spacing: 0; text-transform: none; }
+.contact-actions .button-secondary { color: var(--ink); }
+.contact-snapshot { border-top: 1px solid var(--ink); min-width: 0; padding-top: 1rem; }
+.contact-snapshot h2 { font: 600 .78rem/1.2 var(--display); letter-spacing: .18em; margin: 0 0 1.2rem; text-transform: uppercase; }
+.contact-snapshot-list { margin: 0; }
+.contact-snapshot-group { border-top: 1px solid var(--line); padding: 1.1rem 0 1.2rem; }
+.contact-snapshot-group dt { color: var(--muted); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
+.contact-snapshot-group dd { line-height: 1.55; margin: .45rem 0 0; max-width: 48ch; }
+.contact-snapshot-group ul { display: grid; gap: .35rem; list-style: none; margin: 0; padding: 0; }
+.contact-snapshot-group a { align-items: center; color: var(--accent-dark); display: inline-flex; font-weight: 600; gap: .35rem; min-height: 44px; text-decoration: underline; text-underline-offset: .18em; }
+.site-footer--compact { align-items: center; gap: 1.5rem 2rem; min-height: 0; padding: 1.5rem 6vw; }
+.footer-compact-identity { color: var(--white); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; margin: 0; text-transform: uppercase; }
+.site-footer--compact .footer-links { justify-content: flex-end; }
+.site-footer--compact .footer-links a { white-space: nowrap; }
 .content-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 4rem; padding: clamp(4rem, 6vw, 5.5rem) 6vw; }
 .content-grid > div > p:last-child { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .capability-list { display: grid; gap: 1.4rem; margin: 0; }
@@ -324,10 +342,16 @@ button { font: inherit; }
   .principles > div, .principles > div + div { border-left: 0; border-bottom: 1px solid var(--line); padding: 2rem 0; }
   .principles > div:last-child { border-bottom: 0; }
   .site-footer { align-items: flex-start; flex-direction: column; padding: 4rem 1.25rem; }
+  .site-footer--compact { align-items: flex-start; gap: 1rem; padding: 1.25rem; }
+  .site-footer--compact .footer-links { justify-content: flex-start; width: 100%; }
   .page-hero { padding: 4rem 1.25rem 2.5rem; }
   .page-hero--about { min-height: 320px; }
   .page-hero h1, .case-study h1 { font-size: clamp(4rem, 21vw, 6rem); }
   .workbench-hero h1 { font-size: clamp(4rem, 20vw, 6rem); }
+  .contact-hero { gap: 3rem; grid-template-columns: 1fr; padding: 3rem 1.25rem 3.5rem; }
+  .contact-copy h1 { font-size: clamp(3.8rem, 18vw, 5.4rem); line-height: .86; }
+  .contact-actions { display: grid; gap: .75rem; width: 100%; }
+  .contact-actions .button { width: 100%; }
   .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.25rem; }
   .profile-summary, .profile-grid, .disclosure-panel { padding-left: 1.25rem; padding-right: 1.25rem; }
   .profile-facts { grid-template-columns: 1fr; }

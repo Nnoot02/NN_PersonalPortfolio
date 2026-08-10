@@ -17,7 +17,7 @@ const ANNOUNCEMENTS: Partial<Record<CopyState, string>> = {
   failed: "Could not copy. Use the address shown next to this button.",
 };
 
-export function CopyEmailButton({ email }: { email: string }) {
+export function CopyEmailButton({ email, label = "Copy email", variant = "primary" }: { email: string; label?: string; variant?: "primary" | "secondary" }) {
   const [state, setState] = useState<CopyState>("idle");
   const resetTimer = useRef<number | undefined>(undefined);
 
@@ -37,8 +37,8 @@ export function CopyEmailButton({ email }: { email: string }) {
 
   return (
     <>
-      <button className="button button-primary" type="button" onClick={copyEmail} disabled={state === "copying"}>
-        <Copy size={20} /> {LABELS[state]}
+      <button className={`button button-${variant}`} type="button" onClick={copyEmail} disabled={state === "copying"}>
+        <Copy size={20} /> {state === "idle" ? label : LABELS[state]}
       </button>
       <span className="sr-only" role="status">{ANNOUNCEMENTS[state] ?? ""}</span>
     </>
