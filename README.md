@@ -1,7 +1,7 @@
 # Personal Portfolio
 
-Recruiter-first engineering portfolio built with Next.js and shipped as a static
-site on Cloudflare Pages.
+Recruiter-first engineering portfolio built with Next.js and shipped as static
+assets on Cloudflare Workers.
 
 ## Stack
 
@@ -22,13 +22,23 @@ pnpm dev
 pnpm build   # static site written to ./out
 ```
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare Workers)
 
-Connected via Git integration:
+Production target:
 
-- Build command: `pnpm build`
-- Output directory: `out`
-- Environment variable: `NEXT_PUBLIC_SITE_URL` set to the deployed site URL
+- Source branch: `main`
+- Worker: `noot-portfolio`
+- Custom domain: `https://nnoott.com`
+- Assets directory: `out`, configured in `wrangler.jsonc`
+
+Build and deploy intentionally from a clean `main` checkout:
+
+```powershell
+$env:NEXT_PUBLIC_SITE_URL = "https://nnoott.com"
+pnpm build
+npx wrangler deploy
+```
 
 `NEXT_PUBLIC_SITE_URL` is inlined at build time and drives canonical URLs, the
-sitemap, and structured data, so it must be set wherever the build runs.
+sitemap, and structured data. Keep it set to the production custom domain for
+production builds.
