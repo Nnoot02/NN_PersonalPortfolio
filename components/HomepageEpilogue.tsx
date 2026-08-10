@@ -14,7 +14,6 @@ export function HomepageEpilogue({
   return (
     <section className="homepage-epilogue" data-homepage-epilogue aria-labelledby="homepage-epilogue-heading">
       <div className="homepage-epilogue-context">
-        <p className="eyebrow">Beyond the ledger</p>
         <h2 id="homepage-epilogue-heading">Other systems</h2>
         <Link className="text-link homepage-epilogue-collection" href="/projects">
           View all <ArrowRight size={17} aria-hidden="true" />

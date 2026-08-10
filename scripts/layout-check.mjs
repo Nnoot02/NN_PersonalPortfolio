@@ -148,6 +148,43 @@ async function main() {
           if (focus.width < 44 || focus.height < 44) failures.push(`/ @ ${width}x${height}: portal ${index + 1} misses 44px touch target`);
         }
       }
+      if (route === "/about") {
+        const desktopNetwork = page.locator("[data-tools-desktop-network]");
+        const mobileProof = page.locator("[data-tools-mobile-proof]");
+        const lvNode = page.locator('[data-node-id="lv"]');
+        if (width >= 760) {
+          if (!(await desktopNetwork.isVisible())) failures.push(`/about @ ${width}x${height}: desktop network is hidden`);
+          if (await mobileProof.isVisible()) failures.push(`/about @ ${width}x${height}: mobile proof ledger remains visible on desktop`);
+          if ((await lvNode.getAttribute("aria-pressed")) !== "true") failures.push(`/about @ ${width}x${height}: strongest project is not selected by default`);
+          if (width === 1440) {
+            const gridNode = page.locator('[data-node-id="grid"]');
+            await gridNode.click();
+            const selectedDetail = await page.locator("[data-tools-detail-rail] h3").textContent();
+            if (selectedDetail !== "1 MW grid connection") failures.push(`/about desktop interaction: detail rail did not update after project selection`);
+            await lvNode.click();
+          }
+        } else {
+          if (await desktopNetwork.isVisible()) failures.push(`/about @ ${width}x${height}: desktop network remains visible on mobile`);
+          if (!(await mobileProof.isVisible())) failures.push(`/about @ ${width}x${height}: mobile proof ledger is hidden`);
+          const capabilityCount = await mobileProof.locator(".tools-proof-capability").count();
+          if (capabilityCount !== 4) failures.push(`/about @ ${width}x${height}: mobile proof ledger has ${capabilityCount} capabilities, expected 4`);
+        }
+        if (width === 390 || width === 1440) {
+          await page.evaluate(() => {
+            for (const selector of [".site-header", ".skip-link"]) {
+              const node = /** @type {HTMLElement | null} */ (document.querySelector(selector));
+              if (node) node.style.display = "none";
+            }
+          });
+          await page.locator("#tools-and-standards").screenshot({ path: join(SHOT_DIR, `about-tools-${width}x${height}.png`) });
+          await page.evaluate(() => {
+            for (const selector of [".site-header", ".skip-link"]) {
+              const node = /** @type {HTMLElement | null} */ (document.querySelector(selector));
+              if (node) node.style.removeProperty("display");
+            }
+          });
+        }
+      }
       if (route === "/projects") {
         const expectedSlugs = [
           "lv-cabling-design-commercial-complex",

@@ -42,6 +42,7 @@ const workbench = renderedMain(readExport("/workbench.html"));
 const sitemap = readExport("/sitemap.xml");
 const projectIndexSource = readFileSync(new URL("../lib/project-index.ts", import.meta.url), "utf8");
 const projectsSource = readFileSync(new URL("../lib/projects.ts", import.meta.url), "utf8");
+const globalsCss = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 
 check(home.includes("Electrical engineering student · Adelaide"), "home hero eyebrow must state electrical-engineering student and Adelaide");
 check(home.includes("Power systems and grid integration"), "home hero must state power-systems and grid-integration positioning");
@@ -98,7 +99,8 @@ check(!home.includes("View verified work"), "home must not retain View verified 
 
 const epilogue = home.match(/<section[^>]*data-homepage-epilogue[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 check(epilogue.length > 0, "home must expose compact photo epilogue");
-check(epilogue.includes("Beyond the ledger") && epilogue.includes("Other systems"), "home epilogue must expose approved context label");
+check(epilogue.includes("Other systems"), "home epilogue must expose its collection heading");
+check(!epilogue.includes("Beyond the ledger"), "home epilogue must not retain the redundant Beyond the ledger kicker");
 check(epilogue.includes('href="/projects"') && epilogue.includes("View all"), "home epilogue must link to all projects");
 
 const portalAnchors = [...epilogue.matchAll(/<a\b[^>]*data-homepage-portal="([^"]+)"[^>]*>[\s\S]*?<\/a>/g)];
@@ -189,19 +191,63 @@ check(aboutStory.includes(manufacturingEvidence), "about manufacturing evidence 
 check(aboutStory.includes("Outside work and study, I keep building at the") && aboutStory.includes(benchEvidence), "about bench evidence must use approved paragraph copy");
 check(!aboutStory.includes("Work evidence"), "about story must omit the redundant Work evidence kicker");
 check(!about.includes("Technical direction"), "about must not retain the duplicated Technical direction section");
-check(about.includes('class="content-grid about-tools"'), "about must retain Tools and standards as the technical inventory");
+check(about.includes('class="about-tools"'), "about must retain Tools and standards as the technical inventory");
 check(about.includes('id="tools-and-standards-heading">Tools and standards</h2>'), "about tools inventory must use Tools and standards as its headline");
 check(!about.includes("What I have actually used.") && !about.includes("Nothing is listed here"), "about tools inventory must omit implicit supporting copy");
+check(aboutTools.includes("data-tools-desktop-network"), "about must render the desktop project-centred network");
+check(aboutTools.includes("data-tools-mobile-proof"), "about must render the mobile proof-led ledger");
+check(aboutTools.includes("data-tools-detail-rail"), "about desktop network must include its bottom detail rail");
+check(!aboutTools.includes("data-capability-list"), "about must not retain the ungrounded flat capability list");
+const defaultProjectNode = aboutTools.match(/<button[^>]*data-node-id="lv"[^>]*>/)?.[0] ?? "";
+check(defaultProjectNode.includes('aria-pressed="true"'), "about desktop network must select Commercial LV cabling by default");
+for (const evidenceState of ["verified", "associated", "pending"]) {
+  check(aboutTools.includes(`data-state="${evidenceState}"`), `about desktop network must expose ${evidenceState} evidence links`);
+}
+for (const projectSlug of [
+  "lv-cabling-design-commercial-complex",
+  "solar-grid-connection-assessment",
+  "gps-denied-autonomous-uav",
+  "solar-manufacturing-dfma",
+]) {
+  check(aboutTools.includes(`/projects/${projectSlug}`), `about Tools and standards must link to ${projectSlug}`);
+}
+for (const mobileCapability of ["Power design", "Grid connection", "Embedded systems", "Manufacturing and quality"]) {
+  check(aboutTools.includes(`>${mobileCapability}</h3>`), `about mobile proof ledger must expose ${mobileCapability}`);
+}
 for (const toolEvidence of [
-  "AS/NZS 3000, AS/NZS 3008.1.1, AS/NZS 4777.1 and 4777.2, AS/NZS 5033, SA Power Networks TS132/TS133/TS134, AS1100 technical drawing.",
-  "Maximum demand, cable selection and de-rating, voltage drop, prospective fault current, earth-fault-loop impedance, single-line diagrams, wiring schedules.",
-  "AutoCAD, Autodesk Inventor, Fusion 360, KiCad.",
-  "Multimeter, oscilloscope, function generator, LTspice, Logisim.",
-  "Python, MATLAB, C, ROS 2, ESP and AVR microcontrollers, MAVLink telemetry.",
-  "5S, Kaizen, root cause analysis, 8D problem-solving, inspection and soldering.",
+  "AS/NZS 3000",
+  "AS/NZS 3008.1.1",
+  "AS/NZS 4777.1 and 4777.2",
+  "AS/NZS 5033",
+  "SA Power Networks TS132/TS133/TS134",
+  "AS 1100 technical drawing",
+  "Maximum demand",
+  "earth-fault-loop impedance",
+  "AutoCAD",
+  "Autodesk Inventor",
+  "Fusion 360",
+  "KiCad",
+  "Multimeter",
+  "oscilloscope",
+  "function generator",
+  "LTspice",
+  "Logisim",
+  "Python",
+  "MATLAB",
+  "ROS 2",
+  "MAVLink telemetry",
+  "5S",
+  "Kaizen",
+  "root cause analysis",
+  "8D problem-solving",
+  "inspection",
+  "soldering",
 ]) {
   check(aboutTools.includes(toolEvidence), `about Tools and standards must retain: ${toolEvidence}`);
 }
+check(globalsCss.includes(".tools-proof-mobile { display: none; }"), "desktop must hide the mobile proof ledger");
+check(globalsCss.includes(".tools-network-desktop, .tools-network-desktop-only { display: none; }"), "mobile must hide the desktop network");
+check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile must show the proof-led ledger");
 
 const projectAtlas = projectsIndex.match(/<ol[^>]*data-project-atlas[^>]*>[\s\S]*?<\/ol>(?=<\/div><ul class="project-relations")/)?.[0] ?? "";
 check(projectAtlas.length > 0, "projects page must expose semantic project atlas");

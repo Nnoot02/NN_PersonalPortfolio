@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ToolsStandardsNetwork } from "@/components/ToolsStandardsNetwork";
 
 export const metadata: Metadata = {
   title: "About",
@@ -38,36 +39,8 @@ export default function AboutPage() {
           </article>
         </div>
       </section>
-      <section className="content-grid about-tools" id="tools-and-standards" aria-labelledby="tools-and-standards-heading">
-        <div>
-          <h2 id="tools-and-standards-heading">Tools and standards</h2>
-        </div>
-        <dl className="capability-list" data-capability-list>
-          <div>
-            <dt>Standards</dt>
-            <dd>AS/NZS 3000, AS/NZS 3008.1.1, AS/NZS 4777.1 and 4777.2, AS/NZS 5033, SA Power Networks TS132/TS133/TS134, AS1100 technical drawing.</dd>
-          </div>
-          <div>
-            <dt>Power design</dt>
-            <dd>Maximum demand, cable selection and de-rating, voltage drop, prospective fault current, earth-fault-loop impedance, single-line diagrams, wiring schedules.</dd>
-          </div>
-          <div>
-            <dt>CAD and EDA</dt>
-            <dd>AutoCAD, Autodesk Inventor, Fusion 360, KiCad.</dd>
-          </div>
-          <div>
-            <dt>Instrumentation and simulation</dt>
-            <dd>Multimeter, oscilloscope, function generator, LTspice, Logisim.</dd>
-          </div>
-          <div>
-            <dt>Programming and embedded</dt>
-            <dd>Python, MATLAB, C, ROS 2, ESP and AVR microcontrollers, MAVLink telemetry.</dd>
-          </div>
-          <div>
-            <dt>Manufacturing and quality</dt>
-            <dd>5S, Kaizen, root cause analysis, 8D problem-solving, inspection and soldering.</dd>
-          </div>
-        </dl>
+      <section className="about-tools" id="tools-and-standards" aria-labelledby="tools-and-standards-heading">
+        <ToolsStandardsNetwork />
       </section>
       <SiteFooter />
     </main>
