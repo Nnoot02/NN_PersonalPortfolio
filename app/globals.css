@@ -170,8 +170,11 @@ button { font: inherit; }
 .footer-links .footer-utility { border: 0; color: #d88868; min-height: auto; padding: .45rem 0; text-decoration: underline; text-underline-offset: .18em; }
 
 .page-hero { padding: clamp(4rem, 7vw, 6.5rem) 6vw clamp(2.5rem, 4vw, 3.5rem); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
-.page-hero--about { min-height: 400px; }
+.page-hero--about { align-items: center; display: flex; min-height: 0; padding-top: clamp(2.75rem, 4vw, 3.5rem); row-gap: .8rem; }
 .page-hero h1, .case-study h1 { font: 600 clamp(4.6rem, 9vw, 9rem)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; overflow-wrap: anywhere; }
+.page-hero--about > .eyebrow { align-self: flex-start; width: 100%; }
+.page-hero--about h1 { font-size: clamp(4rem, 6.5vw, 6.5rem); margin-bottom: 0; max-width: 1160px; overflow-wrap: normal; text-align: center; text-wrap: balance; width: 100%; }
+.page-hero--about > p:last-of-type { margin: 0 0 .4rem; text-align: center; width: 100%; }
 .page-hero > p:last-of-type { max-width: 670px; color: var(--muted); line-height: 1.7; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .projects-hero { min-height: 430px; }
@@ -242,6 +245,19 @@ button { font: inherit; }
 .site-footer--compact .footer-links a { white-space: nowrap; }
 .content-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 4rem; padding: clamp(4rem, 6vw, 5.5rem) 6vw; }
 .content-grid > div > p:last-child { color: var(--muted); line-height: 1.65; max-width: 62ch; }
+.about-story { padding: clamp(2.75rem, 4vw, 3.5rem) 6vw; }
+.about-story-intro { align-items: start; display: grid; gap: clamp(2.5rem, 4vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+.about-story-intro h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); text-transform: uppercase; margin: 0; }
+.about-story-intro > p { color: var(--muted); font-size: 1.05rem; line-height: 1.8; margin: 0; max-width: 62ch; }
+.about-story-grid { border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 3vw, 3rem); }
+.about-story-grid article { min-width: 0; padding: clamp(1.5rem, 2.5vw, 2.25rem); }
+.about-story-grid article:first-child { padding-left: 0; }
+.about-story-grid article:last-child { padding-right: 0; }
+.about-story-grid article + article { border-left: 1px solid var(--line); }
+.about-story-grid h3 { font: 600 clamp(1.5rem, 2.2vw, 2.1rem)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
+.about-story-grid p { color: var(--muted); line-height: 1.7; margin: 0; }
+.about-story-grid p + p { margin-top: 1rem; }
+.about-tools { gap: clamp(2.5rem, 4vw, 4rem); padding-block: clamp(2.75rem, 4vw, 3.5rem); }
 .capability-list { display: grid; gap: 1.4rem; margin: 0; }
 .capability-list > div { border-top: 1px solid var(--line); padding-top: .9rem; }
 .capability-list dt { font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; margin-bottom: .45rem; }
@@ -345,14 +361,23 @@ button { font: inherit; }
   .site-footer--compact { align-items: flex-start; gap: 1rem; padding: 1.25rem; }
   .site-footer--compact .footer-links { justify-content: flex-start; width: 100%; }
   .page-hero { padding: 4rem 1.25rem 2.5rem; }
-  .page-hero--about { min-height: 320px; }
+  .page-hero--about { align-items: flex-start; min-height: 0; padding-top: 3rem; row-gap: 1.5rem; }
+  .page-hero--about > .eyebrow { align-self: auto; margin-bottom: -.65rem; width: auto; }
   .page-hero h1, .case-study h1 { font-size: clamp(4rem, 21vw, 6rem); }
+  .page-hero--about h1 { font-size: clamp(3.8rem, 18vw, 5.4rem); text-align: left; }
+  .page-hero--about > p:last-of-type { text-align: left; }
   .workbench-hero h1 { font-size: clamp(4rem, 20vw, 6rem); }
   .contact-hero { gap: 3rem; grid-template-columns: 1fr; padding: 3rem 1.25rem 3.5rem; }
   .contact-copy h1 { font-size: clamp(3.8rem, 18vw, 5.4rem); line-height: .86; }
   .contact-actions { display: grid; gap: .75rem; width: 100%; }
   .contact-actions .button { width: 100%; }
   .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.25rem; }
+  .about-story { padding: 3rem 1.25rem; }
+  .about-story-intro, .about-story-grid { grid-template-columns: 1fr; }
+  .about-story-intro { gap: 1.5rem; }
+  .about-story-grid article { padding: 1.5rem 0; }
+  .about-story-grid article + article { border-left: 0; border-top: 1px solid var(--line); }
+  .about-tools { padding-block: 3rem; }
   .profile-summary, .profile-grid, .disclosure-panel { padding-left: 1.25rem; padding-right: 1.25rem; }
   .profile-facts { grid-template-columns: 1fr; }
   .case-study { padding: 3rem 1.25rem 5rem; }

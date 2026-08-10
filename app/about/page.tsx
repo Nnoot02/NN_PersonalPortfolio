@@ -15,42 +15,32 @@ export default function AboutPage() {
       <SiteHeader />
       <section className="page-hero page-hero--about">
         <p className="eyebrow">About</p>
-        <h1>Solar systems,<br />{" "}from grid to factory.</h1>
-        <p>I am an electrical engineering student in Adelaide focused on solar power systems and grid integration. My work is grounded in standards-based design and Australian solar manufacturing experience.</p>
+        <h1>Solar systems, from grid to factory.</h1>
+        <p>I became a chef to help people, then chose engineering to pursue net zero and Australia's energy dominance through solar.</p>
       </section>
-      <section className="content-grid">
-        <div><p className="eyebrow">Approach</p><h2>Start with constraints.</h2></div>
-        <div className="prose">
+      <section className="about-story">
+        <div className="about-story-intro">
+          <div><p className="eyebrow">Approach</p><h2>Start with constraints.</h2></div>
           <p>I start with constraints: define the requirement, expose assumptions, build the smallest useful test, then explain what the result means. Moving from comfortable hospitality work into a degree-adjacent solar-manufacturing role was deliberate; it keeps me closer to engineering practice.</p>
-          <p>Outside work and study, I keep building at the <Link className="text-link" href="/workbench">bench</Link>: small systems where limitations stay visible and useful.</p>
-          <p>At TAFE SA, I have worked through standards-informed electrical design: cable sizing, protection, grid-connection reasoning, single-line diagrams, wiring schedules, and compliance matrices. My current path leads into Electrical and Electronic Engineering at Adelaide University, expected 2028.</p>
+        </div>
+        <div className="about-story-grid">
+          <article>
+            <h3>Study</h3>
+            <p>At TAFE SA, I have worked through standards-informed electrical design: cable sizing, protection, grid-connection reasoning, single-line diagrams, wiring schedules, and compliance matrices. My current path leads into Electrical and Electronic Engineering at Adelaide University, expected 2028.</p>
+          </article>
+          <article>
+            <h3>Manufacturing made it practical.</h3>
+            <p>At Tindo Solar, production work gives me direct exposure to solar-panel manufacturing, 5S, Kaizen, quality checks, and fault-finding culture. By shadowing their engineers, I learnt how RCA and 8D problem-solving connect engineering decisions with process reliability and operator reality.</p>
+          </article>
+          <article>
+            <h3>Bench and teams</h3>
+            <p>Outside work and study, I keep building at the <Link className="text-link" href="/workbench">bench</Link>: small systems where limitations stay visible and useful. When I was a chef and was appointed as kitchen supervisor, I learnt how to coordinate teams, train staff, manage stock, and make calm decisions under pressure.</p>
+          </article>
         </div>
       </section>
-      <section className="profile-grid profile-grid--about">
+      <section className="content-grid about-tools" id="tools-and-standards" aria-labelledby="tools-and-standards-heading">
         <div>
-          <p className="eyebrow">Work evidence</p>
-          <h2>Manufacturing made it practical.</h2>
-          <ul>
-            <li>I pay attention to how solar panels are made because 5S, Kaizen, quality checks, and fault-finding culture show me where process reliability meets operator reality.</li>
-            <li>I have shadowed RCA and 8D problem-solving, and I am still learning how teams connect a fault with process reliability and operator reality.</li>
-            <li>Supervising kitchens taught me to coordinate people, train others, control stock, and make calm decisions when pressure changed the plan.</li>
-          </ul>
-        </div>
-        <div>
-          <p className="eyebrow">Technical direction</p>
-          <h2>Solar and grid integration first.</h2>
-          <ul>
-            <li>Power evidence: AS/NZS 3000, AS/NZS 3008, AS/NZS 4777.2, SAPN TS132/TS133, solar manufacturing, and distribution-focused coursework.</li>
-            <li>Broader systems work: GPS-denied UAV planning, embedded electronics, controls, and DFMA.</li>
-            <li>I keep public portfolio evidence sanitised: useful engineering claims stay visible without exposing restricted detail.</li>
-          </ul>
-        </div>
-      </section>
-      <section className="content-grid" id="tools-and-standards" aria-labelledby="tools-and-standards-heading">
-        <div>
-          <p className="eyebrow">Tools and standards</p>
-          <h2 id="tools-and-standards-heading">What I have actually used.</h2>
-          <p>Nothing is listed here that does not appear in work on this site or in my résumé.</p>
+          <h2 id="tools-and-standards-heading">Tools and standards</h2>
         </div>
         <dl className="capability-list" data-capability-list>
           <div>

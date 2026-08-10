@@ -28,8 +28,13 @@ function renderedMain(markup) {
   return markup.match(/<main[\s\S]*?<\/main>/)?.[0] ?? markup;
 }
 
+function normalizeTextEntities(markup) {
+  return markup.replaceAll("&#x27;", "'").replaceAll("&#39;", "'");
+}
+
 const home = renderedMain(readExport("/index.html"));
 const contact = renderedMain(readExport("/contact.html"));
+const about = normalizeTextEntities(renderedMain(readExport("/about.html")));
 const resume = readExport("/resume.html");
 const profile = readExport("/profile.html");
 const projectsIndex = renderedMain(readExport("/projects.html"));
@@ -167,6 +172,36 @@ check(projectsIndex.includes("Power · verification"), "projects hero must expos
 check(projectsIndex.includes("I learn by taking systems from theory towards proof."), "projects hero must use approved headline");
 check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
 check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
+
+const aboutStory = about.match(/<section[^>]*class="about-story"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+const aboutTools = about.match(/<section[^>]*id="tools-and-standards"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+const aboutIntroduction = "I became a chef to help people, then chose engineering to pursue net zero and Australia's energy dominance through solar.";
+const previousAboutIntroduction = "I am an electrical engineering student in Adelaide focused on solar power systems and grid integration. My work is grounded in standards-based design and Australian solar manufacturing experience.";
+const manufacturingEvidence = "At Tindo Solar, production work gives me direct exposure to solar-panel manufacturing, 5S, Kaizen, quality checks, and fault-finding culture. By shadowing their engineers, I learnt how RCA and 8D problem-solving connect engineering decisions with process reliability and operator reality.";
+const benchEvidence = "small systems where limitations stay visible and useful. When I was a chef and was appointed as kitchen supervisor, I learnt how to coordinate teams, train staff, manage stock, and make calm decisions under pressure.";
+check(aboutIntroduction.split(/\s+/).length === 20, "about introduction must contain exactly 20 words");
+check(about.includes(aboutIntroduction), "about must use the exact approved 20-word introduction");
+check(!about.includes(previousAboutIntroduction), "about must not retain the previous introduction");
+check(aboutStory.includes('class="about-story-intro"') && aboutStory.includes('class="about-story-grid"'), "about must use the approved compact B story layout");
+check(aboutStory.includes("Approach") && aboutStory.includes("Study") && aboutStory.includes("Manufacturing made it practical.") && aboutStory.includes("Bench and teams"), "about B layout must expose its three evidence themes");
+check(!aboutStory.includes("<ul") && !aboutStory.includes("<li"), "about evidence themes must render paragraphs instead of lists");
+check(aboutStory.includes(manufacturingEvidence), "about manufacturing evidence must use approved paragraph copy");
+check(aboutStory.includes("Outside work and study, I keep building at the") && aboutStory.includes(benchEvidence), "about bench evidence must use approved paragraph copy");
+check(!aboutStory.includes("Work evidence"), "about story must omit the redundant Work evidence kicker");
+check(!about.includes("Technical direction"), "about must not retain the duplicated Technical direction section");
+check(about.includes('class="content-grid about-tools"'), "about must retain Tools and standards as the technical inventory");
+check(about.includes('id="tools-and-standards-heading">Tools and standards</h2>'), "about tools inventory must use Tools and standards as its headline");
+check(!about.includes("What I have actually used.") && !about.includes("Nothing is listed here"), "about tools inventory must omit implicit supporting copy");
+for (const toolEvidence of [
+  "AS/NZS 3000, AS/NZS 3008.1.1, AS/NZS 4777.1 and 4777.2, AS/NZS 5033, SA Power Networks TS132/TS133/TS134, AS1100 technical drawing.",
+  "Maximum demand, cable selection and de-rating, voltage drop, prospective fault current, earth-fault-loop impedance, single-line diagrams, wiring schedules.",
+  "AutoCAD, Autodesk Inventor, Fusion 360, KiCad.",
+  "Multimeter, oscilloscope, function generator, LTspice, Logisim.",
+  "Python, MATLAB, C, ROS 2, ESP and AVR microcontrollers, MAVLink telemetry.",
+  "5S, Kaizen, root cause analysis, 8D problem-solving, inspection and soldering.",
+]) {
+  check(aboutTools.includes(toolEvidence), `about Tools and standards must retain: ${toolEvidence}`);
+}
 
 const projectAtlas = projectsIndex.match(/<ol[^>]*data-project-atlas[^>]*>[\s\S]*?<\/ol>(?=<\/div><ul class="project-relations")/)?.[0] ?? "";
 check(projectAtlas.length > 0, "projects page must expose semantic project atlas");
