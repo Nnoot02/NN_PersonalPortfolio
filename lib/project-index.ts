@@ -91,12 +91,8 @@ export const projectIndexEntries: readonly ProjectIndexEntry[] = projectIndexSlu
   return { project: requireUniqueProject(slug), ...indexContent };
 });
 
-export const projectIndexRelations = [
-  "standards + verification",
-  "buildability + physical systems",
-] as const;
-
-export const manufacturingLens = {
-  title: "Manufacturing lens",
-  body: "Solar module production gives me practical context for buildability, process reliability, and DFMA. Employer-sensitive details stay private.",
+export const projectIndexRelation = {
+  sourceSlug: "lv-cabling-design-commercial-complex",
+  targetSlug: "solar-grid-connection-assessment",
+  label: "standards + verification",
 } as const;

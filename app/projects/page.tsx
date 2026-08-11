@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProjectAtlas } from "@/components/ProjectAtlas";
+import { ProjectJourneyLanes } from "@/components/ProjectJourneyLanes";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -14,14 +14,13 @@ export default function ProjectsPage() {
     <main id="main-content">
       <SiteHeader />
       <section className="page-hero projects-hero">
-        <p className="eyebrow">Power · verification</p>
         <h1>I learn by taking systems from theory towards proof.</h1>
         <p>
           Completed power studies sit beside active embedded and autonomy work.
           Each project shows what I decided, what I produced, and where the evidence currently stops.
         </p>
       </section>
-      <ProjectAtlas />
+      <ProjectJourneyLanes />
       <SiteFooter />
     </main>
   );

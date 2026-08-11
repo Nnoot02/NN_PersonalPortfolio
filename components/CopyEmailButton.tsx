@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 type CopyState = "idle" | "copying" | "copied" | "failed";
 
 const LABELS: Record<CopyState, string> = {
-  idle: "Copy email",
+  idle: "Copy address",
   copying: "Copying email",
   copied: "Copied email",
   failed: "Copy failed",
@@ -17,7 +17,7 @@ const ANNOUNCEMENTS: Partial<Record<CopyState, string>> = {
   failed: "Could not copy. Use the address shown next to this button.",
 };
 
-export function CopyEmailButton({ email, label = "Copy email", variant = "primary" }: { email: string; label?: string; variant?: "primary" | "secondary" }) {
+export function CopyEmailButton({ email }: { email: string }) {
   const [state, setState] = useState<CopyState>("idle");
   const resetTimer = useRef<number | undefined>(undefined);
 
@@ -37,8 +37,8 @@ export function CopyEmailButton({ email, label = "Copy email", variant = "primar
 
   return (
     <>
-      <button className={`button button-${variant}`} type="button" onClick={copyEmail} disabled={state === "copying"}>
-        <Copy size={20} /> {state === "idle" ? label : LABELS[state]}
+      <button className="button button-secondary" type="button" onClick={copyEmail} disabled={state === "copying"}>
+        <Copy size={20} /> {LABELS[state]}
       </button>
       <span className="sr-only" role="status">{ANNOUNCEMENTS[state] ?? ""}</span>
     </>

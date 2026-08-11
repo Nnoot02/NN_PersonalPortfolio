@@ -2,23 +2,25 @@ import Link from "next/link";
 import { LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { profile } from "@/lib/site";
 
-export function SiteFooter({ compact = false }: { compact?: boolean }) {
-  if (compact) {
+export function SiteFooter({ variant = "default" }: { variant?: "default" | "compact" }) {
+  if (variant === "compact") {
     return (
-      <footer className="site-footer site-footer--compact">
-        <p className="footer-compact-identity">NATHAN NO-OT · ADELAIDE, SA</p>
-        <nav className="footer-links" aria-label="Footer">
+      <footer className="site-footer site-footer--compact" data-footer-variant="compact">
+        <div>
+          <p className="footer-summary">NATHAN NO-OT · ADELAIDE, SA</p>
+        </div>
+        <div className="footer-links">
           <Link href="/projects">Projects</Link>
-          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener">LinkedIn</a> : null}
+          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
           <a href={profile.resumePath} download>Résumé</a>
           <Link href="/workbench">Workbench</Link>
-        </nav>
+        </div>
       </footer>
     );
   }
 
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" data-footer-variant="default">
       <div>
         <p className="footer-kicker">Available for South Australian internships.</p>
         <p className="footer-title">Build power infrastructure with me.</p>

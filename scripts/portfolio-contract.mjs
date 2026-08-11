@@ -33,8 +33,8 @@ function normalizeTextEntities(markup) {
 }
 
 const home = renderedMain(readExport("/index.html"));
-const contact = renderedMain(readExport("/contact.html"));
 const about = normalizeTextEntities(renderedMain(readExport("/about.html")));
+const contact = renderedMain(readExport("/contact.html"));
 const resume = readExport("/resume.html");
 const profile = readExport("/profile.html");
 const projectsIndex = renderedMain(readExport("/projects.html"));
@@ -141,40 +141,6 @@ const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((matc
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
 check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
 
-check(contact.includes('class="contact-hero"'), "contact must use the two-column contact composition");
-check(contact.includes("EMAIL WORKS BEST."), "contact must use the approved email-first hero");
-check(contact.includes("Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering."), "contact must use the approved intro copy");
-check(contact.includes('href="mailto:nathannoott@gmail.com"'), "contact email must be the visible mailto action");
-check(contact.includes('class="button button-secondary"') && contact.includes("Copy address"), "contact copy action must remain secondary and separately labelled");
-for (const snapshotText of [
-  "Production Worker · Tindo Solar",
-  "Associate Degree in Electronics Engineering · TAFE SA",
-  "400 V commercial LV design",
-  "1 MW grid assessment",
-  "GPS-denied autonomous UAV",
-  "SITL / ROS 2 setup + subsystem validation",
-  "Commercial kitchens → power systems",
-]) {
-  check(contact.includes(snapshotText), `contact technical snapshot must retain: ${snapshotText}`);
-}
-check(contact.includes('href="/projects/lv-cabling-design-commercial-complex"'), "contact LV snapshot link must target existing project route");
-check(contact.includes('href="/projects/solar-grid-connection-assessment"'), "contact grid snapshot link must target existing project route");
-const contactFooter = contact.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
-check(contactFooter.includes("site-footer--compact"), "contact must use compact footer variant");
-check(contactFooter.includes("NATHAN NO-OT · ADELAIDE, SA"), "compact contact footer must use approved identity");
-for (const destination of ["/projects", "/workbench"]) {
-  check(contactFooter.includes(`href="${destination}"`), `compact contact footer must link ${destination}`);
-}
-check(contactFooter.includes("LinkedIn") && contactFooter.includes("Résumé"), "compact contact footer must retain LinkedIn and resume links");
-check(!contactFooter.includes('href="/contact"'), "compact contact footer must omit current Contact link");
-check(!contactFooter.includes("Build power infrastructure with me."), "compact contact footer must omit large footer treatment");
-check(!contactFooter.includes("Recruiter / AI brief"), "compact contact footer must omit recruiter utility link");
-
-check(projectsIndex.includes("Power · verification"), "projects hero must expose approved scope eyebrow");
-check(projectsIndex.includes("I learn by taking systems from theory towards proof."), "projects hero must use approved headline");
-check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
-check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
-
 const aboutStory = about.match(/<section[^>]*class="about-story"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 const aboutTools = about.match(/<section[^>]*id="tools-and-standards"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 const aboutIntroduction = "I became a chef to help people, then chose engineering to pursue net zero and Australia's energy dominance through solar.";
@@ -248,32 +214,69 @@ for (const toolEvidence of [
 check(globalsCss.includes(".tools-proof-mobile { display: none; }"), "desktop must hide the mobile proof ledger");
 check(globalsCss.includes(".tools-network-desktop, .tools-network-desktop-only { display: none; }"), "mobile must hide the desktop network");
 check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile must show the proof-led ledger");
+const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.";
+const contactSnapshot = contact.match(/<aside[^>]*data-technical-snapshot[^>]*>[\s\S]*?<\/aside>/)?.[0] ?? "";
+const contactFooter = contact.match(/<footer[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
+check(contact.includes('class="page-hero contact-hero contact-hero--compact"'), "contact must use the compact hero treatment");
+check(contact.includes('<p class="eyebrow">CONTACT</p>'), "contact must use the approved CONTACT eyebrow");
+check(contact.includes("EMAIL WORKS BEST."), "contact must use the approved email-first hero");
+check(contact.includes(contactIntro), "contact must use the exact approved intro");
+check(contact.includes('href="mailto:nathannoott@gmail.com"'), "contact must make the visible email the primary mailto action");
+check(contact.includes("Copy address"), "contact must label copy as Copy address");
+check(contactSnapshot.length > 0, "contact must expose Technical Snapshot");
+const snapshotGroups = [...contactSnapshot.matchAll(/data-snapshot-group="([^"]+)"/g)].map((match) => match[1]);
+check(snapshotGroups.join(",") === "current-role,studying,verified-power,current-build,path", "contact snapshot groups must remain in locked order");
+for (const snapshotValue of [
+  "Production Worker · Tindo Solar",
+  "Associate Degree in Electronics Engineering · TAFE SA",
+  "GPS-denied autonomous UAV",
+  "SITL / ROS 2 setup + subsystem validation",
+  "Commercial kitchens → power systems",
+]) {
+  check(contactSnapshot.includes(snapshotValue), "contact snapshot must retain: " + snapshotValue);
+}
+check(contactSnapshot.includes('href="/projects/lv-cabling-design-commercial-complex"') && contactSnapshot.includes("400 V commercial LV design ↗"), "contact snapshot must link verified LV work");
+check(contactSnapshot.includes('href="/projects/solar-grid-connection-assessment"') && contactSnapshot.includes("1 MW grid assessment ↗"), "contact snapshot must link verified grid work");
+check(contactFooter.includes('data-footer-variant="compact"'), "contact must render compact footer variant");
+for (const compactFooterText of ["NATHAN NO-OT · ADELAIDE, SA", "Projects", "LinkedIn", "Résumé", "Workbench"]) {
+  check(contactFooter.includes(compactFooterText), "compact contact footer must include: " + compactFooterText);
+}
+for (const forbiddenContactText of ["Contact", "Recruiter / AI brief", "Build power infrastructure with me.", "nathannoott@gmail.com", "Nov 2026", "Grad:", "SPEC-2026", "STANDARDS & TOOLING"]) {
+  check(!contactFooter.includes(forbiddenContactText), "compact contact footer must omit: " + forbiddenContactText);
+}
+check(!contact.includes("Let's discuss engineering work."), "contact must not retain the old hero");
+check(!contact.includes("Flight evidence pending"), "contact must not add unsupported flight evidence");
 
-const projectAtlas = projectsIndex.match(/<ol[^>]*data-project-atlas[^>]*>[\s\S]*?<\/ol>(?=<\/div><ul class="project-relations")/)?.[0] ?? "";
-check(projectAtlas.length > 0, "projects page must expose semantic project atlas");
-const projectAtlasSlugs = [...projectAtlas.matchAll(/data-project-slug="([^"]+)"/g)].map((match) => match[1]);
-const expectedProjectAtlasSlugs = [
+check(!projectsIndex.includes("Power · verification"), "projects hero must remove the old scope eyebrow");
+check(projectsIndex.includes("I learn by taking systems from theory towards proof."), "projects hero must use approved headline");
+check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
+check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
+
+const projectJourneys = projectsIndex.match(/<ol[^>]*data-project-journeys[^>]*>[\s\S]*?<\/ol><\/section>/)?.[0] ?? "";
+check(projectJourneys.length > 0, "projects page must expose semantic project journeys");
+const projectJourneySlugs = [...projectJourneys.matchAll(/data-project-slug="([^"]+)"/g)].map((match) => match[1]);
+const expectedProjectJourneySlugs = [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
 ];
-check(projectAtlasSlugs.join(",") === expectedProjectAtlasSlugs.join(","), "projects atlas DOM order must be LV, Solar, UAV");
-for (const slug of expectedProjectAtlasSlugs) {
-  check(projectAtlas.includes(`href="/projects/${slug}"`), `${slug} atlas portal must target its detail route`);
+check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV");
+for (const slug of expectedProjectJourneySlugs) {
+  check(projectJourneys.includes('href="/projects/' + slug + '"'), slug + " journey lane must target its detail route");
 }
-const projectPortalAnchors = [...projectAtlas.matchAll(/<a\b[^>]*data-project-portal-link[^>]*>[\s\S]*?<\/a>/g)];
-check(projectPortalAnchors.length === 3, "projects atlas must contain exactly three portal anchors");
-check((projectAtlas.match(/data-journey-stage=/g) ?? []).length === 9, "projects atlas must expose exactly three stages for each of three portals");
+const projectJourneyAnchors = [...projectJourneys.matchAll(/<a\b[^>]*data-project-journey-link[^>]*>[\s\S]*?<\/a>/g)];
+check(projectJourneyAnchors.length === 3, "projects journeys must contain exactly three destination links");
+check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 9, "projects journeys must expose exactly nine stage states");
 const expectedProjectJourneyStages = new Map([
-  ["lv-cabling-design-commercial-complex", ["Theory:resolved", "System decision:resolved", "Verification:resolved"]],
-  ["solar-grid-connection-assessment", ["Theory:resolved", "System decision:resolved", "Verification:resolved"]],
-  ["gps-denied-autonomous-uav", ["Planning:resolved", "Current frontier:current", "Verification:future"]],
+  ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
+  ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
+  ["gps-denied-autonomous-uav", ["Planning:resolved:Requirements and architecture", "Current frontier:current:Hardware and software integration", "Verification:future:Staged tests and measured results"]],
 ]);
 for (const [slug, expectedStages] of expectedProjectJourneyStages) {
-  const portal = projectAtlas.match(new RegExp(`<li[^>]*data-project-slug="${slug}"[\\s\\S]*?<\\/article>\\s*<\\/li>`))?.[0] ?? "";
-  const renderedStages = [...portal.matchAll(/<li\b[^>]*data-journey-stage="([^"]+)"[^>]*>\s*<span>([^<]+)<\/span>/g)]
-    .map((match) => `${match[2]}:${match[1]}`);
-  check(renderedStages.join(",") === expectedStages.join(","), `${slug} journey labels and evidence states must match`);
+  const lane = projectJourneys.match(new RegExp('(<li[^>]*data-project-slug="' + slug + '"[\\s\\S]*?)(?=<li[^>]*data-project-slug=|<\\/ol>)'))?.[1] ?? "";
+  const renderedStages = [...lane.matchAll(/<li\b[^>]*data-journey-stage="([^"]+)"[^>]*>[\s\S]*?<span[^>]*class="project-journey-stage-label"[^>]*>([^<]+)<\/span>[\s\S]*?<small[^>]*>([^<]+)<\/small>/g)]
+    .map((match) => match[2] + ":" + match[1] + ":" + match[3]);
+  check(renderedStages.join(",") === expectedStages.join(","), slug + " journey labels, details, and evidence states must match");
 }
 
 const projectSpecificAltTerms = new Map([
@@ -283,28 +286,32 @@ const projectSpecificAltTerms = new Map([
 ]);
 const projectMiniatureAlts = [];
 for (const [slug, requiredTerm] of projectSpecificAltTerms) {
-  const portal = projectAtlas.match(new RegExp(`<li[^>]*data-project-slug="${slug}"[\\s\\S]*?<\\/li>`))?.[0] ?? "";
-  const alt = portal.match(/<img\b[^>]*\balt="([^"]*)"/)?.[1]?.trim() ?? "";
+  const lane = projectJourneys.match(new RegExp('(<li[^>]*data-project-slug="' + slug + '"[\\s\\S]*?)(?=<li[^>]*data-project-slug=|<\\/ol>)'))?.[1] ?? "";
+  const alt = lane.match(/<img\b[^>]*\balt="([^"]*)"/)?.[1]?.trim() ?? "";
   projectMiniatureAlts.push(alt);
   check(alt.length > 0, `${slug} miniature alt text must be non-empty`);
   check(alt.toLowerCase().includes(requiredTerm), `${slug} miniature alt text must be project-specific`);
 }
-check(new Set(projectMiniatureAlts).size === expectedProjectAtlasSlugs.length, "project miniature alt text must be unique per project");
+check(new Set(projectMiniatureAlts).size === expectedProjectJourneySlugs.length, "project miniature alt text must be unique per project");
 
 check(projectIndexSource.includes("satisfies ProjectIndexDefinitions"), "project-index definitions must use an exact keyed type");
 check(projectIndexSource.includes("projectIndexSlugs.map((slug)"), "project-index entries must iterate the authoritative slug order");
 check(!projectIndexSource.includes('"esp32-drone"'), "project-index source must not retain the ESP32 project slug");
 check(!projectsSource.includes('slug: "esp32-drone"'), "project data must not retain the ESP32 project route");
 
-for (const relation of ["standards + verification", "buildability + physical systems"]) {
-  check(projectsIndex.includes(relation), `projects page must expose relationship: ${relation}`);
-}
+const projectRelations = [...projectsIndex.matchAll(/data-project-relation/g)];
+const projectRelation = projectsIndex.match(/<p[^>]*data-project-relation[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "";
+check(projectRelations.length === 1, "projects page must expose exactly one project relationship");
+check(projectRelation.includes('data-source-slug="lv-cabling-design-commercial-complex"') && projectRelation.includes('data-target-slug="solar-grid-connection-assessment"'), "projects relationship must name only LV and Solar endpoints");
+check(projectRelation.includes("standards + verification"), "projects relationship must retain approved label");
 check(!projectsIndex.includes("embedded control + staged testing"), "projects page must remove the stale ESP32 relationship");
 
-const manufacturingLensMarkup = projectsIndex.match(/<aside[^>]*data-manufacturing-lens[^>]*>[\s\S]*?<\/aside>/)?.[0] ?? "";
-check(manufacturingLensMarkup.includes("Solar module production gives me practical context for buildability, process reliability, and DFMA. Employer-sensitive details stay private."), "projects page must expose approved manufacturing lens");
-check((manufacturingLensMarkup.match(/<a\b/g) ?? []).length === 0, "manufacturing lens must not be a project destination");
-check(!projectAtlas.includes("solar-manufacturing-dfma"), "manufacturing entry must not appear in project atlas");
+check(!projectsIndex.includes("buildability + physical systems"), "projects page must remove buildability relationship");
+check(!projectsIndex.includes("Manufacturing lens"), "projects page must remove manufacturing lens");
+check(!projectsIndex.includes("Solar module production gives me practical context"), "projects page must remove manufacturing-lens copy");
+check(!projectIndexSource.includes("projectIndexRelations") && !projectIndexSource.includes("manufacturingLens"), "project-index source must remove retired Projects exports");
+check(projectIndexSource.includes("projectIndexRelation") && projectIndexSource.includes('sourceSlug: "lv-cabling-design-commercial-complex"'), "project-index source must expose singular LV-to-Solar relationship");
+check(!projectJourneys.includes("solar-manufacturing-dfma"), "manufacturing entry must not appear in project journeys");
 
 // Internal editorial scaffolding leaked to production on two case-study routes
 // (audit 2026-08-07, P1). Case-study evidence state is public copy only.
