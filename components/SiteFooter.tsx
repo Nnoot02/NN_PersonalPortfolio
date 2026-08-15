@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
+import { GithubLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { profile } from "@/lib/site";
 
 export function SiteFooter({ variant = "default" }: { variant?: "default" | "compact" }) {
@@ -30,6 +30,7 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
       <div className="footer-links">
         <Link href="/contact">Contact</Link>
         {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
+        {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span></a> : null}
         <a href={profile.resumePath} download>Résumé</a>
         <Link href="/projects">Projects</Link>
         <Link href="/workbench">Workbench</Link>

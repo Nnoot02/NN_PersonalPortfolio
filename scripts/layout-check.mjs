@@ -401,6 +401,38 @@ async function main() {
     await page.close();
   }
 
+  for (const width of [721, 768, 840]) {
+    const projectTabletPage = await browser.newPage({ viewport: { width, height: 900 } });
+    const response = await projectTabletPage.goto(`${base}/projects`, { waitUntil: "networkidle" });
+    checks += 1;
+    if (!response || !response.ok()) {
+      failures.push(`/projects @ ${width}x900: HTTP ${response ? response.status() : "no response"}`);
+    } else {
+      const boundaryMetrics = await projectTabletPage.locator("[data-project-slug]").evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const stageRect = node.querySelector(".project-journey-stages")?.getBoundingClientRect();
+          const titleRect = node.querySelector(".project-journey-title")?.getBoundingClientRect();
+          const actionRect = node.querySelector(".project-journey-action")?.getBoundingClientRect();
+          return {
+            slug: node.getAttribute("data-project-slug"),
+            stageLeft: stageRect?.left ?? 0,
+            titleRight: titleRect?.right ?? 0,
+            actionRight: actionRect?.right ?? 0,
+          };
+        }),
+      );
+      for (const metric of boundaryMetrics) {
+        if (metric.titleRight > metric.stageLeft + 1) {
+          failures.push(`/projects @ ${width}x900: ${metric.slug} title crosses stage boundary by ${Math.round(metric.titleRight - metric.stageLeft)}px`);
+        }
+        if (metric.actionRight > metric.stageLeft + 1) {
+          failures.push(`/projects @ ${width}x900: ${metric.slug} action crosses stage boundary by ${Math.round(metric.actionRight - metric.stageLeft)}px`);
+        }
+      }
+    }
+    await projectTabletPage.close();
+  }
+
   const accessibilityPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
   await accessibilityPage.goto(`${base}/`, { waitUntil: "networkidle" });
   await accessibilityPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });

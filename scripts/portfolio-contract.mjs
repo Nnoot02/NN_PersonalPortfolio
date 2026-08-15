@@ -137,6 +137,7 @@ for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
 }
 check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(footer), "footer must provide resume download");
 check(footer.includes("linkedin.com"), "footer must provide LinkedIn action");
+check(footer.includes("github.com/Nnoot02") && footer.includes("GitHub"), "footer must render the configured GitHub action");
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
 check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
