@@ -21,12 +21,14 @@ export default function ContactPage() {
           <div className="contact-column">
             <p className="eyebrow">CONTACT</p>
             <h1>EMAIL WORKS BEST.</h1>
-            <p className="contact-intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.</p>
-            <div className="contact-actions">
-              <a className="button button-primary contact-email-link" href={"mailto:" + profile.contactEmail}>
-                <EnvelopeSimple size={20} /> {profile.contactEmail}
-              </a>
-              <CopyEmailButton email={profile.contactEmail} />
+            <div className="contact-details" data-contact-details>
+              <p className="contact-intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.</p>
+              <div className="contact-actions">
+                <a className="button button-primary contact-email-link" href={"mailto:" + profile.contactEmail}>
+                  <EnvelopeSimple size={20} /> {profile.contactEmail}
+                </a>
+                <CopyEmailButton email={profile.contactEmail} />
+              </div>
             </div>
           </div>
           <aside className="technical-snapshot" data-technical-snapshot aria-labelledby="technical-snapshot-heading">
