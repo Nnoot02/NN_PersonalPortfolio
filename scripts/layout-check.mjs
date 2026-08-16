@@ -265,8 +265,9 @@ async function main() {
             shadow: style.boxShadow,
           };
         });
-        if (headingStyle.borderTop !== "1px" || headingStyle.borderBottom !== "1px" || headingStyle.radius !== "0px" || headingStyle.shadow !== "none") {
-          failures.push("/contact @ " + width + "x" + height + ": snapshot heading rules/furniture are incorrect");
+        const expectedHeadingTop = width <= 720 ? "1px" : "0px";
+        if (headingStyle.borderTop !== expectedHeadingTop || headingStyle.borderBottom !== "1px" || headingStyle.radius !== "0px" || headingStyle.shadow !== "none") {
+          failures.push("/contact @ " + width + "x" + height + ": snapshot heading rules/furniture are incorrect (borderTop " + headingStyle.borderTop + ")");
         }
         const verifiedLinks = page.locator("[data-contact-verified-link]");
         if (await verifiedLinks.count() !== 2) failures.push("/contact @ " + width + "x" + height + ": verified-power link count is not 2");
@@ -464,6 +465,7 @@ async function main() {
           paddingRight: parseFloat(style.paddingRight),
           borderLeft: parseFloat(style.borderLeftWidth),
           borderBottom: parseFloat(style.borderBottomWidth),
+          borderTop: parseFloat(style.borderTopWidth),
           rowGap: parseFloat(style.rowGap),
           columnGap: parseFloat(style.columnGap),
           display: style.display,
@@ -592,19 +594,23 @@ async function main() {
         const group = groupByName(name);
         if (!group?.style || Math.abs(group.style.borderLeft - expected) > 1) failures.push(`${prefix}: ${name} left divider is ${group?.style?.borderLeft ?? "missing"}px, expected ${expected}px`);
       }
-      if (style("details") && width >= 1240) {
-        if (Math.abs(style("details").borderLeft - 1) > 1) failures.push(`${prefix}: desktop Details divider is not 1px`);
-        if (Math.abs(style("details").paddingLeft - 22.4) > 1) failures.push(`${prefix}: desktop Details padding-left is ${style("details").paddingLeft}px, expected 22.4px`);
-        const contentWidth = rect("details").width - style("details").paddingLeft - style("details").borderLeft;
-        if (width === 1240 && Math.abs(contentWidth - 528) > 1) failures.push(`${prefix}: Details content box is ${contentWidth.toFixed(2)}px, expected 528px`);
-        if (rect("email") && rect("copy") && Math.abs(rect("email").top - rect("copy").top) > 1) failures.push(`${prefix}: email and Copy address do not share one action row`);
-        if (!rect("hero") || !rect("details") || rect("hero").left >= rect("details").left) failures.push(`${prefix}: desktop hero is not left of Details`);
-      } else if (style("details") && (Math.abs(style("details").borderLeft) > 1 || Math.abs(style("details").paddingLeft) > 1)) {
-        failures.push(`${prefix}: tablet Details retains desktop divider/inset`);
+      if (style("details") && (Math.abs(style("details").borderLeft) > 0.5 || Math.abs(style("details").paddingLeft) > 0.5)) {
+        failures.push(`${prefix}: Details retains desktop divider/inset`);
       }
-      if (rect("heading") && rect("column")) {
-        const minimumRuleGap = Math.min(28, Math.max(20, width * 0.02));
-        if (rect("heading").top - rect("column").bottom < minimumRuleGap - 1) failures.push(`${prefix}: upper closing rule and ledger heading rule are too close`);
+      if (style("column") && Math.abs(style("column").borderBottom) > 0.5) {
+        failures.push(`${prefix}: contact column retains ink rail (borderBottom ${style("column").borderBottom}px)`);
+      }
+      if (style("heading")) {
+        const expectedHeadingTop = width <= 720 ? 1 : 0;
+        if (Math.abs(style("heading").borderTop - expectedHeadingTop) > 0.5) failures.push(`${prefix}: snapshot heading top ink rule is ${style("heading").borderTop}px, expected ${expectedHeadingTop}px`);
+      }
+      if (width >= 721) {
+        if (rect("hero") && rect("details") && rect("hero").bottom > rect("details").top + 1) failures.push(`${prefix}: hero is not above Details`);
+      }
+      if (width >= 1240) {
+        if (rect("actions") && rect("details") && rect("actions").bottom > rect("details").bottom + 1) failures.push(`${prefix}: desktop actions escape Details`);
+        if (rect("hero") && rect("details") && Math.abs(rect("hero").left - rect("details").left) > 1) failures.push(`${prefix}: desktop hero and Details do not share a start edge`);
+        if (rect("email") && rect("copy") && Math.abs(rect("email").top - rect("copy").top) > 1) failures.push(`${prefix}: email and Copy address do not share one action row`);
       }
     }
     await contactPage.screenshot({ path: join(SHOT_DIR, `contact-${width}x${height}.png`), fullPage: false });
@@ -713,6 +719,33 @@ async function main() {
     }
     await contactTextPage.screenshot({ path: join(SHOT_DIR, `contact-${width}x${height}-text-200.png`), fullPage: true });
     await contactTextPage.close();
+  }
+
+  {
+    const cssSource = await readFile(join("app", "globals.css"), "utf8");
+    const desktopBlock = cssSource.match(/@media \(min-width: 1240px\) \{([\s\S]*?)\n\}/);
+    const mobileBlock = cssSource.match(/@media \(max-width: 720px\) \{([\s\S]*?)\n\}/);
+    if (!desktopBlock) {
+      failures.push("globals.css: missing 1240px block");
+    } else {
+      if (desktopBlock[1].includes(".contact-column")) failures.push("globals.css: 1240px block still styles .contact-column");
+      if (desktopBlock[1].includes(".contact-details")) failures.push("globals.css: 1240px block still styles .contact-details");
+      if (!desktopBlock[1].includes(".technical-snapshot")) failures.push("globals.css: 1240px block lost .technical-snapshot ledger override");
+      if (!desktopBlock[1].includes('data-snapshot-group="path"')) failures.push("globals.css: 1240px block lost path divider rule");
+    }
+    if (!mobileBlock) {
+      failures.push("globals.css: missing 720px block");
+    } else {
+      if (mobileBlock[1].includes(".contact-column")) failures.push("globals.css: 720px block retains dead .contact-column reset");
+      if (mobileBlock[1].includes(".contact-details")) failures.push("globals.css: 720px block retains dead .contact-details reset");
+      if (!mobileBlock[1].includes(".technical-snapshot-heading")) failures.push("globals.css: 720px block does not restore snapshot heading ink top rule");
+    }
+    if (!cssSource.includes(".contact-column { border-bottom: 0; min-width: 0; padding-bottom: 0; }")) {
+      failures.push("globals.css: base .contact-column does not match `border-bottom: 0; min-width: 0; padding-bottom: 0;`");
+    }
+    if (!cssSource.includes(".technical-snapshot-heading { border-bottom: 1px solid var(--line); padding: .7rem 0; }")) {
+      failures.push("globals.css: base snapshot heading does not match `border-bottom: 1px solid var(--line); padding: .7rem 0;`");
+    }
   }
 
   for (const width of [721, 768, 840]) {

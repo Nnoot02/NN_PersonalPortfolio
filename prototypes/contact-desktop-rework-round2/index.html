@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PROTOTYPE — Contact desktop rework round 2</title>
+  <!--
+    PROTOTYPE — Contact desktop rework round 2
+
+    Question: Will one of three desktop/tablet structures — Typographic
+    statement, Single editorial column, or Two-column split — fix the three
+    agreed shortcomings of the shipped A2 layout (sparse left rail, weak
+    primary-action hierarchy, disconnected contact/snapshot zones) while
+    preserving the approved mobile design and the hairline field-notes system?
+
+    Assumptions:
+    - Desktop/tablet only. Mobile (<=720px) remains the shipped design and is
+      not shown here.
+    - Approved copy, routes, actions, typography, palette, square corners,
+      hairline depth model, and accent usage are fixed (DESIGN.md + globals.css).
+    - Prototype controls are inert. Copy address stubs its real interaction.
+    - No production components, styles, tests, or routes are changed.
+
+    Constraints:
+    - Each variant must keep one unmistakable primary action (mailto button).
+    - No card fills, shadows, radii, or foreign depth.
+    - Body copy <= 62ch measure, uppercase only for labels/display.
+
+    Stop condition: Nathan compares the three frames at desktop and tablet
+    widths and selects one direction or names a hybrid. Evidence = observed
+    side-by-side layout, hierarchy, and zone connection in a real browser.
+  -->
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;600&display=swap");
+
+    :root {
+      --accent: #c84b1a;
+      --accent-dark: #9f3510;
+      --paper: #f3f0e9;
+      --ink: #242321;
+      --muted: #6d6962;
+      --line: #d1cbc0;
+      --white: #fffdfa;
+      --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+      --body: "Inter", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { background: #d9d4ca; color: var(--ink); font-family: var(--body); margin: 0; }
+    button, a { font: inherit; }
+    button { cursor: pointer; }
+
+    .prototype-bar {
+      align-items: center;
+      background: var(--ink);
+      color: var(--white);
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: .75rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .prototype-bar strong { font: 600 1rem/1 var(--display); letter-spacing: .14em; text-transform: uppercase; }
+    .prototype-bar p { color: #d6d0c7; font-size: .78rem; margin: .3rem 0 0; }
+    .mode-switch { border: 1px solid #5d5a55; display: flex; }
+    .mode-switch button { background: transparent; border: 0; color: var(--white); min-height: 40px; padding: 0 1rem; }
+    .mode-switch button + button { border-left: 1px solid #5d5a55; }
+    .mode-switch button[aria-pressed="true"] { background: var(--accent); }
+
+    .comparison { display: grid; gap: 1.25rem; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 1.25rem; }
+    .direction { min-width: 0; }
+    .direction-note { align-items: baseline; display: flex; gap: .7rem; justify-content: space-between; min-height: 72px; padding: .35rem .2rem .8rem; }
+    .direction-note h2 { font: 600 1.6rem/1 var(--display); margin: 0; text-transform: uppercase; }
+    .direction-note p { color: #4f4b45; font-size: .72rem; line-height: 1.45; margin: 0; max-width: 27ch; text-align: right; }
+
+    .page {
+      background: var(--paper);
+      border: 1px solid #bbb4aa;
+      box-shadow: 0 8px 24px rgba(36,35,33,.12);
+      min-height: 670px;
+      overflow: hidden;
+    }
+    .site-head { align-items: center; border-bottom: 1px solid var(--line); display: flex; height: 58px; justify-content: space-between; padding: 0 5%; }
+    .wordmark { font: 700 1.25rem/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+    .wordmark .dot { color: var(--accent); }
+    .nav { display: flex; gap: 1.4rem; }
+    .nav span { font-size: .68rem; }
+    .nav .active { border-bottom: 2px solid var(--accent); color: var(--accent-dark); padding-bottom: .55rem; }
+    .stage { padding: 2.3rem 5%; }
+    .eyebrow, .label { color: var(--accent-dark); font: 600 .58rem/1.2 var(--display); letter-spacing: .15em; text-transform: uppercase; }
+    .eyebrow { margin: 0 0 .45rem; }
+    h1 { font: 600 clamp(2.8rem, 4.8vw, 4.8rem)/.82 var(--display); letter-spacing: -.02em; margin: 0; text-transform: uppercase; }
+    .intro { color: var(--muted); font-size: .72rem; line-height: 1.65; margin: 1rem 0 0; max-width: 50ch; }
+    .actions { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.1rem; }
+    .action { align-items: center; border: 1px solid var(--ink); display: inline-flex; font-size: .58rem; font-weight: 600; letter-spacing: .05em; min-height: 38px; padding: 0 .8rem; text-transform: uppercase; }
+    .action.primary { background: var(--accent); border-color: var(--accent); color: var(--white); }
+    .snapshot-title { border-bottom: 1px solid var(--line); border-top: 1px solid var(--ink); font: 600 .68rem/1.2 var(--display); letter-spacing: .15em; margin: 0; padding: .55rem 0; text-transform: uppercase; }
+    .snapshot-row { border-bottom: 1px solid var(--line); padding: .75rem 0; }
+    .label { display: block; margin-bottom: .28rem; }
+    .value { font-size: .67rem; font-weight: 600; line-height: 1.4; }
+    .support { color: var(--muted); display: block; font-size: .61rem; font-weight: 400; margin-top: .2rem; }
+    .power-links { display: grid; grid-template-columns: repeat(2, 1fr); }
+    .power-links span { color: var(--accent-dark); font-size: .62rem; font-weight: 600; min-height: 34px; padding: .5rem .5rem .2rem 0; text-decoration: underline; text-underline-offset: .15em; }
+    .power-links span + span { border-left: 1px solid var(--line); padding-left: .55rem; }
+    .mini-footer { align-items: center; background: var(--ink); color: var(--white); display: flex; font-size: .58rem; justify-content: space-between; min-height: 66px; padding: 1rem 5%; }
+    .mini-footer-links { display: flex; gap: .8rem; }
+
+    /* V1 — Typographic statement. Full-width page-scale h1; snapshot demoted to a quiet single-row strip. */
+    .v1 .stage { padding-top: 2.8rem; }
+    .v1 h1 { font-size: clamp(2.6rem, 4vw, 4rem); line-height: .8; max-width: 9ch; }
+    .v1 .intro { margin-top: 1.2rem; }
+    .v1 .snapshot { margin-top: 1.6rem; }
+    .v1 .snapshot-title { border-top: 0; font-size: .6rem; letter-spacing: .13em; }
+    .v1 .snapshot-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .v1 .snapshot-row { min-height: 96px; padding: .65rem .5rem; }
+    .v1 .snapshot-row:first-child { padding-left: 0; }
+    .v1 .snapshot-row + .snapshot-row { border-left: 1px solid var(--line); }
+    .v1 .label { font-size: .52rem; }
+    .v1 .value { font-size: .62rem; }
+    .v1 .power-links { grid-template-columns: 1fr; }
+    .v1 .power-links span + span { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+
+    /* V2 — Single editorial column. One continuous hairline flow; snapshot joins directly under the actions, no zone break. */
+    .v2 .stage { border-top: 1px solid var(--ink); }
+    .v2 h1 { font-size: clamp(2.5rem, 4.4vw, 4.4rem); }
+    .v2 .snapshot { margin-top: 1.6rem; }
+    .v2 .snapshot-title { border-top: 0; }
+    .v2 .snapshot-grid { display: grid; grid-template-columns: 1fr 1.1fr 1fr; }
+    .v2 .snapshot-row { padding: .7rem .65rem; }
+    .v2 .snapshot-row:nth-child(1) { padding-left: 0; }
+    .v2 .snapshot-row:nth-child(2), .v2 .snapshot-row:nth-child(3) { border-left: 1px solid var(--line); }
+    .v2 .snapshot-row[data-group="verified"], .v2 .snapshot-row[data-group="build"] { border-bottom: 0; border-top: 1px solid var(--line); }
+    .v2 .snapshot-row[data-group="verified"] { padding-left: 0; }
+    .v2 .snapshot-row[data-group="build"] { border-left: 1px solid var(--line); grid-column: span 2; }
+    .v2 .power-links { grid-template-columns: repeat(2, 1fr); }
+
+    /* V3 — Two-column split. Complete contact block left, snapshot as vertical rail right, one shared composition. */
+    .v3 .split { border-top: 1px solid var(--ink); display: grid; gap: 1.6rem; grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr); padding-top: 1.1rem; }
+    .v3 .contact-pane h1 { font-size: clamp(2.3rem, 3.8vw, 3.8rem); max-width: 8ch; }
+    .v3 .contact-pane .intro { margin-top: .95rem; }
+    .v3 .contact-pane .actions { display: grid; grid-template-columns: 1fr; max-width: 200px; }
+    .v3 .contact-pane .action { justify-content: center; }
+    .v3 .snapshot { border-left: 1px solid var(--line); padding-left: 1.1rem; }
+    .v3 .snapshot-title { border-top: 0; }
+    .v3 .snapshot .snapshot-row { padding: .85rem 0; }
+    .v3 .power-links { grid-template-columns: 1fr; }
+    .v3 .power-links span + span { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+
+    body[data-mode="tablet"] .comparison { grid-template-columns: repeat(3, minmax(300px, 1fr)); overflow-x: auto; }
+    body[data-mode="tablet"] .page { min-height: 720px; }
+    body[data-mode="tablet"] .nav { gap: .8rem; }
+    body[data-mode="tablet"] .v1 h1 { font-size: 2.6rem; }
+    body[data-mode="tablet"] .v1 .snapshot-grid { grid-template-columns: repeat(3, 1fr); }
+    body[data-mode="tablet"] .v1 .snapshot-row:nth-child(4) { border-left: 0; }
+    body[data-mode="tablet"] .v2 h1 { font-size: 2.7rem; }
+    body[data-mode="tablet"] .v2 .snapshot-grid { grid-template-columns: 1fr 1fr; }
+    body[data-mode="tablet"] .v2 .snapshot-row:nth-child(3) { border-left: 0; }
+    body[data-mode="tablet"] .v2 .snapshot-row[data-group="verified"] { border-top: 1px solid var(--line); }
+    body[data-mode="tablet"] .v2 .snapshot-row[data-group="build"] { border-left: 0; grid-column: auto; }
+    body[data-mode="tablet"] .v3 .split { grid-template-columns: 1fr; }
+    body[data-mode="tablet"] .v3 .snapshot { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; padding-top: .4rem; }
+    body[data-mode="tablet"] .v3 .snapshot-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    body[data-mode="tablet"] .v3 .snapshot .snapshot-row { padding: .7rem .65rem; }
+    body[data-mode="tablet"] .v3 .snapshot .snapshot-row:nth-child(odd) { padding-left: 0; }
+    body[data-mode="tablet"] .v3 .snapshot .snapshot-row:nth-child(even) { border-left: 1px solid var(--line); }
+  </style>
+</head>
+<body data-mode="desktop">
+  <div class="prototype-bar">
+    <div>
+      <strong>PROTOTYPE — Contact desktop rework · round 2</strong>
+      <p>Inert comparison of three structures. Mobile (≤720px) design unchanged, not shown. Content copied from shipped /contact.</p>
+    </div>
+    <div class="mode-switch" role="group" aria-label="Conceptual viewport">
+      <button type="button" data-mode="desktop" aria-pressed="true">Desktop ≈1440</button>
+      <button type="button" data-mode="tablet" aria-pressed="false">Tablet ≈1024</button>
+    </div>
+  </div>
+
+  <div class="comparison">
+    <section class="direction" aria-label="Variant 1 — Typographic statement">
+      <div class="direction-note">
+        <h2>V1 · Typographic</h2>
+        <p>Full-width page-scale h1; snapshot demoted to quiet single-row strip. Fixes sparse left; risks making snapshot feel buried.</p>
+      </div>
+      <div class="page v1">
+        <header class="site-head">
+          <span class="wordmark">Nathan No-ot<span class="dot">.</span></span>
+          <nav class="nav"><span>Home</span><span>Projects</span><span>About</span><span class="active">Contact</span></nav>
+        </header>
+        <div class="stage">
+          <p class="eyebrow">CONTACT</p>
+          <h1>EMAIL WORKS BEST.</h1>
+          <p class="intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.</p>
+          <div class="actions">
+            <span class="action primary">nathannoott@gmail.com</span>
+            <span class="action">Copy address</span>
+          </div>
+          <div class="snapshot">
+            <p class="snapshot-title">TECHNICAL SNAPSHOT</p>
+            <div class="snapshot-grid">
+              <div class="snapshot-row"><span class="label">CURRENT ROLE</span><span class="value">Production Worker · Tindo Solar</span></div>
+              <div class="snapshot-row"><span class="label">STUDYING</span><span class="value">Associate Degree · TAFE SA</span></div>
+              <div class="snapshot-row"><span class="label">PATH</span><span class="value">Kitchens → power systems</span></div>
+              <div class="snapshot-row"><span class="label">VERIFIED POWER</span><span class="power-links"><span>400 V commercial LV design ↗</span><span>1 MW grid assessment ↗</span></span></div>
+              <div class="snapshot-row"><span class="label">CURRENT BUILD</span><span class="value">GPS-denied autonomous UAV</span><span class="support">SITL / ROS 2 + subsystem validation</span></div>
+            </div>
+          </div>
+        </div>
+        <footer class="mini-footer">
+          <span>NATHAN NO-OT · ADELAIDE, SA</span>
+          <span class="mini-footer-links"><span>Projects</span><span>LinkedIn</span><span>Résumé</span></span>
+        </footer>
+      </div>
+    </section>
+
+    <section class="direction" aria-label="Variant 2 — Single editorial column">
+      <div class="direction-note">
+        <h2>V2 · Single column</h2>
+        <p>One continuous hairline flow; snapshot joins directly under actions. Fixes disconnected zones; keeps tallest scroll.</p>
+      </div>
+      <div class="page v2">
+        <header class="site-head">
+          <span class="wordmark">Nathan No-ot<span class="dot">.</span></span>
+          <nav class="nav"><span>Home</span><span>Projects</span><span>About</span><span class="active">Contact</span></nav>
+        </header>
+        <div class="stage">
+          <p class="eyebrow">CONTACT</p>
+          <h1>EMAIL WORKS BEST.</h1>
+          <p class="intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.</p>
+          <div class="actions">
+            <span class="action primary">nathannoott@gmail.com</span>
+            <span class="action">Copy address</span>
+          </div>
+          <div class="snapshot">
+            <p class="snapshot-title">TECHNICAL SNAPSHOT</p>
+            <div class="snapshot-grid">
+              <div class="snapshot-row" data-group="role"><span class="label">CURRENT ROLE</span><span class="value">Production Worker · Tindo Solar</span></div>
+              <div class="snapshot-row" data-group="study"><span class="label">STUDYING</span><span class="value">Associate Degree in Electronics Engineering · TAFE SA</span></div>
+              <div class="snapshot-row" data-group="path"><span class="label">PATH</span><span class="value">Commercial kitchens → power systems</span></div>
+              <div class="snapshot-row" data-group="verified"><span class="label">VERIFIED POWER</span><span class="power-links"><span>400 V commercial LV design ↗</span><span>1 MW grid assessment ↗</span></span></div>
+              <div class="snapshot-row" data-group="build"><span class="label">CURRENT BUILD</span><span class="value">GPS-denied autonomous UAV</span><span class="support">SITL / ROS 2 setup + subsystem validation</span></div>
+            </div>
+          </div>
+        </div>
+        <footer class="mini-footer">
+          <span>NATHAN NO-OT · ADELAIDE, SA</span>
+          <span class="mini-footer-links"><span>Projects</span><span>LinkedIn</span><span>Résumé</span></span>
+        </footer>
+      </div>
+    </section>
+
+    <section class="direction" aria-label="Variant 3 — Two-column split">
+      <div class="direction-note">
+        <h2>V3 · Two-column</h2>
+        <p>Complete contact block left, snapshot vertical rail right. One side-by-side composition; tightest on narrow tablets.</p>
+      </div>
+      <div class="page v3">
+        <header class="site-head">
+          <span class="wordmark">Nathan No-ot<span class="dot">.</span></span>
+          <nav class="nav"><span>Home</span><span>Projects</span><span>About</span><span class="active">Contact</span></nav>
+        </header>
+        <div class="stage">
+          <div class="split">
+            <div class="contact-pane">
+              <p class="eyebrow">CONTACT</p>
+              <h1>EMAIL WORKS BEST.</h1>
+              <p class="intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.</p>
+              <div class="actions">
+                <span class="action primary">nathannoott@gmail.com</span>
+                <span class="action">Copy address</span>
+              </div>
+            </div>
+            <aside class="snapshot">
+              <p class="snapshot-title">TECHNICAL SNAPSHOT</p>
+              <div class="snapshot-grid">
+                <div class="snapshot-row"><span class="label">CURRENT ROLE</span><span class="value">Production Worker · Tindo Solar</span></div>
+                <div class="snapshot-row"><span class="label">STUDYING</span><span class="value">Associate Degree in Electronics Engineering · TAFE SA</span></div>
+                <div class="snapshot-row"><span class="label">VERIFIED POWER</span><span class="power-links"><span>400 V commercial LV design ↗</span><span>1 MW grid assessment ↗</span></span></div>
+                <div class="snapshot-row"><span class="label">CURRENT BUILD</span><span class="value">GPS-denied autonomous UAV</span><span class="support">SITL / ROS 2 setup + subsystem validation</span></div>
+                <div class="snapshot-row"><span class="label">PATH</span><span class="value">Commercial kitchens → power systems</span></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+        <footer class="mini-footer">
+          <span>NATHAN NO-OT · ADELAIDE, SA</span>
+          <span class="mini-footer-links"><span>Projects</span><span>LinkedIn</span><span>Résumé</span></span>
+        </footer>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    var buttons = document.querySelectorAll(".mode-switch button");
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.body.setAttribute("data-mode", b.getAttribute("data-mode"));
+        buttons.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      });
+    });
+  </script>
+</body>
+</html>
