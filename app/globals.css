@@ -294,6 +294,7 @@ button { font: inherit; }
 .tools-evidence-state { color: var(--ink); font: 600 .72rem/1.2 var(--display); letter-spacing: .1em; text-transform: uppercase; }
 .tools-proof-mobile { display: none; }
 .prose { max-width: 620px; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
+.prose, .hero-summary, .contact-intro, .about-story-intro > p, .about-story-grid p, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p { text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
 .back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: 5rem; }
