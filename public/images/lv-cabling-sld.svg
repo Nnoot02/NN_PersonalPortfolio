@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" width="720" height="520" role="img" aria-labelledby="sldTitle sldDesc">
+  <title id="sldTitle">Commercial LV cabling design — single-line diagram</title>
+  <desc id="sldDesc">Redrawn single-line diagram: a 500 kVA supply transformer feeds the main switchboard through 25 mm squared X-90 copper consumer mains, which then supplies three tenancy distribution boards.</desc>
+
+  <!-- Palette mirrors :root in app/globals.css. Literal values are required:
+       an SVG loaded through <img> cannot inherit the page's custom properties. -->
+  <g font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif">
+    <rect x="8" y="8" width="704" height="504" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1"/>
+
+    <!-- Title block -->
+    <text x="40" y="52" fill="#242321" font-size="17" font-weight="600" letter-spacing="1.5">COMMERCIAL LV CABLING DESIGN</text>
+    <line x1="40" y1="64" x2="104" y2="64" stroke="#c84b1a" stroke-width="3"/>
+    <text x="40" y="86" fill="#6d6962" font-size="11" letter-spacing="1.2">SINGLE-LINE DIAGRAM · REDRAWN FROM THE ORIGINAL DESIGN</text>
+
+    <!-- Supply transformer -->
+    <circle cx="150" cy="140" r="19" fill="none" stroke="#242321" stroke-width="2"/>
+    <circle cx="150" cy="162" r="19" fill="none" stroke="#242321" stroke-width="2"/>
+    <text x="196" y="146" fill="#242321" font-size="15" letter-spacing="1">500 kVA TRANSFORMER</text>
+    <text x="196" y="164" fill="#6d6962" font-size="12" letter-spacing="1">400 V THREE-PHASE</text>
+
+    <!-- Consumer mains -->
+    <line x1="150" y1="181" x2="150" y2="236" stroke="#242321" stroke-width="2"/>
+    <text x="196" y="198" fill="#6d6962" font-size="10" letter-spacing="1.2">CONSUMER MAINS</text>
+    <text x="196" y="215" fill="#242321" font-size="14" letter-spacing="0.6">25 mm² X-90 Cu</text>
+    <text x="196" y="231" fill="#9f3510" font-size="12" letter-spacing="0.6">Ib = 123.6 A     ΔV = 0.74 %</text>
+
+    <!-- Main switchboard -->
+    <rect x="40" y="236" width="640" height="46" fill="#fffdfa" stroke="#242321" stroke-width="2"/>
+    <text x="60" y="265" fill="#242321" font-size="15" letter-spacing="1.2">MAIN SWITCHBOARD</text>
+    <text x="660" y="265" fill="#9f3510" font-size="12" letter-spacing="0.6" text-anchor="end">PFC 8.0 kA · 10 kA TYPE C</text>
+
+    <!-- Three tenancy feeders: line, protective device, distribution board -->
+    <g stroke="#242321" stroke-width="2">
+      <line x1="150" y1="282" x2="150" y2="360"/>
+      <line x1="360" y1="282" x2="360" y2="360"/>
+      <line x1="570" y1="282" x2="570" y2="360"/>
+    </g>
+    <g fill="#fffdfa" stroke="#242321" stroke-width="1.5">
+      <rect x="143" y="304" width="14" height="24"/>
+      <rect x="353" y="304" width="14" height="24"/>
+      <rect x="563" y="304" width="14" height="24"/>
+    </g>
+
+    <g fill="none" stroke="#242321" stroke-width="1.5">
+      <rect x="65" y="360" width="170" height="76"/>
+      <rect x="275" y="360" width="170" height="76"/>
+      <rect x="485" y="360" width="170" height="76"/>
+    </g>
+    <g fill="#6d6962" font-size="11" letter-spacing="1.2">
+      <text x="85" y="392">TENANCY 1</text>
+      <text x="295" y="392">TENANCY 2</text>
+      <text x="505" y="392">TENANCY 3</text>
+    </g>
+    <g fill="#242321" font-size="13" letter-spacing="0.8">
+      <text x="85" y="412">DISTRIBUTION BOARD</text>
+      <text x="295" y="412">DISTRIBUTION BOARD</text>
+      <text x="505" y="412">DISTRIBUTION BOARD</text>
+    </g>
+
+    <!-- Provenance and standards -->
+    <line x1="40" y1="460" x2="680" y2="460" stroke="#d1cbc0" stroke-width="1"/>
+    <text x="40" y="480" fill="#6d6962" font-size="10.5" letter-spacing="1">REDRAWN SCHEMATIC · AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025</text>
+    <text x="40" y="496" fill="#6d6962" font-size="10.5" letter-spacing="1">EARTH-FAULT-LOOP IMPEDANCE VERIFIED TO AS/NZS 3000 TABLE 8.1</text>
+  </g>
+</svg>

@@ -58,9 +58,10 @@ check(resumeWordmark.includes('class="wordmark-desktop"') && resumeWordmark.incl
 check(resumeWordmark.includes('class="wordmark-mobile"') && resumeWordmark.includes("NN") && resumeWordmark.includes('class="wordmark-period"'), "non-home mobile wordmark must render NN. with accent period");
 const heroMedia = home.match(/<figure[^>]*class="hero-image"[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
 check(heroMedia.length > 0, "home must expose hero media figure");
-check(heroMedia.includes("/images/lv-cabling-design.webp"), "home hero must use LV cabling artifact");
+check(heroMedia.includes("/images/lv-cabling-sld.svg"), "home hero must use the LV cabling single-line diagram");
 check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"), "home hero must exclude miniature content");
 check((heroMedia.match(/<a\b/g) ?? []).length === 0, "home hero media must remain passive");
+check(heroMedia.includes('loading="eager"') && heroMedia.includes('fetchPriority="high"'), "home hero image must load eagerly at high fetch priority");
 
 const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 check(hero.includes("Production Worker, Tindo Solar") && hero.includes("Nov 2025"), "home hero must contain the current-role credential as labelled fields");

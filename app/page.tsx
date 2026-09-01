@@ -61,10 +61,11 @@ export default function HomePage() {
         <figure className="hero-image">
           <span className="hero-artifact">
             <Image
-              src="/images/lv-cabling-design.webp"
+              src="/images/lv-cabling-sld.svg"
               alt="Featured artifact: one-line diagram of the 400 V three-tenancy design, from a 500 kVA supply transformer through the main switchboard to the three tenancy distribution boards"
               fill
-              priority
+              loading="eager"
+              fetchPriority="high"
               sizes="(max-width: 960px) 100vw, 54vw"
             />
           </span>
