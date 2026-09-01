@@ -68,8 +68,8 @@ check(hero.includes("Production Worker, Tindo Solar") && hero.includes("Nov 2025
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
 check(!home.includes("tindo-strip"), "home must not render standalone Tindo section");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
-check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(home), "home must provide resume PDF download");
-check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(resume), "resume page must provide resume PDF download");
+check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(home), "home must offer the resume in a new tab");
+check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(resume), "resume page must offer the resume in a new tab");
 check(profile.includes("Electrical engineering student focused on solar power systems and grid integration"), "profile must use solar student positioning");
 check(profile.includes('content="Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration."'), "profile metadata must use solar student positioning");
 check(home.includes('id="primary-navigation"'), "primary navigation must expose id for mobile aria-controls");
@@ -136,7 +136,7 @@ check(footer.includes("Available for South Australian internships."), "footer mu
 for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
   check(footer.includes(`href="${destination}"`), `footer must link ${destination}`);
 }
-check(/href="\/nathan-noot-general-resume\.pdf"[^>]*download/.test(footer), "footer must provide resume download");
+check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(footer), "footer must offer the resume in a new tab");
 check(footer.includes("linkedin.com"), "footer must provide LinkedIn action");
 check(footer.includes("github.com/Nnoot02") && footer.includes("GitHub"), "footer must render the configured GitHub action");
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);

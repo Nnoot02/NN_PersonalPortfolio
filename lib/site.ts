@@ -19,8 +19,8 @@ export const profile = {
   location: "Adelaide, South Australia",
   summary:
     "Electrical engineering student in Adelaide focused on solar power systems and grid integration, with verified standards-based power design and Australian solar manufacturing experience.",
-  resumePath: "/nathan-noot-general-resume.pdf",
-  resumeTextPath: "/nathan-noot-general-resume.txt",
+  resumePath: "/nathan-noot-electrical-embedded-resume.pdf",
+  resumeTextPath: "/nathan-noot-electrical-embedded-resume.txt",
   targetRoles: [
     "Electrical engineering student placement",
     "Power systems internship",

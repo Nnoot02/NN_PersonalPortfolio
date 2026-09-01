@@ -37,7 +37,7 @@ export default function ProfilePage() {
           <Link className="button button-primary" href="/projects">
             Review evidence <ArrowRight size={20} />
           </Link>
-          <a className="button button-secondary" href={profile.resumePath} download>
+          <a className="button button-secondary" href={profile.resumePath} target="_blank" rel="noopener">
             Download resume <DownloadSimple size={20} />
           </a>
         </div>

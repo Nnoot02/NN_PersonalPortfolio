@@ -12,7 +12,7 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
         <div className="footer-links">
           <Link href="/projects">Projects</Link>
           {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
-          <a href={profile.resumePath} download>Résumé</a>
+          <a href={profile.resumePath} target="_blank" rel="noopener">Résumé</a>
           <Link href="/workbench">Workbench</Link>
         </div>
       </footer>
@@ -31,7 +31,7 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
         <Link href="/contact">Contact</Link>
         {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
         {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span></a> : null}
-        <a href={profile.resumePath} download>Résumé</a>
+        <a href={profile.resumePath} target="_blank" rel="noopener">Résumé</a>
         <Link href="/projects">Projects</Link>
         <Link href="/workbench">Workbench</Link>
         <Link className="footer-utility" data-footer-utility href="/profile">Recruiter / AI brief</Link>

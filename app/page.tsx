@@ -53,7 +53,7 @@ export default function HomePage() {
             </div>
           </dl>
           <div className="hero-actions">
-            <a className="button button-primary" href={profile.resumePath} download>
+            <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
               Download résumé <DownloadSimple size={20} />
             </a>
           </div>
