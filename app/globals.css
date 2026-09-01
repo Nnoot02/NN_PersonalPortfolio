@@ -448,7 +448,7 @@ button { font: inherit; }
   .contact-hero--compact h1 { font-size: clamp(3.5rem, 16vw, 5rem); line-height: .86; }
   .contact-layout { gap: 2.5rem; grid-template-columns: 1fr; }
   .contact-actions { align-items: stretch; display: grid; gap: .75rem; }
-  .contact-actions .button { flex-wrap: nowrap; font-size: clamp(.75rem, 3.6vw, .86rem); gap: clamp(.125rem, 1.5vw, .65rem); max-width: 100%; min-width: 0; overflow-wrap: normal; padding-left: clamp(.125rem, 3vw, 1.5rem); padding-right: clamp(.125rem, 3vw, 1.5rem); width: 100%; }
+  .contact-actions .button { flex-wrap: nowrap; font-size: clamp(.5rem, 3.75vw, .86rem); gap: clamp(.125rem, 1.5vw, .65rem); max-width: 100%; min-width: 0; overflow-wrap: normal; padding-left: clamp(.125rem, 3vw, 1.5rem); padding-right: clamp(.125rem, 3vw, 1.5rem); white-space: nowrap; width: 100%; }
   .technical-snapshot { display: block; }
   .technical-snapshot .technical-snapshot-group[data-snapshot-group] { border-left: 0; padding: 1rem 0; }
   .technical-snapshot-heading { border-top: 1px solid var(--ink); }
