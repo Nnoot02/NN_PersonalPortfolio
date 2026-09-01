@@ -25,7 +25,7 @@ export const projects: Project[] = [
     title: "Commercial LV Cabling Design",
     summary:
       "Standards-traceable 400 V cabling design for a three-tenancy commercial complex: maximum demand, cable selection, earthing, and fault verification to AS/NZS 3000 and AS/NZS 3008.1.1.",
-    image: "/images/lv-cabling-design.webp",
+    image: "/images/lv-cabling-sld.svg",
     imageAlt: "One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards",
     imageIsDiagram: true,
     scope: "Power design, standards, verification",
@@ -40,7 +40,7 @@ export const projects: Project[] = [
     result:
       "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit passed the AS/NZS 3000 Table 8.1 earth-fault-loop limits.",
     evidenceStatus:
-      "Verified. Sanitised public write-up complete; full tabulated working held privately because standards tables are Standards Australia copyright.",
+      "Verified. Sanitised public write-up complete, including the full nine-step selection chain and the per-subcircuit results table; standards table data is cited by table number rather than reproduced (Standards Australia copyright).",
   },
   {
     slug: "solar-grid-connection-assessment",

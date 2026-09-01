@@ -327,7 +327,7 @@ for (const slug of caseStudySlugs) {
 
 // The one-line diagram is unreadable at mobile widths without the full-size file.
 const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
-const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-design\.webp"[^>]*>/)?.[0] ?? "";
+const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";
 check(fullSizeDiagramLink.length > 0, "LV case study must link the full-size one-line diagram");
 check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.includes("noopener"), "full-size diagram link must open in a new tab with noopener");
 
