@@ -34,7 +34,7 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
         <a href={profile.resumePath} target="_blank" rel="noopener">Résumé</a>
         <Link href="/projects">Projects</Link>
         <Link href="/workbench">Workbench</Link>
-        <Link className="footer-utility" data-footer-utility href="/profile">Recruiter / AI brief</Link>
+        <Link className="footer-utility" data-footer-utility href="/profile">Fact sheet</Link>
       </div>
     </footer>
   );

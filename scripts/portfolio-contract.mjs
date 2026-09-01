@@ -243,7 +243,7 @@ check(contactFooter.includes('data-footer-variant="compact"'), "contact must ren
 for (const compactFooterText of ["NATHAN NO-OT · ADELAIDE, SA", "Projects", "LinkedIn", "Résumé", "Workbench"]) {
   check(contactFooter.includes(compactFooterText), "compact contact footer must include: " + compactFooterText);
 }
-for (const forbiddenContactText of ["Contact", "Recruiter / AI brief", "Build power infrastructure with me.", "nathannoott@gmail.com", "Nov 2026", "Grad:", "SPEC-2026", "STANDARDS & TOOLING"]) {
+for (const forbiddenContactText of ["Contact", "Fact sheet", "Build power infrastructure with me.", "nathannoott@gmail.com", "Nov 2026", "Grad:", "SPEC-2026", "STANDARDS & TOOLING"]) {
   check(!contactFooter.includes(forbiddenContactText), "compact contact footer must omit: " + forbiddenContactText);
 }
 check(!contact.includes("Let's discuss engineering work."), "contact must not retain the old hero");
