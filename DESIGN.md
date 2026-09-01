@@ -288,6 +288,11 @@ The system has two surface modes:
 1. **Paper canvas** (`{colors.paper}`) — the default floor for every page.
 2. **Ink footer** (`{colors.ink}`) — the single dark surface, closing every
    page, where the accent warms to `{colors.footer-warm}` (#d88868).
+   `--footer-warm` and `--footer-line` were documented here as tokens but were
+   hardcoded hex in `globals.css` until 2026-09-02; they now exist in `:root`
+   and every footer rule reads them. Focus rings inside this surface use
+   `--footer-warm` (5.71:1 on ink), not `--accent-dark`, which measures 2.24:1
+   on ink and fails WCAG 2.2 SC 1.4.11.
 
 There is a third quiet surface, **paper-deep** (`{colors.paper-deep}` —
 #e8e3d9), used only as an image/placeholder backing and code-block background —
