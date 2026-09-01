@@ -66,8 +66,8 @@ export default async function ProjectPage({ params }: ProjectParams) {
         <h1>{project.title}</h1>
         <p className="case-status">{project.status}</p>
         <p className="case-lede">{project.summary}</p>
-        <ul className="tag-list case-tags" aria-label={`${project.title} skills`}>
-          {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+        <ul className="tag-list case-tags" aria-label={`${project.title} evidence markers`}>
+          {(project.evidenceMarkers ?? project.tags).map((marker) => <li key={marker}>{marker}</li>)}
         </ul>
         <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
         {project.imageIsDiagram ? (

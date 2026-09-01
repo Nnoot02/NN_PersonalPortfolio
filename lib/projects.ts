@@ -32,7 +32,7 @@ export const projects: Project[] = [
     role: "Sole designer (coursework)",
     status: "Evidence verified - sanitised write-up",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
-    evidenceMarkers: ["400 V", "AS/NZS 3000", "Cable sizing"],
+    evidenceMarkers: ["400 V 3-ph", "123.6 A design current", "0.74 % voltage drop", "AS/NZS 3008.1.1"],
     problem:
       "Design the complete LV cabling system for a three-tenancy commercial complex supplied at 400 V from a 500 kVA transformer, and prove every cable and protective device against AS/NZS 3000:2018 and AS/NZS 3008.1.1:2025.",
     approach:
@@ -55,7 +55,7 @@ export const projects: Project[] = [
     role: "Sole author (coursework technical assessment)",
     status: "Evidence verified - sanitised write-up",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
-    evidenceMarkers: ["1 MW", "Grid connection", "Standards"],
+    evidenceMarkers: ["1 MW AC", "SAPN TS132/TS133", "AS/NZS 4777.2", "PCC voltage rise"],
     problem:
       "Determine how a new 1 MW solar plant could be connected to the SA Power Networks distribution grid (the viable connection voltage, the power-quality and protection obligations, and whether storage is warranted), and justify each conclusion against the controlling standards and network requirements.",
     approach:
@@ -77,12 +77,13 @@ export const projects: Project[] = [
     role: "Systems planning and verification",
     status: "Active capstone—systems design in progress",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
+    evidenceMarkers: ["2212 ~920 KV", "T:W 1.9–2.2:1", "Gate ≥ 2.3:1", "55 % hover throttle"],
     problem:
       "Demonstrate credible indoor UAV autonomy without relying on GPS, while keeping safety, sensing limits, and verification visible.",
     approach:
       "Document requirements, architecture, estimator choices, obstacle detection, local planning, and staged test gates before flight claims.",
     result:
-      "Propulsion analysis puts the as-shipped 2212 (~920 KV) motors at roughly 1.9–2.2:1 thrust-to-weight carrying the full ~1.27 kg autonomy payload, hovering near 55 % throttle — under the ≥2.3:1 full-payload gate this project set for integrated flight. A 2216-class motor upgrade is budgeted, and the final part stays unordered until as-delivered thrust is measured on the bench. Flight results follow the same rule: I publish measured data, logs, and sanitised design decisions only.",
+      "Propulsion analysis puts the as-shipped 2212 (~920 KV) motors at roughly 1.9–2.2:1 thrust-to-weight carrying the full autonomy payload at ~1.27 kg all-up weight, hovering near 55 % throttle — under the ≥2.3:1 full-payload gate this project set for integrated flight. A 2216-class motor upgrade is budgeted, and the final part stays unordered until as-delivered thrust is measured on the bench. Flight results follow the same rule: I publish measured data, logs, and sanitised design decisions only.",
     evidenceStatus: "Planning material exists; flight and verification results are pending.",
   },
   {
