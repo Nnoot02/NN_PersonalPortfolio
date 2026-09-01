@@ -158,7 +158,7 @@ typography:
     fontFamily: '"Inter", Arial, sans-serif'
     fontSize: "1.05rem"
     fontWeight: 400
-    lineHeight: 1.8
+    lineHeight: 1.65
   principle-body:
     fontFamily: '"Inter", Arial, sans-serif'
     fontSize: "0.88rem"
@@ -383,7 +383,7 @@ display roles; Barlow Condensed is never set as body copy.
 | Meta label (dt) | Barlow Condensed | 0.75rem | 600 | 1.2 | 0.13em | Uppercase. 12px is the floor, do not lower. |
 | Button | Inter | 0.86rem | 600 | — | 0.06em | Uppercase. |
 | Body / summary | Inter | clamp(1rem, 1.4vw, 1.25rem) | 400 | 1.65 | — | Sentence case. |
-| Prose (about/contact) | Inter | 1.05rem | 400 | 1.8 | — | Sentence case. |
+| Prose (about/contact) | Inter | 1.05rem | 400 | 1.65 | — | Sentence case. |
 | Tag | Inter | 0.72rem | 400 | — | 0.08em | Uppercase (short label). |
 
 ### Principles
@@ -391,7 +391,7 @@ display roles; Barlow Condensed is never set as body copy.
 - **Display line-height runs tight on purpose.** Single-line display may go as
   low as 0.76. Any display that *wraps* must sit at ≥ 1.1 (the footer title is
   the reference case). Never ship a wrapping headline at lh 1.0.
-- **Body line-height stays open**, 1.55–1.8, for readability at the warm
+- **Body line-height stays open**, 1.55–1.7, for readability at the warm
   contrast levels.
 - **Body measure is capped at ~62ch** (`{layout.body-measure-max}`). Section
   intros, prose, and project descriptions carry an explicit `max-width` in `ch`
@@ -560,7 +560,7 @@ links wrap rather than clip on narrow screens.
 - Set every display headline in uppercase Barlow Condensed; keep Inter for
   body. The condensed-caps / humanist-body split is the identity.
 - Use the **accent-rule bar** as the section/row marker.
-- Cap body measure at ~62ch and keep body line-height 1.55–1.8.
+- Cap body measure at ~62ch and keep body line-height 1.55–1.7.
 - Keep corners square; reserve the pill radius for the case-status token only.
 - Make eyebrows carry information (breadcrumb-style location/role/availability).
 

@@ -225,7 +225,7 @@ button { font: inherit; }
 .contact-hero--compact h1 { font-size: clamp(4rem, 6.2vw, 6.25rem); line-height: .82; margin-bottom: 1.25rem; overflow-wrap: normal; text-wrap: balance; word-break: normal; }
 .contact-layout { align-items: stretch; display: grid; gap: clamp(1.25rem, 2vw, 1.75rem); grid-template-columns: 1fr; width: 100%; }
 .contact-column { border-bottom: 0; min-width: 0; padding-bottom: 0; }
-.contact-intro { color: var(--muted); font-size: 1.05rem; line-height: 1.8; margin: 0; max-width: 62ch; }
+.contact-intro { color: var(--muted); font-size: 1.05rem; line-height: 1.65; margin: 0; max-width: 62ch; }
 .contact-details { min-width: 0; }
 .technical-snapshot { display: grid; gap: 0; grid-template-areas: "heading heading" "role study" "path path" "verified build"; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; }
 .technical-snapshot-heading { border-bottom: 1px solid var(--line); padding: .7rem 0; }
@@ -250,7 +250,7 @@ button { font: inherit; }
 .about-story { padding: clamp(2.75rem, 4vw, 3.5rem) 6vw; }
 .about-story-intro { align-items: start; display: grid; gap: clamp(2.5rem, 4vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
 .about-story-intro h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); text-transform: uppercase; margin: 0; }
-.about-story-intro > p { color: var(--muted); font-size: 1.05rem; line-height: 1.8; margin: 0; max-width: 62ch; }
+.about-story-intro > p { color: var(--muted); font-size: 1.05rem; line-height: 1.65; margin: 0; max-width: 62ch; }
 .about-story-grid { border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 3vw, 3rem); }
 .about-story-grid article { min-width: 0; padding: clamp(1.5rem, 2.5vw, 2.25rem); }
 .about-story-grid article:first-child { padding-left: 0; }
@@ -293,7 +293,7 @@ button { font: inherit; }
 .tools-evidence-line > span:last-child { color: var(--muted); font-size: .82rem; line-height: 1.5; }
 .tools-evidence-state { color: var(--ink); font: 600 .72rem/1.2 var(--display); letter-spacing: .1em; text-transform: uppercase; }
 .tools-proof-mobile { display: none; }
-.prose { max-width: 620px; color: var(--muted); font-size: 1.05rem; line-height: 1.8; }
+.prose { max-width: 620px; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
 
 .case-study { padding: 4rem 6vw 7rem; }
 .back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: 5rem; }
@@ -321,7 +321,7 @@ button { font: inherit; }
 .writeup-heading { border-top: 1px solid var(--ink); padding-top: 2rem; }
 .writeup-heading h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 /* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
-.writeup p { color: var(--muted); line-height: 1.75; max-width: 62ch; }
+.writeup p { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
 .gate-list { display: grid; gap: 1.8rem; list-style: none; margin: 1.4rem 0 0; padding: 0; }
 .gate-list > li { border-top: 1px solid var(--line); padding-top: 1rem; }
