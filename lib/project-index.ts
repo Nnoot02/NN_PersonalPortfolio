@@ -91,6 +91,21 @@ export const projectIndexEntries: readonly ProjectIndexEntry[] = projectIndexSlu
   return { project: requireUniqueProject(slug), ...indexContent };
 });
 
+// Sub-discipline grouping for /projects. Order across all groups must stay
+// LV -> Solar -> UAV, which the contract asserts on the rendered DOM.
+export const projectIndexGroups = [
+  {
+    id: "power-systems",
+    heading: "Power Systems & Grid Integration",
+    slugs: ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"],
+  },
+  {
+    id: "embedded-hardware",
+    heading: "Embedded & Hardware",
+    slugs: ["gps-denied-autonomous-uav"],
+  },
+] as const satisfies readonly { id: string; heading: string; slugs: readonly ProjectIndexSlug[] }[];
+
 export const projectIndexRelation = {
   sourceSlug: "lv-cabling-design-commercial-complex",
   targetSlug: "solar-grid-connection-assessment",

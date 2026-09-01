@@ -596,8 +596,13 @@ design cycle approves it.
 - Raster art contains no text, values, graphs, pass marks, or fabricated
   evidence. HTML carries title, ownership, state, stage labels, and CTA.
 - Desktop uses a static asymmetric atlas. Mobile, keyboard, screen-reader, and
-  print order remains LV, Solar, UAV, then the non-linked manufacturing
-  lens.
+  print order remains LV, Solar, UAV. The non-linked manufacturing lens was
+  removed on 2026-09-01; `scripts/portfolio-contract.mjs` now forbids it, and
+  code wins over this file by the rule stated at the top of this document.
+- Lanes are grouped by sub-discipline under visible headings: Power Systems &
+  Grid Integration (LV, Solar) and Embedded & Hardware (UAV). The grouping is
+  carried by an uppercase heading and a 1px rule, never by colour, and the
+  heading level sits above the lane titles (h3 group, h4 lane).
 - GPS uses the current production miniature under Nathan's explicit interim
   illustration waiver. It remains navigation, never evidence, and may be
   replaced later without markup changes. HTML stages remain planning resolved,

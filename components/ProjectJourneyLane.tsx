@@ -32,7 +32,7 @@ export function ProjectJourneyLane({ entry, relation }: { entry: ProjectIndexEnt
               </span>
               <div className="project-journey-copy">
                 <span className="project-journey-state">{entry.stateLabel}</span>
-                <h3 className="project-journey-title">{entry.project.title}</h3>
+                <h4 className="project-journey-title">{entry.project.title}</h4>
                 <span className="project-journey-action" aria-hidden="true">
                   {entry.ctaLabel} <ArrowRight size={18} weight="regular" />
                 </span>
