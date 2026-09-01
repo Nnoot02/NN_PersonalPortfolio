@@ -216,7 +216,7 @@ for (const toolEvidence of [
 check(globalsCss.includes(".tools-proof-mobile { display: none; }"), "desktop must hide the mobile proof ledger");
 check(globalsCss.includes(".tools-network-desktop, .tools-network-desktop-only { display: none; }"), "mobile must hide the desktop network");
 check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile must show the proof-led ledger");
-const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.";
+const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and practical electrical engineering.";
 const contactSnapshot = contact.match(/<aside[^>]*data-technical-snapshot[^>]*>[\s\S]*?<\/aside>/)?.[0] ?? "";
 const contactFooter = contact.match(/<footer[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
 check(contact.includes('class="page-hero contact-hero contact-hero--compact"'), "contact must use the compact hero treatment");

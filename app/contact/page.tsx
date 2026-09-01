@@ -22,7 +22,7 @@ export default function ContactPage() {
             <p className="eyebrow">CONTACT</p>
             <h1>EMAIL WORKS BEST.</h1>
             <div className="contact-details" data-contact-details>
-              <p className="contact-intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations—especially around power systems, grid integration, and practical electrical engineering.</p>
+              <p className="contact-intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and practical electrical engineering.</p>
               <div className="contact-actions">
                 <a className="button button-primary contact-email-link" href={"mailto:" + profile.contactEmail}>
                   <EnvelopeSimple size={20} /> {profile.contactEmail}

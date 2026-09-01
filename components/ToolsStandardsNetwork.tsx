@@ -157,7 +157,7 @@ export function ToolsStandardsNetwork() {
                   <span className="tools-evidence-state">{edge.state}</span>
                   <span>
                     {otherNode?.slug ? <Link className="text-link" href={`/projects/${otherNode.slug}`}>{otherNode.label}</Link> : <strong>{otherNode?.label}</strong>}
-                    {` — ${edge.detail}`}
+                    {`: ${edge.detail}`}
                   </span>
                 </li>
               );

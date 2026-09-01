@@ -49,7 +49,7 @@ export default function HomePage() {
             </div>
             <div>
               <dt>Articulating</dt>
-              <dd>BE Electrical &amp; Electronic, Adelaide University — expected 2028</dd>
+              <dd>BE Electrical &amp; Electronic, Adelaide University (expected 2028)</dd>
             </div>
           </dl>
           <div className="hero-actions">

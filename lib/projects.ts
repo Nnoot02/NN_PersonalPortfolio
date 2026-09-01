@@ -75,7 +75,7 @@ export const projects: Project[] = [
     imageAlt: "Quadcopter prototype with companion computer and depth camera on a lab bench",
     scope: "Autonomy, controls, estimation",
     role: "Systems planning and verification",
-    status: "Active capstone—systems design in progress",
+    status: "Active capstone · systems design in progress",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
     evidenceMarkers: ["2212 ~920 KV", "T:W 1.9–2.2:1", "Gate ≥ 2.3:1", "55 % hover throttle"],
     problem:
@@ -83,7 +83,7 @@ export const projects: Project[] = [
     approach:
       "Document requirements, architecture, estimator choices, obstacle detection, local planning, and staged test gates before flight claims.",
     result:
-      "Propulsion analysis puts the as-shipped 2212 (~920 KV) motors at roughly 1.9–2.2:1 thrust-to-weight carrying the full autonomy payload at ~1.27 kg all-up weight, hovering near 55 % throttle — under the ≥2.3:1 full-payload gate this project set for integrated flight. A 2216-class motor upgrade is budgeted, and the final part stays unordered until as-delivered thrust is measured on the bench. Flight results follow the same rule: I publish measured data, logs, and sanitised design decisions only.",
+      "Propulsion analysis puts the as-shipped 2212 (~920 KV) motors at roughly 1.9–2.2:1 thrust-to-weight carrying the full autonomy payload at ~1.27 kg all-up weight, hovering near 55 % throttle, under the ≥2.3:1 full-payload gate this project set for integrated flight. A 2216-class motor upgrade is budgeted, and the final part stays unordered until as-delivered thrust is measured on the bench. Flight results follow the same rule: I publish measured data, logs, and sanitised design decisions only.",
     evidenceStatus: "Planning material exists; flight and verification results are pending.",
   },
   {
@@ -108,7 +108,7 @@ export const projects: Project[] = [
   },
 ];
 
-// Featured projects for the Home and Profile pages — a maximum of three,
+// Featured projects for the Home and Profile pages, a maximum of three,
 // shown in this explicit order (not the case-study numbering order).
 export const verifiedPowerSlugs = [
   "lv-cabling-design-commercial-complex",
