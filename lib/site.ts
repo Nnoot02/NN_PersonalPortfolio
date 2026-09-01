@@ -1,6 +1,17 @@
 import type { Project } from "@/lib/projects";
 
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+// Production builds must be given the real origin. Without this guard an unset
+// variable silently ships http://localhost:3000 into og:url, sitemap.xml,
+// robots.txt and the Person JSON-LD. The localhost default is for next dev only.
+if (!configuredSiteUrl && process.env.NODE_ENV === "production") {
+  throw new Error(
+    'NEXT_PUBLIC_SITE_URL must be set for a production build. Example: $env:NEXT_PUBLIC_SITE_URL = "https://nnoott.com"',
+  );
+}
+
+export const siteUrl = configuredSiteUrl || "http://localhost:3000";
 
 export const profile = {
   name: "Nathan No-ot",
