@@ -23,7 +23,7 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
     <footer className="site-footer" data-footer-variant="default">
       <div>
         <p className="footer-kicker">Available for South Australian internships.</p>
-        <p className="footer-title">Build power infrastructure with me.</p>
+        <p className="footer-title">Ask me about my work.</p>
         <p className="footer-summary">Nathan No-ot · Electrical engineering student</p>
         <p className="footer-location">Adelaide, South Australia</p>
       </div>

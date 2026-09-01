@@ -46,7 +46,7 @@ const globalsCss = readFileSync(new URL("../app/globals.css", import.meta.url), 
 
 check(home.includes("Electrical engineering student · Adelaide"), "home hero eyebrow must state electrical-engineering student and Adelaide");
 check(home.includes("Power systems and grid integration"), "home hero must state power-systems and grid-integration positioning");
-check(home.includes("I design from standards and verify decisions with calculations, backed by Australian solar-manufacturing experience."), "home hero must use approved comma-separated standards-and-manufacturing copy");
+check(home.includes("I design to AS/NZS standards and publish the working, so please feel free to check it."), "home hero must use approved standards-and-published-working copy");
 check(!home.includes("calculations—backed"), "home hero must not retain the em-dash summary");
 check(home.includes("Nathan") && home.includes("No-ot"), "home hero must render Nathan No-ot");
 const homeWordmark = home.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
@@ -131,7 +131,7 @@ check(heroIndex >= 0 && heroIndex < ledgerIndex && ledgerIndex < epilogueIndex &
 check(/data-homepage-epilogue[\s\S]*?<\/section>\s*<footer\b/.test(home), "footer must immediately follow homepage epilogue");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
 const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
-check(footer.includes("Build power infrastructure with me."), "footer must use approved power-infrastructure lead");
+check(footer.includes("Ask me about my work."), "footer must use approved ask-about-my-work lead");
 check(footer.includes("Available for South Australian internships."), "footer must use approved internship availability support");
 for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
   check(footer.includes(`href="${destination}"`), `footer must link ${destination}`);
@@ -243,7 +243,7 @@ check(contactFooter.includes('data-footer-variant="compact"'), "contact must ren
 for (const compactFooterText of ["NATHAN NO-OT · ADELAIDE, SA", "Projects", "LinkedIn", "Résumé", "Workbench"]) {
   check(contactFooter.includes(compactFooterText), "compact contact footer must include: " + compactFooterText);
 }
-for (const forbiddenContactText of ["Contact", "Fact sheet", "Build power infrastructure with me.", "nathannoott@gmail.com", "Nov 2026", "Grad:", "SPEC-2026", "STANDARDS & TOOLING"]) {
+for (const forbiddenContactText of ["Contact", "Fact sheet", "Ask me about my work.", "nathannoott@gmail.com", "Nov 2026", "Grad:", "SPEC-2026", "STANDARDS & TOOLING"]) {
   check(!contactFooter.includes(forbiddenContactText), "compact contact footer must omit: " + forbiddenContactText);
 }
 check(!contact.includes("Let's discuss engineering work."), "contact must not retain the old hero");

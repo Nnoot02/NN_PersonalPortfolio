@@ -33,7 +33,7 @@ export default function HomePage() {
            <h1 className="hero-name"><span>Nathan</span>{" "}<span className="hero-surname">No-ot</span></h1>
           <span className="accent-rule" aria-hidden="true" />
           <p className="hero-role">Power systems and grid integration</p>
-          <p className="hero-summary">I design from standards and verify decisions with calculations, backed by Australian solar-manufacturing experience.</p>
+          <p className="hero-summary">I design to AS/NZS standards and publish the working, so please feel free to check it.</p>
           <dl className="hero-credential">
             <div>
               <dt>Currently</dt>
@@ -74,7 +74,7 @@ export default function HomePage() {
 
       <section className="featured evidence-ledger-section" id="verified-work" aria-labelledby="verified-work-heading">
         <div className="section-heading">
-          <p className="eyebrow">Verified power engineering</p>
+          <p className="eyebrow">AS/NZS 3000 and 3008.1.1</p>
           <h2 id="verified-work-heading">Power Systems Work</h2>
           <p>Completed studies showing decisions, standards, calculations, and limitations.</p>
         </div>
