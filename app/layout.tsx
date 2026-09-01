@@ -26,11 +26,30 @@ export const metadata: Metadata = {
     "GPS-denied UAV",
     "DFMA",
   ],
+  // "./" resolves against the current route. A literal "/" would make every
+  // page claim the homepage as its canonical and its og:url.
+  alternates: { canonical: "./" },
   openGraph: {
     title: "Nathan No-ot | Solar Power Systems Portfolio",
     description: profile.summary,
     type: "profile",
-    url: "/",
+    url: "./",
+    siteName: "Nathan No-ot",
+    locale: "en_AU",
+    images: [
+      {
+        url: "/images/og-card.png",
+        width: 1200,
+        height: 630,
+        alt: "Nathan No-ot, electrical engineering student in Adelaide - power systems and grid integration",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nathan No-ot | Solar Power Systems Portfolio",
+    description: profile.summary,
+    images: ["/images/og-card.png"],
   },
 };
 
