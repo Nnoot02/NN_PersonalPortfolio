@@ -867,6 +867,27 @@ async function main() {
   if (!menuRetainsFocus) failures.push(`/ mobile menu: Escape does not return focus to menu button`);
   await mobilePage.close();
 
+  // The homepage lede takes text-wrap: balance, and is deliberately excluded from
+  // the text-wrap: pretty rule in globals.css. That rule is later in the file at
+  // equal specificity, so re-adding .hero-summary to it would silently revert the
+  // balance to pretty with nothing else failing. Assert the computed value.
+  const ledePage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await ledePage.goto(`${base}/`, { waitUntil: "networkidle" });
+  await ledePage.evaluate(() => document.fonts.ready);
+  const lede = await ledePage.evaluate(() => {
+    const node = document.querySelector(".hero-summary");
+    if (!node) return null;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    return { textWrap: getComputedStyle(node).textWrap, lines: range.getClientRects().length };
+  });
+  if (!lede) failures.push("/ @ 1440x900: .hero-summary is missing");
+  else {
+    if (lede.textWrap !== "balance") failures.push(`/ @ 1440x900: .hero-summary text-wrap is ${lede.textWrap}, expected balance`);
+    if (lede.lines !== 2) failures.push(`/ @ 1440x900: .hero-summary wraps to ${lede.lines} lines, expected 2`);
+  }
+  await ledePage.close();
+
   await browser.close();
   server.close();
 
