@@ -174,6 +174,12 @@ async function main() {
           if (focus.outlineStyle === "none" || focus.outlineWidth < 2) failures.push(`/ @ ${width}x${height}: portal ${index + 1} lacks non-colour focus outline`);
           if (focus.width < 44 || focus.height < 44) failures.push(`/ @ ${width}x${height}: portal ${index + 1} misses 44px touch target`);
         }
+
+        // .hero-role is --accent, which measures 4.12:1 on paper: AA only at
+        // large-text size (24px at weight 600). DESIGN.md forbids the accent
+        // below that size, so pin the computed size at every viewport.
+        const heroRoleSize = await page.locator(".hero-role").evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+        if (heroRoleSize < 24) failures.push(`/ @ ${width}x${height}: .hero-role is ${heroRoleSize}px, below the 24px large-text floor its accent colour needs`);
       }
       if (route === "/about") {
         const desktopNetwork = page.locator("[data-tools-desktop-network]");

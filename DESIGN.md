@@ -83,7 +83,7 @@ typography:
     textTransform: uppercase
   hero-role:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
-    fontSize: "clamp(1.25rem, 2.2vw, 2rem)"
+    fontSize: "clamp(1.5rem, 2.2vw, 2rem)"
     fontWeight: 600
     lineHeight: 1
     letterSpacing: "0.08em"
@@ -383,7 +383,7 @@ display roles; Barlow Condensed is never set as body copy.
 | Section heading h2 | Barlow Condensed | clamp(2.4rem, 4vw, 4rem) | 600 | 0.95 | — | Uppercase. |
 | Project title | Barlow Condensed | clamp(2rem, 3.5vw, 3.2rem) | 600 | 0.95 | — | Uppercase. |
 | Footer title | Barlow Condensed | clamp(2rem, 4vw, 3.8rem) | 600 | 1.1 | — | Uppercase; **wraps to 2 lines, so lh ≥ 1.1** (never 1.0). |
-| Hero role | Barlow Condensed | clamp(1.25rem, 2.2vw, 2rem) | 600 | 1 | 0.08em | Uppercase, accent-colored (large → #c84b1a OK). |
+| Hero role | Barlow Condensed | clamp(1.5rem, 2.2vw, 2rem) | 600 | 1 | 0.08em | Uppercase, accent-colored. **The 1.5rem floor is the contrast rule, not taste:** 2.2vw stays under 24px until 1091px, so a lower floor puts 4.12:1 accent below large-text size on every phone and tablet. |
 | Eyebrow | Barlow Condensed | 0.78rem | 600 | 1.2 | 0.18em | Uppercase, **accent-dark**. Must carry information. |
 | Meta label (dt) | Barlow Condensed | 0.75rem | 600 | 1.2 | 0.13em | Uppercase. 12px is the floor, do not lower. |
 | Button | Inter | 0.86rem | 600 | — | 0.06em | Uppercase. |

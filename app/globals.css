@@ -88,7 +88,7 @@ button { font: inherit; }
 .hero-name { display: flex; flex-wrap: wrap; gap: 0 .18em; font: 700 clamp(2.75rem, 6vw, 5.5rem)/.86 var(--display); text-transform: uppercase; letter-spacing: -.025em; margin: 0; }
 .hero-name span { white-space: nowrap; }
 .hero-surname { color: var(--accent); }
-.hero-role { color: var(--accent); font: 600 clamp(1.25rem, 2.2vw, 2rem)/1 var(--display); text-transform: uppercase; letter-spacing: .08em; margin: 0; }
+.hero-role { color: var(--accent); font: 600 clamp(1.5rem, 2.2vw, 2rem)/1 var(--display); text-transform: uppercase; letter-spacing: .08em; margin: 0; }
 .accent-rule { display: block; flex: 0 0 auto; width: 34px; height: 3px; background: var(--accent); margin: 0; }
 /* balance, not pretty: the lede is two lines, where pretty only protects the
    last one. Deliberately excluded from the text-wrap: pretty rule below, which
