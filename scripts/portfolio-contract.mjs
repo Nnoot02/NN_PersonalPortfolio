@@ -104,6 +104,21 @@ check(!profile.includes("Recruiter &amp; AI Brief"), "profile must not retain th
 check(!resume.includes("Download resume"), "resume page must use the accented résumé spelling on its download button");
 check(!profile.includes("Download resume"), "profile page must use the accented résumé spelling on its download button");
 check(resume.includes("Plain-text résumé"), "resume page must use the accented résumé spelling on the plain-text link");
+
+// C1: the plain-text résumé must match the site's positioning (decision
+// 2026-09-02; summary sentence approved 2026-09-03).
+const resumeText = readExport("/nathan-noot-electrical-embedded-resume.txt");
+for (const role of ["Electrical engineering student placement", "Power systems internship", "Solar and grid-integration internship", "Electrical engineering student opportunity"]) {
+  check(resumeText.includes(`- ${role}`), `plain-text résumé must list target role: ${role}`);
+}
+for (const stale of ["Graduate electrical engineer", "Defence engineering graduate", "Power engineering graduate"]) {
+  check(!resumeText.includes(stale), `plain-text résumé must not retain the graduate-role positioning: ${stale}`);
+}
+check(!resumeText.includes("building toward graduate electrical engineering work"), "plain-text résumé summary must not retain the graduate positioning");
+// Deliberate deviation from C2's accent rule: this file is machine-read by ATS
+// parsers and terminals, and shipped 5515 bytes with zero non-ASCII. C2 governs
+// visible site copy; here ASCII safety wins. Pinned so it is not "fixed" later.
+check(!/[^\x00-\x7F]/.test(resumeText), "the plain-text résumé must stay pure ASCII for machine parsers");
 check(home.includes('id="primary-navigation"'), "primary navigation must expose id for mobile aria-controls");
 check(home.includes('aria-controls="primary-navigation"'), "menu button must control primary navigation");
 

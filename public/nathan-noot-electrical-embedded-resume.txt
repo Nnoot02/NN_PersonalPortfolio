@@ -7,18 +7,18 @@ SUMMARY
 Electrical and electronics engineering student in South Australia, completing
 an Associate Degree in Electronics Engineering at TAFE SA and articulating to a
 Bachelor of Electrical and Electronic Engineering at Adelaide University,
-expected 2028. I am building toward graduate electrical engineering work across
-power, embedded systems, controls, UAV systems, manufacturing, DFMA, and
-verification. My strongest evidence combines standards-informed power-system
+expected 2028. I am looking for a student placement or internship in power
+systems, solar and grid integration, where standards-based design and verified
+working matter. My strongest evidence combines standards-informed power-system
 coursework, solar manufacturing exposure, practical electronics projects, and
 technical documentation.
 
 TARGET ROLES
 
-- Graduate electrical engineer
-- Power engineering graduate
-- Defence engineering graduate
-- Embedded systems, controls, or systems engineering graduate
+- Electrical engineering student placement
+- Power systems internship
+- Solar and grid-integration internship
+- Electrical engineering student opportunity
 
 SKILLS
 
@@ -116,7 +116,7 @@ Expected 2028 through articulation pathway
 
 PUBLIC DISCLOSURE NOTE
 
-This general resume is prepared for a public portfolio. It omits phone number
+This resume is prepared for a public portfolio. It omits phone number
 and street address, keeps employer-sensitive details at a high level, and marks
 current project outcomes as pending where measured evidence is not yet ready
 for publication.
