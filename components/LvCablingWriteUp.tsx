@@ -57,7 +57,7 @@ export function LvCablingWriteUp() {
           soil 20 °C, 15 m route. AS/NZS 3008.1.1:2025 Table 3.8 routes this
           arrangement to Table 3.13, Column 19 (separately enclosed).
         </p>
-        <pre>{`Step 1  Design current    Ib = 123.6 A (heaviest phase)
+        <pre tabIndex={0} role="region" aria-label="Consumer mains selection chain, worked steps">{`Step 1  Design current    Ib = 123.6 A (heaviest phase)
 Step 2  Protective device In = 125 A Type C   (Ib <= In)
 Step 3  Install method    Table 3.8 -> Table 3.13, Col 19
 Step 4  Correction        k = 1.04 (soil, T3.45) x 0.99 (depth, T3.46)
@@ -83,7 +83,7 @@ SELECT  25 mm2 X-90 Cu active and neutral; 6 mm2 Cu earth`}</pre>
           3.8 routes this to Table 3.12, Column 17. Combined correction k = 1.05 × 0.95
           = 1.00. The butcher submain governs.
         </p>
-        <pre>{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
+        <pre tabIndex={0} role="region" aria-label="Butcher submain selection chain, worked steps">{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
 Step 4  k = 1.00 -> required CCC >= 50 A
 Step 5  6 mm2 -> 45 A (fail); 10 mm2 -> 59 A (pass); Iz = 59 A
         Ib 41.8 <= In 50 <= Iz 59  OK
@@ -105,7 +105,7 @@ SELECT  10 mm2 V-75 Cu; 4 mm2 Cu earth
           4 mm², the single most consequential installation-condition decision in
           the design.
         </p>
-        <div className="table-scroll">
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="Final subcircuit schedule">
           <table>
             <thead>
               <tr>
@@ -154,7 +154,7 @@ SELECT  10 mm2 V-75 Cu; 4 mm2 Cu earth
 
       <div className="writeup-block">
         <h3>Fault level and earth-fault loop</h3>
-        <pre>{`Source impedance  Zs = 400 / (sqrt3 x 15 000) = 0.0154 ohm/phase
+        <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (sqrt3 x 15 000) = 0.0154 ohm/phase
 Consumer mains    R  = 0.884 x 15 / 1000     = 0.0133 ohm
 Z at MSB   = 0.0154 + 0.0133 = 0.0287 ohm
 PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>

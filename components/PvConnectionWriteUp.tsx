@@ -29,7 +29,7 @@ export function PvConnectionWriteUp() {
           figures, the confusion that most affects the connection design. The
           assessment tracked each independently:
         </p>
-        <div className="table-scroll">
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="Plant capacity definitions">
           <table>
             <thead>
               <tr>
@@ -63,7 +63,7 @@ export function PvConnectionWriteUp() {
           33 kV) is often more practical: lower current, better voltage control,
           simpler protection coordination.
         </p>
-        <pre>{`Why HV is usually more practical at 1 MW
+        <pre tabIndex={0} role="region" aria-label="LV versus HV connection comparison">{`Why HV is usually more practical at 1 MW
   LV (TS132)   ~1443 A at 400 V 3-phase export  -> heavy switchgear/cabling
   HV (TS133)   11 kV or 33 kV                    -> lower current, easier
                                                     voltage + protection

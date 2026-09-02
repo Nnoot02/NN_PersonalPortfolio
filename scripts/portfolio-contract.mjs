@@ -368,6 +368,15 @@ const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabli
 check(fullSizeDiagramLink.length > 0, "LV case study must link the full-size one-line diagram");
 check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.includes("noopener"), "full-size diagram link must open in a new tab with noopener");
 
+// Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
+// be a named region so the stop announces what it is (WCAG 4.1.2).
+for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"]) {
+  const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
+  for (const block of [...(writeUp.match(/<pre\b[^>]*>/g) ?? []), ...(writeUp.match(/<div[^>]*class="table-scroll"[^>]*>/g) ?? [])]) {
+    check(block.includes('role="region"') && /aria-label="[^"]+"/.test(block) && block.includes('tabindex="0"'), `${slug}: scrollable block must be a named focusable region: ${block.slice(0, 60)}`);
+  }
+}
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",
