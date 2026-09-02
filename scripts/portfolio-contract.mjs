@@ -115,6 +115,10 @@ for (const stale of ["Graduate electrical engineer", "Defence engineering gradua
   check(!resumeText.includes(stale), `plain-text résumé must not retain the graduate-role positioning: ${stale}`);
 }
 check(!resumeText.includes("building toward graduate electrical engineering work"), "plain-text résumé summary must not retain the graduate positioning");
+// Settled 2026-09-03 against the coursework title page, which reads
+// "THREE-TENANCY COMPLEX (SUPERMARKET, HAIRDRESSER, BUTCHER) WITH COMMUNAL
+// SERVICES". Communal is shared services at the MSB, not a fourth tenancy.
+check(!resumeText.includes("four-tenancy"), "plain-text résumé must not call the LV complex four-tenancy");
 // Deliberate deviation from C2's accent rule: this file is machine-read by ATS
 // parsers and terminals, and shipped 5515 bytes with zero non-ASCII. C2 governs
 // visible site copy; here ASCII safety wins. Pinned so it is not "fixed" later.
