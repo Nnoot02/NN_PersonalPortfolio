@@ -235,6 +235,11 @@ for (const toolEvidence of [
 check(globalsCss.includes(".tools-proof-mobile { display: none; }"), "desktop must hide the mobile proof ledger");
 check(globalsCss.includes(".tools-network-desktop, .tools-network-desktop-only { display: none; }"), "mobile must hide the desktop network");
 check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile must show the proof-led ledger");
+
+// 12px label floor (set for buttons in b2670b2, extended to labels 2026-09-02).
+// Print styles are excluded: the only remaining .72rem is inside @media print.
+const screenCss = globalsCss.replace(/@media print \{[\s\S]*?\n\}/, "");
+check(!/font(?:-size)?:[^;]*\s\.7[0-4]?rem/.test(screenCss), "screen labels must not set a font size below .75rem (12px)");
 const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and practical electrical engineering.";
 const contactSnapshot = contact.match(/<aside[^>]*data-technical-snapshot[^>]*>[\s\S]*?<\/aside>/)?.[0] ?? "";
 const contactFooter = contact.match(/<footer[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";

@@ -186,7 +186,7 @@ typography:
     textTransform: uppercase
   tag:
     fontFamily: '"Inter", Arial, sans-serif'
-    fontSize: "0.72rem"
+    fontSize: "0.75rem"
     fontWeight: 400
     letterSpacing: "0.08em"
     textTransform: uppercase
@@ -389,7 +389,7 @@ display roles; Barlow Condensed is never set as body copy.
 | Button | Inter | 0.86rem | 600 | — | 0.06em | Uppercase. |
 | Body / summary | Inter | clamp(1rem, 1.4vw, 1.25rem) | 400 | 1.65 | — | Sentence case. |
 | Prose (about/contact) | Inter | 1.05rem | 400 | 1.65 | — | Sentence case. |
-| Tag | Inter | 0.72rem | 400 | — | 0.08em | Uppercase (short label). |
+| Tag | Inter | 0.75rem | 400 | — | 0.08em | Uppercase (short label). 12px is the floor, do not lower. |
 
 ### Principles
 
@@ -527,7 +527,7 @@ divided by vertical `{colors.line}` rules. `dt` is `{typography.meta-label}`
 (Barlow Condensed 0.75rem uppercase, 0.13em); `dd` is muted 0.78rem.
 
 **`tag`** — Square outlined chip, 1px `{colors.line}` border, muted text,
-`{typography.tag}` (Inter 0.72rem uppercase). Never filled.
+`{typography.tag}` (Inter 0.75rem uppercase). Never filled.
 
 ### Case-study status pill
 
