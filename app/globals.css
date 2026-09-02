@@ -1,3 +1,33 @@
+/* Metric-matched fallback for the display face.
+   Barlow Condensed is self-hosted with font-display: swap, so during the swap
+   window headings render in Arial Narrow, which sets 19 to 26 per cent wider.
+   size-adjust scales the fallback to Barlow's measured advance width so the
+   text does not visibly snap when the webfont arrives.
+
+   Two faces because the ratio is weight-dependent: measured 79.8% at 600 and
+   84.0% at 700 against the built site. One face would leave a 5% residual on
+   .hero-name and .wordmark, which are the largest type on the page.
+
+   Inert where Arial Narrow is absent (commonly macOS and Linux): the local()
+   src matches nothing and the stack falls through to the untouched tail. */
+@font-face {
+  font-family: "Barlow Condensed Fallback";
+  src: local("Arial Narrow");
+  font-weight: 600;
+  size-adjust: 79.8%;
+  ascent-override: 125.3%;
+  descent-override: 25.1%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Barlow Condensed Fallback";
+  src: local("Arial Narrow");
+  font-weight: 700;
+  size-adjust: 84.0%;
+  ascent-override: 119.0%;
+  descent-override: 23.8%;
+  line-gap-override: 0%;
+}
 :root {
   --paper: #f3f0e9;
   --paper-deep: #e8e3d9;
@@ -9,7 +39,7 @@
   --footer-warm: #d88868;
   --footer-line: #5d5a55;
   --white: #fffdfa;
-  --display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
   --body: "Inter", Arial, sans-serif;
 }
 
