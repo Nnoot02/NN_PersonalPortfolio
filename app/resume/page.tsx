@@ -5,9 +5,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { profile } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Resume",
+  title: "Résumé",
   description:
-    "Electrical engineering student resume focused on solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience.",
+    "Electrical engineering student résumé focused on solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience.",
 };
 
 export default function ResumePage() {
@@ -15,11 +15,11 @@ export default function ResumePage() {
     <main id="main-content">
       <SiteHeader />
       <section className="page-hero resume-hero">
-        <p className="eyebrow">Resume</p>
-        <h1>Solar power<br />{" "}student resume.</h1>
-        <p>This public resume leads with solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. Phone number and street address are left off the public copy.</p>
+        <p className="eyebrow">Résumé</p>
+        <h1>Solar power<br />{" "}student résumé.</h1>
+        <p>This public résumé leads with solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. Phone number and street address are left off the public copy.</p>
         <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
-          Download resume<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
+          Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
         </a>
       </section>
       <section className="profile-summary" aria-labelledby="resume-summary-heading">
@@ -43,7 +43,7 @@ export default function ResumePage() {
           </div>
           <div>
             <dt>Text copy</dt>
-            <dd><a className="text-link" href={profile.resumeTextPath}>Plain-text resume</a></dd>
+            <dd><a className="text-link" href={profile.resumeTextPath}>Plain-text résumé</a></dd>
           </div>
         </dl>
       </section>

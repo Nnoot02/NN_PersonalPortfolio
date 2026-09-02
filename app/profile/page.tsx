@@ -8,7 +8,7 @@ import { featuredProjects } from "@/lib/projects";
 import { absoluteUrl, personStructuredData, profile } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Recruiter & AI Brief",
+  title: "Fact sheet",
   description:
     "Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration.",
 };
@@ -30,7 +30,7 @@ export default function ProfilePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData) }}
       />
       <section className="page-hero profile-hero">
-        <p className="eyebrow">Recruiter / AI brief</p>
+        <p className="eyebrow">Fact sheet</p>
         <h1>My profile,<br />{" "}in plain text.</h1>
         <p>{profile.summary}</p>
         <div className="hero-actions">
@@ -38,7 +38,7 @@ export default function ProfilePage() {
             Review evidence <ArrowRight size={20} />
           </Link>
           <a className="button button-secondary" href={profile.resumePath} target="_blank" rel="noopener">
-            Download resume<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
+            Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
           </a>
         </div>
       </section>

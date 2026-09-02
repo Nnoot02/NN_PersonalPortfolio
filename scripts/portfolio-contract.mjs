@@ -96,6 +96,14 @@ check(canonicalResumeBytes !== null && aliasResumeBytes !== null && aliasResumeB
 check(canonicalResumeBytes !== null && exportedAliasBytes !== null && exportedAliasBytes.equals(canonicalResumeBytes), "the pre-rename resume alias must ship in the static export");
 check(profile.includes("Electrical engineering student focused on solar power systems and grid integration"), "profile must use solar student positioning");
 check(profile.includes('content="Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration."'), "profile metadata must use solar student positioning");
+
+// C2: one name for the fact sheet, one spelling for résumé (Nathan's yes,
+// 2026-09-03). Routes and file names stay ASCII; only the visible words move.
+check(profile.includes("<title>Fact sheet | Nathan No-ot - Solar Power Systems</title>"), "profile must be titled Fact sheet");
+check(!profile.includes("Recruiter &amp; AI Brief"), "profile must not retain the Recruiter & AI Brief title");
+check(!resume.includes("Download resume"), "resume page must use the accented résumé spelling on its download button");
+check(!profile.includes("Download resume"), "profile page must use the accented résumé spelling on its download button");
+check(resume.includes("Plain-text résumé"), "resume page must use the accented résumé spelling on the plain-text link");
 check(home.includes('id="primary-navigation"'), "primary navigation must expose id for mobile aria-controls");
 check(home.includes('aria-controls="primary-navigation"'), "menu button must control primary navigation");
 
