@@ -115,7 +115,7 @@ check(uavPortal.includes("In progress") && uavPortal.includes("GPS-Denied UAV") 
 check(uavPortal.includes("/images/gps-denied-uav.webp"), "UAV portal must use authentic project photo");
 check(workbenchPortal.includes('href="/workbench"'), "Workbench portal must target Workbench collection");
 check(workbenchPortal.includes("After hours") && workbenchPortal.includes("Builds, failures, and next iterations."), "Workbench portal must use approved visible copy");
-check(workbenchPortal.includes("/images/workbench/bench-fume-extractor/bench-fume-extractor.jpg"), "Workbench portal must use approved authentic fume-extractor photo");
+check(workbenchPortal.includes("/images/workbench/bench-fume-extractor/bench-fume-extractor.webp"), "Workbench portal must use approved authentic fume-extractor photo");
 for (const [kind, portal] of [["uav", uavPortal], ["workbench", workbenchPortal]]) {
   check((portal.match(/<a\b/g) ?? []).length === 1, `${kind} portal must contain one anchor and no nested link`);
 }

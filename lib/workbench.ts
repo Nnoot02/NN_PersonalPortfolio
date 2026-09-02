@@ -65,18 +65,18 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     failure: "Seam leakage reduced capture, and the Pico electronics enclosure remains unfinished.",
     nextIteration: "Add TPU gaskets, finish the electronics enclosure, and run a repeatable airflow test.",
     tags: ["Inventor", "3D printing", "Bench test"],
-    image: "/images/workbench/bench-fume-extractor/bench-fume-extractor.jpg",
+    image: "/images/workbench/bench-fume-extractor/bench-fume-extractor.webp",
     imageAlt: "Blue 3D-printed bench fume extractor with a square front grille on an electronics workbench",
     evidence: [
       {
         kind: "Photo",
-        image: "/images/workbench/bench-fume-extractor/bench-fume-extractor.jpg",
+        image: "/images/workbench/bench-fume-extractor/bench-fume-extractor.webp",
         alt: "Front view of the blue 3D-printed fume extractor enclosure around its fan",
         caption: "Assembled extractor at the bench.",
       },
       {
         kind: "Photo",
-        image: "/images/workbench/bench-fume-extractor/bench-fume-extractor-electronics.jpg",
+        image: "/images/workbench/bench-fume-extractor/bench-fume-extractor-electronics.webp",
         alt: "Open black electronics enclosure beside the extractor, showing a Pico board, wiring, and power components",
         caption: "Electronics enclosure work still in progress.",
       },
@@ -94,12 +94,12 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     failure: "The tyres had poor indoor grip, which limited useful testing on the available surface.",
     nextIteration: "Review tyre choice and overall build quality, then investigate gearbox meshing and noise.",
     tags: ["3D printing", "RC", "ESP32"],
-    image: "/images/workbench/tarmo5/tarmo5.jpg",
+    image: "/images/workbench/tarmo5/tarmo5.webp",
     imageAlt: "Partly assembled 3D-printed TARMO5 RC car with visible wiring and a handheld transmitter",
     evidence: [
       {
         kind: "Photo",
-        image: "/images/workbench/tarmo5/tarmo5.jpg",
+        image: "/images/workbench/tarmo5/tarmo5.webp",
         alt: "Side view of the TARMO5 RC car during assembly with transmitter and wiring visible",
         caption: "Current TARMO5 assembly and control hardware.",
       },
@@ -152,12 +152,12 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     failure: "Payload capability was very limited, and the arm was not stiff enough for heavier objects.",
     nextIteration: "Design a stiffer, more robust arm from scratch.",
     tags: ["Servos", "Joystick control", "Microcontrollers"],
-    image: "/images/workbench/servo-mini-arm/servo-mini-arm.jpg",
+    image: "/images/workbench/servo-mini-arm/servo-mini-arm.webp",
     imageAlt: "Printed Servo Mini Arm connected to a breadboard-based joystick control circuit",
     evidence: [
       {
         kind: "Photo",
-        image: "/images/workbench/servo-mini-arm/servo-mini-arm.jpg",
+        image: "/images/workbench/servo-mini-arm/servo-mini-arm.webp",
         alt: "Servo Mini Arm on a floor beside its breadboard joystick-control circuit",
         caption: "Current build evidence; a cleaner documentation photo is planned.",
       },
