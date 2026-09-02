@@ -81,19 +81,19 @@ check(hero.includes("Production Worker, Tindo Solar") && hero.includes("Nov 2025
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
 check(!home.includes("tindo-strip"), "home must not render standalone Tindo section");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
-check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(home), "home must offer the resume in a new tab");
-check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(resume), "resume page must offer the resume in a new tab");
+check(/href="\/nathan-noot-resume\.pdf"[^>]*target="_blank"/.test(home), "home must offer the resume in a new tab");
+check(/href="\/nathan-noot-resume\.pdf"[^>]*target="_blank"/.test(resume), "resume page must offer the resume in a new tab");
 
-// nathan-noot-general-resume.pdf is a deliberate orphan with no inbound link. It
-// keeps the pre-rename URL alive for anyone who was already sent it; a static
-// export has no redirect layer. It is intentional, not dead weight, so do not
-// delete it. A stale copy is worse than a 404 because it serves an outdated
-// resume, so pin it to the canonical file and prove it actually ships.
-const canonicalResumeBytes = readBytes("public", "/nathan-noot-electrical-embedded-resume.pdf");
-const aliasResumeBytes = readBytes("public", "/nathan-noot-general-resume.pdf");
-const exportedAliasBytes = readBytes("out", "/nathan-noot-general-resume.pdf");
-check(canonicalResumeBytes !== null && aliasResumeBytes !== null && aliasResumeBytes.equals(canonicalResumeBytes), "the pre-rename resume alias must stay byte-identical to the canonical resume");
-check(canonicalResumeBytes !== null && exportedAliasBytes !== null && exportedAliasBytes.equals(canonicalResumeBytes), "the pre-rename resume alias must ship in the static export");
+// Both older names (nathan-noot-electrical-embedded-resume.pdf and
+// nathan-noot-general-resume.pdf) were retired on Nathan's instruction
+// 2026-09-03, aliases included. A static export has no redirect layer, so any
+// résumé URL already sent out under either name now 404s; that was the
+// explicit, informed choice. Prove the one canonical pair ships.
+const canonicalResumeBytes = readBytes("public", "/nathan-noot-resume.pdf");
+const exportedResumeBytes = readBytes("out", "/nathan-noot-resume.pdf");
+check(canonicalResumeBytes !== null, "the canonical résumé PDF must exist in public/");
+check(exportedResumeBytes !== null && exportedResumeBytes.equals(canonicalResumeBytes), "the canonical résumé PDF must ship unchanged in the static export");
+check(readBytes("public", "/nathan-noot-general-resume.pdf") === null && readBytes("public", "/nathan-noot-electrical-embedded-resume.pdf") === null, "the retired résumé names must not come back");
 check(profile.includes("Electrical engineering student focused on solar power systems and grid integration"), "profile must use solar student positioning");
 check(profile.includes('content="Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration."'), "profile metadata must use solar student positioning");
 
@@ -107,7 +107,7 @@ check(resume.includes("Plain-text résumé"), "resume page must use the accented
 
 // C1: the plain-text résumé must match the site's positioning (decision
 // 2026-09-02; summary sentence approved 2026-09-03).
-const resumeText = readExport("/nathan-noot-electrical-embedded-resume.txt");
+const resumeText = readExport("/nathan-noot-resume.txt");
 for (const role of ["Electrical engineering student placement", "Power systems internship", "Solar and grid-integration internship", "Electrical engineering student opportunity"]) {
   check(resumeText.includes(`- ${role}`), `plain-text résumé must list target role: ${role}`);
 }
@@ -183,7 +183,7 @@ check(footer.includes("Available for South Australian internships."), "footer mu
 for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
   check(footer.includes(`href="${destination}"`), `footer must link ${destination}`);
 }
-check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(footer), "footer must offer the resume in a new tab");
+check(/href="\/nathan-noot-resume\.pdf"[^>]*target="_blank"/.test(footer), "footer must offer the resume in a new tab");
 check(footer.includes("linkedin.com"), "footer must provide LinkedIn action");
 check(footer.includes("github.com/Nnoot02") && footer.includes("GitHub"), "footer must render the configured GitHub action");
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
