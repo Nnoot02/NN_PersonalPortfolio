@@ -19,7 +19,7 @@ export default function ResumePage() {
         <h1>Solar power<br />{" "}student resume.</h1>
         <p>This public resume leads with solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. Phone number and street address are left off the public copy.</p>
         <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
-          Download resume <DownloadSimple size={20} />
+          Download resume<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
         </a>
       </section>
       <section className="profile-summary" aria-labelledby="resume-summary-heading">

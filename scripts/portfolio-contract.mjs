@@ -457,6 +457,21 @@ for (const link of [...iconLinks, ...(homeDocument.match(/<link[^>]*rel="apple-t
   check(href.length > 0 && existsSync(new URL(`../out${href}`, import.meta.url)), `icon ${href || link} must ship in the static export`);
 }
 
+// Every link that opens a new tab says so to assistive tech (WCAG G201). The
+// LV diagram link set the pattern; this pins it across every exported page.
+const exportedPages = [
+  "/index.html", "/about.html", "/contact.html", "/projects.html", "/resume.html", "/profile.html", "/workbench.html",
+  ...caseStudySlugs.map((slug) => `/projects/${slug}.html`),
+  ...detailSlugs.map((slug) => `/workbench/${slug}.html`),
+];
+for (const path of exportedPages) {
+  const newTabAnchors = readExport(path).match(/<a\b[^>]*target="_blank"[^>]*>[\s\S]*?<\/a>/g) ?? [];
+  for (const anchor of newTabAnchors) {
+    check(anchor.includes("opens in a new tab"), `${path}: new-tab link must announce it: ${anchor.replace(/<[^>]+>/g, "").trim().slice(0, 40)}`);
+    check(/href="[^"]*\.pdf"/.test(anchor) ? anchor.includes("(PDF, opens in a new tab)") : true, `${path}: PDF link must say PDF: ${anchor.replace(/<[^>]+>/g, "").trim().slice(0, 40)}`);
+  }
+}
+
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));
   process.exit(1);

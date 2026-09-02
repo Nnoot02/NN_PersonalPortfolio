@@ -11,8 +11,8 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
         </div>
         <div className="footer-links">
           <Link href="/projects">Projects</Link>
-          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
-          <a href={profile.resumePath} target="_blank" rel="noopener">Résumé</a>
+          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          <a href={profile.resumePath} target="_blank" rel="noopener">Résumé<span className="sr-only"> (PDF, opens in a new tab)</span></a>
           <Link href="/workbench">Workbench</Link>
         </div>
       </footer>
@@ -29,9 +29,9 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
       </div>
       <div className="footer-links">
         <Link href="/contact">Contact</Link>
-        {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span></a> : null}
-        {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span></a> : null}
-        <a href={profile.resumePath} target="_blank" rel="noopener">Résumé</a>
+        {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+        {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+        <a href={profile.resumePath} target="_blank" rel="noopener">Résumé<span className="sr-only"> (PDF, opens in a new tab)</span></a>
         <Link href="/projects">Projects</Link>
         <Link href="/workbench">Workbench</Link>
         <Link className="footer-utility" data-footer-utility href="/profile">Fact sheet</Link>

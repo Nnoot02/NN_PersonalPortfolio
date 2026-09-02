@@ -38,7 +38,7 @@ export default function ProfilePage() {
             Review evidence <ArrowRight size={20} />
           </Link>
           <a className="button button-secondary" href={profile.resumePath} target="_blank" rel="noopener">
-            Download resume <DownloadSimple size={20} />
+            Download resume<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
           </a>
         </div>
       </section>

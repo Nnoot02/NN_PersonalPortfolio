@@ -31,7 +31,7 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
         <p className="eyebrow" data-build-type>{entry.buildType}</p>
         <h1>{entry.title}</h1>
         <p className="case-lede">{entry.summary}</p>
-        {source ? <aside className="workbench-attribution" data-source-attribution><p className="eyebrow">Original source</p><p><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.sourceName}{source.creator ? ` by ${source.creator}` : ""} <ArrowUpRight size={17} /></a></p><p>{source.rightsNote}</p></aside> : null}
+        {source ? <aside className="workbench-attribution" data-source-attribution><p className="eyebrow">Original source</p><p><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.sourceName}{source.creator ? ` by ${source.creator}` : ""}<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight size={17} /></a></p><p>{source.rightsNote}</p></aside> : null}
         <dl className="workbench-reflection" data-workbench-reflection>
           <div><dt>Why I built it</dt><dd>{entry.motivation}</dd></div>
           <div><dt>My contribution</dt><dd>{entry.contribution}</dd></div>
