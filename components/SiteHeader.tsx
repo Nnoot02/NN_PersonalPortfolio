@@ -17,6 +17,7 @@ export function SiteHeader() {
   const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -26,12 +27,19 @@ export function SiteHeader() {
         menuButtonRef.current?.focus();
       }
     }
+    function onPointerDown(event: PointerEvent) {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) setOpen(false);
+    }
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, [open]);
 
   return (
-    <header className="site-header">
+    <header className="site-header" ref={headerRef}>
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <Link className="wordmark" href="/" aria-label="Nathan portfolio home">
         {isHome ? (

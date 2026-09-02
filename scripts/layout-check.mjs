@@ -880,6 +880,11 @@ async function main() {
   if ((await menuButton.getAttribute("aria-expanded")) !== "false") failures.push(`/ mobile menu: Escape does not close navigation`);
   const menuRetainsFocus = await menuButton.evaluate((node) => document.activeElement === node);
   if (!menuRetainsFocus) failures.push(`/ mobile menu: Escape does not return focus to menu button`);
+  await menuButton.click();
+  // Tap the hero credential list: below the open sheet, and never a link, so
+  // this cannot navigate away (W3 later makes the hero figure a link).
+  await mobilePage.locator(".hero-credential").click({ position: { x: 10, y: 10 } });
+  if ((await menuButton.getAttribute("aria-expanded")) !== "false") failures.push(`/ mobile menu: tapping outside the sheet does not close navigation`);
   await mobilePage.close();
 
   // The homepage lede takes text-wrap: balance, and is deliberately excluded from
