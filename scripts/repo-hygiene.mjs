@@ -43,7 +43,7 @@ fail(
 
 fail(
   "Internal working paths are publicly tracked",
-  tracked.filter((path) => path.startsWith("docs/superpowers/")),
+  tracked.filter((path) => path.startsWith("docs/superpowers/") || path.startsWith("docs/plans/")),
 );
 
 const sensitiveFilePatterns = [
