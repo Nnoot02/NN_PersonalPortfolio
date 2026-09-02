@@ -94,3 +94,24 @@ export function projectStructuredData(project: Project) {
     },
   };
 }
+
+// Every key an inherited page and the homepage share. Next replaces a child
+// route's openGraph object wholesale rather than merging it into the parent,
+// so a page that overrides even one key must restate all of them. Spread this
+// instead of copying the literals: two copies drift and nothing catches it.
+// Only `type` differs between the root layout and the homepage.
+export const sharedOpenGraph = {
+  title: "Nathan No-ot | Solar Power Systems Portfolio",
+  description: profile.summary,
+  url: "./",
+  siteName: "Nathan No-ot",
+  locale: "en_AU",
+  images: [
+    {
+      url: "/images/og-card.png",
+      width: 1200,
+      height: 630,
+      alt: "Nathan No-ot, electrical engineering student in Adelaide - power systems and grid integration",
+    },
+  ],
+};

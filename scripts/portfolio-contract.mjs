@@ -391,6 +391,31 @@ for (const slug of detailSlugs) {
   check(sitemap.includes(`/workbench/${slug}`), `sitemap must include ${slug}`);
 }
 
+// og:type is inherited from the root layout by every route that does not declare
+// its own openGraph. Next replaces that object wholesale rather than merging it,
+// so a route that overrides even one key silently drops site_name, locale and the
+// image dimensions. Check every route, not a sample: drift is per route.
+// NB: `home` above is renderedMain(), i.e. <main> only. OG tags live in <head>,
+// so these read the whole document.
+function ogTag(document, property) {
+  return document.match(new RegExp(`property="og:${property}" content="([^"]*)"`))?.[1] ?? "";
+}
+
+const homeDocument = readExport("/index.html");
+check(ogTag(homeDocument, "type") === "profile", "home must declare og:type profile");
+for (const property of ["site_name", "locale", "image:width", "image:height", "image:alt"]) {
+  check(ogTag(homeDocument, property) !== "", `home must keep og:${property}; overriding openGraph drops inherited keys`);
+}
+for (const route of ["about", "contact", "projects", "resume", "profile", "workbench"]) {
+  check(ogTag(readExport(`/${route}.html`), "type") === "website", `/${route} must declare og:type website, not profile`);
+}
+for (const slug of caseStudySlugs) {
+  check(ogTag(readExport(`/projects/${slug}.html`), "type") === "article", `/projects/${slug} must declare og:type article`);
+}
+for (const slug of detailSlugs) {
+  check(ogTag(readExport(`/workbench/${slug}.html`), "type") === "article", `/workbench/${slug} must declare og:type article`);
+}
+
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));
   process.exit(1);

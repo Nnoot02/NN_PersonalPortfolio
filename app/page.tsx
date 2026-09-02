@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { HomepageEpilogue } from "@/components/HomepageEpilogue";
@@ -5,8 +6,15 @@ import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { broaderEngineeringProjects, verifiedPowerProjects } from "@/lib/projects";
-import { profile } from "@/lib/site";
+import { profile, sharedOpenGraph } from "@/lib/site";
 import { getWorkbenchEntry } from "@/lib/workbench";
+
+// The root layout declares og:type "website", which is right for every other
+// inherited route. Only the homepage is a profile. Next replaces openGraph
+// wholesale, so spread the shared object rather than restating its keys.
+export const metadata: Metadata = {
+  openGraph: { ...sharedOpenGraph, type: "profile" },
+};
 
 function requireHomepageProject(slug: string) {
   const project = broaderEngineeringProjects.find((candidate) => candidate.slug === slug);

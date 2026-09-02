@@ -6,7 +6,7 @@ import "@fontsource/barlow-condensed/500.css";
 import "@fontsource/barlow-condensed/600.css";
 import "@fontsource/barlow-condensed/700.css";
 import "./globals.css";
-import { personStructuredData, profile, siteUrl } from "@/lib/site";
+import { personStructuredData, profile, sharedOpenGraph, siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -29,22 +29,10 @@ export const metadata: Metadata = {
   // "./" resolves against the current route. A literal "/" would make every
   // page claim the homepage as its canonical and its og:url.
   alternates: { canonical: "./" },
-  openGraph: {
-    title: "Nathan No-ot | Solar Power Systems Portfolio",
-    description: profile.summary,
-    type: "profile",
-    url: "./",
-    siteName: "Nathan No-ot",
-    locale: "en_AU",
-    images: [
-      {
-        url: "/images/og-card.png",
-        width: 1200,
-        height: 630,
-        alt: "Nathan No-ot, electrical engineering student in Adelaide - power systems and grid integration",
-      },
-    ],
-  },
+  // Inherited by every route that does not declare its own openGraph.
+  // "website" is correct for /about, /contact, /projects and the rest;
+  // the homepage overrides it to "profile" in app/page.tsx.
+  openGraph: { ...sharedOpenGraph, type: "website" },
   twitter: {
     card: "summary_large_image",
     title: "Nathan No-ot | Solar Power Systems Portfolio",
