@@ -1,1 +1,5 @@
 * text=auto eol=lf
+
+# PDFs contain no NUL bytes, so text=auto misclassifies them and strips CR
+# bytes, which shifts every offset and invalidates the xref table.
+*.pdf binary
