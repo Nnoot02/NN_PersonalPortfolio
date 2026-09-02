@@ -384,6 +384,16 @@ for (const slug of detailSlugs) {
 }
 
 check(sitemap.includes("/workbench"), "sitemap must include the Workbench collection");
+
+// public/_headers is read by Cloudflare Workers static assets from out/. It
+// is the only place HSTS, nosniff and the immutable cache rule for hashed
+// _next/static assets are set. Prove it ships and prove it still says so.
+const exportedHeaders = readExport("/_headers");
+const publicHeaders = readBytes("public", "/_headers");
+check(publicHeaders !== null && exportedHeaders === publicHeaders.toString("utf8"), "public/_headers must ship unchanged in the static export");
+check(/^\/_next\/static\/\*\r?\n  Cache-Control: public, max-age=31536000, immutable/m.test(exportedHeaders), "_headers must mark hashed _next/static assets immutable");
+check(/^\/\*\r?\n(?:  [^\n]*\n)*?  Strict-Transport-Security: max-age=31536000/m.test(exportedHeaders), "_headers must set HSTS on every path");
+check(exportedHeaders.includes("  X-Content-Type-Options: nosniff"), "_headers must set nosniff");
 check(!workbench.includes("ESP32 Drone Reproduction"), "Workbench must not publish ESP32 before owned evidence exists");
 check(!sitemap.includes("/projects/esp32-drone"), "sitemap must not include the retired ESP32 project route");
 check(!sitemap.includes("/workbench/esp32-drone-reproduction"), "sitemap must not publish the gated ESP32 Workbench route");
