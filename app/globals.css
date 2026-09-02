@@ -334,12 +334,13 @@ button { font: inherit; }
 .prose, .contact-intro, .about-story-intro > p, .about-story-grid p, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p { text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
-.back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: 5rem; }
+.back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; }
 .back-link:hover { color: var(--accent-dark); }
 .case-status { display: inline-block; margin: -1.2rem 0 2rem; padding: .4rem .85rem; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent-dark); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: 1.15rem; line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
 .case-image-note { margin: .9rem 0 0; font-size: .82rem; }
+.case-image-note .text-link, .profile-facts .text-link { align-items: center; display: inline-flex; min-height: 44px; }
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }

@@ -218,6 +218,15 @@ async function main() {
           });
         }
       }
+      if (route === "/projects/lv-cabling-design-commercial-complex" || route === "/resume") {
+        // Standalone links (not inline in a sentence) carry the repo's 44px
+        // floor, matching .homepage-epilogue-collection and the contact links.
+        const standalone = page.locator(".back-link, .case-image-note .text-link, .profile-facts .text-link");
+        for (let index = 0; index < (await standalone.count()); index += 1) {
+          const box = await standalone.nth(index).evaluate((node) => { const rect = node.getBoundingClientRect(); return { height: rect.height, text: node.textContent.trim().slice(0, 30) }; });
+          if (box.height < 44) failures.push(`${route} @ ${width}x${height}: standalone link "${box.text}" is ${Math.round(box.height)}px tall, below 44px`);
+        }
+      }
       if (route === "/contact") {
         const snapshot = page.locator("[data-technical-snapshot]");
         const groups = page.locator("[data-snapshot-group]");
