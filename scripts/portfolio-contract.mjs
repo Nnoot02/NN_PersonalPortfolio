@@ -426,6 +426,19 @@ for (const slug of detailSlugs) {
   check(ogTag(readExport(`/workbench/${slug}.html`), "type") === "article", `/workbench/${slug} must declare og:type article`);
 }
 
+// Favicons come from Next's file convention: app/icon1.png, app/icon2.svg,
+// app/apple-icon.png. Numbered names sort lexically so the PNG is listed first
+// for browsers without SVG favicon support. Prove the links exist and prove the
+// files they point at ship.
+const iconLinks = homeDocument.match(/<link[^>]*rel="icon"[^>]*>/g) ?? [];
+check(iconLinks.some((link) => link.includes('type="image/png"')), "home must link a PNG favicon");
+check(iconLinks.some((link) => link.includes('type="image/svg+xml"')), "home must link the SVG favicon");
+check(/<link[^>]*rel="apple-touch-icon"/.test(homeDocument), "home must link an apple touch icon");
+for (const link of [...iconLinks, ...(homeDocument.match(/<link[^>]*rel="apple-touch-icon"[^>]*>/g) ?? [])]) {
+  const href = link.match(/href="([^"?]+)/)?.[1] ?? "";
+  check(href.length > 0 && existsSync(new URL(`../out${href}`, import.meta.url)), `icon ${href || link} must ship in the static export`);
+}
+
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));
   process.exit(1);
