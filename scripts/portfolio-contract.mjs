@@ -24,6 +24,14 @@ function readExport(path) {
   }
 }
 
+function readBytes(base, path) {
+  try {
+    return readFileSync(new URL(`../${base}${path}`, import.meta.url));
+  } catch {
+    return null;
+  }
+}
+
 function renderedMain(markup) {
   return markup.match(/<main[\s\S]*?<\/main>/)?.[0] ?? markup;
 }
@@ -70,6 +78,17 @@ check(!home.includes("tindo-strip"), "home must not render standalone Tindo sect
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
 check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(home), "home must offer the resume in a new tab");
 check(/href="\/nathan-noot-electrical-embedded-resume\.pdf"[^>]*target="_blank"/.test(resume), "resume page must offer the resume in a new tab");
+
+// nathan-noot-general-resume.pdf is a deliberate orphan with no inbound link. It
+// keeps the pre-rename URL alive for anyone who was already sent it; a static
+// export has no redirect layer. It is intentional, not dead weight, so do not
+// delete it. A stale copy is worse than a 404 because it serves an outdated
+// resume, so pin it to the canonical file and prove it actually ships.
+const canonicalResumeBytes = readBytes("public", "/nathan-noot-electrical-embedded-resume.pdf");
+const aliasResumeBytes = readBytes("public", "/nathan-noot-general-resume.pdf");
+const exportedAliasBytes = readBytes("out", "/nathan-noot-general-resume.pdf");
+check(canonicalResumeBytes !== null && aliasResumeBytes !== null && aliasResumeBytes.equals(canonicalResumeBytes), "the pre-rename resume alias must stay byte-identical to the canonical resume");
+check(canonicalResumeBytes !== null && exportedAliasBytes !== null && exportedAliasBytes.equals(canonicalResumeBytes), "the pre-rename resume alias must ship in the static export");
 check(profile.includes("Electrical engineering student focused on solar power systems and grid integration"), "profile must use solar student positioning");
 check(profile.includes('content="Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration."'), "profile metadata must use solar student positioning");
 check(home.includes('id="primary-navigation"'), "primary navigation must expose id for mobile aria-controls");
