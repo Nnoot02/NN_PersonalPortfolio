@@ -1,6 +1,6 @@
 export type Project = {
   slug: string;
-  number: string;
+  number?: string;
   title: string;
   summary: string;
   image: string;
@@ -88,7 +88,6 @@ export const projects: Project[] = [
   },
   {
     slug: "solar-manufacturing-dfma",
-    number: "04",
     title: "Solar Manufacturing & DFMA",
     summary:
       "Production experience read through design for manufacture, process reliability, and systems thinking.",

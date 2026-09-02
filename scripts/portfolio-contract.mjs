@@ -334,6 +334,19 @@ check(!projectIndexSource.includes("projectIndexRelations") && !projectIndexSour
 check(projectIndexSource.includes("projectIndexRelation") && projectIndexSource.includes('sourceSlug: "lv-cabling-design-commercial-complex"'), "project-index source must expose singular LV-to-Solar relationship");
 check(!projectJourneys.includes("solar-manufacturing-dfma"), "manufacturing entry must not appear in project journeys");
 
+// DFMA is off the projects index until it has evidence (decision 2026-09-02),
+// so it must not carry a case-study number that makes it look like a gap.
+// React 19 SSR separates a literal from an adjacent interpolation with an empty
+// comment ("Case study <!-- -->04"), so strip those before matching or this
+// assertion is a false green that can never go red.
+const dfmaCaseStudy = renderedMain(readExport("/projects/solar-manufacturing-dfma.html")).replaceAll("<!-- -->", "");
+check(!/Case study 0\d/.test(dfmaCaseStudy), "pending DFMA case study must not render a case-study number");
+check(dfmaCaseStudy.includes('<p class="eyebrow">Case study</p>'), "pending DFMA case study must keep the plain Case study eyebrow");
+for (const [slug, number] of [["lv-cabling-design-commercial-complex", "01"], ["solar-grid-connection-assessment", "02"], ["gps-denied-autonomous-uav", "03"]]) {
+  check(renderedMain(readExport(`/projects/${slug}.html`)).includes(`Case study ${number}`), `${slug} must keep case-study number ${number}`);
+}
+check(!projectsSource.includes('number: "04"'), "project data must not number the pending DFMA entry");
+
 // Internal editorial scaffolding leaked to production on two case-study routes
 // (audit 2026-08-07, P1). Case-study evidence state is public copy only.
 const caseStudySlugs = [...projectsSource.matchAll(/slug: "([^"]+)"/g)].map((match) => match[1]);

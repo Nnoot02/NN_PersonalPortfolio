@@ -62,7 +62,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
       />
       <article className="case-study">
         <Link className="back-link" href="/projects"><ArrowLeft size={18} /> Project index</Link>
-        <p className="eyebrow">Case study {project.number}</p>
+        <p className="eyebrow">{project.number ? `Case study ${project.number}` : "Case study"}</p>
         <h1>{project.title}</h1>
         <p className="case-status">{project.status}</p>
         <p className="case-lede">{project.summary}</p>
