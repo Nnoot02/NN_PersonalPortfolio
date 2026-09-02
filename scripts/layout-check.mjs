@@ -180,6 +180,19 @@ async function main() {
         // below that size, so pin the computed size at every viewport.
         const heroRoleSize = await page.locator(".hero-role").evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
         if (heroRoleSize < 24) failures.push(`/ @ ${width}x${height}: .hero-role is ${heroRoleSize}px, below the 24px large-text floor its accent colour needs`);
+
+        const heroLink = page.locator("a.hero-artifact");
+        if ((await heroLink.count()) !== 1) failures.push(`/ @ ${width}x${height}: hero artifact link count is not 1`);
+        else {
+          await heroLink.focus();
+          const heroFocus = await heroLink.evaluate((node) => {
+            const style = getComputedStyle(node);
+            const rect = node.getBoundingClientRect();
+            return { outlineStyle: style.outlineStyle, outlineWidth: parseFloat(style.outlineWidth), width: rect.width, height: rect.height };
+          });
+          if (heroFocus.outlineStyle === "none" || heroFocus.outlineWidth < 2) failures.push(`/ @ ${width}x${height}: hero link lacks non-colour focus outline`);
+          if (heroFocus.width < 44 || heroFocus.height < 44) failures.push(`/ @ ${width}x${height}: hero link misses 44px touch target`);
+        }
       }
       if (route === "/about") {
         const desktopNetwork = page.locator("[data-tools-desktop-network]");

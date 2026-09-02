@@ -68,7 +68,12 @@ const heroMedia = home.match(/<figure[^>]*class="hero-image"[^>]*>[\s\S]*?<\/fig
 check(heroMedia.length > 0, "home must expose hero media figure");
 check(heroMedia.includes("/images/lv-cabling-sld.svg"), "home hero must use the LV cabling single-line diagram");
 check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"), "home hero must exclude miniature content");
-check((heroMedia.match(/<a\b/g) ?? []).length === 0, "home hero media must remain passive");
+// The hero figure links to the LV case study at every viewport (decision
+// 2026-09-02): on phones the diagram is unreadable and needs somewhere to go.
+check((heroMedia.match(/<a\b/g) ?? []).length === 1, "home hero media must contain exactly one link");
+const heroAnchor = heroMedia.match(/<a\b[^>]*>/)?.[0] ?? "";
+check(heroAnchor.includes('class="hero-artifact"') && heroAnchor.includes('href="/projects/lv-cabling-design-commercial-complex"'), "home hero link must be the artifact and target the LV case study");
+check(heroMedia.includes("Open the Commercial LV Cabling Design case study"), "home hero link must carry its sr-only destination sentence");
 check(heroMedia.includes('loading="eager"') && heroMedia.includes('fetchPriority="high"'), "home hero image must load eagerly at high fetch priority");
 
 const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";

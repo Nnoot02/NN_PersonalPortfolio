@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { HomepageEpilogue } from "@/components/HomepageEpilogue";
 import { ProjectRow } from "@/components/ProjectRow";
@@ -67,7 +68,7 @@ export default function HomePage() {
           </div>
         </div>
         <figure className="hero-image">
-          <span className="hero-artifact">
+          <Link className="hero-artifact" href="/projects/lv-cabling-design-commercial-complex">
             <Image
               src="/images/lv-cabling-sld.svg"
               alt="Featured artifact: one-line diagram of the 400 V three-tenancy design, from a 500 kVA supply transformer through the main switchboard to the three tenancy distribution boards"
@@ -76,7 +77,8 @@ export default function HomePage() {
               fetchPriority="high"
               sizes="(max-width: 960px) 100vw, 54vw"
             />
-          </span>
+            <span className="sr-only">Open the Commercial LV Cabling Design case study</span>
+          </Link>
         </figure>
       </section>
 

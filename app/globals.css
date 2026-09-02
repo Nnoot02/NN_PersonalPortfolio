@@ -108,7 +108,7 @@ button { font: inherit; }
 .button-secondary:hover, .button-secondary:focus-visible { background: var(--ink); color: var(--white); }
 .hero-image, .case-image, .project-image { position: relative; overflow: hidden; }
 .hero-image { display: grid; margin: 0; }
-.hero-artifact { position: relative; min-width: 0; min-height: 0; }
+.hero-artifact { position: relative; display: block; min-width: 0; min-height: 0; }
 .case-image img, .project-image img { object-fit: cover; filter: sepia(.08); transition: transform .45s ease; }
 .hero-artifact { background: var(--paper-deep); }
 .hero-artifact > img { object-fit: contain; filter: sepia(.08); }

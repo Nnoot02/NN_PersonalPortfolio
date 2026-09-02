@@ -516,6 +516,14 @@ context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. Below
 760px it stacks in DOM order with 92px photos. Footer follows immediately.
 
+The hero figure (`hero-artifact`) is a **link** to the Commercial LV Cabling
+Design case study, at every viewport. It was passive until 2026-09-02, but the
+single-line diagram is unreadable on a phone and needed somewhere to go. The
+link is not viewport-conditional: that would need either two DOM trees or
+`pointer-events: none` on desktop, and the second breaks keyboard users. No
+hover treatment is added; the global `:focus-visible` outline is the
+affordance, and on touch the whole figure is the target.
+
 Homepage excludes miniature art. Future miniature work requires a separate
 design cycle and must not reuse generated brainstorming comparisons as public
 assets.
