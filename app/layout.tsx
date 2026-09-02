@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
@@ -33,13 +33,16 @@ export const metadata: Metadata = {
   // "website" is correct for /about, /contact, /projects and the rest;
   // the homepage overrides it to "profile" in app/page.tsx.
   openGraph: { ...sharedOpenGraph, type: "website" },
-  twitter: {
-    card: "summary_large_image",
-    title: "Nathan No-ot | Solar Power Systems Portfolio",
-    description: profile.summary,
-    images: ["/images/og-card.png"],
-  },
+  // Only the card type is pinned here. Stating title, description and images
+  // literally made every detail page advertise the site default on X instead
+  // of its own heading; Next resolves those per page from the page's title,
+  // description and openGraph images when they are omitted.
+  twitter: { card: "summary_large_image" },
 };
+
+// themeColor is --paper. colorScheme: light stops dark-mode operating systems
+// painting dark scrollbars and form controls over a light page.
+export const viewport: Viewport = { themeColor: "#f3f0e9", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

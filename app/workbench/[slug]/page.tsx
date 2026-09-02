@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WorkbenchEvidenceGallery } from "@/components/WorkbenchEvidenceGallery";
+import { sharedOpenGraph } from "@/lib/site";
 import { getWorkbenchEntry, workbenchEntries } from "@/lib/workbench";
 
 type WorkbenchParams = { params: Promise<{ slug: string }> };
@@ -15,7 +16,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: WorkbenchParams): Promise<Metadata> {
   const entry = getWorkbenchEntry((await params).slug);
-  return entry ? { title: entry.title, description: entry.summary, keywords: entry.tags, openGraph: { title: entry.title, description: entry.summary, type: "article", url: `/workbench/${entry.slug}`, images: [{ url: entry.image, alt: entry.imageAlt }] } } : {};
+  return entry ? { title: entry.title, description: entry.summary, keywords: entry.tags, openGraph: { ...sharedOpenGraph, title: entry.title, description: entry.summary, type: "article", url: `/workbench/${entry.slug}`, images: [{ url: entry.image, alt: entry.imageAlt }] } } : {};
 }
 
 export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {

@@ -486,6 +486,23 @@ for (const path of exportedPages) {
   }
 }
 
+// Case-study and workbench cards must be complete (site_name, locale) and
+// must not advertise the site title on Twitter/X when the page has its own.
+const siteDefaultTitle = "Nathan No-ot | Solar Power Systems Portfolio";
+function twitterTag(document, name) {
+  return document.match(new RegExp(`name="twitter:${name}" content="([^"]*)"`))?.[1] ?? "";
+}
+for (const path of [...caseStudySlugs.map((slug) => `/projects/${slug}.html`), ...detailSlugs.map((slug) => `/workbench/${slug}.html`)]) {
+  const document = readExport(path);
+  for (const property of ["site_name", "locale"]) {
+    check(ogTag(document, property) !== "", `${path} must carry og:${property}; spread sharedOpenGraph`);
+  }
+  check(twitterTag(document, "card") === "summary_large_image", `${path} must keep the large summary card`);
+  check(twitterTag(document, "title") !== siteDefaultTitle, `${path} must not pin the site default as twitter:title`);
+}
+check(/<meta name="theme-color" content="#f3f0e9"/.test(homeDocument), "home must declare theme-color as --paper");
+check(/<meta name="color-scheme" content="light"/.test(homeDocument), "home must declare a light colour scheme");
+
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));
   process.exit(1);

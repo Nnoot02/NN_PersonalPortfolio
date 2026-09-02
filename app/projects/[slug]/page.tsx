@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { projects } from "@/lib/projects";
-import { projectStructuredData } from "@/lib/site";
+import { projectStructuredData, sharedOpenGraph } from "@/lib/site";
 
 const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
@@ -37,7 +37,10 @@ export async function generateMetadata({ params }: ProjectParams): Promise<Metad
     title: project.title,
     description: project.summary,
     keywords: project.tags,
+    // Next replaces openGraph wholesale, so spread the shared object first or
+    // site_name, locale and the image dimensions are dropped from the card.
     openGraph: {
+      ...sharedOpenGraph,
       title: project.title,
       description: project.summary,
       type: "article",
