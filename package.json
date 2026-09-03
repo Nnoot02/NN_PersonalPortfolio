@@ -8,6 +8,7 @@
     "start": "next start --hostname 127.0.0.1 --port 3000",
     "build:og": "node scripts/build-og-card.mjs",
     "build:icons": "node scripts/build-icons.mjs",
+    "build:resume": "node scripts/build-resume-pdf.mjs",
     "check": "tsc --noEmit",
     "check:repo": "node scripts/repo-hygiene.mjs",
     "test:repo": "node --test scripts/repo-hygiene.test.mjs",

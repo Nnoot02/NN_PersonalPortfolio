@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 const failures = [];
 
@@ -77,7 +78,7 @@ check(heroMedia.includes("Open the Commercial LV Cabling Design case study"), "h
 check(heroMedia.includes('loading="eager"') && heroMedia.includes('fetchPriority="high"'), "home hero image must load eagerly at high fetch priority");
 
 const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
-check(hero.includes("Production Worker, Tindo Solar") && hero.includes("Nov 2025"), "home hero must contain the current-role credential as labelled fields");
+check(hero.includes("Electrical Engineering Intern, Tindo Solar") && hero.includes("Aug 2026"), "home hero must contain the current-role credential as labelled fields");
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
 check(!home.includes("tindo-strip"), "home must not render standalone Tindo section");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
@@ -94,6 +95,18 @@ const exportedResumeBytes = readBytes("out", "/nathan-noot-resume.pdf");
 check(canonicalResumeBytes !== null, "the canonical résumé PDF must exist in public/");
 check(exportedResumeBytes !== null && exportedResumeBytes.equals(canonicalResumeBytes), "the canonical résumé PDF must ship unchanged in the static export");
 check(readBytes("public", "/nathan-noot-general-resume.pdf") === null && readBytes("public", "/nathan-noot-electrical-embedded-resume.pdf") === null, "the retired résumé names must not come back");
+
+// The PDF is generated from the .txt by scripts/build-resume-pdf.mjs, which
+// records the source hash it rendered. Before the generator existed the two
+// drifted apart and contradicted each other across two plan cycles, so a stale
+// PDF is a gate failure, not a footnote. The generator is outside verify
+// because verify must not rewrite tracked binaries.
+const resumeSourceBytes = readBytes("public", "/nathan-noot-resume.txt");
+const recordedResumeHash = readBytes("scripts", "/resume-source.sha256")?.toString("utf8").trim() ?? "";
+// LF-normalised, matching the generator: the working tree is CRLF on Windows
+// but LF after a fresh checkout, and raw bytes would differ between the two.
+const actualResumeHash = resumeSourceBytes ? createHash("sha256").update(resumeSourceBytes.toString("utf8").replace(/\r\n/g, "\n")).digest("hex") : "";
+check(recordedResumeHash !== "" && recordedResumeHash === actualResumeHash, "résumé PDF is stale: run `corepack pnpm run build:resume` after editing nathan-noot-resume.txt");
 check(profile.includes("Electrical engineering student focused on solar power systems and grid integration"), "profile must use solar student positioning");
 check(profile.includes('content="Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration."'), "profile metadata must use solar student positioning");
 
@@ -296,7 +309,7 @@ check(contactSnapshot.length > 0, "contact must expose Technical Snapshot");
 const snapshotGroups = [...contactSnapshot.matchAll(/data-snapshot-group="([^"]+)"/g)].map((match) => match[1]);
 check(snapshotGroups.join(",") === "current-role,studying,verified-power,current-build,path", "contact snapshot groups must remain in locked order");
 for (const snapshotValue of [
-  "Production Worker · Tindo Solar",
+  "Electrical Engineering Intern · Tindo Solar",
   "Associate Degree in Electronics Engineering · TAFE SA",
   "GPS-denied autonomous UAV",
   "SITL / ROS 2 setup + subsystem validation",

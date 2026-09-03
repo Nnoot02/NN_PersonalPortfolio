@@ -37,7 +37,7 @@ export default function ContactPage() {
             </div>
             <div className="technical-snapshot-group" data-snapshot-group="current-role">
               <p className="technical-snapshot-label">CURRENT ROLE</p>
-              <p className="technical-snapshot-value">Production Worker · Tindo Solar</p>
+              <p className="technical-snapshot-value">Electrical Engineering Intern · Tindo Solar</p>
             </div>
             <div className="technical-snapshot-group" data-snapshot-group="studying">
               <p className="technical-snapshot-label">STUDYING</p>

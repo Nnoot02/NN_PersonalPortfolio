@@ -46,11 +46,11 @@ export default function HomePage() {
           <dl className="hero-credential">
             <div>
               <dt>Currently</dt>
-              <dd>Production Worker, Tindo Solar</dd>
+              <dd>Electrical Engineering Intern, Tindo Solar</dd>
             </div>
             <div>
               <dt>Since</dt>
-              <dd>Nov 2025</dd>
+              <dd>Aug 2026</dd>
             </div>
             <div>
               <dt>Studying</dt>

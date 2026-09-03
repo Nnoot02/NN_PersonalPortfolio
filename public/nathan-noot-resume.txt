@@ -33,25 +33,43 @@ SKILLS
 - Manufacturing and quality: 5S, Kaizen, Root Cause Analysis, 8D
   problem-solving, inspections, soldering, 3D printing, MS Office.
 
+AVAILABILITY
+
+- C-Class Driver's Licence, with flexible availability for metropolitan or
+  regional South Australian sites.
+- Willing to complete site inductions and obtain the required safety
+  credentials before commencement.
+
 EXPERIENCE
 
-Production Worker - Tindo Solar
-Nov 2025 - Present
+Tindo Solar
+Electrical Engineering Intern, Aug 2026 - Present
+Production Worker, Nov 2025 - Aug 2026
 
-- Work on the production line of an Australian solar-panel manufacturer within
-  a Kaizen and 5S continuous-improvement culture.
+- Assist with BOM documentation, component selection, and circuit design under
+  the guidance and authority of engineers.
+- Develop and maintain Standard Operating Procedures, work instructions, and
+  engineering documentation to support production consistency.
+- Prepare technical documentation and help maintain accurate records for
+  quality control.
+- Collaborate with technicians and engineers to resolve machine failures
+  promptly.
+- Conducted flash testing of solar panels for voltage, current, and power
+  factor to verify performance, and inspected panels against specifications to
+  find and isolate defects.
 - Shadowed engineers applying Root Cause Analysis and 8D processes to diagnose
-  and resolve equipment faults, building practical exposure to quality,
-  process reliability, and fault-finding.
-- Developed a stronger understanding of how renewable-energy hardware depends
-  on manufacturing constraints, operator work, documentation, inspection, and
-  supply-chain reality.
+  and resolve equipment breakdowns, building practical fault-finding and
+  quality-monitoring exposure.
+- Worked the production line of an Australian solar-panel manufacturer within a
+  Kaizen and 5S continuous-improvement culture, and learnt how renewable-energy
+  hardware depends on manufacturing constraints, operator work, documentation,
+  inspection, and supply-chain reality.
 
 Kitchen Supervisor - Plus 82 Pocha
 Aug 2022 - Aug 2025
 
 - Led a back-of-house team of 5 through 200-300 covers per night, resolving
-  operational issues quickly enough to maintain about a 10-minute order
+  operational issues quickly enough to maintain about a 7-minute order
   turnaround.
 - Maintained stock control using Excel and ERP/MRP tools.
 - Trained new hires to competency within 3 months while building respectful
