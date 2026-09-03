@@ -31,7 +31,7 @@ export default function AboutPage() {
           </article>
           <article>
             <h3>Manufacturing made it practical.</h3>
-            <p>At Tindo Solar, production work gives me direct exposure to solar-panel manufacturing, 5S, Kaizen, quality checks, and fault-finding culture. By shadowing their engineers, I learnt how RCA and 8D problem-solving connect engineering decisions with process reliability and operator reality.</p>
+            <p>At Tindo Solar I moved from the production line into an electrical engineering internship. The floor work gave me direct exposure to solar-panel manufacturing, 5S, Kaizen, quality checks, and fault-finding culture, and shadowing the engineers showed me how RCA and 8D problem-solving connect engineering decisions with process reliability and operator reality. As an intern I assist with BOM documentation, component selection, and circuit design under engineering direction, and I write the standard operating procedures, work instructions, and quality records that keep production consistent.</p>
           </article>
           <article>
             <h3>Bench and teams</h3>
