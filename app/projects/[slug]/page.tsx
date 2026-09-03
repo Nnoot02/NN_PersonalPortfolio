@@ -9,7 +9,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { projects } from "@/lib/projects";
-import { projectStructuredData, sharedOpenGraph } from "@/lib/site";
+import { profile, projectStructuredData, sharedOpenGraph } from "@/lib/site";
 
 const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
@@ -108,6 +108,9 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </div>
         </section>
         {WriteUp ? <WriteUp /> : null}
+        <p className="case-contact">
+          Questions about this design? <a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
+        </p>
       </article>
       <SiteFooter />
     </main>

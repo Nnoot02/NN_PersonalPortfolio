@@ -470,6 +470,22 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
 check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the three-section UAV write-up must stay unindexed");
 check(globalsCss.includes("scroll-margin-top"), "indexed sections must clear the sticky header on a fragment jump");
 
+// PLAN v6 V2. A reviewer gets one direct contact vector from wherever they are
+// reading, without a page load. The address is already visible on /contact,
+// /profile and /resume and is already in the Person JSON-LD on every page, so
+// this adds reach, not exposure. The literal is spelled out because `profile`
+// in this script is the exported /profile.html, not the site config object.
+check(footer.includes('href="mailto:nathannoott@gmail.com"'), "footer must offer a direct mailto action");
+// The compact footer deliberately gets none: forbiddenContactText forbids the
+// address inside it, and a mailto href contains the address. Pinned so the
+// omission reads as a decision rather than an oversight.
+check(!contactFooter.includes('href="mailto:'), "compact contact footer must not repeat the address as a mailto");
+for (const slug of caseStudySlugs) {
+  const caseStudy = renderedMain(readExport(`/projects/${slug}.html`));
+  check(/class="case-contact"/.test(caseStudy), `${slug}: case study must close with a contact line`);
+  check(caseStudy.includes('href="mailto:nathannoott@gmail.com"'), `${slug}: case-study contact line must be a mailto`);
+}
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",

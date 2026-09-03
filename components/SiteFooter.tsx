@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GithubLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
+import { EnvelopeSimple, GithubLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { profile } from "@/lib/site";
 
 export function SiteFooter({ variant = "default" }: { variant?: "default" | "compact" }) {
@@ -28,6 +28,9 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
         <p className="footer-location">Adelaide, South Australia</p>
       </div>
       <div className="footer-links">
+        {/* First, not last: portfolio-contract pins the Fact sheet utility as
+            the final anchor, so appending here would break it. */}
+        <a href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={22} /> <span>Email</span></a>
         <Link href="/contact">Contact</Link>
         {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
         {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}

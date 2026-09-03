@@ -352,7 +352,10 @@ button { font: inherit; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: 1.15rem; line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
 .case-image-note { margin: .9rem 0 0; font-size: .82rem; }
-.case-image-note .text-link, .profile-facts .text-link { align-items: center; display: inline-flex; min-height: 44px; }
+.case-image-note .text-link, .profile-facts .text-link, .case-contact .text-link { align-items: center; display: inline-flex; min-height: 44px; }
+/* Closes every case study with one direct contact vector, so a reviewer who
+   read to the end does not have to navigate to /contact to ask about it. */
+.case-contact { border-top: 1px solid var(--line); color: var(--muted); margin: 4rem 0 0; padding-top: 1.6rem; }
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
