@@ -433,6 +433,20 @@ for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connecti
   }
 }
 
+// PLAN v6 V4. The worked chains are the site's primary evidence and sit directly
+// under prose that writes √, Ω, Δ, mm² and ≥. They use the same notation.
+// Every substitution the item makes is asserted: the draft pinned five of eight
+// and the other three would have regressed silently.
+// React escapes < and > in text, so the export carries &lt;=, &gt;= and -&gt;.
+for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"]) {
+  const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
+  for (const block of writeUp.match(/<pre\b[^>]*>[\s\S]*?<\/pre>/g) ?? []) {
+    for (const ascii of ["sqrt3", "ohm", "mm2", "dV", "&lt;=", "&gt;=", "-&gt;", " x "]) {
+      check(!block.includes(ascii), `${slug}: worked chain must use engineering notation, found "${ascii}"`);
+    }
+  }
+}
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",

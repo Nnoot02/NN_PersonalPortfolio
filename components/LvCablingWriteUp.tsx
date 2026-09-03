@@ -58,17 +58,17 @@ export function LvCablingWriteUp() {
           arrangement to Table 3.13, Column 19 (separately enclosed).
         </p>
         <pre tabIndex={0} role="region" aria-label="Consumer mains selection chain, worked steps">{`Step 1  Design current    Ib = 123.6 A (heaviest phase)
-Step 2  Protective device In = 125 A Type C   (Ib <= In)
-Step 3  Install method    Table 3.8 -> Table 3.13, Col 19
-Step 4  Correction        k = 1.04 (soil, T3.45) x 0.99 (depth, T3.46)
+Step 2  Protective device In = 125 A Type C   (Ib ≤ In)
+Step 3  Install method    Table 3.8 → Table 3.13, Col 19
+Step 4  Correction        k = 1.04 (soil, T3.45) × 0.99 (depth, T3.46)
                             = 1.03
-        Required tabulated CCC >= 125 / 1.03 = 121.4 A
-Step 5  16 mm2 -> 101 A (fail);  25 mm2 -> 132 A (pass)
-        Iz = 132 x 1.03 = 136 A -> Ib 123.6 <= In 125 <= Iz 136  OK
-Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 ohm/km
-        dV = sqrt3 x 123.6 x 15 x 0.927 / 1000 = 2.98 V = 0.74 %  OK
+        Required tabulated CCC ≥ 125 / 1.03 = 121.4 A
+Step 5  16 mm² → 101 A (fail);  25 mm² → 132 A (pass)
+        Iz = 132 × 1.03 = 136 A → Ib 123.6 ≤ In 125 ≤ Iz 136  OK
+Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 Ω/km
+        ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %  OK
 Step 7  PFC at MSB = 8.0 kA; breaking capacity 10 kA  OK
-SELECT  25 mm2 X-90 Cu active and neutral; 6 mm2 Cu earth`}</pre>
+SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
         <p>
           A single-conduit arrangement (Column 17) would instead require 35 mm²;
           that is not the arrangement specified. The result is
@@ -84,12 +84,12 @@ SELECT  25 mm2 X-90 Cu active and neutral; 6 mm2 Cu earth`}</pre>
           = 1.00. The butcher submain governs.
         </p>
         <pre tabIndex={0} role="region" aria-label="Butcher submain selection chain, worked steps">{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
-Step 4  k = 1.00 -> required CCC >= 50 A
-Step 5  6 mm2 -> 45 A (fail); 10 mm2 -> 59 A (pass); Iz = 59 A
-        Ib 41.8 <= In 50 <= Iz 59  OK
-Step 6  dV = sqrt3 x 41.8 x 15 x 2.23 / 1000 = 2.42 V = 0.61 %  OK
-SELECT  10 mm2 V-75 Cu; 4 mm2 Cu earth
-        (16 mm2 recommended for practical margin)`}</pre>
+Step 4  k = 1.00 → required CCC ≥ 50 A
+Step 5  6 mm² → 45 A (fail); 10 mm² → 59 A (pass); Iz = 59 A
+        Ib 41.8 ≤ In 50 ≤ Iz 59  OK
+Step 6  ΔV = √3 × 41.8 × 15 × 2.23 / 1000 = 2.42 V = 0.61 %  OK
+SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
+        (16 mm² recommended for practical margin)`}</pre>
       </div>
 
       <div className="writeup-block">
@@ -154,9 +154,9 @@ SELECT  10 mm2 V-75 Cu; 4 mm2 Cu earth
 
       <div className="writeup-block">
         <h3>Fault level and earth-fault loop</h3>
-        <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (sqrt3 x 15 000) = 0.0154 ohm/phase
-Consumer mains    R  = 0.884 x 15 / 1000     = 0.0133 ohm
-Z at MSB   = 0.0154 + 0.0133 = 0.0287 ohm
+        <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (√3 × 15 000) = 0.0154 Ω/phase
+Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω
+Z at MSB   = 0.0154 + 0.0133 = 0.0287 Ω
 PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
         <p>
           All device breaking capacities (10 kA) exceed the local prospective fault
