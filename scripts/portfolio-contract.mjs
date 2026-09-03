@@ -447,6 +447,29 @@ for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connecti
   }
 }
 
+// PLAN v6 V1. The long write-ups are indexed at the head and every section is
+// addressable, so a reviewer can be sent straight to one calculation. These ids
+// are public URL fragments: pinned here so they are not renamed silently.
+const writeUpIndexes = {
+  "lv-cabling-design-commercial-complex": ["design-basis", "maximum-demand", "consumer-mains", "submains", "final-subcircuits", "earthing-and-protection", "fault-level", "assumptions-and-limits"],
+  "solar-grid-connection-assessment": ["three-capacities", "connection-voltage", "power-quality", "hosting-capacity", "south-australia", "storage", "standards-basis", "assumptions-and-limits"],
+};
+for (const [slug, ids] of Object.entries(writeUpIndexes)) {
+  const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
+  const index = writeUp.match(/<nav[^>]*class="writeup-index"[\s\S]*?<\/nav>/)?.[0] ?? "";
+  check(index !== "", `${slug}: write-up must carry a section index`);
+  check(/aria-label="[^"]+"/.test(index), `${slug}: write-up index must be a named landmark`);
+  for (const id of ids) {
+    check(index.includes(`href="#${id}"`), `${slug}: index must link section #${id}`);
+    check(new RegExp(`<h3[^>]*id="${id}"`).test(writeUp), `${slug}: section #${id} must exist as an h3 target`);
+  }
+  check((writeUp.match(/<h3\b/g) ?? []).length === ids.length, `${slug}: index must cover every section`);
+}
+// The three-section UAV write-up is deliberately unindexed: an index of three
+// items directly above those three items is noise.
+check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the three-section UAV write-up must stay unindexed");
+check(globalsCss.includes("scroll-margin-top"), "indexed sections must clear the sticky header on a fragment jump");
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",

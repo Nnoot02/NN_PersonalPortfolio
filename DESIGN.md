@@ -516,6 +516,16 @@ context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. Below
 760px it stacks in DOM order with 92px photos. Footer follows immediately.
 
+Long case-study write-ups (LV and PV, eight sections each) open with a
+**`writeup-index`**: a non-sticky contents list inside `writeup-heading`, drawn
+as hairline-divided rows with `{typography.meta-label}` labels and an
+accent-dark `decimal-leading-zero` counter. It is **not** sticky and **not** a
+pill bar: `site-header` is already sticky, and this system draws structure with
+1px rules rather than boxes. Each `h3` carries a stable `id`, so every section
+is a shareable URL fragment, and `h3` takes `scroll-margin-top: 96px` to clear
+the sticky header on a jump. The three-section UAV write-up is deliberately
+unindexed.
+
 The hero figure (`hero-artifact`) is a **link** to the Commercial LV Cabling
 Design case study, at every viewport. It was passive until 2026-09-02, but the
 single-line diagram is unreadable on a phone and needed somewhere to go. The

@@ -1,3 +1,18 @@
+import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
+
+// Public URL fragments. Once shipped these ids do not change; the contract
+// pins them so a link sent to a reviewer keeps working.
+const sections: WriteUpSection[] = [
+  { id: "three-capacities", label: "Three capacities, not one number" },
+  { id: "connection-voltage", label: "Connection voltage: LV or HV" },
+  { id: "power-quality", label: "Power-quality and protection obligations" },
+  { id: "hosting-capacity", label: "The revision: hosting capacity" },
+  { id: "south-australia", label: "Why this binds harder in South Australia" },
+  { id: "storage", label: "Storage and hybridisation" },
+  { id: "standards-basis", label: "Standards and regulatory basis" },
+  { id: "assumptions-and-limits", label: "Declared assumptions and limits" },
+];
+
 const capacityBasis = [
   ["PV array DC capacity", "≈1.2 MWp", "Installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio."],
   ["Inverter AC nameplate", "1.0 MW", "The rated AC output assumed for the assessment."],
@@ -20,10 +35,11 @@ export function PvConnectionWriteUp() {
           clause and number, not reproduced, because those tables are Standards
           Australia copyright.
         </p>
+        <WriteUpIndex sections={sections} label="Sections of the connection assessment" />
       </div>
 
       <div className="writeup-block">
-        <h3>Three capacities, not one number</h3>
+        <h3 id="three-capacities">Three capacities, not one number</h3>
         <p>
           &ldquo;1 MW&rdquo; is ambiguous until it is split into three separate
           figures, the confusion that most affects the connection design. The
@@ -52,7 +68,7 @@ export function PvConnectionWriteUp() {
       </div>
 
       <div className="writeup-block">
-        <h3>Connection voltage: LV under TS132 or HV under TS133</h3>
+        <h3 id="connection-voltage">Connection voltage: LV under TS132 or HV under TS133</h3>
         <p>
           A 1 MW system does not automatically require a High Voltage connection.
           Under SA Power Networks TS132, Low Voltage embedded generation may be
@@ -83,7 +99,7 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
-        <h3>Power-quality and protection obligations</h3>
+        <h3 id="power-quality">Power-quality and protection obligations</h3>
         <p>
           <strong>Reactive power.</strong> Output must be controlled to hold network
           voltage stable; SA Power Networks may require fixed power factor, Volt-VAr
@@ -115,7 +131,7 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
-        <h3>The revision: hosting capacity, not consumer demand</h3>
+        <h3 id="hosting-capacity">The revision: hosting capacity, not consumer demand</h3>
         <p>
           The assessment began from an intuitive framing: that a plant&apos;s
           viability depends on nearby consumer demand to absorb the generation. That
@@ -133,7 +149,7 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
-        <h3>Why this binds harder in South Australia</h3>
+        <h3 id="south-australia">Why this binds harder in South Australia</h3>
         <p>
           The hosting-capacity conclusion is sharper here than in the general case.
           South Australia carries the highest share of rooftop solar in the country,
@@ -151,7 +167,7 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
-        <h3>Storage and hybridisation</h3>
+        <h3 id="storage">Storage and hybridisation</h3>
         <p>
           A battery energy storage system may be recommended where network studies,
           export constraints or commercial modelling justify the cost: it absorbs
@@ -168,7 +184,7 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
-        <h3>Standards and regulatory basis</h3>
+        <h3 id="standards-basis">Standards and regulatory basis</h3>
         <p>
           Installation to AS/NZS 3000 (wiring, earthing, protection). Inverter energy
           system installation to AS/NZS 4777.1; inverter performance (grid support,
@@ -184,7 +200,7 @@ site-specific SA Power Networks study of:
       </div>
 
       <div className="writeup-block">
-        <h3>Declared assumptions and limits</h3>
+        <h3 id="assumptions-and-limits">Declared assumptions and limits</h3>
         <p>
           The connection voltage, export limit and protection settings are all
           contingent on a formal SA Power Networks embedded-generation application and

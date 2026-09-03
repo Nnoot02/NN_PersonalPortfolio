@@ -1,3 +1,18 @@
+import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
+
+// Public URL fragments. Once shipped these ids do not change; the contract
+// pins them so a link sent to a reviewer keeps working.
+const sections: WriteUpSection[] = [
+  { id: "design-basis", label: "Design basis" },
+  { id: "maximum-demand", label: "Maximum demand and phase balance" },
+  { id: "consumer-mains", label: "Consumer mains: worked chain" },
+  { id: "submains", label: "Submains: worst case worked" },
+  { id: "final-subcircuits", label: "Final subcircuits" },
+  { id: "earthing-and-protection", label: "Earthing and protection" },
+  { id: "fault-level", label: "Fault level and earth-fault loop" },
+  { id: "assumptions-and-limits", label: "Declared assumptions and limits" },
+];
+
 const finalsSchedule = [
   ["Lighting", "26", "5.0", "10", "1.5 mm²", "11.2", "1.87 %", "1.5 mm²"],
   ["Power (10 A GPO)", "24", "10", "20", "4 mm²", "21.4", "1.17 %", "2.5 mm²"],
@@ -22,10 +37,11 @@ export function LvCablingWriteUp() {
           standards table data is cited by table number, not reproduced, because
           those tables are Standards Australia copyright.
         </p>
+        <WriteUpIndex sections={sections} label="Sections of the full selection chain" />
       </div>
 
       <div className="writeup-block">
-        <h3>Design basis</h3>
+        <h3 id="design-basis">Design basis</h3>
         <p>
           Three-tenancy commercial complex (a small supermarket, a hairdresser and
           a butcher, plus communal services), supplied at 400 V three-phase (230 V
@@ -37,7 +53,7 @@ export function LvCablingWriteUp() {
       </div>
 
       <div className="writeup-block">
-        <h3>Maximum demand and phase balance</h3>
+        <h3 id="maximum-demand">Maximum demand and phase balance</h3>
         <p>
           Maximum demand was determined by calculation per AS/NZS 3000:2018 Clause
           2.2.2(a), using the Table C2 non-domestic diversity method. Every load was
@@ -51,7 +67,7 @@ export function LvCablingWriteUp() {
       </div>
 
       <div className="writeup-block">
-        <h3>Consumer mains: worked chain</h3>
+        <h3 id="consumer-mains">Consumer mains: worked chain</h3>
         <p>
           X-90 single-core copper, separate conduits laid in trefoil, buried 600 mm,
           soil 20 °C, 15 m route. AS/NZS 3008.1.1:2025 Table 3.8 routes this
@@ -77,7 +93,7 @@ SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
       </div>
 
       <div className="writeup-block">
-        <h3>Submains: worst case worked</h3>
+        <h3 id="submains">Submains: worst case worked</h3>
         <p>
           V-75 single-insulated copper, one conduit, buried 1 m, soil 20 °C. Table
           3.8 routes this to Table 3.12, Column 17. Combined correction k = 1.05 × 0.95
@@ -93,7 +109,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
       </div>
 
       <div className="writeup-block">
-        <h3>Final subcircuits: the thermal-insulation catch</h3>
+        <h3 id="final-subcircuits">Final subcircuits: the thermal-insulation catch</h3>
         <p>
           The specification states thermal insulation in all ceiling spaces, and the
           final subcircuits clip across the ceiling joists, so the cables are not
@@ -136,7 +152,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
       </div>
 
       <div className="writeup-block">
-        <h3>Earthing and protection</h3>
+        <h3 id="earthing-and-protection">Earthing and protection</h3>
         <p>
           Protective earthing conductors were sized from AS/NZS 3000:2018 Table 5.1
           on the MEN system, main earth connected at the MSB neutral bar. Because
@@ -153,7 +169,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
       </div>
 
       <div className="writeup-block">
-        <h3>Fault level and earth-fault loop</h3>
+        <h3 id="fault-level">Fault level and earth-fault loop</h3>
         <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (√3 × 15 000) = 0.0154 Ω/phase
 Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω
 Z at MSB   = 0.0154 + 0.0133 = 0.0287 Ω
@@ -171,7 +187,7 @@ PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
       </div>
 
       <div className="writeup-block">
-        <h3>Declared assumptions and limits</h3>
+        <h3 id="assumptions-and-limits">Declared assumptions and limits</h3>
         <p>
           Assumptions are logged explicitly rather than hidden: the socket-outlet
           diversity basis, the consumer-mains conduit arrangement (Column 19 basis

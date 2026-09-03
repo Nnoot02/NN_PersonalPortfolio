@@ -370,6 +370,16 @@ button { font: inherit; }
 .case-sections > div { border-top: 1px solid var(--line); padding-top: 1.6rem; }
 .writeup { max-width: 860px; padding: 5rem 0 0; }
 .writeup-heading { border-top: 1px solid var(--ink); padding-top: 2rem; }
+/* Section index. Not sticky: .site-header already is, and stacking a second
+   sticky bar costs ~120px of chrome on a phone. Drawn with hairlines and
+   meta-labels, the vocabulary DESIGN.md already uses, not as a pill bar.
+   auto-fit collapses it to one column on narrow screens with no media query. */
+.writeup-index { margin: 1.6rem 0 0; }
+.writeup-index ol { counter-reset: writeup-index; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); list-style: none; margin: 0; padding: 0; }
+.writeup-index li { border-top: 1px solid var(--line); counter-increment: writeup-index; }
+.writeup-index a { align-items: baseline; color: var(--muted); display: flex; font: 600 .75rem/1.3 var(--display); gap: .6rem; letter-spacing: .13em; min-height: 44px; padding: .5rem 1rem .5rem 0; text-decoration: none; text-transform: uppercase; }
+.writeup-index a::before { color: var(--accent-dark); content: counter(writeup-index, decimal-leading-zero); }
+.writeup-index a:hover, .writeup-index a:focus-visible { color: var(--ink); }
 .writeup-heading h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 /* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
 .writeup p { color: var(--muted); line-height: 1.65; max-width: 62ch; }
@@ -382,7 +392,10 @@ button { font: inherit; }
 .gate-list dl { display: grid; gap: .7rem; margin: 0; }
 .gate-list dt { font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
 .gate-list dd { margin: 0; color: var(--muted); line-height: 1.7; max-width: 62ch; }
-.writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; }
+/* scroll-margin-top clears the sticky header on a fragment jump: without it a
+   link to #fault-level parks the heading underneath the 76px bar (68px under
+   960px). One value covers both. */
+.writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: 96px; }
 .writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: .82rem; line-height: 1.65; color: var(--ink); }
 .table-scroll { overflow-x: auto; }
 .writeup table { border-collapse: collapse; width: 100%; font-size: .84rem; margin: 1.4rem 0; }
