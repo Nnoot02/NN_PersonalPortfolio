@@ -464,6 +464,18 @@ for (const slug of detailSlugs) {
     check(detail.includes("data-source-attribution"), `${slug} attributed detail page must expose source attribution`);
     check(/data-source-attribution[\s\S]*?href=\"https?:\/\//.test(detail), `${slug} attributed detail page must link its canonical source`);
   }
+  // Workbench evidence photos are the only images with no full-size route: the
+  // LV diagram has its own link. Each figure opens a native <dialog>, which
+  // brings focus trapping, Escape and background inertness from the platform
+  // rather than from hand-written focus code (decision B4, 2026-09-03).
+  const gallery = detail.match(/<section[^>]*class="workbench-evidence"[\s\S]*?<\/section>/)?.[0] ?? "";
+  if (gallery.includes("workbench-evidence-grid")) {
+    const triggers = gallery.match(/<button[^>]*class="[^"]*evidence-trigger[^"]*"[^>]*>/g) ?? [];
+    const figures = gallery.match(/<figure\b/g) ?? [];
+    check(triggers.length === figures.length, `${slug}: every evidence figure must open a full-size view (${triggers.length} triggers for ${figures.length} figures)`);
+    check((gallery.match(/<dialog\b/g) ?? []).length === 1, `${slug}: the evidence gallery must share exactly one dialog`);
+    check(/<dialog[^>]*aria-label="[^"]+"/.test(gallery), `${slug}: the evidence dialog must be named`);
+  }
 }
 
 check(sitemap.includes("/workbench"), "sitemap must include the Workbench collection");

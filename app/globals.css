@@ -159,7 +159,13 @@ button { font: inherit; }
 .workbench-list { border-top: 1px solid var(--line); }
 .workbench-preview { display: grid; grid-template-columns: minmax(180px, .9fr) minmax(0, 1.1fr); gap: 1.5rem; padding: 1.6rem 0; position: relative; border-bottom: 1px solid var(--line); }
 .workbench-preview:focus-within { outline: 2px solid var(--accent-dark); outline-offset: -2px; }
-.workbench-preview-image, .workbench-evidence figure > div { background: var(--paper-deep); min-height: 220px; overflow: hidden; position: relative; }
+.workbench-preview-image, .workbench-evidence figure > .evidence-trigger { background: var(--paper-deep); min-height: 220px; overflow: hidden; position: relative; }
+/* The evidence thumbnail is a button that opens the full-size dialog. It keeps
+   the old div's box exactly, so the grid is unchanged; only the affordance is
+   new. Zoom-in cursor rather than pointer: it opens a bigger view, not a page. */
+.evidence-trigger { border: 0; cursor: zoom-in; display: block; padding: 0; width: 100%; }
+.evidence-trigger:hover img, .evidence-trigger:focus-visible img { filter: sepia(0); transform: scale(1.02); }
+.evidence-trigger img { transition: transform .2s ease, filter .2s ease; }
 .workbench-preview-image img, .workbench-evidence figure img { object-fit: cover; filter: sepia(.08); }
 .workbench-preview-copy { align-content: start; display: grid; gap: .85rem; }
 .workbench-preview-copy h2, .workbench-preview-copy h3 { font: 600 clamp(2rem, 3vw, 3rem)/.95 var(--display); margin: 0; text-transform: uppercase; }
@@ -184,6 +190,12 @@ button { font: inherit; }
 .workbench-evidence figure { margin: 0; }
 .workbench-evidence figcaption { color: var(--muted); line-height: 1.55; margin-top: .8rem; }
 .workbench-evidence figcaption span { color: var(--accent-dark); display: block; margin-bottom: .35rem; }
+.evidence-dialog { background: var(--paper); border: 1px solid var(--ink); color: var(--ink); max-height: 92vh; max-width: min(1100px, 92vw); overflow: auto; padding: 0; }
+.evidence-dialog::backdrop { background: rgba(36, 35, 33, .82); }
+.evidence-dialog img { display: block; max-height: 76vh; max-width: 100%; object-fit: contain; }
+.evidence-dialog-caption { border-top: 1px solid var(--line); color: var(--muted); line-height: 1.55; margin: 0; padding: 1rem 1.2rem; }
+.evidence-dialog-close { align-items: center; background: var(--paper); border: 0; border-top: 1px solid var(--line); color: var(--ink); cursor: pointer; display: flex; font: 600 .75rem/1.2 var(--display); gap: .5rem; justify-content: center; letter-spacing: .13em; min-height: 44px; text-transform: uppercase; width: 100%; }
+.evidence-dialog-close:hover { color: var(--accent-dark); }
 
 .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0 6vw; }
 .principles > div { padding: 2.4rem 2.5rem 2.6rem 0; }
