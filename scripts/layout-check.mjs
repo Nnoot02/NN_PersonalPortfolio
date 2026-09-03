@@ -240,6 +240,31 @@ async function main() {
           if (box.height < 44) failures.push(`${route} @ ${width}x${height}: standalone link "${box.text}" is ${Math.round(box.height)}px tall, below 44px`);
         }
       }
+      if (route === "/projects/lv-cabling-design-commercial-complex") {
+        // The subcircuit schedule is eight nowrap columns. Scrolled right, the
+        // load-name row header must stay pinned or the remaining seven columns
+        // are unlabelled numbers. Asserts tbody th only: that is the visible
+        // defect. thead th:first-child is pinned by the same rule as a
+        // consequence, not as a second behaviour.
+        const scroller = page.locator(".table-scroll").first();
+        if (await scroller.count()) {
+          const pinned = await scroller.evaluate((node) => {
+            const cell = node.querySelector("tbody th");
+            if (!cell) return null;
+            const before = cell.getBoundingClientRect().left;
+            node.scrollLeft = node.scrollWidth - node.clientWidth;
+            const style = getComputedStyle(cell);
+            return { before, after: cell.getBoundingClientRect().left, position: style.position, background: style.backgroundColor, overflowed: node.scrollWidth > node.clientWidth };
+          });
+          // Guarded on overflowed: at wide viewports the table fits and the
+          // sticky behaviour is unobservable, which is correct, not a failure.
+          if (pinned && pinned.overflowed) {
+            if (pinned.position !== "sticky") failures.push(`${route} @ ${width}x${height}: table row header is not sticky`);
+            if (Math.abs(pinned.after - pinned.before) > 1) failures.push(`${route} @ ${width}x${height}: table row header scrolled out of view by ${Math.round(Math.abs(pinned.after - pinned.before))}px`);
+            if (/rgba\(0, 0, 0, 0\)|transparent/.test(pinned.background)) failures.push(`${route} @ ${width}x${height}: sticky row header has no background and will show scrolled content through it`);
+          }
+        }
+      }
       if (route === "/contact") {
         const snapshot = page.locator("[data-technical-snapshot]");
         const groups = page.locator("[data-snapshot-group]");

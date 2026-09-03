@@ -400,11 +400,31 @@ button { font: inherit; }
    960px). One value covers both. */
 .writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: 96px; }
 .writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: .82rem; line-height: 1.65; color: var(--ink); }
-.table-scroll { overflow-x: auto; }
+/* Two background layers give the right-edge scroll hint with no JavaScript.
+   The paper cover is attached `local` so it travels with the content and lands
+   on top of the shadow once you have scrolled fully right; the shadow is
+   `scroll`, pinned to the scroller's edge, so it shows while there is more
+   table to reach. Fully-opaque rgba stops rather than `transparent` avoid the
+   grey interpolation some engines produce. */
+.table-scroll {
+  overflow-x: auto;
+  background-image: linear-gradient(to left, var(--paper) 40%, rgba(243, 240, 233, 0)), linear-gradient(to left, rgba(36, 35, 33, .16), rgba(36, 35, 33, 0));
+  background-position: 100% 0, 100% 0;
+  background-repeat: no-repeat, no-repeat;
+  background-size: 44px 100%, 16px 100%;
+  background-attachment: local, scroll;
+}
 .writeup table { border-collapse: collapse; width: 100%; font-size: .84rem; margin: 1.4rem 0; }
 .writeup th, .writeup td { border-bottom: 1px solid var(--line); padding: .55rem .8rem .55rem 0; text-align: left; white-space: nowrap; }
 .writeup thead th { font: 600 .75rem/1.2 var(--display); text-transform: uppercase; letter-spacing: .13em; }
 .writeup tbody th { font-weight: 600; color: var(--ink); }
+/* The schedule is eight nowrap columns, so on a phone it must scroll. Pin the
+   row header or the remaining seven columns become unlabelled numbers. The
+   background is required: the table has none of its own and scrolled cells
+   would otherwise show through. The hairline is an ::after because a
+   border-right on a sticky cell does not repaint reliably while scrolling. */
+.writeup tbody th, .writeup thead th:first-child { background: var(--paper); left: 0; position: sticky; z-index: 1; }
+.writeup tbody th::after, .writeup thead th:first-child::after { border-right: 1px solid var(--line); bottom: 0; content: ""; position: absolute; right: 0; top: 0; }
 .writeup td { color: var(--muted); }
 
 @media (max-width: 960px) {
