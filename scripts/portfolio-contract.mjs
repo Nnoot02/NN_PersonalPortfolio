@@ -119,6 +119,17 @@ check(!resumeText.includes("building toward graduate electrical engineering work
 // "THREE-TENANCY COMPLEX (SUPERMARKET, HAIRDRESSER, BUTCHER) WITH COMMUNAL
 // SERVICES". Communal is shared services at the MSB, not a fourth tenancy.
 check(!resumeText.includes("four-tenancy"), "plain-text résumé must not call the LV complex four-tenancy");
+// B1 resolved 2026-09-03 in the case study's favour. The project brief
+// specifies the mains as "single core cables buried in separate conduits, laid
+// in trefoil", so the separately-enclosed column applies. The coursework sized
+// them on the single-conduit column instead and reached 35 mm2 / 9.2 kA; the
+// résumé inherited those figures. It must now match what the site publishes.
+for (const stale of ["35 mm2 consumer mains", "9.2 kA", "<=3.4%"]) {
+  check(!resumeText.includes(stale), `plain-text résumé LV figures must match the published case study: ${stale}`);
+}
+for (const current of ["25 mm2 consumer mains", "8.0 kA", "123.6 A"]) {
+  check(resumeText.includes(current), `plain-text résumé must carry the published LV figure: ${current}`);
+}
 // Deliberate deviation from C2's accent rule: this file is machine-read by ATS
 // parsers and terminals, and shipped 5515 bytes with zero non-ASCII. C2 governs
 // visible site copy; here ASCII safety wins. Pinned so it is not "fixed" later.

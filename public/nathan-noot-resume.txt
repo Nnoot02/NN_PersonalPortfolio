@@ -68,8 +68,8 @@ Solar Farm Grid Connection and Commercial Electrical Design - TAFE SA
   anti-islanding, and harmonic limits against AS/NZS 4777.2.
 - Designed a low-voltage cable and protection system for a three-tenancy
   commercial complex to AS/NZS 3000 and AS/NZS 3008.1.1.
-- Sized 35 mm2 consumer mains for a 123.6 A demand, held total voltage drop to
-  <=3.4% against a 5% limit, and verified 9.2 kA prospective fault current and
+- Sized 25 mm2 consumer mains for a 123.6 A demand, held total voltage drop to
+  <=3.2% against a 5% limit, and verified 8.0 kA prospective fault current and
   AS/NZS 3000 Table 8.1 earth-fault-loop impedance in a compliance matrix.
 
 GPS-Denied Autonomous UAV - Current TAFE SA capstone
