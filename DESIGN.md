@@ -379,7 +379,7 @@ display roles; Barlow Condensed is never set as body copy.
 | Role | Family | Size | Weight | Line height | Tracking | Notes |
 |---|---|---|---|---|---|---|
 | Home hero h1 | Barlow Condensed | clamp(2.75rem, 6vw, 5.5rem) | 700 | 0.86 | -0.025em | Uppercase. Two-line lock (`.hero-name` wraps the given/family spans). |
-| Page/case h1 | Barlow Condensed | clamp(4.6rem, 9vw, 9rem) | 600 | 0.82 | -0.02em | Uppercase. |
+| Page/case h1 | Barlow Condensed | clamp(4.6rem, 9vw, 9rem) | 600 | 0.82 | -0.02em | Uppercase. **Never breaks inside a word** (`overflow-wrap: normal`, `word-break: normal`, `hyphens: none`), so below 720px the size is set by the longest word in the title, not by taste: case studies take `clamp(3rem, 15vw, 6rem)` because "MANUFACTURING" renders 303px at 54px against a 280px column at 320px. Measure in a browser before changing it; a canvas estimate ran 13% low. |
 | Section heading h2 | Barlow Condensed | clamp(2.4rem, 4vw, 4rem) | 600 | 0.95 | — | Uppercase. |
 | Project title | Barlow Condensed | clamp(2rem, 3.5vw, 3.2rem) | 600 | 0.95 | — | Uppercase. |
 | Footer title | Barlow Condensed | clamp(2rem, 4vw, 3.8rem) | 600 | 1.1 | — | Uppercase; **wraps to 2 lines, so lh ≥ 1.1** (never 1.0). |

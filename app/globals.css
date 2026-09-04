@@ -219,7 +219,12 @@ button { font: inherit; }
 
 .page-hero { padding: clamp(4rem, 7vw, 6.5rem) 6vw clamp(2.5rem, 4vw, 3.5rem); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 .page-hero--about { align-items: center; display: flex; min-height: 0; padding-top: clamp(2.75rem, 4vw, 3.5rem); row-gap: .8rem; }
-.page-hero h1, .case-study h1 { font: 600 clamp(4.6rem, 9vw, 9rem)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; overflow-wrap: anywhere; }
+/* Never break inside a word, matching .projects-hero, .page-hero--about and
+   .contact-hero--compact. overflow-wrap: anywhere was not misbehaving here: it
+   only splits a word that genuinely does not fit, and at 320px three of the
+   four case-study titles have one ("Manufacturing" measures 326px against a
+   280px column). The size is what has to give, below. */
+.page-hero h1, .case-study h1 { font: 600 clamp(4.6rem, 9vw, 9rem)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; hyphens: none; overflow-wrap: normal; text-wrap: balance; word-break: normal; }
 .page-hero--about > .eyebrow { align-self: flex-start; width: 100%; }
 .page-hero--about h1 { font-size: clamp(4rem, 6.5vw, 6.5rem); margin-bottom: 0; max-width: 1160px; overflow-wrap: normal; text-align: center; text-wrap: balance; width: 100%; }
 .page-hero--about > p:last-of-type { margin: 0 0 .4rem; text-align: center; width: 100%; }
@@ -482,9 +487,16 @@ button { font: inherit; }
   .page-hero--about { align-items: flex-start; min-height: 0; padding-top: 3rem; row-gap: 1.5rem; }
   .page-hero--about > .eyebrow { align-self: auto; margin-bottom: -.65rem; width: auto; }
   .page-hero h1, .case-study h1 { font-size: clamp(4rem, 21vw, 6rem); }
+  /* Case-study and Workbench titles are real project names, not chosen copy,
+     so they carry the longest single words on the site. Sized so the longest
+     of them fits rather than being split: "MANUFACTURING" renders 303px at
+     54px, against a 280px column at 320px, so 15vw (48px) is the largest that
+     clears it. Measured in the browser, not estimated: a canvas measureText
+     estimate was 13% low and produced a size that still overflowed. */
+  .case-study h1 { font-size: clamp(3rem, 15vw, 6rem); }
   .page-hero--about h1, .contact-hero--compact h1 { font-size: clamp(3.8rem, 18vw, 5.4rem); text-align: left; }
   .page-hero--about > p:last-of-type { text-align: left; }
-  .workbench-hero h1 { font-size: clamp(4rem, 20vw, 6rem); }
+  .workbench-hero h1 { font-size: clamp(3.25rem, 17vw, 6rem); }
   .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.25rem; }
   .about-story { padding: 3rem 1.25rem; }
   .about-story-intro, .about-story-grid { grid-template-columns: 1fr; }

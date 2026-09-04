@@ -25,6 +25,10 @@ const ROUTES = [
   "/projects/solar-grid-connection-assessment",
   "/projects/lv-cabling-design-commercial-complex",
   "/projects/gps-denied-autonomous-uav",
+  // Published route, in the sitemap, and it carries the longest title word on
+  // the site ("Manufacturing"). It was outside this sweep, so the heading
+  // word-break defect went unmeasured there; added 2026-09-04.
+  "/projects/solar-manufacturing-dfma",
   "/workbench/bench-fume-extractor",
 ];
 
@@ -130,6 +134,31 @@ async function main() {
       );
       if (overflow > 1) {
         failures.push(`${route} @ ${width}x${height}: horizontal overflow ${overflow}px`);
+      }
+      // A heading must not be split inside a word. This is measured, not
+      // estimated: a Range over each unbreakable run of characters returns more
+      // than one client rect precisely when the browser has wrapped inside it.
+      // Runs are split on hyphens too, so breaking "Grid-Connection" after the
+      // hyphen stays legal. The overflow check above cannot catch this, because
+      // splitting the word is exactly what keeps the document from overflowing.
+      const brokenWords = await page.evaluate(() => {
+        const broken = [];
+        for (const heading of document.querySelectorAll("h1")) {
+          const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
+          const range = document.createRange();
+          let node;
+          while ((node = walker.nextNode())) {
+            for (const match of node.textContent.matchAll(/[^\s-]{2,}/g)) {
+              range.setStart(node, match.index);
+              range.setEnd(node, match.index + match[0].length);
+              if (range.getClientRects().length > 1) broken.push(match[0]);
+            }
+          }
+        }
+        return broken;
+      });
+      for (const word of brokenWords) {
+        failures.push(`${route} @ ${width}x${height}: heading breaks inside the word "${word}"`);
       }
       if (route === "/") {
         const epilogue = page.locator("[data-homepage-epilogue]");
