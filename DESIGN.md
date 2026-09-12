@@ -522,8 +522,12 @@ as hairline-divided rows with `{typography.meta-label}` labels and an
 accent-dark `decimal-leading-zero` counter. It is **not** sticky and **not** a
 pill bar: `site-header` is already sticky, and this system draws structure with
 1px rules rather than boxes. Each `h3` carries a stable `id`, so every section
-is a shareable URL fragment, and `h3` takes `scroll-margin-top: 96px` to clear
-the sticky header on a jump. The three-section UAV write-up is deliberately
+is a shareable URL fragment, and `h3` takes `scroll-margin-top` as a calc over
+`--header-h + --strip-h + --clear-gap` so a jump clears the sticky header, and
+the pinned spec strip where one can appear, rather than a single hard-coded
+value. The strip is not an exception to the no-second-bar rule: it is a
+non-interactive data readout, desktop-only (>=1100px), and adds nothing on
+phones. The three-section UAV write-up is deliberately
 unindexed.
 
 **`case-spec`** — The case-study spec sheet, in the chip row's position on the
@@ -534,6 +538,16 @@ notes are muted 0.85rem. A row without a note renders two cells; placeholder
 text is never shipped. The sheet replaces the evidence chips; projects without
 spec data (DFMA) keep the chips. At ≤640px each row stacks (label, value,
 note) with no horizontal scroll.
+
+Where the spec sheet exists, a **`case-spec__strip`** duplicates its rows as a
+fixed, non-interactive readout pinned under the header while the write-up is
+read, at >=1100px only: Standards excluded (reference material stays in the
+table), notes omitted. It is the site's first `position: fixed` element, is
+`aria-hidden`, carries no focusables, retracts once the spec table re-enters
+the viewport, and is hidden in print. Below the threshold and with JavaScript
+off it does not exist; the sheet always reads normally. Offset geometry:
+`--header-h` (76px; 68px at <=720px) + `--strip-h` (44px, reserved statically at
+>=1100px) + `--clear-gap` (12px).
 
 The hero figure (`hero-artifact`) is a **link** to the Commercial LV Cabling
 Design case study, at every viewport. It was passive until 2026-09-02, but the

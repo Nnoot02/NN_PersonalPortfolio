@@ -534,6 +534,29 @@ const dfmaPage = renderedMain(readExport("/projects/solar-manufacturing-dfma.htm
 check(dfmaPage.includes("tag-list"), "DFMA must keep the evidence chips (no spec data)");
 check(!dfmaPage.includes("case-spec"), "DFMA must not render the spec sheet");
 
+// PLAN v7 S2. The pinned strip: a duplicate, non-interactive readout pinned
+// under the header at >=1100px only. Markup is pinned so it cannot silently
+// gain focusables or lose its aria-hidden; the print block must hide it (a
+// fixed element would otherwise stamp every printed page); the offset scheme
+// variables must exist; and the strip must exclude Standards rows (reference
+// material stays in the table) and the notes.
+const printBlock = globalsCss.match(/@media print \{[\s\S]*?\n\}/)?.[0] ?? "";
+check(printBlock.includes(".case-spec__strip"), "print styles must hide the spec strip");
+check(["--header-h", "--clear-gap", "--strip-h"].every((name) => globalsCss.includes(name)), "offset-scheme variables must exist in globals.css");
+check(/\.writeup-block h3 \{[^}]*scroll-margin-top: calc\(var\(--header-h\) \+ var\(--strip-h/.test(globalsCss), "scroll-margin-top must reserve header + strip + gap");
+for (const [slug, rows] of Object.entries(caseSpecs)) {
+  const caseStudy = normalizeTextEntities(renderedMain(readExport(`/projects/${slug}.html`)));
+  const strip = caseStudy.match(/<div[^>]*class="case-spec__strip"[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(strip !== "", `${slug}: spec strip markup missing`);
+  check(strip.includes('aria-hidden="true"'), `${slug}: spec strip must be aria-hidden`);
+  check(!strip.includes("<a ") && !strip.includes("<button"), `${slug}: spec strip must stay non-interactive`);
+  for (const [label, value, note] of rows) {
+    if (label === "Standards") check(!strip.includes(value), `${slug}: Standards rows must stay out of the strip`);
+    else check(strip.includes(`${value}</b>`), `${slug}: strip must carry the "${label}" value`);
+    if (note) check(!strip.includes(note), `${slug}: strip must omit notes`);
+  }
+}
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",

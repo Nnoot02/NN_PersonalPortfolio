@@ -41,6 +41,12 @@
   --white: #fffdfa;
   --display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
   --body: "Inter", Arial, sans-serif;
+  /* Sticky chrome geometry. --header-h matches .site-header's min-height at
+     each breakpoint; --clear-gap is the breathing room a fragment jump leaves
+     below pinned chrome; --strip-h is set only where the spec strip can pin
+     (see .case-spec__strip). */
+  --header-h: 76px;
+  --clear-gap: 12px;
 }
 
 * { box-sizing: border-box; }
@@ -63,7 +69,7 @@ button { font: inherit; }
 .text-link { color: var(--accent-dark); font-weight: 600; text-decoration: underline; text-underline-offset: .18em; }
 
 .site-header {
-  min-height: 76px;
+  min-height: var(--header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -390,6 +396,30 @@ button { font: inherit; }
   .case-spec__table tr { display: grid; gap: .25rem; padding: .7rem 0; }
   .case-spec__table th, .case-spec__table td { padding: 0; white-space: normal; }
 }
+/* The pinned spec strip (PLAN v7 S2): a duplicate, non-interactive readout of
+   the spec rows (Standards excluded), pinned under the header while the
+   write-up is read. Desktop only: the media query and the --strip-h scope use
+   the same measured 1100px threshold, and the element is inert (height 0,
+   hidden, no pointer events) everywhere else. It is the site's first fixed
+   element; print hides it or it would stamp every printed page. The
+   transform/opacity swap honours the global reduced-motion rule. */
+.case-spec__strip {
+  align-items: center; background: var(--paper); border-bottom: 1px solid var(--ink); display: flex;
+  height: var(--strip-h, 0px); left: 0; opacity: 0; overflow: hidden; padding: 0 6vw; pointer-events: none;
+  position: fixed; right: 0; top: var(--header-h); transform: translateY(-100%);
+  transition: transform .18s ease-out, opacity .18s ease-out; visibility: hidden; white-space: nowrap;
+  z-index: 19;
+}
+@media (min-width: 1100px) {
+  /* Reserved statically, not on a mount class: a deep link's fragment scroll
+     resolves before hydration, so a class-gated value arrives too late and the
+     strip would overlap the heading it just jumped to. */
+  :root { --strip-h: 44px; }
+}
+.case-spec__strip.is-on { opacity: 1; transform: none; visibility: visible; }
+.case-spec__strip-item { color: var(--muted); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
+.case-spec__strip-item b { color: var(--ink); font-weight: 600; }
+.case-spec__strip-item + .case-spec__strip-item { border-left: 1px solid var(--line); margin-left: 1rem; padding-left: 1rem; }
 .case-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 4rem; padding: 4rem 0 0; }
 .case-sections > div { border-top: 1px solid var(--line); padding-top: 1.6rem; }
 .writeup { max-width: 860px; padding: 5rem 0 0; }
@@ -416,10 +446,11 @@ button { font: inherit; }
 .gate-list dl { display: grid; gap: .7rem; margin: 0; }
 .gate-list dt { font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
 .gate-list dd { margin: 0; color: var(--muted); line-height: 1.7; max-width: 62ch; }
-/* scroll-margin-top clears the sticky header on a fragment jump: without it a
-   link to #fault-level parks the heading underneath the 76px bar (68px under
-   960px). One value covers both. */
-.writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: 96px; }
+/* scroll-margin-top clears the sticky header, and the pinned spec strip where
+   one can appear, on a fragment jump: without it a link to #fault-level parks
+   the heading underneath the chrome. --header-h is 76px, 68px under 720px;
+   --strip-h is 0 anywhere the strip cannot pin and 44px where it can. */
+.writeup-block h3 { font: 600 clamp(1.4rem, 2.2vw, 1.9rem)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
 .writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: .82rem; line-height: 1.65; color: var(--ink); }
 /* Two background layers give the right-edge scroll hint with no JavaScript.
    The paper cover is attached `local` so it travels with the content and lands
@@ -473,7 +504,8 @@ button { font: inherit; }
 }
 
 @media (max-width: 720px) {
-  .site-header { min-height: 68px; padding: 0 1.25rem; }
+  :root { --header-h: 68px; }
+  .site-header { padding: 0 1.25rem; }
   .wordmark-desktop { display: none; }
   .wordmark-mobile { display: inline; }
   .menu-button { display: grid; place-items: center; }
@@ -588,7 +620,7 @@ button { font: inherit; }
 }
 
 @media print {
-  .site-header, .hero-actions, .row-action, .scroll-cue { display: none !important; }
+  .site-header, .hero-actions, .row-action, .scroll-cue, .case-spec__strip { display: none !important; }
   .project-row, .workbench-preview { break-inside: avoid; }
   .featured, .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
   .site-footer { background: none; color: #000; min-height: 0; }

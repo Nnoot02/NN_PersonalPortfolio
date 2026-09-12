@@ -975,6 +975,139 @@ async function main() {
   }
   await ledePage.close();
 
+  // PLAN v7 S2. The case-study spec strip: a non-interactive readout pinned
+  // under the header while the write-up is read, visible only at the measured
+  // 1100px threshold and up. The reservation in scroll-margin-top depends on
+  // the strip's measured height matching --strip-h exactly, so that equality
+  // is asserted directly, not inferred. 1099px and 390px prove absence at and
+  // below the boundary; scroll-back proves the retract path.
+  const STRIP_ROUTES = [
+    "/projects/lv-cabling-design-commercial-complex",
+    "/projects/solar-grid-connection-assessment",
+    "/projects/gps-denied-autonomous-uav",
+  ];
+  const settleScroll = async (p) => {
+    let last = -1;
+    let stable = 0;
+    for (let i = 0; i < 60 && stable < 3; i += 1) {
+      const y = await p.evaluate(() => window.scrollY);
+      stable = Math.abs(y - last) < 1 ? stable + 1 : 0;
+      last = y;
+      if (stable < 3) await p.waitForTimeout(50);
+    }
+  };
+  const stripMatrix = [
+    [390, 844, ["/projects/lv-cabling-design-commercial-complex"]],
+    [1099, 800, STRIP_ROUTES],
+    [1100, 800, STRIP_ROUTES],
+    [1440, 900, STRIP_ROUTES],
+  ];
+  for (const [width, height, routes] of stripMatrix) {
+    for (const route of routes) {
+      const stripPage = await browser.newPage({ viewport: { width, height } });
+      const response = await stripPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
+      checks += 1;
+      if (!response || !response.ok()) {
+        failures.push(`${route} @ ${width}x${height}: HTTP ${response ? response.status() : "no response"}`);
+        await stripPage.close();
+        continue;
+      }
+      await stripPage.evaluate(() => document.fonts.ready);
+      await stripPage.evaluate(() => {
+        const table = document.querySelector(".case-spec__table");
+        if (table) {
+          const top = table.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: top + 420, behavior: "instant" });
+        }
+      });
+      await settleScroll(stripPage);
+      const expectOn = width >= 1100;
+      if (expectOn) {
+        await stripPage.waitForFunction(() => document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 2000 }).catch(() => {});
+      }
+      const stripState = await stripPage.evaluate(() => {
+        const strip = document.querySelector(".case-spec__strip");
+        const header = document.querySelector(".site-header");
+        if (!strip || !header) return null;
+        const rect = strip.getBoundingClientRect();
+        return {
+          on: strip.classList.contains("is-on"),
+          top: rect.top,
+          height: rect.height,
+          scrollWidth: strip.scrollWidth,
+          clientWidth: strip.clientWidth,
+          visibility: getComputedStyle(strip).visibility,
+          headerHeight: header.getBoundingClientRect().height,
+          stripVar: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--strip-h")) || 0,
+        };
+      });
+      if (!stripState) {
+        failures.push(`${route} @ ${width}x${height}: spec strip or header missing`);
+        await stripPage.close();
+        continue;
+      }
+      if (expectOn) {
+        if (!stripState.on) failures.push(`${route} @ ${width}x${height}: strip is not pinned after scrolling past the table`);
+        if (Math.abs(stripState.height - stripState.stripVar) > 1) failures.push(`${route} @ ${width}x${height}: strip height ${Math.round(stripState.height)}px does not match --strip-h ${stripState.stripVar}px`);
+        if (stripState.scrollWidth > stripState.clientWidth + 1) failures.push(`${route} @ ${width}x${height}: strip content overflows ${stripState.scrollWidth}px into ${stripState.clientWidth}px`);
+        if (Math.abs(stripState.top - stripState.headerHeight) > 2) failures.push(`${route} @ ${width}x${height}: strip top ${Math.round(stripState.top)}px does not sit under the ${Math.round(stripState.headerHeight)}px header`);
+      } else if (stripState.visibility !== "hidden" || stripState.on) {
+        failures.push(`${route} @ ${width}x${height}: strip must stay hidden below the 1100px threshold`);
+      }
+      const overflow = await stripPage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      if (overflow > 0) failures.push(`${route} @ ${width}x${height}: document overflow ${overflow}px with the spec strip in play`);
+      // Retract path: scrolling back so the table re-enters the viewport must
+      // take the strip off.
+      await stripPage.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+      await stripPage.waitForFunction(() => !document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 2000 }).catch(() => {});
+      const retracted = await stripPage.evaluate(() => !document.querySelector(".case-spec__strip")?.classList.contains("is-on"));
+      if (!retracted) failures.push(`${route} @ ${width}x${height}: strip did not retract when the table re-entered the viewport`);
+      await stripPage.close();
+    }
+  }
+
+  // Fragment jumps must clear the pinned chrome with the [6, 20]px gap band:
+  // with the strip active at 1100 and up, and with the header alone below the
+  // threshold. If the last section clamps at maximum scroll the gap stops
+  // signalling a defect, so clamping is detected and recorded instead.
+  for (const [width, height] of [[390, 844], [1100, 800], [1440, 900]]) {
+    for (const section of ["#fault-level", "#assumptions-and-limits"]) {
+      const jumpPage = await browser.newPage({ viewport: { width, height } });
+      const response = await jumpPage.goto(`${base}/projects/lv-cabling-design-commercial-complex${section}`, { waitUntil: "networkidle" });
+      checks += 1;
+      if (!response || !response.ok()) {
+        failures.push(`case-study jump ${section} @ ${width}x${height}: HTTP ${response ? response.status() : "no response"}`);
+        await jumpPage.close();
+        continue;
+      }
+      await jumpPage.evaluate(() => document.fonts.ready);
+      await settleScroll(jumpPage);
+      if (width >= 1100) {
+        await jumpPage.waitForFunction(() => document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 1500 }).catch(() => {});
+      }
+      const jump = await jumpPage.evaluate(() => {
+        const target = document.getElementById(location.hash.slice(1));
+        const header = document.querySelector(".site-header");
+        const strip = document.querySelector(".case-spec__strip");
+        if (!target || !header || !strip) return null;
+        const headerBottom = header.getBoundingClientRect().bottom;
+        const stripOn = strip.classList.contains("is-on");
+        const stripBottom = strip.getBoundingClientRect().bottom;
+        const chromeBottom = stripOn && stripBottom > headerBottom ? stripBottom : headerBottom;
+        return {
+          gap: target.getBoundingClientRect().top - chromeBottom,
+          clamped: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2,
+        };
+      });
+      if (!jump) failures.push(`case-study jump ${section} @ ${width}x${height}: target or chrome missing`);
+      else if (jump.gap < 6 || jump.gap > 20) {
+        if (jump.clamped) informational.push(`case-study jump ${section} @ ${width}x${height}: clamped at maximum scroll (gap ${Math.round(jump.gap)}px); not a defect`);
+        else failures.push(`case-study jump ${section} @ ${width}x${height}: heading gap is ${Math.round(jump.gap)}px, expected 6-20px`);
+      }
+      await jumpPage.close();
+    }
+  }
+
   await browser.close();
   server.close();
 
