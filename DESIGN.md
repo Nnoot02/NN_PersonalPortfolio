@@ -526,6 +526,15 @@ is a shareable URL fragment, and `h3` takes `scroll-margin-top: 96px` to clear
 the sticky header on a jump. The three-section UAV write-up is deliberately
 unindexed.
 
+**`case-spec`** — The case-study spec sheet, in the chip row's position on the
+three published case studies (LV, PV, UAV): a hairline-ruled table with a 1px
+`{colors.ink}` top rule and `{colors.line}` row rules, label/value/note cells.
+Labels use `{typography.meta-label}`; values are `{colors.ink}` at weight 500;
+notes are muted 0.85rem. A row without a note renders two cells; placeholder
+text is never shipped. The sheet replaces the evidence chips; projects without
+spec data (DFMA) keep the chips. At ≤640px each row stacks (label, value,
+note) with no horizontal scroll.
+
 The hero figure (`hero-artifact`) is a **link** to the Commercial LV Cabling
 Design case study, at every viewport. It was passive until 2026-09-02, but the
 single-line diagram is unreadable on a phone and needed somewhere to go. The

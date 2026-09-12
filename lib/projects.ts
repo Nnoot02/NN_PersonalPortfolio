@@ -1,3 +1,9 @@
+export type SpecRow = {
+  label: string;
+  value: string;
+  note?: string;
+};
+
 export type Project = {
   slug: string;
   number?: string;
@@ -14,6 +20,7 @@ export type Project = {
   result: string;
   evidenceStatus: string;
   evidenceMarkers?: string[];
+  spec?: SpecRow[];
   // Diagram artifacts are unreadable at mobile widths; offer the full-size file.
   imageIsDiagram?: boolean;
 };
@@ -33,6 +40,12 @@ export const projects: Project[] = [
     status: "Evidence verified - sanitised write-up",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
     evidenceMarkers: ["400 V 3-ph", "123.6 A design current", "0.74 % voltage drop", "AS/NZS 3008.1.1"],
+    spec: [
+      { label: "Voltage system", value: "400 V 3-phase", note: "230 V line-to-neutral" },
+      { label: "Design current", value: "123.6 A", note: "on the heaviest phase (A)" },
+      { label: "Voltage drop", value: "0.74 %", note: "consumer mains, against the 1 % limit" },
+      { label: "Standards", value: "AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025" },
+    ],
     problem:
       "Design the complete LV cabling system for a three-tenancy commercial complex supplied at 400 V from a 500 kVA transformer, and prove every cable and protective device against AS/NZS 3000:2018 and AS/NZS 3008.1.1:2025.",
     approach:
@@ -56,6 +69,13 @@ export const projects: Project[] = [
     status: "Evidence verified - sanitised write-up",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
     evidenceMarkers: ["1 MW AC", "SAPN TS132/TS133", "AS/NZS 4777.2", "PCC voltage rise"],
+    spec: [
+      { label: "Inverter AC nameplate", value: "1.0 MW", note: "the rated AC output assumed for the assessment" },
+      { label: "PV array DC capacity", value: "≈1.2 MWp", note: "installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio" },
+      { label: "Approved export limit", value: "≤1.0 MW", note: "possibly below the inverter rating; set by SA Power Networks after the connection study" },
+      { label: "Connection voltage", value: "LV (TS132) or HV (TS133)", note: "decided by a site-specific network study, not by capacity" },
+      { label: "Standards", value: "SAPN TS132/TS133 · AS/NZS 4777.2" },
+    ],
     problem:
       "Determine how a new 1 MW solar plant could be connected to the SA Power Networks distribution grid (the viable connection voltage, the power-quality and protection obligations, and whether storage is warranted), and justify each conclusion against the controlling standards and network requirements.",
     approach:
@@ -78,6 +98,12 @@ export const projects: Project[] = [
     status: "Active capstone · systems design in progress",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
     evidenceMarkers: ["2212 ~920 KV", "T:W 1.9–2.2:1", "Gate ≥ 2.3:1", "55 % hover throttle"],
+    spec: [
+      { label: "Motors", value: "2212-class, ~920 KV", note: "as-shipped; a 2216 upgrade is budgeted" },
+      { label: "Thrust-to-weight", value: "1.9–2.2:1", note: "full autonomy payload, ~1.27 kg all-up" },
+      { label: "Flight gate", value: "≥ 2.3:1", note: "this project's full-payload gate for integrated flight" },
+      { label: "Hover throttle", value: "~55 %", note: "as-shipped propulsion, full payload" },
+    ],
     problem:
       "Demonstrate credible indoor UAV autonomy without relying on GPS, while keeping safety, sensing limits, and verification visible.",
     approach:

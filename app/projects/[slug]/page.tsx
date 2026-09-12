@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { notFound } from "next/navigation";
+import { CaseSpec } from "@/components/CaseSpec";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -69,9 +70,13 @@ export default async function ProjectPage({ params }: ProjectParams) {
         <h1>{project.title}</h1>
         <p className="case-status">{project.status}</p>
         <p className="case-lede">{project.summary}</p>
-        <ul className="tag-list case-tags" aria-label={`${project.title} evidence markers`}>
-          {(project.evidenceMarkers ?? project.tags).map((marker) => <li key={marker}>{marker}</li>)}
-        </ul>
+        {project.spec ? (
+          <CaseSpec rows={project.spec} title={project.title} />
+        ) : (
+          <ul className="tag-list case-tags" aria-label={`${project.title} evidence markers`}>
+            {(project.evidenceMarkers ?? project.tags).map((marker) => <li key={marker}>{marker}</li>)}
+          </ul>
+        )}
         <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
         {project.imageIsDiagram ? (
           <p className="case-image-note">

@@ -486,6 +486,54 @@ for (const slug of caseStudySlugs) {
   check(caseStudy.includes('href="mailto:nathannoott@gmail.com"'), `${slug}: case-study contact line must be a mailto`);
 }
 
+// PLAN v7 S1. The spec sheet replaces the evidence-chip row on the three
+// published case studies, carrying the numbers a reviewer scans for in a
+// pinned order. Row strings are pinned against lib/projects.ts; the block
+// extraction keeps a prose match elsewhere on the page from passing. DFMA
+// carries no spec data and keeps the chips (fallback, pinned below).
+const caseSpecs = {
+  "lv-cabling-design-commercial-complex": [
+    ["Voltage system", "400 V 3-phase", "230 V line-to-neutral"],
+    ["Design current", "123.6 A", "on the heaviest phase (A)"],
+    ["Voltage drop", "0.74 %", "consumer mains, against the 1 % limit"],
+    ["Standards", "AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025", null],
+  ],
+  "solar-grid-connection-assessment": [
+    ["Inverter AC nameplate", "1.0 MW", "the rated AC output assumed for the assessment"],
+    ["PV array DC capacity", "≈1.2 MWp", "installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio"],
+    ["Approved export limit", "≤1.0 MW", "possibly below the inverter rating; set by SA Power Networks after the connection study"],
+    ["Connection voltage", "LV (TS132) or HV (TS133)", "decided by a site-specific network study, not by capacity"],
+    ["Standards", "SAPN TS132/TS133 · AS/NZS 4777.2", null],
+  ],
+  "gps-denied-autonomous-uav": [
+    ["Motors", "2212-class, ~920 KV", "as-shipped; a 2216 upgrade is budgeted"],
+    ["Thrust-to-weight", "1.9–2.2:1", "full autonomy payload, ~1.27 kg all-up"],
+    ["Flight gate", "≥ 2.3:1", "this project's full-payload gate for integrated flight"],
+    ["Hover throttle", "~55 %", "as-shipped propulsion, full payload"],
+  ],
+};
+for (const [slug, rows] of Object.entries(caseSpecs)) {
+  const caseStudy = renderedMain(readExport(`/projects/${slug}.html`));
+  // React escapes ' as &#x27; in text; normalise before comparing row strings.
+  const block = normalizeTextEntities(caseStudy.match(/<table[^>]*class="case-spec__table"[\s\S]*?<\/table>/)?.[0] ?? "");
+  check(block !== "", `${slug}: case study must carry the spec sheet`);
+  check(/aria-label="[^"]+"/.test(block), `${slug}: spec sheet must be a named table`);
+  check(!block.includes("\u2014"), `${slug}: spec sheet must contain no U+2014 character`);
+  check(!caseStudy.includes("case-tags"), `${slug}: spec sheet must replace the evidence chips`);
+  let lastAt = -1;
+  for (const [label, value, note] of rows) {
+    const at = block.indexOf(`>${label}</th>`);
+    check(at !== -1, `${slug}: spec sheet must include the "${label}" row`);
+    check(block.includes(`>${value}</td>`), `${slug}: spec sheet must include the "${label}" value`);
+    if (note) check(block.includes(`>${note}</td>`), `${slug}: spec sheet must include the "${label}" note`);
+    check(at > lastAt, `${slug}: spec rows must appear in listed order`);
+    lastAt = at;
+  }
+}
+const dfmaPage = renderedMain(readExport("/projects/solar-manufacturing-dfma.html"));
+check(dfmaPage.includes("tag-list"), "DFMA must keep the evidence chips (no spec data)");
+check(!dfmaPage.includes("case-spec"), "DFMA must not render the spec sheet");
+
 const projectIndexAssets = [
   "/images/project-index/lv-cabling-process.webp",
   "/images/project-index/solar-grid-connection-process.webp",
