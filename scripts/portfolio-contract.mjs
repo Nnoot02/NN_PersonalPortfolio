@@ -468,6 +468,14 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
 // The three-section UAV write-up is deliberately unindexed: an index of three
 // items directly above those three items is noise.
 check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the three-section UAV write-up must stay unindexed");
+// Site screening audit 2026-09-13, findings 4 and 5 (dispositioned 2026-09-16):
+// the grid summary argues each conclusion against the standards rather than
+// deciding against them, and the two published case-study pages carry no
+// U+2014 character (the house register is " - ").
+for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"]) {
+  check(!readExport(`/projects/${slug}.html`).includes("\u2014"), `${slug}: published case-study page must contain no U+2014 character`);
+}
+check(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")).includes("with each conclusion argued against AS/NZS inverter standards and SAPN TS132/TS133"), "grid summary must argue each conclusion against the standards");
 check(globalsCss.includes("scroll-margin-top"), "indexed sections must clear the sticky header on a fragment jump");
 
 // PLAN v6 V2. A reviewer gets one direct contact vector from wherever they are

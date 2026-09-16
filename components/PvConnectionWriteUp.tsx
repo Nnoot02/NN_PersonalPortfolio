@@ -156,7 +156,7 @@ site-specific SA Power Networks study of:
           and AEMO has reported it as the first gigawatt-scale grid in the world to
           reach zero operational demand, when distributed generation briefly exceeded
           all local customer load. The midday condition this assessment treats as the
-          limiting case &mdash; high PV output against low local demand &mdash; is
+          limiting case - high PV output against low local demand - is
           therefore not an edge case on many South Australian feeders; it is a
           recurring operating state. SA Power Networks already operates a solar
           curtailment mechanism for minimum system demand events, which is the same

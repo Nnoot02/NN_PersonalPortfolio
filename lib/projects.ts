@@ -60,7 +60,7 @@ export const projects: Project[] = [
     number: "02",
     title: "1 MW Solar Grid-Connection Assessment",
     summary:
-      "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid: connection voltage, power-quality compliance, protection, and storage, decided against AS/NZS inverter standards and SAPN TS132/TS133.",
+      "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid: connection voltage, power-quality compliance, protection, and storage, with each conclusion argued against AS/NZS inverter standards and SAPN TS132/TS133.",
     image: "/images/solar-grid-connection.webp",
     imageAlt: "Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling",
     imageIsDiagram: true,
