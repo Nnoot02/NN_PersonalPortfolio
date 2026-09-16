@@ -71,6 +71,10 @@ export default function ProfilePage() {
             <dt>Contact</dt>
             <dd>{profile.contactEmail}</dd>
           </div>
+          <div>
+            <dt>Text copy</dt>
+            <dd><a className="text-link" href={profile.resumeTextPath}>Plain-text résumé</a></dd>
+          </div>
         </dl>
       </section>
 

@@ -214,6 +214,14 @@ for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
 check(/href="\/nathan-noot-resume\.pdf"[^>]*target="_blank"/.test(footer), "footer must offer the resume in a new tab");
 check(footer.includes("linkedin.com"), "footer must provide LinkedIn action");
 check(footer.includes("github.com/Nnoot02") && footer.includes("GitHub"), "footer must render the configured GitHub action");
+// Site screening audit 2026-09-13, finding 7 (dispositioned 2026-09-16): the
+// plain-text résumé is reachable by clicking from the footer and the fact
+// sheet, not only from /resume.
+check(footer.includes('href="/nathan-noot-resume.txt"'), "footer must offer the plain-text résumé");
+// Scoped to the facts list: the footer chip also renders on /profile, so a
+// page-wide check could never go red from the row alone.
+const profileFacts = profile.match(/<dl[^>]*class="profile-facts"[^>]*>[\s\S]*?<\/dl>/)?.[0] ?? "";
+check(profileFacts.includes('href="/nathan-noot-resume.txt"'), "fact sheet must link the plain-text résumé from its facts list");
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
 check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
