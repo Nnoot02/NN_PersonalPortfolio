@@ -32,7 +32,7 @@ const nodes: NetworkNode[] = [
   { id: "lv", kind: "project", label: "Commercial LV cabling", slug: "lv-cabling-design-commercial-complex", x: "38%", y: "35%" },
   { id: "grid", kind: "project", label: "1 MW grid connection", slug: "solar-grid-connection-assessment", x: "38%", y: "69%" },
   { id: "uav", kind: "project", label: "GPS-denied UAV", slug: "gps-denied-autonomous-uav", x: "62%", y: "35%" },
-  { id: "solar", kind: "project", label: "Solar manufacturing", slug: "solar-manufacturing-dfma", x: "62%", y: "69%" },
+  { id: "solar", kind: "project", label: "Solar manufacturing", x: "62%", y: "69%" },
   { id: "embedded", kind: "category", label: "Programming and embedded", x: "88%", y: "19%", tools: "Python, MATLAB, C, ROS 2, ESP and AVR microcontrollers, and MAVLink telemetry." },
   { id: "test", kind: "category", label: "Test and simulation", x: "88%", y: "50%", tools: "Multimeter, oscilloscope, function generator, LTspice, and Logisim." },
   { id: "quality", kind: "category", label: "Manufacturing and quality", x: "88%", y: "81%", tools: "5S, Kaizen, root cause analysis, 8D problem-solving, inspection, soldering, and production fault-finding." },
@@ -51,7 +51,23 @@ const edges: NetworkEdge[] = [
 
 const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
-const mobileCapabilities = [
+
+type MobileEvidenceItem = {
+  state: EvidenceState;
+  label: string;
+  project?: string;
+  slug?: string;
+  note?: string;
+};
+
+type MobileCapability = {
+  title: string;
+  description: string;
+  standards?: string;
+  evidence: MobileEvidenceItem[];
+};
+
+const mobileCapabilities: MobileCapability[] = [
   {
     title: "Power design",
     description: "Maximum demand, cable selection and de-rating, voltage drop, fault current, earth-fault-loop impedance, single-line diagrams, and wiring schedules. Design tools: AutoCAD, Autodesk Inventor, Fusion 360, and KiCad.",
@@ -80,7 +96,7 @@ const mobileCapabilities = [
     title: "Manufacturing and quality",
     description: "5S, Kaizen, root cause analysis, 8D problem-solving, inspection, soldering, and production fault-finding.",
     evidence: [
-      { state: "pending" as const, label: "Public evidence pending", project: "Solar Manufacturing & DFMA", slug: "solar-manufacturing-dfma", note: "Current experience; sanitised engineering evidence incomplete." },
+      { state: "pending" as const, label: "Public evidence pending", note: "Solar Manufacturing & DFMA: current experience; sanitised engineering evidence incomplete." },
     ],
   },
 ];

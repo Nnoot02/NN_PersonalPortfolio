@@ -250,10 +250,18 @@ for (const projectSlug of [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
-  "solar-manufacturing-dfma",
 ]) {
   check(aboutTools.includes(`/projects/${projectSlug}`), `about Tools and standards must link to ${projectSlug}`);
 }
+// Site screening audit 2026-09-13, finding 3 (Nathan's call, 2026-09-16): the
+// pending DFMA study is unlinked from About until its copy clears employer
+// review. The node keeps its evidence state; it loses its case-study link.
+check(!aboutTools.includes("/projects/solar-manufacturing-dfma"), "about must not link the pending DFMA study while its copy is under review");
+// The desktop rail link is computed on selection, so it never appears in the
+// static HTML: pin the source too, or re-adding the slug would stay green.
+const toolsNetworkSource = readFileSync(new URL("../components/ToolsStandardsNetwork.tsx", import.meta.url), "utf8");
+check(!toolsNetworkSource.includes('label: "Solar manufacturing", slug:'), "solar network node must not regain its DFMA case-study slug");
+check(!toolsNetworkSource.includes('project: "Solar Manufacturing & DFMA"'), "mobile ledger must not regain its DFMA case-study link");
 for (const mobileCapability of ["Power design", "Grid connection", "Embedded systems", "Manufacturing and quality"]) {
   check(aboutTools.includes(`>${mobileCapability}</h3>`), `about mobile proof ledger must expose ${mobileCapability}`);
 }
