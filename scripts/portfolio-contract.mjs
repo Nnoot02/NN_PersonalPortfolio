@@ -299,6 +299,23 @@ for (const toolEvidence of [
 check(globalsCss.includes(".tools-proof-mobile { display: none; }"), "desktop must hide the mobile proof ledger");
 check(globalsCss.includes(".tools-network-desktop, .tools-network-desktop-only { display: none; }"), "mobile must hide the desktop network");
 check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile must show the proof-led ledger");
+// Site screening audit 2026-09-13, finding 6 (dispositioned 2026-09-16): the
+// labelled divs are named role=group groups so their aria-label is honoured,
+// and the workbench attribution block is not a landmark (an aside inside main
+// trips axe's landmark-complementary-is-top-level).
+for (const [block, pattern, groupName] of [
+  [projectsIndex, /<div[^>]*class="project-journey-guide"[^>]*>/, "project journey guide"],
+  [aboutTools, /<div[^>]*class="tools-evidence-legend"[^>]*>/, "tools evidence legend"],
+  [aboutTools, /<div[^>]*class="tools-network-map"[^>]*>/, "tools network map"],
+]) {
+  const tag = block.match(pattern)?.[0] ?? "";
+  check(tag !== "" && tag.includes('role="group"'), `${groupName} must carry role=group so its aria-label is honoured`);
+}
+for (const workbenchSlug of ["tarmo5", "sesame-robot", "servo-mini-arm"]) {
+  const detail = renderedMain(readExport(`/workbench/${workbenchSlug}.html`));
+  check(detail.includes('<div class="workbench-attribution" data-source-attribution'), `${workbenchSlug}: attribution block must be a div that keeps its data attribute`);
+  check(!detail.includes("<aside"), `${workbenchSlug}: adapted-build page must not render an aside landmark`);
+}
 
 // 12px label floor (set for buttons in b2670b2, extended to labels 2026-09-02).
 // Print styles are excluded: the only remaining .72rem is inside @media print.

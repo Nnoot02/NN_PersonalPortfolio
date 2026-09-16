@@ -103,7 +103,7 @@ const mobileCapabilities: MobileCapability[] = [
 
 function EvidenceLegend() {
   return (
-    <div className="tools-evidence-legend" aria-label="Evidence states">
+    <div className="tools-evidence-legend" aria-label="Evidence states" role="group">
       <span className="tools-evidence-key is-verified">Verified</span>
       <span className="tools-evidence-key is-associated">Associated</span>
       <span className="tools-evidence-key is-pending">Pending</span>
@@ -131,7 +131,7 @@ export function ToolsStandardsNetwork() {
         </div>
       </div>
       <div className="tools-network-desktop" data-tools-desktop-network>
-        <div className="tools-network-map" aria-label="Project-centred relationship map of tools, standards, and public evidence">
+        <div className="tools-network-map" aria-label="Project-centred relationship map of tools, standards, and public evidence" role="group">
           <svg viewBox="0 0 1000 480" preserveAspectRatio="none" aria-hidden="true">
             {edges.map((edge) => {
               const active = edge.project === selectedId || edge.category === selectedId;

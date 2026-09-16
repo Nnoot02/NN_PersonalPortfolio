@@ -20,7 +20,7 @@ export function ProjectJourneyLanes() {
   return (
     <section className="project-journey-section" aria-labelledby="project-journeys-heading">
       <h2 className="sr-only" id="project-journeys-heading">Project journeys</h2>
-      <div className="project-journey-guide" aria-label="Project journey stages">
+      <div className="project-journey-guide" aria-label="Project journey stages" role="group">
         <span>Project anchor</span>
         <span>Theory / planning</span>
         <span>System decision</span>
