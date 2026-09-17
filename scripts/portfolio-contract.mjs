@@ -41,9 +41,12 @@ function normalizeTextEntities(markup) {
   return markup.replaceAll("&#x27;", "'").replaceAll("&#39;", "'");
 }
 
-const home = renderedMain(readExport("/index.html"));
-const about = normalizeTextEntities(renderedMain(readExport("/about.html")));
-const contact = renderedMain(readExport("/contact.html"));
+const homeDoc = readExport("/index.html");
+const home = renderedMain(homeDoc);
+const aboutDoc = readExport("/about.html");
+const about = normalizeTextEntities(renderedMain(aboutDoc));
+const contactDoc = readExport("/contact.html");
+const contact = renderedMain(contactDoc);
 const resume = readExport("/resume.html");
 const profile = readExport("/profile.html");
 const projectsIndex = renderedMain(readExport("/projects.html"));
@@ -58,7 +61,7 @@ check(home.includes("Power systems and grid integration"), "home hero must state
 check(home.includes("I design to AS/NZS standards and publish the working, so please feel free to check it."), "home hero must use approved standards-and-published-working copy");
 check(!home.includes("calculations—backed"), "home hero must not retain the em-dash summary");
 check(home.includes("Nathan") && home.includes("No-ot"), "home hero must render Nathan No-ot");
-const homeWordmark = home.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
+const homeWordmark = homeDoc.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
 const resumeWordmark = resume.match(/<a[^>]*class="wordmark"[^>]*>[\s\S]*?<\/a>/)?.[0] ?? "";
 check(homeWordmark.includes('class="wordmark-home"'), "home wordmark must use homepage identity treatment");
 check(homeWordmark.includes("NN") && homeWordmark.includes('class="wordmark-period"'), "home wordmark must render NN. with accent period");
@@ -152,10 +155,10 @@ for (const current of ["25 mm2 consumer mains", "8.0 kA", "123.6 A"]) {
 // parsers and terminals, and shipped 5515 bytes with zero non-ASCII. C2 governs
 // visible site copy; here ASCII safety wins. Pinned so it is not "fixed" later.
 check(!/[^\x00-\x7F]/.test(resumeText), "the plain-text résumé must stay pure ASCII for machine parsers");
-check(home.includes('id="primary-navigation"'), "primary navigation must expose id for mobile aria-controls");
-check(home.includes('aria-controls="primary-navigation"'), "menu button must control primary navigation");
+check(homeDoc.includes('id="primary-navigation"'), "primary navigation must expose id for mobile aria-controls");
+check(homeDoc.includes('aria-controls="primary-navigation"'), "menu button must control primary navigation");
 
-const navMatch = home.match(/<nav[^>]*id="primary-navigation"[\s\S]*?<\/nav>/);
+const navMatch = homeDoc.match(/<nav[^>]*id="primary-navigation"[\s\S]*?<\/nav>/);
 if (navMatch) {
   const destinations = [...navMatch[0].matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
   check(destinations.join(",") === "/,/projects,/about,/contact", "primary navigation must contain Home, Projects, About, Contact only");
@@ -203,14 +206,21 @@ check(!home.includes("data-workbench-home"), "home must not render full Workbenc
 check(!home.includes("broader-work"), "home must not render full UAV section");
 check(!home.includes("data-miniature-evidence-window") && !home.includes("solar-grid-miniature.png") && !home.includes("generated_images"), "home must exclude miniature assets and markers");
 
-const heroIndex = home.indexOf('class="hero"');
-const ledgerIndex = home.indexOf("data-evidence-ledger");
-const epilogueIndex = home.indexOf("data-homepage-epilogue");
-const footerIndex = home.indexOf("<footer");
+// The F1 fix (site screening audit 2026-09-16) moves header/footer OUT of the
+// <main> landmark: main-landmark text comes from renderedMain, while chrome
+// (nav, skip link) and narrative ORDER come from the full document.
+check(!/<header\b/.test(home) && !/<footer\b/.test(home), "header/footer must sit outside the main landmark");
+check(!/<header\b/.test(about) && !/<footer\b/.test(about), "header/footer must sit outside the main landmark on /about");
+check((homeDoc.match(/<main id="main-content"/g) ?? []).length === 1, "exactly one main landmark per document");
+check(homeDoc.includes('class="skip-link" href="#main-content"'), "skip link must target #main-content");
+const heroIndex = homeDoc.indexOf('class="hero"');
+const ledgerIndex = homeDoc.indexOf("data-evidence-ledger");
+const epilogueIndex = homeDoc.indexOf("data-homepage-epilogue");
+const footerIndex = homeDoc.indexOf("<footer");
 check(heroIndex >= 0 && heroIndex < ledgerIndex && ledgerIndex < epilogueIndex && epilogueIndex < footerIndex, "home narrative must be hero, power work, epilogue, footer");
-check(/data-homepage-epilogue[\s\S]*?<\/section>\s*<footer\b/.test(home), "footer must immediately follow homepage epilogue");
+check(/data-homepage-epilogue[\s\S]*?<\/section>\s*<\/main>\s*<footer\b/.test(homeDoc), "footer must immediately follow homepage main");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
-const footer = home.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
+const footer = homeDoc.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
 check(footer.includes("Ask me about my work."), "footer must use approved ask-about-my-work lead");
 check(footer.includes("Available for South Australian internships."), "footer must use approved internship availability support");
 for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
@@ -336,7 +346,7 @@ const screenCss = globalsCss.replace(/@media print \{[\s\S]*?\n\}/, "");
 check(!/font(?:-size)?:[^;]*\s\.7[0-4]?rem/.test(screenCss), "screen labels must not set a font size below .75rem (12px)");
 const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and practical electrical engineering.";
 const contactSnapshot = contact.match(/<aside[^>]*data-technical-snapshot[^>]*>[\s\S]*?<\/aside>/)?.[0] ?? "";
-const contactFooter = contact.match(/<footer[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
+const contactFooter = contactDoc.match(/<footer[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
 check(contact.includes('class="page-hero contact-hero contact-hero--compact"'), "contact must use the compact hero treatment");
 check(contact.includes('<p class="eyebrow">CONTACT</p>'), "contact must use the approved CONTACT eyebrow");
 check(contact.includes("EMAIL WORKS BEST."), "contact must use the approved email-first hero");
@@ -368,7 +378,7 @@ check(!contact.includes("Let's discuss engineering work."), "contact must not re
 check(!contact.includes("Flight evidence pending"), "contact must not add unsupported flight evidence");
 
 check(!projectsIndex.includes("Power · verification"), "projects hero must remove the old scope eyebrow");
-check(projectsIndex.includes("I learn by taking systems from theory towards proof."), "projects hero must use approved headline");
+check(projectsIndex.includes("Systems, taken from theory towards proof."), "projects hero must use approved headline");
 check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
 check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
 

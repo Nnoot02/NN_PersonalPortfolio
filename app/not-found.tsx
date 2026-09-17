@@ -5,8 +5,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 
 export default function NotFound() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="page-hero">
         <p className="eyebrow">404</p>
         <h1>Page not found.</h1>
@@ -20,7 +21,8 @@ export default function NotFound() {
           </Link>
         </div>
       </section>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

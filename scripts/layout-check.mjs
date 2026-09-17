@@ -167,8 +167,13 @@ async function main() {
         if ((await portals.count()) !== 2) failures.push(`/ @ ${width}x${height}: homepage portal count is not 2`);
 
         const footerAdjacent = await page.evaluate(() => {
+          // Since the F1 fix (site screening audit 2026-09-16) the footer sits
+          // outside the main landmark: it must follow <main> directly, and the
+          // epilogue must remain the last element inside <main>.
           const ribbon = document.querySelector("[data-homepage-epilogue]");
-          return ribbon?.nextElementSibling?.matches(".site-footer") ?? false;
+          const main = document.getElementById("main-content");
+          if (!ribbon || !main) return false;
+          return ribbon.nextElementSibling === null && (main.nextElementSibling?.matches(".site-footer") ?? false);
         });
         if (!footerAdjacent) failures.push(`/ @ ${width}x${height}: footer does not immediately follow epilogue`);
 
@@ -487,6 +492,23 @@ async function main() {
           for (let index = 1; index < tops.length; index += 1) {
             if (tops[index] <= tops[index - 1]) failures.push(`/projects @ ${width}x${height}: mobile lane tops are not strictly increasing`);
           }
+          // Site screening audit 2026-09-16, F2: on mobile the index must name
+          // projects inside the first viewport, and the headline must stay a
+          // short title rather than a full sentence stack.
+          const mobileIndex = await page.evaluate(() => {
+            const heading = document.querySelector(".projects-hero h1");
+            const first = document.querySelector("[data-project-slug]");
+            return {
+              headingHeight: heading ? Math.round(heading.getBoundingClientRect().height) : null,
+              firstProjectTop: first ? Math.round(first.getBoundingClientRect().top) : Number.POSITIVE_INFINITY,
+            };
+          });
+          if (mobileIndex.headingHeight === null) {
+            failures.push(`/projects @ ${width}x${height}: projects headline not found`);
+          } else if (mobileIndex.headingHeight > 245) {
+            failures.push(`/projects @ ${width}x${height}: projects headline is ${mobileIndex.headingHeight}px tall (budget 245px)`);
+          }
+          if (mobileIndex.firstProjectTop >= height) failures.push(`/projects @ ${width}x${height}: first named project begins at ${mobileIndex.firstProjectTop}px, below the first viewport`);
         }
 
         for (let index = 0; index < linkCount; index += 1) {
@@ -1297,6 +1319,48 @@ async function main() {
       if (deep.gap < 6 || deep.gap > 20) failures.push(`deep link @ 200% text: heading gap is ${deep.gap}px, expected 6-20px (pre-hydration floor plus measured header)`);
     }
     await zoomContext.close();
+  }
+
+  // Skip-link keyboard journey (site screening audit 2026-09-16, F1): Tab must
+  // reach the skip link first, Enter must land focus on the content landmark,
+  // and the next Tab must enter content rather than repeat header chrome.
+  for (const [width, height] of [[1280, 720], [390, 844]]) {
+    const page = await browser.newPage({ viewport: { width, height } });
+    for (const route of ["/", "/contact", "/projects/lv-cabling-design-commercial-complex"]) {
+      const response = await page.goto(`${base}${route}`, { waitUntil: "networkidle" });
+      checks += 1;
+      if (!response || !response.ok()) {
+        failures.push(`${route} @ ${width}x${height}: HTTP ${response ? response.status() : "no response"} (skip-link probe)`);
+        continue;
+      }
+      await page.keyboard.press("Tab");
+      const first = await page.evaluate(() => ({
+        cls: String(document.activeElement?.className ?? ""),
+        tag: document.activeElement?.tagName ?? "",
+      }));
+      if (!first.cls.includes("skip-link")) {
+        failures.push(`${route} @ ${width}x${height}: first Tab lands on ${first.tag}.${first.cls || "?"}, expected the skip link`);
+      }
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(100);
+      const landed = await page.evaluate(() => document.activeElement?.id ?? "");
+      if (landed !== "main-content") {
+        failures.push(`${route} @ ${width}x${height}: Enter on the skip link must focus #main-content, got ${landed || "none"}`);
+      }
+      await page.keyboard.press("Tab");
+      const next = await page.evaluate(() => {
+        const element = document.activeElement;
+        return {
+          inMain: Boolean(element?.closest("main")),
+          inHeader: Boolean(element?.closest(".site-header")),
+          tag: element?.tagName ?? "",
+        };
+      });
+      if (!next.inMain || next.inHeader) {
+        failures.push(`${route} @ ${width}x${height}: Tab after the skip link must reach content, got ${next.tag}`);
+      }
+    }
+    await page.close();
   }
 
   await browser.close();

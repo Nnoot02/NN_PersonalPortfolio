@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="page-hero page-hero--about">
         <p className="eyebrow">About</p>
         <h1>Solar systems, from grid to factory.</h1>
@@ -42,7 +43,8 @@ export default function AboutPage() {
       <section className="about-tools" id="tools-and-standards" aria-labelledby="tools-and-standards-heading">
         <ToolsStandardsNetwork />
       </section>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

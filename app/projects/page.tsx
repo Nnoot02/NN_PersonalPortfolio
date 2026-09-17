@@ -11,17 +11,19 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="page-hero projects-hero">
-        <h1>I learn by taking systems from theory towards proof.</h1>
+        <h1>Systems, taken from theory towards proof.</h1>
         <p>
           Completed power studies sit beside active embedded and autonomy work.
           Each project shows what I decided, what I produced, and where the evidence currently stops.
         </p>
       </section>
       <ProjectJourneyLanes />
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

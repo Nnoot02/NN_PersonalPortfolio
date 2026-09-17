@@ -11,8 +11,9 @@ export const metadata: Metadata = {
 
 export default function WorkbenchPage() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="page-hero workbench-hero">
         <p className="eyebrow">Personal benchwork</p>
         <h1>Workbench.</h1>
@@ -23,7 +24,8 @@ export default function WorkbenchPage() {
           {workbenchEntries.map((entry) => <WorkbenchEntryPreview entry={entry} key={entry.slug} />)}
         </div>
       </section>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

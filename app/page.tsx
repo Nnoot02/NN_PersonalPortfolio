@@ -34,8 +34,9 @@ export default function HomePage() {
   const workbenchEntry = requireHomepageWorkbenchEntry("bench-fume-extractor");
 
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Electrical engineering student · Adelaide</p>
@@ -100,7 +101,8 @@ export default function HomePage() {
       </section>
 
       <HomepageEpilogue uavProject={uavProject} workbenchEntry={workbenchEntry} />
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

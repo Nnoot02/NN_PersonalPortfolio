@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 
 export default function ResumePage() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="page-hero resume-hero">
         <p className="eyebrow">Résumé</p>
         <h1>Solar power<br />{" "}student résumé.</h1>
@@ -65,7 +66,8 @@ export default function ResumePage() {
           </p>
         </div>
       </section>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

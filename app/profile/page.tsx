@@ -23,8 +23,9 @@ const profileStructuredData = {
 
 export default function ProfilePage() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profileStructuredData) }}
@@ -119,7 +120,8 @@ export default function ProfilePage() {
           <li>Images support the design, but important claims also appear as text.</li>
         </ul>
       </section>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

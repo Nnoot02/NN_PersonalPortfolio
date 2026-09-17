@@ -25,8 +25,9 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
   const source = "source" in entry ? entry.source : undefined;
 
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <article className="workbench-detail" data-workbench-entry={entry.slug} data-requires-source={source ? "true" : undefined}>
         <Link className="back-link" href="/workbench"><ArrowLeft size={18} /> Workbench</Link>
         <p className="eyebrow" data-build-type>{entry.buildType}</p>
@@ -43,7 +44,8 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
         </dl>
         <WorkbenchEvidenceGallery entry={entry} />
       </article>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }

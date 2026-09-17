@@ -124,6 +124,11 @@ button { font: inherit; }
 .hero-image, .case-image, .project-image { position: relative; overflow: hidden; }
 .hero-image { display: grid; margin: 0; }
 .hero-artifact { position: relative; display: block; min-width: 0; min-height: 0; }
+/* The skip link targets content now (site screening audit 2026-09-16, F1):
+   main is the programmatic focus target and must clear the pinned chrome the
+   same way write-up anchors do (see the .writeup-block h3 scroll-margin rule). */
+#main-content { scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
+#main-content:focus { outline: none; }
 .case-image img, .project-image img { object-fit: cover; filter: sepia(.08); transition: transform .45s ease; }
 .hero-artifact { background: var(--paper-deep); }
 .hero-artifact > img { object-fit: contain; filter: sepia(.08); }
@@ -541,8 +546,12 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .nav-link { padding: 1rem 0 .75rem; }
   .hero-copy { min-height: 0; padding: 4.5rem 1.25rem 3rem; }
   .hero-name { font-size: clamp(2.75rem, 13vw, 4.25rem); line-height: .9; }
-  .hero-image { min-height: 400px; }
-  .hero-artifact { min-height: 400px; }
+  /* Measured 2026-09-17 (site screening audit F2): at 390px the artifact spans
+     the full width and its 1200x800 one-line diagram renders 260px tall; the
+     old flat 400px letterboxed 140px of empty paper. Desktop (520px) is set
+     in the wide-screen rule above by design. */
+  .hero-image { min-height: 260px; }
+  .hero-artifact { min-height: 260px; }
   .hero-actions { width: 100%; }
   .button { width: 100%; }
   .featured { padding: 5rem 1.25rem; }

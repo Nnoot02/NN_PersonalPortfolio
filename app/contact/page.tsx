@@ -14,8 +14,9 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <section className="page-hero contact-hero contact-hero--compact">
         <div className="contact-layout">
           <div className="contact-column">
@@ -62,7 +63,8 @@ export default function ContactPage() {
           </aside>
         </div>
       </section>
-      <SiteFooter variant="compact" />
     </main>
+    <SiteFooter variant="compact" />
+    </>
   );
 }

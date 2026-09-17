@@ -58,8 +58,9 @@ export default async function ProjectPage({ params }: ProjectParams) {
   const WriteUp = writeUps[project.slug];
 
   return (
-    <main id="main-content">
-      <SiteHeader />
+    <>
+    <SiteHeader />
+    <main id="main-content" tabIndex={-1}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(projectStructuredData(project)) }}
@@ -117,7 +118,8 @@ export default async function ProjectPage({ params }: ProjectParams) {
           Questions about this design? <a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
         </p>
       </article>
-      <SiteFooter />
     </main>
+    <SiteFooter />
+    </>
   );
 }
