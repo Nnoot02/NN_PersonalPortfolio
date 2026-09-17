@@ -177,6 +177,28 @@ async function main() {
         });
         if (!footerAdjacent) failures.push(`/ @ ${width}x${height}: footer does not immediately follow epilogue`);
 
+        // Site screening audit 2026-09-16, F4: the hero artifact must identify
+        // itself and its action without hover (the sr-only span is gone).
+        const heroArtifactCaption = await page.evaluate(() => {
+          const caption = document.querySelector(".hero-artifact-caption");
+          const action = document.querySelector(".hero-artifact-action");
+          if (!caption || !action) return null;
+          const style = getComputedStyle(caption);
+          const box = caption.getBoundingClientRect();
+          const actionBox = action.getBoundingClientRect();
+          return {
+            visible: style.visibility !== "hidden" && style.display !== "none" && Number(style.opacity) > 0.9,
+            width: Math.round(box.width),
+            height: Math.round(box.height),
+            actionHeight: Math.round(actionBox.height),
+          };
+        });
+        if (!heroArtifactCaption) {
+          failures.push(`/ @ ${width}x${height}: hero artifact caption missing`);
+        } else if (!heroArtifactCaption.visible || heroArtifactCaption.height < 18 || heroArtifactCaption.width < 120 || heroArtifactCaption.actionHeight < 12) {
+          failures.push(`/ @ ${width}x${height}: hero artifact caption is not visibly rendered (${JSON.stringify(heroArtifactCaption)})`);
+        }
+
         const expectedImageSize = width < 760 ? 92 : 118;
         const imageBoxes = await page.locator(".homepage-portal-image").evaluateAll((nodes) =>
           nodes.map((node) => {

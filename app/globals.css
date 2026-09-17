@@ -132,6 +132,18 @@ button { font: inherit; }
 .case-image img, .project-image img { object-fit: cover; filter: sepia(.08); transition: transform .45s ease; }
 .hero-artifact { background: var(--paper-deep); }
 .hero-artifact > img { object-fit: contain; filter: sepia(.08); }
+/* Site screening audit 2026-09-16, F4: the artifact names itself and its
+   destination without hover; the strip sits inside the one link target. */
+.hero-artifact-caption {
+  position: absolute; bottom: 0; left: 0; right: 0; display: flex; flex-wrap: wrap;
+  gap: .3rem 1rem; justify-content: space-between; align-items: baseline;
+  background: var(--white); border-top: 1px solid var(--line);
+  padding: .6rem .9rem; font: 600 .75rem/1.35 var(--display);
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.hero-artifact-caption-text { color: var(--muted); }
+.hero-artifact-action { color: var(--accent-dark); text-decoration: underline; text-underline-offset: .25em; }
+.hero-artifact:hover .hero-artifact-action, .hero-artifact:focus-visible .hero-artifact-action { color: var(--accent); }
 .project-row:hover .project-image img, .project-row:focus-within .project-image img { transform: scale(1.025); }
 
 .featured { padding: clamp(5rem, 8vw, 8rem) 6vw; }

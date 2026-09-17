@@ -82,7 +82,10 @@ export default function HomePage() {
               fetchPriority="high"
               sizes="(max-width: 960px) 100vw, 54vw"
             />
-            <span className="sr-only">Open the Commercial LV Cabling Design case study</span>
+            <span className="hero-artifact-caption">
+              <span className="hero-artifact-caption-text">Commercial LV cabling design - 400 V, three tenancies</span>
+              <span className="hero-artifact-action">Open the case study</span>
+            </span>
           </Link>
         </figure>
       </section>
