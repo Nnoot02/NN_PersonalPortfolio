@@ -1110,7 +1110,11 @@ async function main() {
     for (const section of ["#fault-level", "#assumptions-and-limits", "#design-basis"]) {
       if (textZoom !== 100 && section !== "#fault-level") continue;
       const jumpPage = await browser.newPage({ viewport: { width, height } });
-      const response = await jumpPage.goto(`${base}/projects/lv-cabling-design-commercial-complex${section}`, { waitUntil: "networkidle" });
+      // Rev 4 (audit D3): the 200%-text arrival case loads at the top and jumps
+      // like an index-link reader -- a fragment URL would pre-resolve the scroll
+      // at default text, and a pre-scroll through the table would manufacture
+      // the intersection crossing the product must produce itself.
+      const response = await jumpPage.goto(`${base}/projects/lv-cabling-design-commercial-complex${textZoom === 100 ? section : ""}`, { waitUntil: "networkidle" });
       checks += 1;
       const jumpLabel = `case-study jump ${section} @ ${width}x${height}${textZoom !== 100 ? " 200% text" : ""}`;
       if (!response || !response.ok()) {
@@ -1120,21 +1124,19 @@ async function main() {
       }
       await jumpPage.evaluate(() => document.fonts.ready);
       if (textZoom !== 100) {
-        // The initial fragment scroll resolved at default text; re-run the jump
-        // once the zoomed layout has settled (scrollIntoView uses the same
-        // scroll-margin algorithm as fragment navigation), turning the strip on
-        // first the way a reader reaches this state.
         await jumpPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
         await jumpPage.evaluate(() => document.fonts.ready);
-        await scrollPastTable(jumpPage);
+        await jumpPage.waitForTimeout(250);
         await jumpPage.evaluate((selector) => document.querySelector(selector).scrollIntoView({ behavior: "instant" }), section);
       }
       await settleScroll(jumpPage);
       if (width >= 1100) {
         await jumpPage.waitForFunction(() => document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 1500 }).catch(() => {});
+        const arrived = await jumpPage.evaluate(() => document.querySelector(".case-spec__strip")?.classList.contains("is-on") ?? false);
+        if (!arrived) failures.push(`${jumpLabel}: the strip did not arrive after the jump (the crossing-driven observer missed it; Rev 4 rootMargin guard)`);
       }
-      const jump = await jumpPage.evaluate(() => {
-        const target = document.getElementById(location.hash.slice(1));
+      const jump = await jumpPage.evaluate((selector) => {
+        const target = document.querySelector(selector);
         const header = document.querySelector(".site-header");
         const strip = document.querySelector(".case-spec__strip");
         if (!target || !header || !strip) return null;
@@ -1146,7 +1148,7 @@ async function main() {
           gap: target.getBoundingClientRect().top - chromeBottom,
           clamped: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2,
         };
-      });
+      }, section);
       if (!jump) failures.push(`${jumpLabel}: target or chrome missing`);
       else if (jump.gap < 6 || jump.gap > 20) {
         if (jump.clamped) informational.push(`${jumpLabel}: clamped at maximum scroll (gap ${Math.round(jump.gap)}px); not a defect`);
@@ -1176,6 +1178,70 @@ async function main() {
       }
     }
     await noJsContext.close();
+  }
+
+  // PLAN v7 Rev 4 (audit D1): min-height reads the static floor, so the header
+  // can shrink again after text grows (a measurement written into min-height
+  // ratchets at the last value), and an inline measured value must not defeat
+  // the <=720px floor. The floor binds at every step, so these assertions do
+  // not depend on the observer's timing.
+  {
+    const ratchetPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    await ratchetPage.goto(`${base}/projects/lv-cabling-design-commercial-complex`, { waitUntil: "networkidle" });
+    await ratchetPage.waitForTimeout(600);
+    const zooms = [200, 150, 100];
+    const expectedHeights = [144, 110, 76];
+    for (let index = 0; index < zooms.length; index += 1) {
+      await ratchetPage.evaluate((value) => { document.documentElement.style.fontSize = value + "%"; }, zooms[index]);
+      await ratchetPage.evaluate(() => document.fonts.ready);
+      await ratchetPage.waitForTimeout(700);
+      const height = await ratchetPage.evaluate(() => Math.round(document.querySelector(".site-header").getBoundingClientRect().height));
+      checks += 1;
+      if (Math.abs(height - expectedHeights[index]) > 1) failures.push(`chrome ratchet @ 1440: header is ${height}px at ${zooms[index]}% text, expected the ${expectedHeights[index]}px floor (it must rebind each way)`);
+    }
+    await ratchetPage.setViewportSize({ width: 390, height: 844 });
+    await ratchetPage.waitForTimeout(600);
+    const mobileHeight = await ratchetPage.evaluate(() => Math.round(document.querySelector(".site-header").getBoundingClientRect().height));
+    if (Math.abs(mobileHeight - 68) > 1) failures.push(`chrome resize @ 1440 -> 390: header is ${mobileHeight}px, expected the 68px floor (an inline measured value must not defeat the <=720px rule)`);
+    await ratchetPage.close();
+  }
+
+  // The pre-hydration floor at zoom: a deep link resolved with 200% text set
+  // before first paint must land clear of the header and of the strip that
+  // arrives after hydration.
+  {
+    const zoomContext = await browser.newContext({ viewport: { width: 1100, height: 800 } });
+    await zoomContext.addInitScript(() => {
+      const apply = () => {
+        if (!document.documentElement) return false;
+        document.documentElement.style.fontSize = "200%";
+        return true;
+      };
+      if (!apply()) {
+        const observer = new MutationObserver(() => { if (apply()) observer.disconnect(); });
+        observer.observe(document, { childList: true });
+      }
+    });
+    const zoomPage = await zoomContext.newPage();
+    const response = await zoomPage.goto(`${base}/projects/lv-cabling-design-commercial-complex#fault-level`, { waitUntil: "networkidle" });
+    checks += 1;
+    if (!response || !response.ok()) {
+      failures.push(`deep link @ 200% text: HTTP ${response ? response.status() : "no response"}`);
+    } else {
+      await zoomPage.evaluate(() => document.fonts.ready);
+      await zoomPage.waitForTimeout(700);
+      const deep = await zoomPage.evaluate(() => {
+        const target = document.getElementById("fault-level");
+        const header = document.querySelector(".site-header");
+        const strip = document.querySelector(".case-spec__strip");
+        const headerBottom = header.getBoundingClientRect().bottom;
+        const stripOn = strip.classList.contains("is-on");
+        const stripBottom = strip.getBoundingClientRect().bottom;
+        return { gap: Math.round(target.getBoundingClientRect().top - (stripOn && stripBottom > headerBottom ? stripBottom : headerBottom)) };
+      });
+      if (deep.gap < 6 || deep.gap > 20) failures.push(`deep link @ 200% text: heading gap is ${deep.gap}px, expected 6-20px (pre-hydration floor plus measured header)`);
+    }
+    await zoomContext.close();
   }
 
   await browser.close();

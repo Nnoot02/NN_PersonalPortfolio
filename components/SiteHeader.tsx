@@ -19,22 +19,25 @@ export function SiteHeader() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const headerRef = useRef<HTMLElement>(null);
 
-  // PLAN v7 Rev 3 (audit C1). The spec strip's top offset and every fragment
-  // jump hang off --header-h, and the header is a min-height box whose content
-  // grows with root text (138px at 200% text against the 76px floor). Measure
-  // it instead of asserting it: the CSS expression is the pre-hydration and
-  // no-JS floor, and this observer writes the measured height onto :root.
+  // PLAN v7 Rev 3 (audit C1), corrected by Rev 4 (audit D1). The spec strip's
+  // top offset and every fragment jump hang off --header-h, and the header is a
+  // min-height box whose content grows with root text (138px at 200% text
+  // against the 76px floor). Measure it instead of asserting it -- but write
+  // the result as --header-measured, never into --header-h itself: min-height
+  // reads --header-floor, and a measurement written into what min-height
+  // reads would pin the header at its last measured height (it could never
+  // shrink again, and an inline value would defeat the <=720px floor).
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
     const root = document.documentElement;
-    const apply = () => root.style.setProperty("--header-h", `${Math.round(header.getBoundingClientRect().height)}px`);
+    const apply = () => root.style.setProperty("--header-measured", `${Math.round(header.getBoundingClientRect().height)}px`);
     apply();
     const observer = new ResizeObserver(apply);
     observer.observe(header);
     return () => {
       observer.disconnect();
-      root.style.removeProperty("--header-h");
+      root.style.removeProperty("--header-measured");
     };
   }, []);
 

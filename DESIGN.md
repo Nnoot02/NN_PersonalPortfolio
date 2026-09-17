@@ -546,11 +546,19 @@ table), notes omitted. It is the site's first `position: fixed` element, is
 `aria-hidden`, carries no focusables, retracts once the spec table re-enters
 the viewport, and is hidden in print. Below the threshold and with JavaScript
 off it does not exist; the sheet always reads normally. Offset geometry:
-`--header-h` is a rem-affine floor, `max(76px, calc(4.25rem + 8px))` (`max(68px,
-2.05rem)` at <=720px): the header is a min-height box whose content scales with
-root text -- 76px at 100%, 138px at 200% (measured) -- so `SiteHeader` carries
-a ResizeObserver that writes the measured height back onto `:root`, and the CSS
-expression is what keeps pre-hydration and no-JS fragment jumps clear of it.
+`--header-floor` is a rem-affine floor, `max(76px, calc(4.25rem + 8px))`
+(`max(68px, 2.05rem)` at <=720px): the header is a min-height box whose content
+scales with root text -- 76px at 100%, 138px at 200% (measured) -- and the
+floor binds at every step (76/93/110/127/144 across 100-200%). `min-height`
+reads the floor and never the measured value: a measurement written into
+`min-height` pins the header at its last measured height and it can never
+shrink again. `--header-h` -- what the strip and every offset consume -- is
+`var(--header-measured, var(--header-floor))`: the height `SiteHeader`'s
+ResizeObserver measured (`--header-measured`), or the floor before hydration
+and with no JS. The floor is what keeps pre-hydration and no-JS fragment jumps
+clear of the header. The strip's `IntersectionObserver` extends its root
+downwards (`rootMargin`), because at 200% text the table starts below the fold
+and a jump to a deep section otherwise has no crossing to announce.
 Plus `--strip-h` (44px, reserved statically on `.case-study` at >=1100px -- not
 on `:root`, so a write-up page without a spec sheet carries no phantom
 reservation) + `--clear-gap` (12px).

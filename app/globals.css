@@ -41,15 +41,20 @@
   --white: #fffdfa;
   --display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
   --body: "Inter", Arial, sans-serif;
-  /* Sticky chrome geometry. --header-h is a rem-affine floor for the header's
-     own min-height: the header is a min-height box whose nav content scales
-     with root text (76px at 100% text, 138px at 200%; measured), so the floor
-     tracks it while SiteHeader's ResizeObserver writes the measured height
-     back once hydrated. The expression is what keeps pre-hydration and no-JS
-     fragment jumps clear of the header. --clear-gap is the breathing room a
-     fragment jump leaves below pinned chrome; --strip-h is set only where the
-     spec strip can pin (see .case-spec__strip). */
-  --header-h: max(76px, calc(4.25rem + 8px));
+  /* Sticky chrome geometry. --header-floor is a rem-affine floor for the
+     header's own min-height -- the header is a min-height box whose nav
+     content scales with root text (76px at 100% text, 138px at 200%;
+     measured; the floor forces 76/93/110/127/144 across that range).
+     min-height reads the FLOOR and never the measured value: a measurement
+     written into min-height pins the header at the last measured height and
+     it can never shrink again (Rev 4, audit D1). --header-h is what the strip
+     and every offset consume: the measured height once SiteHeader's
+     ResizeObserver has written --header-measured, the floor before that
+     (pre-hydration, no-JS). --clear-gap is the breathing room a fragment jump
+     leaves below pinned chrome; --strip-h is set only where the spec strip
+     can pin (see .case-spec__strip). */
+  --header-floor: max(76px, calc(4.25rem + 8px));
+  --header-h: var(--header-measured, var(--header-floor));
   --clear-gap: 12px;
 }
 
@@ -73,7 +78,7 @@ button { font: inherit; }
 .text-link { color: var(--accent-dark); font-weight: 600; text-decoration: underline; text-underline-offset: .18em; }
 
 .site-header {
-  min-height: var(--header-h);
+  min-height: var(--header-floor);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -511,7 +516,7 @@ button { font: inherit; }
 }
 
 @media (max-width: 720px) {
-  :root { --header-h: max(68px, 2.05rem); }
+  :root { --header-floor: max(68px, 2.05rem); }
   .site-header { padding: 0 1.25rem; }
   .wordmark-desktop { display: none; }
   .wordmark-mobile { display: inline; }

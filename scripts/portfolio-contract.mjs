@@ -588,15 +588,22 @@ check(!dfmaPage.includes("case-spec"), "DFMA must not render the spec sheet");
 // material stays in the table) and the notes.
 const printBlock = globalsCss.match(/@media print \{[\s\S]*?\n\}/)?.[0] ?? "";
 check(printBlock.includes(".case-spec__strip"), "print styles must hide the spec strip");
-// PLAN v7 Rev 3 (audit C1/C4): the chrome geometry is rem-aware and measured,
-// and the strip reservation is scoped rather than global.
-check(globalsCss.includes("--header-h: max(76px, calc(4.25rem + 8px))"), "header height must carry the rem-aware floor expression");
-check(globalsCss.includes("--header-h: max(68px, 2.05rem)"), "mobile header height must carry the rem-aware floor expression");
+// PLAN v7 Rev 3 (audit C1/C4), corrected by Rev 4 (audit D1/D2): the chrome
+// geometry is rem-aware; floor and measurement are separate values so
+// min-height can never read what the observer writes (a measurement written
+// into min-height ratchets), and the strip observer's root is extended so a
+// below-fold arrival still crosses.
+check(globalsCss.includes("--header-floor: max(76px, calc(4.25rem + 8px))"), "header floor must carry the rem-aware expression");
+check(globalsCss.includes("--header-floor: max(68px, 2.05rem)"), "mobile header floor must carry the rem-aware expression");
+check(globalsCss.includes("--header-h: var(--header-measured, var(--header-floor))"), "the header variable must prefer the measurement and fall back to the floor");
+check(globalsCss.includes("min-height: var(--header-floor)"), "min-height must read the floor, never the measured value (ratchet guard)");
 check(globalsCss.includes(".site-nav { display: none; position: absolute; top: var(--header-h);"), "mobile nav offset must follow the header variable");
 check(globalsCss.includes(".case-study { --strip-h: 44px; }"), "strip reservation must be scoped to case studies");
 check(!/:root\s*\{\s*--strip-h/.test(globalsCss), "strip reservation must not sit on :root");
 const siteHeaderSource = readFileSync(new URL("../components/SiteHeader.tsx", import.meta.url), "utf8");
-check(siteHeaderSource.includes("ResizeObserver") && siteHeaderSource.includes('setProperty("--header-h"'), "the header must be measured onto --header-h");
+check(siteHeaderSource.includes("ResizeObserver") && siteHeaderSource.includes('setProperty("--header-measured"'), "the header must be measured onto --header-measured");
+const caseSpecSource = readFileSync(new URL("../components/CaseSpec.tsx", import.meta.url), "utf8");
+check(caseSpecSource.includes("rootMargin"), "the strip observer must extend its root so a below-fold arrival crosses");
 check(["--header-h", "--clear-gap", "--strip-h"].every((name) => globalsCss.includes(name)), "offset-scheme variables must exist in globals.css");
 check(/\.writeup-block h3 \{[^}]*scroll-margin-top: calc\(var\(--header-h\) \+ var\(--strip-h/.test(globalsCss), "scroll-margin-top must reserve header + strip + gap");
 for (const [slug, rows] of Object.entries(caseSpecs)) {

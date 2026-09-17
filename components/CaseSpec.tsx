@@ -31,7 +31,13 @@ export function CaseSpec({ rows, title }: { rows: SpecRow[]; title: string }) {
     };
 
     update();
-    const io = new IntersectionObserver(update);
+    // Rev 4 (audit D2): the observer is crossing-driven, and at 200% text the
+    // table starts below the fold, so a jump to a deep section goes from
+    // below-viewport to above-viewport without ever intersecting the default
+    // root -- no crossing, no update, strip off for the rest of the session.
+    // Extending the root downwards makes the below-fold state intersect, so
+    // the arrival jump crosses the top boundary and fires.
+    const io = new IntersectionObserver(update, { rootMargin: "0px 0px 9999px 0px" });
     io.observe(table);
     mq.addEventListener("change", update);
     return () => {
