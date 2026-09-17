@@ -996,13 +996,36 @@ async function main() {
       if (stable < 3) await p.waitForTimeout(50);
     }
   };
+  const scrollPastTable = async (p) => {
+    // Two steps (Rev 3): an instant jump from below the fold to past the table
+    // crosses no intersection threshold, so the crossing-driven observer never
+    // fires and the strip would stay off (observed at 200% text).
+    await p.evaluate(() => {
+      const table = document.querySelector(".case-spec__table");
+      if (table) window.scrollTo({ top: table.getBoundingClientRect().top + window.scrollY + 220, behavior: "instant" });
+    });
+    await p.waitForTimeout(80);
+    await p.evaluate(() => {
+      const table = document.querySelector(".case-spec__table");
+      if (table) window.scrollTo({ top: table.getBoundingClientRect().bottom + window.scrollY + 400, behavior: "instant" });
+    });
+  };
   const stripMatrix = [
-    [390, 844, ["/projects/lv-cabling-design-commercial-complex"]],
-    [1099, 800, STRIP_ROUTES],
-    [1100, 800, STRIP_ROUTES],
-    [1440, 900, STRIP_ROUTES],
+    [390, 844, ["/projects/lv-cabling-design-commercial-complex"], 100],
+    [1099, 800, STRIP_ROUTES, 100],
+    [1100, 800, STRIP_ROUTES, 100],
+    [1440, 900, STRIP_ROUTES, 100],
+    // PLAN v7 Rev 3 (audit C1): the offset scheme was only swept at default
+    // text, and at 200% root text the header is a 138px box against the 76px
+    // CSS floor. These rows assert the strip's top offset, its height match and
+    // the absence of document overflow at zoom. The strip line does not fit its
+    // single row at 200% (a clipped, aria-hidden duplicate; the table remains
+    // the readable source), so the fit assertion stays a default-text check and
+    // the overflow is recorded as informational instead.
+    [1100, 800, STRIP_ROUTES, 200],
+    [1440, 900, STRIP_ROUTES, 200],
   ];
-  for (const [width, height, routes] of stripMatrix) {
+  for (const [width, height, routes, textZoom] of stripMatrix) {
     for (const route of routes) {
       const stripPage = await browser.newPage({ viewport: { width, height } });
       const response = await stripPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
@@ -1013,13 +1036,11 @@ async function main() {
         continue;
       }
       await stripPage.evaluate(() => document.fonts.ready);
-      await stripPage.evaluate(() => {
-        const table = document.querySelector(".case-spec__table");
-        if (table) {
-          const top = table.getBoundingClientRect().top + window.scrollY;
-          window.scrollTo({ top: top + 420, behavior: "instant" });
-        }
-      });
+      if (textZoom !== 100) {
+        await stripPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+        await stripPage.evaluate(() => document.fonts.ready);
+      }
+      await scrollPastTable(stripPage);
       await settleScroll(stripPage);
       const expectOn = width >= 1100;
       if (expectOn) {
@@ -1038,7 +1059,7 @@ async function main() {
           clientWidth: strip.clientWidth,
           visibility: getComputedStyle(strip).visibility,
           headerHeight: header.getBoundingClientRect().height,
-          stripVar: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--strip-h")) || 0,
+          stripVar: parseFloat(getComputedStyle(strip).getPropertyValue("--strip-h")) || 0,
         };
       });
       if (!stripState) {
@@ -1046,22 +1067,34 @@ async function main() {
         await stripPage.close();
         continue;
       }
+      const label = `${route} @ ${width}x${height}${textZoom !== 100 ? " 200% text" : ""}`;
       if (expectOn) {
-        if (!stripState.on) failures.push(`${route} @ ${width}x${height}: strip is not pinned after scrolling past the table`);
-        if (Math.abs(stripState.height - stripState.stripVar) > 1) failures.push(`${route} @ ${width}x${height}: strip height ${Math.round(stripState.height)}px does not match --strip-h ${stripState.stripVar}px`);
-        if (stripState.scrollWidth > stripState.clientWidth + 1) failures.push(`${route} @ ${width}x${height}: strip content overflows ${stripState.scrollWidth}px into ${stripState.clientWidth}px`);
-        if (Math.abs(stripState.top - stripState.headerHeight) > 2) failures.push(`${route} @ ${width}x${height}: strip top ${Math.round(stripState.top)}px does not sit under the ${Math.round(stripState.headerHeight)}px header`);
+        if (!stripState.on) failures.push(`${label}: strip is not pinned after scrolling past the table`);
+        if (Math.abs(stripState.height - stripState.stripVar) > 1) failures.push(`${label}: strip height ${Math.round(stripState.height)}px does not match --strip-h ${stripState.stripVar}px`);
+        if (stripState.scrollWidth > stripState.clientWidth + 1) {
+          if (textZoom === 100) failures.push(`${label}: strip content overflows ${stripState.scrollWidth}px into ${stripState.clientWidth}px`);
+          else informational.push(`${label}: strip line overflows ${stripState.scrollWidth}px into ${stripState.clientWidth}px; clipped aria-hidden duplicate at zoom (the table carries the content)`);
+        }
+        if (Math.abs(stripState.top - stripState.headerHeight) > 2) failures.push(`${label}: strip top ${Math.round(stripState.top)}px does not sit under the ${Math.round(stripState.headerHeight)}px header`);
       } else if (stripState.visibility !== "hidden" || stripState.on) {
-        failures.push(`${route} @ ${width}x${height}: strip must stay hidden below the 1100px threshold`);
+        failures.push(`${label}: strip must stay hidden below the 1100px threshold`);
       }
       const overflow = await stripPage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-      if (overflow > 0) failures.push(`${route} @ ${width}x${height}: document overflow ${overflow}px with the spec strip in play`);
+      if (overflow > 0) failures.push(`${label}: document overflow ${overflow}px with the spec strip in play`);
       // Retract path: scrolling back so the table re-enters the viewport must
-      // take the strip off.
+      // take the strip off. Two steps, like the way down: crossing the table
+      // guarantees the crossing-driven observer sees the reader's pass-through
+      // (an instant jump straight to the top crosses nothing at 200% text,
+      // where the table sits below the fold at scroll 0).
+      await stripPage.evaluate(() => {
+        const table = document.querySelector(".case-spec__table");
+        if (table) window.scrollTo({ top: Math.max(0, table.getBoundingClientRect().top + window.scrollY + 120), behavior: "instant" });
+      });
+      await stripPage.waitForTimeout(80);
       await stripPage.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
       await stripPage.waitForFunction(() => !document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 2000 }).catch(() => {});
       const retracted = await stripPage.evaluate(() => !document.querySelector(".case-spec__strip")?.classList.contains("is-on"));
-      if (!retracted) failures.push(`${route} @ ${width}x${height}: strip did not retract when the table re-entered the viewport`);
+      if (!retracted) failures.push(`${label}: strip did not retract when the table re-entered the viewport`);
       await stripPage.close();
     }
   }
@@ -1069,18 +1102,33 @@ async function main() {
   // Fragment jumps must clear the pinned chrome with the [6, 20]px gap band:
   // with the strip active at 1100 and up, and with the header alone below the
   // threshold. If the last section clamps at maximum scroll the gap stops
-  // signalling a defect, so clamping is detected and recorded instead.
-  for (const [width, height] of [[390, 844], [1100, 800], [1440, 900]]) {
-    for (const section of ["#fault-level", "#assumptions-and-limits"]) {
+  // signalling a defect, so clamping is detected and recorded instead. Rev 3
+  // adds #design-basis (the one target where a reserved-but-off window could
+  // appear, audit C5) and a 200%-text pass: at zoom the header is a 138px box,
+  // so the settled jump must still land inside the band once the strip is up.
+  for (const [width, height, textZoom] of [[390, 844, 100], [1100, 800, 100], [1440, 900, 100], [1100, 800, 200], [1440, 900, 200]]) {
+    for (const section of ["#fault-level", "#assumptions-and-limits", "#design-basis"]) {
+      if (textZoom !== 100 && section !== "#fault-level") continue;
       const jumpPage = await browser.newPage({ viewport: { width, height } });
       const response = await jumpPage.goto(`${base}/projects/lv-cabling-design-commercial-complex${section}`, { waitUntil: "networkidle" });
       checks += 1;
+      const jumpLabel = `case-study jump ${section} @ ${width}x${height}${textZoom !== 100 ? " 200% text" : ""}`;
       if (!response || !response.ok()) {
-        failures.push(`case-study jump ${section} @ ${width}x${height}: HTTP ${response ? response.status() : "no response"}`);
+        failures.push(`${jumpLabel}: HTTP ${response ? response.status() : "no response"}`);
         await jumpPage.close();
         continue;
       }
       await jumpPage.evaluate(() => document.fonts.ready);
+      if (textZoom !== 100) {
+        // The initial fragment scroll resolved at default text; re-run the jump
+        // once the zoomed layout has settled (scrollIntoView uses the same
+        // scroll-margin algorithm as fragment navigation), turning the strip on
+        // first the way a reader reaches this state.
+        await jumpPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+        await jumpPage.evaluate(() => document.fonts.ready);
+        await scrollPastTable(jumpPage);
+        await jumpPage.evaluate((selector) => document.querySelector(selector).scrollIntoView({ behavior: "instant" }), section);
+      }
       await settleScroll(jumpPage);
       if (width >= 1100) {
         await jumpPage.waitForFunction(() => document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 1500 }).catch(() => {});
@@ -1099,13 +1147,35 @@ async function main() {
           clamped: window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2,
         };
       });
-      if (!jump) failures.push(`case-study jump ${section} @ ${width}x${height}: target or chrome missing`);
+      if (!jump) failures.push(`${jumpLabel}: target or chrome missing`);
       else if (jump.gap < 6 || jump.gap > 20) {
-        if (jump.clamped) informational.push(`case-study jump ${section} @ ${width}x${height}: clamped at maximum scroll (gap ${Math.round(jump.gap)}px); not a defect`);
-        else failures.push(`case-study jump ${section} @ ${width}x${height}: heading gap is ${Math.round(jump.gap)}px, expected 6-20px`);
+        if (jump.clamped) informational.push(`${jumpLabel}: clamped at maximum scroll (gap ${Math.round(jump.gap)}px); not a defect`);
+        else failures.push(`${jumpLabel}: heading gap is ${Math.round(jump.gap)}px, expected 6-20px`);
       }
       await jumpPage.close();
     }
+  }
+
+  // PLAN v7 Rev 3 (audit C5): behaviour 6 (a no-JS jump lands with the wider
+  // reservation rather than under any chrome) is asserted, not just accepted.
+  // Box geometry comes from the locator API, which works without page JS.
+  for (const [width, height, expectedGap] of [[1100, 800, 56], [390, 844, 12]]) {
+    const noJsContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height } });
+    const noJsPage = await noJsContext.newPage();
+    const response = await noJsPage.goto(`${base}/projects/lv-cabling-design-commercial-complex#fault-level`, { waitUntil: "load" });
+    checks += 1;
+    if (!response || !response.ok()) {
+      failures.push(`no-JS jump @ ${width}x${height}: HTTP ${response ? response.status() : "no response"}`);
+    } else {
+      const targetBox = await noJsPage.locator("#fault-level").boundingBox().catch(() => null);
+      const headerBox = await noJsPage.locator(".site-header").boundingBox().catch(() => null);
+      if (!targetBox || !headerBox) failures.push(`no-JS jump @ ${width}x${height}: box model unavailable`);
+      else {
+        const gap = Math.round(targetBox.y - (headerBox.y + headerBox.height));
+        if (Math.abs(gap - expectedGap) > 2) failures.push(`no-JS jump @ ${width}x${height}: fragment gap is ${gap}px, expected the reserved ${expectedGap}px`);
+      }
+    }
+    await noJsContext.close();
   }
 
   await browser.close();

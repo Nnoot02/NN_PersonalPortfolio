@@ -546,8 +546,14 @@ table), notes omitted. It is the site's first `position: fixed` element, is
 `aria-hidden`, carries no focusables, retracts once the spec table re-enters
 the viewport, and is hidden in print. Below the threshold and with JavaScript
 off it does not exist; the sheet always reads normally. Offset geometry:
-`--header-h` (76px; 68px at <=720px) + `--strip-h` (44px, reserved statically at
->=1100px) + `--clear-gap` (12px).
+`--header-h` is a rem-affine floor, `max(76px, calc(4.25rem + 8px))` (`max(68px,
+2.05rem)` at <=720px): the header is a min-height box whose content scales with
+root text -- 76px at 100%, 138px at 200% (measured) -- so `SiteHeader` carries
+a ResizeObserver that writes the measured height back onto `:root`, and the CSS
+expression is what keeps pre-hydration and no-JS fragment jumps clear of it.
+Plus `--strip-h` (44px, reserved statically on `.case-study` at >=1100px -- not
+on `:root`, so a write-up page without a spec sheet carries no phantom
+reservation) + `--clear-gap` (12px).
 
 The hero figure (`hero-artifact`) is a **link** to the Commercial LV Cabling
 Design case study, at every viewport. It was passive until 2026-09-02, but the

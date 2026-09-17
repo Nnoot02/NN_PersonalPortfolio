@@ -41,11 +41,15 @@
   --white: #fffdfa;
   --display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
   --body: "Inter", Arial, sans-serif;
-  /* Sticky chrome geometry. --header-h matches .site-header's min-height at
-     each breakpoint; --clear-gap is the breathing room a fragment jump leaves
-     below pinned chrome; --strip-h is set only where the spec strip can pin
-     (see .case-spec__strip). */
-  --header-h: 76px;
+  /* Sticky chrome geometry. --header-h is a rem-affine floor for the header's
+     own min-height: the header is a min-height box whose nav content scales
+     with root text (76px at 100% text, 138px at 200%; measured), so the floor
+     tracks it while SiteHeader's ResizeObserver writes the measured height
+     back once hydrated. The expression is what keeps pre-hydration and no-JS
+     fragment jumps clear of the header. --clear-gap is the breathing room a
+     fragment jump leaves below pinned chrome; --strip-h is set only where the
+     spec strip can pin (see .case-spec__strip). */
+  --header-h: max(76px, calc(4.25rem + 8px));
   --clear-gap: 12px;
 }
 
@@ -413,8 +417,11 @@ button { font: inherit; }
 @media (min-width: 1100px) {
   /* Reserved statically, not on a mount class: a deep link's fragment scroll
      resolves before hydration, so a class-gated value arrives too late and the
-     strip would overlap the heading it just jumped to. */
-  :root { --strip-h: 44px; }
+     strip would overlap the heading it just jumped to. Scoped to .case-study
+     (Rev 3): a write-up page without a spec sheet must not inherit a phantom
+     44px reservation, and the strip, the table and the h3s all live inside the
+     case-study article. */
+  .case-study { --strip-h: 44px; }
 }
 .case-spec__strip.is-on { opacity: 1; transform: none; visibility: visible; }
 .case-spec__strip-item { color: var(--muted); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
@@ -504,12 +511,12 @@ button { font: inherit; }
 }
 
 @media (max-width: 720px) {
-  :root { --header-h: 68px; }
+  :root { --header-h: max(68px, 2.05rem); }
   .site-header { padding: 0 1.25rem; }
   .wordmark-desktop { display: none; }
   .wordmark-mobile { display: inline; }
   .menu-button { display: grid; place-items: center; }
-  .site-nav { display: none; position: absolute; top: 68px; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: .6rem 1.25rem 1.2rem; }
+  .site-nav { display: none; position: absolute; top: var(--header-h); left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--line); padding: .6rem 1.25rem 1.2rem; }
   .site-nav.is-open { display: grid; box-shadow: 0 14px 26px rgba(36, 35, 33, 0.18); }
   .nav-link { padding: 1rem 0 .75rem; }
   .hero-copy { min-height: 0; padding: 4.5rem 1.25rem 3rem; }
