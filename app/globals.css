@@ -130,14 +130,17 @@ button { font: inherit; }
 #main-content { scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
 #main-content:focus { outline: none; }
 .case-image img, .project-image img { object-fit: cover; filter: sepia(.08); transition: transform .45s ease; }
-.hero-artifact { background: var(--paper-deep); }
-.hero-artifact > img { object-fit: contain; filter: sepia(.08); }
+.hero-artifact { background: var(--paper-deep); display: flex; flex-direction: column; height: 100%; }
+.hero-artifact-figure { display: block; flex: 1 1 auto; min-height: 0; position: relative; }
+.hero-artifact > .hero-artifact-figure > img { object-fit: contain; filter: sepia(.08); }
 /* Site screening audit 2026-09-16, F4: the artifact names itself and its
-   destination without hover; the strip sits inside the one link target. */
+   destination without hover; the caption sits IN FLOW below the diagram (it
+   must never cover the SVG's own Figure D.1 title line) and stays inside the
+   one link target. Ground tones only: the site has no white surfaces. */
 .hero-artifact-caption {
-  position: absolute; bottom: 0; left: 0; right: 0; display: flex; flex-wrap: wrap;
+  display: flex; flex-wrap: wrap;
   gap: .3rem 1rem; justify-content: space-between; align-items: baseline;
-  background: var(--white); border-top: 1px solid var(--line);
+  border-top: 1px solid var(--line);
   padding: .6rem .9rem; font: 600 .75rem/1.35 var(--display);
   letter-spacing: .12em; text-transform: uppercase;
 }
@@ -408,7 +411,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
 /* Case-study opening block (site screening audit 2026-09-16, F3): contribution,
    outcome and limits ahead of the spec strip and the write-up. */
-.case-opening { border: 1px solid var(--line); background: var(--white); display: grid; gap: 1rem; margin: 1.6rem 0 0; padding: 1.15rem 1.25rem; }
+.case-opening { border: 1px solid var(--line); display: grid; gap: 1rem; margin: 1.6rem 0 0; padding: 1.15rem 1.25rem; }
 .case-opening dl { display: grid; gap: .9rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); margin: 0; }
 .case-opening dt { color: var(--accent-dark); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; margin-bottom: .35rem; text-transform: uppercase; }
 .case-opening dd { color: var(--ink); font-size: .88rem; line-height: 1.55; margin: 0; }
@@ -567,11 +570,11 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .hero-copy { min-height: 0; padding: 4.5rem 1.25rem 3rem; }
   .hero-name { font-size: clamp(2.75rem, 13vw, 4.25rem); line-height: .9; }
   /* Measured 2026-09-17 (site screening audit F2): at 390px the artifact spans
-     the full width and its 1200x800 one-line diagram renders 260px tall; the
-     old flat 400px letterboxed 140px of empty paper. Desktop (520px) is set
-     in the wide-screen rule above by design. */
-  .hero-image { min-height: 260px; }
-  .hero-artifact { min-height: 260px; }
+     the full width; its 1200x800 one-line diagram renders 260px tall and the
+     caption row adds ~57px, so 320px keeps the diagram at natural size with
+     no letterbox. Desktop (520px) is set in the wide-screen rule above. */
+  .hero-image { min-height: 320px; }
+  .hero-artifact { min-height: 320px; }
   .hero-actions { width: 100%; }
   .button { width: 100%; }
   .featured { padding: 5rem 1.25rem; }

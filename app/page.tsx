@@ -74,14 +74,16 @@ export default function HomePage() {
         </div>
         <figure className="hero-image">
           <Link className="hero-artifact" href="/projects/lv-cabling-design-commercial-complex">
-            <Image
-              src="/images/lv-cabling-sld.svg"
-              alt="Featured artifact: one-line diagram of the 400 V three-tenancy design, from a 500 kVA supply transformer through the main switchboard to the three tenancy distribution boards"
-              fill
-              loading="eager"
-              fetchPriority="high"
-              sizes="(max-width: 960px) 100vw, 54vw"
-            />
+            <span className="hero-artifact-figure">
+              <Image
+                src="/images/lv-cabling-sld.svg"
+                alt="Featured artifact: one-line diagram of the 400 V three-tenancy design, from a 500 kVA supply transformer through the main switchboard to the three tenancy distribution boards"
+                fill
+                loading="eager"
+                fetchPriority="high"
+                sizes="(max-width: 960px) 100vw, 54vw"
+              />
+            </span>
             <span className="hero-artifact-caption">
               <span className="hero-artifact-caption-text">Commercial LV cabling design - 400 V, three tenancies</span>
               <span className="hero-artifact-action">Open the case study</span>
