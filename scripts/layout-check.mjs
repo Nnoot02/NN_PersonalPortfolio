@@ -1284,11 +1284,20 @@ async function main() {
   for (const [width, height, expectedGap] of [[1100, 800, 56], [390, 844, 12]]) {
     const noJsContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height } });
     const noJsPage = await noJsContext.newPage();
-    const response = await noJsPage.goto(`${base}/projects/lv-cabling-design-commercial-complex#fault-level`, { waitUntil: "load" });
+    const url = `${base}/projects/lv-cabling-design-commercial-complex#fault-level`;
+    const response = await noJsPage.goto(url, { waitUntil: "load" });
     checks += 1;
     if (!response || !response.ok()) {
       failures.push(`no-JS jump @ ${width}x${height}: HTTP ${response ? response.status() : "no response"}`);
     } else {
+      // The fragment scroll happens during first layout, before webfonts swap
+      // in; after the long sweep the first jump can be measured against
+      // fallback-font geometry (observed once: gap 18px instead of 56px,
+      // 2026-09-17). Settle the network, then re-jump so the measurement uses
+      // final metrics. Same-document navigation re-scrolls to the fragment.
+      await noJsPage.waitForLoadState("networkidle").catch(() => {});
+      await noJsPage.waitForTimeout(300);
+      await noJsPage.goto(url, { waitUntil: "load" }).catch(() => {});
       const targetBox = await noJsPage.locator("#fault-level").boundingBox().catch(() => null);
       const headerBox = await noJsPage.locator(".site-header").boundingBox().catch(() => null);
       if (!targetBox || !headerBox) failures.push(`no-JS jump @ ${width}x${height}: box model unavailable`);
