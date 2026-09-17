@@ -975,6 +975,61 @@ async function main() {
   }
   await ledePage.close();
 
+  // Reflow at 200% root text (WCAG 2.1 AA, 1.4.10), swept across every route at
+  // the two narrow widths. This sweep used to cover /contact alone, so the rest
+  // of the site drifted: at the 2026-09-17 audit 11 of 12 routes scrolled
+  // sideways at 320x760 (worst 255px) and 10 of 12 at 390x844 (worst 185px),
+  // while every route was clean at default text. A failure reports the element
+  // that owns the overflow, located by removal rather than by guessing from
+  // geometry, because the cause is usually an intrinsic min-content floor
+  // rather than the widest visible box.
+  const TEXT_ZOOM_VIEWPORTS = [[320, 760], [390, 844]];
+  for (const [width, height] of TEXT_ZOOM_VIEWPORTS) {
+    for (const route of ROUTES) {
+      const zoomPage = await browser.newPage({ viewport: { width, height } });
+      const response = await zoomPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
+      checks += 1;
+      if (!response || !response.ok()) {
+        failures.push(`${route} @ ${width}x${height} with 200% root text: HTTP ${response ? response.status() : "no response"}`);
+        await zoomPage.close();
+        continue;
+      }
+      await zoomPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
+      await zoomPage.evaluate(() => document.fonts.ready);
+      const overflow = await zoomPage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      if (overflow > 0) {
+        const culprit = await zoomPage.evaluate(() => {
+          const label = (el) => {
+            const cls = (typeof el.className === "string" ? el.className : "").split(" ").filter(Boolean).slice(0, 2).join(".");
+            return `${el.tagName.toLowerCase()}${cls ? "." + cls : ""}${el.id ? "#" + el.id : ""}`;
+          };
+          const over = () => document.documentElement.scrollWidth - document.documentElement.clientWidth;
+          const base = over();
+          let node = document.body;
+          const path = [];
+          for (let depth = 0; depth < 12; depth += 1) {
+            let found = null;
+            for (const child of node.children) {
+              if (getComputedStyle(child).position === "fixed") continue;
+              const previous = child.style.display;
+              child.style.display = "none";
+              const now = over();
+              child.style.display = previous;
+              if (now < base - 0.5) { found = child; break; }
+            }
+            if (!found) break;
+            path.push(label(found));
+            node = found;
+          }
+          const text = (node.textContent || "").trim().replace(/\s+/g, " ").slice(0, 40);
+          return `${path.join(" > ") || "(body)"} "${text}"`;
+        });
+        failures.push(`${route} @ ${width}x${height} with 200% root text: document overflows ${overflow}px, owned by ${culprit}`);
+      }
+      await zoomPage.close();
+    }
+  }
+
   // PLAN v7 S2. The case-study spec strip: a non-interactive readout pinned
   // under the header while the write-up is read, visible only at the measured
   // 1100px threshold and up. The reservation in scroll-margin-top depends on

@@ -702,6 +702,43 @@ design cycle approves it.
 | ≤ 960px | Hero collapses 2-col → 1-col (image below copy); scroll cue hidden; project rows drop the arrow track; project meta stacks 1-up; profile/case grids go single-column. |
 | ≤ 720px | Header inset tightens to 1.25rem; nav collapses to a hamburger **sheet** (the one shadowed surface) that closes on link activation and on Escape (focus returns to the menu button); hero h1 clamps to `clamp(2.75rem, 13vw, 4.25rem)` at line-height 0.9; buttons go full-width; project rows reflow to marker+image over full-width copy; principles stack; footer stacks. |
 
+### Text scaling and reflow
+
+Every route must reflow without horizontal scrolling at **200% root text** at
+both 320px and 390px wide (WCAG 2.1 AA, 1.4.10). `layout-check.mjs` sweeps all
+twelve routes at both widths and names the element that owns any overflow.
+
+The failure mode is specific to this system's type: the display clamps are
+bounded in `rem`, so at 200% text the floor doubles while the `vw` term does
+not, and the floor wins. A case-study title goes 58.5px to 96px, at which point
+one word is wider than the column it sits in. Two levers, in this order:
+
+1. **The size gives**, where a heading must stay whole. `.projects-hero h1`
+   caps its floor as `min(3.25rem, 16.25vw)` so the type follows the viewport
+   once `rem` outgrows it. The cap is inert at default text (3.25rem is 52px,
+   and 52px is 16.25vw at 320px), and `layout-check.mjs` asserts that heading
+   never splits a word.
+2. **A last-resort break**, everywhere else: `h1, h2, h3, .hero-name,
+   .project-title` carry `overflow-wrap: break-word` with `max-width: 100%`
+   and `min-width: 0`. A word that fits is never broken -- `hyphens` and
+   `word-break` stay off site-wide. `max-width` matters because a fit-content
+   box never overflows its own line, so the break would never fire; `min-width`
+   matters because as a grid or flex item a heading otherwise floors at its
+   min-content width, which `break-word` does not lower.
+
+Prose and tag chips take the same last-resort break for long standards tokens
+(`AS/NZS 3008.1.1:2025`). The email address is the one string allowed
+`overflow-wrap: anywhere`, in `profile-facts dd` and the contact text links,
+because it is a single 21-character token with no break opportunity at all --
+the same treatment `footer-title` and the homepage portals already use.
+
+Stacked grids use `minmax(0, 1fr)`, never a bare `1fr`: a bare track floors at
+its content's min-content width and pushes the page wide instead of wrapping.
+
+Changing any of this must leave default-text rendering untouched. The
+2026-09-17 pass was verified that way: 36 route/viewport geometry snapshots at
+320, 390 and 1440, every box identical before and after.
+
 ### Touch targets
 
 Buttons are `min-height: 50px`; footer link boxes and the mobile menu button
