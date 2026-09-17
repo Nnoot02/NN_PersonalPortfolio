@@ -131,7 +131,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </div>
           <div>
             <p className="eyebrow">Evidence status</p>
-            <h2>What still needs proof</h2>
+            <h2>Limits and open items</h2>
             <p>{project.evidenceStatus}</p>
           </div>
         </section>

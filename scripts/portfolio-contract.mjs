@@ -511,6 +511,22 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
   }
 }
 
+// Site screening audit 2026-09-16, F6 (Nathan's call 2026-09-17): plain
+// completion language. The old "Verified / sanitised write-up" vocabulary and
+// the "What still needs proof" heading must not return.
+for (const [slug, expectedStatus] of [
+  ["lv-cabling-design-commercial-complex", "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown"],
+  ["solar-grid-connection-assessment", "Coursework assessment - every TS132/TS133 and AS/NZS 4777.2 check shown"],
+]) {
+  const doc = renderedMain(readExport(`/projects/${slug}.html`));
+  check(doc.includes(expectedStatus), `${slug}: status must name the verification basis plainly`);
+  check(doc.includes("Complete."), `${slug}: evidence status must open plainly with "Complete."`);
+  check(doc.includes("Limits and open items"), `${slug}: the plain limits heading must render`);
+  check(!doc.includes("Evidence verified"), `${slug}: the old "Evidence verified" status must not return`);
+  check(!doc.includes("Sanitised public write-up complete"), `${slug}: the old publication-workflow sentence must not return`);
+  check(!doc.includes("What still needs proof"), `${slug}: the old proof heading must not return`);
+}
+
 // The one-line diagram is unreadable at mobile widths without the full-size file.
 const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
 const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";

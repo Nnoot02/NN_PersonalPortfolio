@@ -37,7 +37,7 @@ export const projects: Project[] = [
     imageIsDiagram: true,
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
-    status: "Evidence verified - sanitised write-up",
+    status: "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
     evidenceMarkers: ["400 V 3-ph", "123.6 A design current", "0.74 % voltage drop", "AS/NZS 3008.1.1"],
     spec: [
@@ -53,7 +53,7 @@ export const projects: Project[] = [
     result:
       "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit passed the AS/NZS 3000 Table 8.1 earth-fault-loop limits.",
     evidenceStatus:
-      "Verified. Sanitised public write-up complete, including the full nine-step selection chain and the per-subcircuit results table; standards table data is cited by table number rather than reproduced (Standards Australia copyright).",
+      "Complete. The nine-step selection chain and the per-subcircuit results table are published; standards table data is cited by table number rather than reproduced (Standards Australia copyright).",
   },
   {
     slug: "solar-grid-connection-assessment",
@@ -66,7 +66,7 @@ export const projects: Project[] = [
     imageIsDiagram: true,
     scope: "Power systems, grid connection, compliance",
     role: "Sole author (coursework technical assessment)",
-    status: "Evidence verified - sanitised write-up",
+    status: "Coursework assessment - every TS132/TS133 and AS/NZS 4777.2 check shown",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
     evidenceMarkers: ["1 MW AC", "SAPN TS132/TS133", "AS/NZS 4777.2", "PCC voltage rise"],
     spec: [
@@ -83,7 +83,7 @@ export const projects: Project[] = [
     result:
       "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
-      "Verified. Sanitised public write-up complete; coursework is university-generated and unrestricted, and standards tables are cited by clause and number rather than reproduced (Standards Australia copyright).",
+      "Complete. The assessment and its clause-level citations are published; coursework is university-generated and unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
   },
   {
     slug: "gps-denied-autonomous-uav",
