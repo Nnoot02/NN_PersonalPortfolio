@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import { notFound } from "next/navigation";
+import { CaseOpening } from "@/components/CaseOpening";
 import { CaseSpec } from "@/components/CaseSpec";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
@@ -16,6 +17,21 @@ const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
   "solar-grid-connection-assessment": PvConnectionWriteUp,
   "gps-denied-autonomous-uav": UavTestGatesWriteUp,
+};
+
+// Write-up section links per case study (the ids live in the write-up
+// components; only case studies with anchored sections get links).
+const openingLinks: Record<string, Array<{ label: string; href: string }>> = {
+  "lv-cabling-design-commercial-complex": [
+    { label: "Maximum demand", href: "#maximum-demand" },
+    { label: "Consumer mains", href: "#consumer-mains" },
+    { label: "Earthing and protection", href: "#earthing-and-protection" },
+  ],
+  "solar-grid-connection-assessment": [
+    { label: "Three capacities", href: "#three-capacities" },
+    { label: "Connection voltage", href: "#connection-voltage" },
+    { label: "Hosting capacity", href: "#hosting-capacity" },
+  ],
 };
 
 type ProjectParams = {
@@ -71,6 +87,12 @@ export default async function ProjectPage({ params }: ProjectParams) {
         <h1>{project.title}</h1>
         <p className="case-status">{project.status}</p>
         <p className="case-lede">{project.summary}</p>
+        <CaseOpening
+          role={project.role}
+          outcome={project.result}
+          limitation={project.evidenceStatus}
+          links={openingLinks[project.slug] ?? []}
+        />
         {project.spec ? (
           <CaseSpec rows={project.spec} title={project.title} />
         ) : (

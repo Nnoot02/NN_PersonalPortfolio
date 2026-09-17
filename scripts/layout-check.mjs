@@ -418,6 +418,17 @@ async function main() {
         }
         if (await compactFooter.count() !== 1) failures.push("/contact @ " + width + "x" + height + ": compact footer marker is missing");
       }
+      // Site screening audit 2026-09-16, F3: a case study must state its
+      // contribution and outcome within one scroll of the top.
+      if (route.startsWith("/projects/")) {
+        const openingTop = await page.evaluate(() => {
+          const node = document.querySelector(".case-opening");
+          return node ? Math.round(node.getBoundingClientRect().top) : null;
+        });
+        if (openingTop === null) failures.push(`${route} @ ${width}x${height}: case-study opening block missing`);
+        else if (openingTop > height * 2) failures.push(`${route} @ ${width}x${height}: case-study opening sits at ${openingTop}px, beyond one scroll`);
+      }
+
       if (route === "/projects") {
         const expectedSlugs = [
           "lv-cabling-design-commercial-complex",

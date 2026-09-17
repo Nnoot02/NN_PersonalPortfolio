@@ -406,6 +406,14 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    read to the end does not have to navigate to /contact to ask about it. */
 .case-contact { border-top: 1px solid var(--line); color: var(--muted); margin: 4rem 0 0; padding-top: 1.6rem; }
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
+/* Case-study opening block (site screening audit 2026-09-16, F3): contribution,
+   outcome and limits ahead of the spec strip and the write-up. */
+.case-opening { border: 1px solid var(--line); background: var(--white); display: grid; gap: 1rem; margin: 1.6rem 0 0; padding: 1.15rem 1.25rem; }
+.case-opening dl { display: grid; gap: .9rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); margin: 0; }
+.case-opening dt { color: var(--accent-dark); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; margin-bottom: .35rem; text-transform: uppercase; }
+.case-opening dd { color: var(--ink); font-size: .88rem; line-height: 1.55; margin: 0; }
+.case-opening-links { align-items: baseline; display: flex; flex-wrap: wrap; gap: .45rem 1.25rem; margin: 0; }
+.case-opening-links .eyebrow { flex-basis: 100%; }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 .profile-summary p, .profile-grid li, .disclosure-panel p, .disclosure-panel li, .case-sections p { color: var(--muted); line-height: 1.7; }

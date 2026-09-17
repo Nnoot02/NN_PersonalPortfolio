@@ -470,6 +470,47 @@ for (const slug of caseStudySlugs) {
   check(!caseStudy.includes("Replace this panel"), `${slug} must not publish internal editorial instructions`);
 }
 
+// Site screening audit 2026-09-16, F3: every case study opens with the
+// contributor's role, the outcome so far, and where the evidence stops. The
+// strings come from lib/projects.ts -- no new claims, only earlier order.
+const caseOpenings = [
+  {
+    slug: "lv-cabling-design-commercial-complex",
+    role: "Sole designer (coursework)",
+    outcome: "123.6 A design current met by 25 mm² X-90 copper consumer mains",
+    firstWriteUpId: 'id="design-basis"',
+  },
+  {
+    slug: "solar-grid-connection-assessment",
+    role: "Sole author (coursework technical assessment)",
+    outcome: "can connect at LV under TS132 where feeder hosting capacity allows",
+    firstWriteUpId: 'id="three-capacities"',
+  },
+  {
+    slug: "gps-denied-autonomous-uav",
+    role: "Systems planning and verification",
+    outcome: "roughly 1.9–2.2:1 thrust-to-weight carrying the full autonomy payload",
+    firstWriteUpId: null,
+  },
+  {
+    slug: "solar-manufacturing-dfma",
+    role: "Production and DFMA observer",
+    outcome: "I will publish once the copy passes employer review",
+    firstWriteUpId: null,
+  },
+];
+for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
+  const doc = renderedMain(readExport(`/projects/${slug}.html`));
+  const openingIndex = doc.indexOf('class="case-opening"');
+  check(openingIndex >= 0, `${slug}: case study must open with the contribution block`);
+  const opening = openingIndex >= 0 ? doc.slice(openingIndex, doc.indexOf("</section>", openingIndex)) : "";
+  check(opening.includes(role), `${slug}: opening block must state the role`);
+  check(opening.includes(outcome), `${slug}: opening block must state the outcome`);
+  if (firstWriteUpId) {
+    check(doc.indexOf(firstWriteUpId) > openingIndex, `${slug}: opening block must precede the write-up sections`);
+  }
+}
+
 // The one-line diagram is unreadable at mobile widths without the full-size file.
 const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
 const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";
