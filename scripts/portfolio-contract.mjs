@@ -80,6 +80,9 @@ check(heroMedia.includes('loading="eager"') && heroMedia.includes('fetchPriority
 const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 check(hero.includes("Electrical Engineering Intern, Tindo Solar") && hero.includes("Aug 2026"), "home hero must contain the current-role credential as labelled fields");
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
+// Site screening audit 2026-09-13, finding 1 (Nathan's call, 2026-09-16): the
+// hero dates the availability window; the plain-text résumé mirrors the line.
+check(hero.includes("<dt>Availability</dt><dd>South Australian internships from 2027</dd>"), "home hero must date the availability window");
 check(!home.includes("tindo-strip"), "home must not render standalone Tindo section");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
 check(/href="\/nathan-noot-resume\.pdf"[^>]*target="_blank"/.test(home), "home must offer the resume in a new tab");
@@ -128,6 +131,8 @@ for (const stale of ["Graduate electrical engineer", "Defence engineering gradua
   check(!resumeText.includes(stale), `plain-text résumé must not retain the graduate-role positioning: ${stale}`);
 }
 check(!resumeText.includes("building toward graduate electrical engineering work"), "plain-text résumé summary must not retain the graduate positioning");
+// Site screening audit 2026-09-13, finding 1 (Nathan's call, 2026-09-16).
+check(resumeText.includes("- South Australian internships from 2027"), "plain-text résumé must carry the dated availability window");
 // Settled 2026-09-03 against the coursework title page, which reads
 // "THREE-TENANCY COMPLEX (SUPERMARKET, HAIRDRESSER, BUTCHER) WITH COMMUNAL
 // SERVICES". Communal is shared services at the MSB, not a fourth tenancy.

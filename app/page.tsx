@@ -60,6 +60,10 @@ export default function HomePage() {
               <dt>Articulating</dt>
               <dd>BE Electrical &amp; Electronic, Adelaide University (expected 2028)</dd>
             </div>
+            <div>
+              <dt>Availability</dt>
+              <dd>South Australian internships from 2027</dd>
+            </div>
           </dl>
           <div className="hero-actions">
             <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
