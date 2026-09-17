@@ -411,7 +411,11 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
 /* Case-study opening block (site screening audit 2026-09-16, F3): contribution,
    outcome and limits ahead of the spec strip and the write-up. */
-.case-opening { border: 1px solid var(--line); display: grid; gap: 1rem; margin: 1.6rem 0 0; padding: 1.15rem 1.25rem; }
+.case-opening { border: 1px solid var(--line); display: grid; gap: 1rem; margin: 1.1rem 0 0; padding: 1.15rem 1.25rem; }
+/* The spec table carries a -1.2rem top pull, tuned for a text paragraph; after
+   the bordered card it dragged the table back under the card's bottom rule
+   (Nathan, 2026-09-17). Neutralise the pull when the card precedes it. */
+.case-opening + .case-spec { margin-top: .75rem; }
 .case-opening dl { display: grid; gap: .9rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); margin: 0; }
 .case-opening dt { color: var(--accent-dark); font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; margin-bottom: .35rem; text-transform: uppercase; }
 .case-opening dd { color: var(--ink); font-size: .88rem; line-height: 1.55; margin: 0; }

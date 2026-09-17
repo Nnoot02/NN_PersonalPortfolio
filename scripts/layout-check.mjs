@@ -419,14 +419,24 @@ async function main() {
         if (await compactFooter.count() !== 1) failures.push("/contact @ " + width + "x" + height + ": compact footer marker is missing");
       }
       // Site screening audit 2026-09-16, F3: a case study must state its
-      // contribution and outcome within one scroll of the top.
+      // contribution and outcome within one scroll of the top, and the opening
+      // card must sit clear of the spec table (its -1.2rem pull must be
+      // neutralised -- Nathan, 2026-09-17).
       if (route.startsWith("/projects/")) {
-        const openingTop = await page.evaluate(() => {
-          const node = document.querySelector(".case-opening");
-          return node ? Math.round(node.getBoundingClientRect().top) : null;
+        const opening = await page.evaluate(() => {
+          const card = document.querySelector(".case-opening");
+          const spec = document.querySelector(".case-spec");
+          return {
+            top: card ? Math.round(card.getBoundingClientRect().top) : null,
+            bottom: card ? Math.round(card.getBoundingClientRect().bottom) : null,
+            specTop: spec ? Math.round(spec.getBoundingClientRect().top) : null,
+          };
         });
-        if (openingTop === null) failures.push(`${route} @ ${width}x${height}: case-study opening block missing`);
-        else if (openingTop > height * 2) failures.push(`${route} @ ${width}x${height}: case-study opening sits at ${openingTop}px, beyond one scroll`);
+        if (opening.top === null) failures.push(`${route} @ ${width}x${height}: case-study opening block missing`);
+        else if (opening.top > height * 2) failures.push(`${route} @ ${width}x${height}: case-study opening sits at ${opening.top}px, beyond one scroll`);
+        if (opening.specTop !== null && opening.bottom !== null && opening.specTop < opening.bottom) {
+          failures.push(`${route} @ ${width}x${height}: spec table starts at ${opening.specTop}px, inside the opening card (bottom ${opening.bottom}px)`);
+        }
       }
 
       if (route === "/projects") {
