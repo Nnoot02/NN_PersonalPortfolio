@@ -36,8 +36,8 @@ const definitions = {
     summary: "Standards-traceable 400 V design for a three-tenancy commercial complex.",
     ctaLabel: "Read verified case study",
     miniature: {
-      src: "/images/project-index/lv-cabling-process.webp",
-      alt: "Illustrative low-resolution triptych of LV cabling work moving from standards and calculations, through a commercial-complex system design, to verification worksheets",
+      src: "/images/project-index/lv-cabling-artifact.webp",
+      alt: "One-line diagram of the LV cabling design: a 400 V three-tenancy commercial complex from the supply transformer through the main switchboard to the three distribution boards",
     },
     stages: [
       { label: "Theory", detail: "AS/NZS requirements", state: "resolved" },
@@ -50,8 +50,8 @@ const definitions = {
     summary: "Connection voltage, compliance, protection, and storage assessed against network and inverter requirements.",
     ctaLabel: "Read verified case study",
     miniature: {
-      src: "/images/project-index/solar-grid-connection-process.webp",
-      alt: "Illustrative low-resolution triptych of a solar grid-connection assessment moving from requirements, through LV and HV connection options, to neutral verification worksheets",
+      src: "/images/project-index/solar-grid-connection-artifact.webp",
+      alt: "Single-line concept of the solar grid-connection assessment: the 1 MW plant at the point of common coupling to the distribution network, with the LV and HV options that were assessed",
     },
     stages: [
       { label: "Theory", detail: "SAPN and AS/NZS requirements", state: "resolved" },
@@ -64,8 +64,8 @@ const definitions = {
     summary: "Indoor autonomy planned through requirements, sensing, control, and staged test gates.",
     ctaLabel: "See current work",
     miniature: {
-      src: "/images/project-index/gps-denied-uav-process.webp",
-      alt: "Illustrative low-resolution triptych of a UAV systems-design desk followed by integration and quiet unfinished verification scenes",
+      src: "/images/project-index/gps-denied-uav-artifact.webp",
+      alt: "Quadcopter prototype on a lab bench with its companion computer and depth camera, the UAV hardware mid-integration",
     },
     stages: [
       { label: "Planning", detail: "Requirements and architecture", state: "resolved" },

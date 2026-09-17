@@ -674,10 +674,13 @@ for (const [slug, rows] of Object.entries(caseSpecs)) {
   }
 }
 
+// Site screening audit 2026-09-16, F5 (Nathan's call 2026-09-17): the index
+// thumbnails are REAL artifacts -- the LV one-line diagram, the solar
+// single-line concept, the UAV prototype photo -- not illustrative triptychs.
 const projectIndexAssets = [
-  "/images/project-index/lv-cabling-process.webp",
-  "/images/project-index/solar-grid-connection-process.webp",
-  "/images/project-index/gps-denied-uav-process.webp",
+  "/images/project-index/lv-cabling-artifact.webp",
+  "/images/project-index/solar-grid-connection-artifact.webp",
+  "/images/project-index/gps-denied-uav-artifact.webp",
 ];
 for (const asset of projectIndexAssets) {
   check(projectsIndex.includes(asset), `projects atlas must render ${asset}`);
