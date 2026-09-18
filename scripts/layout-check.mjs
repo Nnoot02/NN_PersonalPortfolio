@@ -433,6 +433,33 @@ async function main() {
         else if (width >= 721 && rowGeometry.imageX >= rowGeometry.copyX) failures.push(`${route} @ ${width}x${height}: desktop row must keep the image left of the copy`);
         else if (width <= 720 && rowGeometry.copyY >= rowGeometry.imageY) failures.push(`${route} @ ${width}x${height}: mobile row must stack the copy before the image`);
       }
+      // Site screening audit 2026-09-16, F7/F8 (Nathan's go 2026-09-18): the
+      // phone sticky label keeps room for the numbers, and each completed
+      // study names its next evidence beside the contact line.
+      if (route === "/projects/lv-cabling-design-commercial-complex" || route === "/projects/solar-grid-connection-assessment") {
+        if (width <= 480) {
+          const schedule = await page.evaluate(() => {
+            const region = document.querySelector(".writeup .table-scroll");
+            const sticky = region?.querySelector("tbody th");
+            if (!region || !sticky) return null;
+            return { regionW: region.clientWidth, stickyW: Math.round(sticky.getBoundingClientRect().width) };
+          });
+          if (!schedule) failures.push(`${route} @ ${width}x${height}: writeup table region missing`);
+          else {
+            if (schedule.stickyW > schedule.regionW * 0.45 + 2) failures.push(`${route} @ ${width}x${height}: sticky label column is ${schedule.stickyW}px of ${schedule.regionW}px (limit 45%)`);
+            if (schedule.regionW - schedule.stickyW < 100) failures.push(`${route} @ ${width}x${height}: numeric area right of the sticky label is ${schedule.regionW - schedule.stickyW}px (min 100px)`);
+          }
+        }
+        const nextLink = await page.evaluate(() => {
+          const node = document.querySelector(".case-next .text-link");
+          if (!node) return null;
+          const box = node.getBoundingClientRect();
+          const style = getComputedStyle(node);
+          return { w: Math.round(box.width), h: Math.round(box.height), visible: style.visibility !== "hidden" && Number(style.opacity) > 0.9 };
+        });
+        if (!nextLink) failures.push(`${route} @ ${width}x${height}: next-evidence link missing`);
+        else if (!nextLink.visible || nextLink.w < 60 || nextLink.h < 12) failures.push(`${route} @ ${width}x${height}: next-evidence link not visibly rendered (${JSON.stringify(nextLink)})`);
+      }
       // Site screening audit 2026-09-16, F3: a case study must state its
       // contribution and outcome within one scroll of the top, and the opening
       // card must sit clear of the spec table (its -1.2rem pull must be

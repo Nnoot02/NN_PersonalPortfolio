@@ -411,6 +411,10 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* Closes every case study with one direct contact vector, so a reviewer who
    read to the end does not have to navigate to /contact to ask about it. */
 .case-contact { border-top: 1px solid var(--line); color: var(--muted); margin: 4rem 0 0; padding-top: 1.6rem; }
+/* F8 (audit 2026-09-16, go 2026-09-18): the named next study shares the
+   closing block with the contact line -- one border, two lines. */
+.case-next { border-top: 1px solid var(--line); color: var(--muted); margin: 4rem 0 0; padding-top: 1.6rem; }
+.case-next + .case-contact { border-top: 0; margin-top: 1.6rem; padding-top: 0; }
 .case-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 0; padding: 2rem 0; border-bottom: 1px solid var(--line); }
 /* Case-study opening block (site screening audit 2026-09-16, F3): contribution,
    outcome and limits ahead of the spec strip and the write-up. */
@@ -537,6 +541,14 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .writeup tbody th, .writeup thead th:first-child { background: var(--paper); left: 0; position: sticky; z-index: 1; }
 .writeup tbody th::after, .writeup thead th:first-child::after { border-right: 1px solid var(--line); bottom: 0; content: ""; position: absolute; right: 0; top: 0; }
 .writeup td { color: var(--muted); }
+/* Site screening audit 2026-09-16, F7 (Nathan's go 2026-09-18): on phones the
+   sticky row label is capped so the numeric columns keep usable width. Measured
+   before: at 320px the LV sticky column was 181px of a 280px region (99px left
+   for eight numeric columns). Wrapping the label costs row height; starving the
+   numbers costs the comparison the table exists for. */
+@media (max-width: 480px) {
+  .writeup tbody th { max-width: 7.5rem; overflow-wrap: anywhere; white-space: normal; }
+}
 
 @media (max-width: 960px) {
   .hero { grid-template-columns: 1fr; }

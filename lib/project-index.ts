@@ -111,3 +111,11 @@ export const projectIndexRelation = {
   targetSlug: "solar-grid-connection-assessment",
   label: "standards + verification",
 } as const;
+
+// F8 (site screening audit 2026-09-16, Nathan's go 2026-09-18): the named next
+// case study at each completed study's end, reusing the singular relation
+// label. UAV/DFMA are not completed and get no link.
+export const projectStudyNext: Record<string, { slug: string; label: string }> = {
+  "lv-cabling-design-commercial-complex": { slug: "solar-grid-connection-assessment", label: projectIndexRelation.label },
+  "solar-grid-connection-assessment": { slug: "lv-cabling-design-commercial-complex", label: projectIndexRelation.label },
+};

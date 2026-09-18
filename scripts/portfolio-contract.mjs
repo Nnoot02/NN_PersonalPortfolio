@@ -534,6 +534,24 @@ for (const [slug, expectedStatus] of [
   check(!doc.includes("What still needs proof"), `${slug}: the old proof heading must not return`);
 }
 
+// Site screening audit 2026-09-16, F8 (Nathan's go 2026-09-18): each completed
+// study names its next evidence beside the contact line, reusing the relation
+// label. Pin both directions and the position after the write-up.
+for (const [slug, nextSlug, nextTitle] of [
+  ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment", "1 MW Solar Grid-Connection Assessment"],
+  ["solar-grid-connection-assessment", "lv-cabling-design-commercial-complex", "Commercial LV Cabling Design"],
+]) {
+  const doc = renderedMain(readExport(`/projects/${slug}.html`));
+  const nextIndex = doc.indexOf('class="case-next"');
+  check(nextIndex >= 0, `${slug}: the closing block must name the next study`);
+  const next = nextIndex >= 0 ? doc.slice(nextIndex, doc.indexOf("</p>", nextIndex)) : "";
+  check(next.includes(`/projects/${nextSlug}`), `${slug}: next-evidence link must target ${nextSlug}`);
+  check(next.includes(nextTitle), `${slug}: next-evidence link must name ${nextTitle}`);
+  check(next.includes("standards + verification"), `${slug}: next-evidence link must carry the relation label`);
+  check(doc.indexOf('class="case-contact"') > nextIndex, `${slug}: next-evidence line must precede the contact line`);
+  check(doc.indexOf('class="case-next"') > doc.indexOf('class="writeup"'), `${slug}: next-evidence line must follow the write-up`);
+}
+
 // The one-line diagram is unreadable at mobile widths without the full-size file.
 const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
 const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";

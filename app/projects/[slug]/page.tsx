@@ -10,6 +10,7 @@ import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
+import { projectStudyNext } from "@/lib/project-index";
 import { projects } from "@/lib/projects";
 import { profile, projectStructuredData, sharedOpenGraph } from "@/lib/site";
 
@@ -136,6 +137,15 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </div>
         </section>
         {WriteUp ? <WriteUp /> : null}
+        {projectStudyNext[project.slug] ? (
+          <p className="case-next">
+            Next in the evidence:{" "}
+            <Link className="text-link" href={`/projects/${projectStudyNext[project.slug].slug}`}>
+              {projects.find((item) => item.slug === projectStudyNext[project.slug].slug)?.title}
+            </Link>{" "}
+            - {projectStudyNext[project.slug].label}.
+          </p>
+        ) : null}
         <p className="case-contact">
           Questions about this design? <a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
         </p>
