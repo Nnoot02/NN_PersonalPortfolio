@@ -17,9 +17,10 @@ export function ProjectRow({
 
   return (
     <article className="project-row">
-      <div className="project-image">
-        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />
-      </div>
+      {/* Content-first DOM order (audit F2 family, Nathan's call 2026-09-17,
+          Option B): the title and outcome come before the image for readers
+          and screen readers; CSS pins the image to the left column on
+          desktop so the visual layout is unchanged. */}
       <div className="project-copy">
         <Heading className="project-title">
           <Link className="project-link" href={`/projects/${project.slug}`} aria-describedby={actionId}>
@@ -33,6 +34,9 @@ export function ProjectRow({
         <span className="row-action" id={actionId}>
           Read case study <ArrowRight size={20} weight="regular" aria-hidden="true" />
         </span>
+      </div>
+      <div className="project-image">
+        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />
       </div>
     </article>
   );

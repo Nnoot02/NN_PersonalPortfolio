@@ -470,6 +470,13 @@ for (const slug of caseStudySlugs) {
   check(!caseStudy.includes("Replace this panel"), `${slug} must not publish internal editorial instructions`);
 }
 
+// Row order, 2026-09-17 (Nathan's call, Option B): content-first DOM (copy
+// before image, so title then outcome reach readers and screen readers first),
+// while CSS keeps the image in the left column on desktop.
+const rowOrder = [...home.matchAll(/class="project-(copy|image)"/g)].map((match) => match[1]);
+check(rowOrder.length >= 4 && rowOrder.every((value, index) => (index % 2 === 0 ? value === "copy" : value === "image")), "project rows must carry content-first DOM order (copy before image)");
+check(readFileSync(new URL("../components/ProjectRow.tsx", import.meta.url), "utf8").includes('className="project-image"'), "ProjectRow must still render the image block");
+
 // Site screening audit 2026-09-16, F3: every case study opens with the
 // contributor's role, the outcome so far, and where the evidence stops. The
 // strings come from lib/projects.ts -- no new claims, only earlier order.

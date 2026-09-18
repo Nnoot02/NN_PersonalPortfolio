@@ -418,6 +418,21 @@ async function main() {
         }
         if (await compactFooter.count() !== 1) failures.push("/contact @ " + width + "x" + height + ": compact footer marker is missing");
       }
+      // Row order, 2026-09-17 (Option B): desktop keeps the image left of the
+      // copy; mobile stacking follows the DOM (title before image).
+      if (route === "/" || route === "/profile") {
+        const rowGeometry = await page.evaluate(() => {
+          const row = document.querySelector(".project-row");
+          if (!row) return null;
+          const copy = row.querySelector(".project-copy")?.getBoundingClientRect();
+          const image = row.querySelector(".project-image")?.getBoundingClientRect();
+          if (!copy || !image) return null;
+          return { copyX: Math.round(copy.x), imageX: Math.round(image.x), copyY: Math.round(copy.y), imageY: Math.round(image.y) };
+        });
+        if (!rowGeometry) failures.push(`${route} @ ${width}x${height}: project row geometry unavailable`);
+        else if (width >= 721 && rowGeometry.imageX >= rowGeometry.copyX) failures.push(`${route} @ ${width}x${height}: desktop row must keep the image left of the copy`);
+        else if (width <= 720 && rowGeometry.copyY >= rowGeometry.imageY) failures.push(`${route} @ ${width}x${height}: mobile row must stack the copy before the image`);
+      }
       // Site screening audit 2026-09-16, F3: a case study must state its
       // contribution and outcome within one scroll of the top, and the opening
       // card must sit clear of the spec table (its -1.2rem pull must be
