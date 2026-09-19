@@ -7,6 +7,7 @@ import "@fontsource/barlow-condensed/600.css";
 import "@fontsource/barlow-condensed/700.css";
 import "./globals.css";
 import { personStructuredData, profile, sharedOpenGraph, siteUrl } from "@/lib/site";
+import { bingSiteVerification, cloudflareBeaconToken, googleSiteVerification } from "@/lib/seo-verification";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -26,6 +27,15 @@ export const metadata: Metadata = {
     "GPS-denied UAV",
     "DFMA",
   ],
+  // Search-engine ownership proof (Objective 1, 2026-09-19). Both codes are
+  // pasted into lib/seo-verification.ts and empty until then; Next skips empty
+  // values rather than shipping a blank content attribute. Rendered on every
+  // route, the homepage included -- that is the URL Google's meta-tag
+  // verification and Bing's meta tag check.
+  verification: {
+    google: googleSiteVerification || undefined,
+    other: bingSiteVerification ? { "msvalidate.01": bingSiteVerification } : undefined,
+  },
   // "./" resolves against the current route. A literal "/" would make every
   // page claim the homepage as its canonical and its og:url.
   alternates: { canonical: "./" },
@@ -53,6 +63,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personStructuredData) }}
         />
         {children}
+        {/* Cloudflare Web Analytics: cookie-free, first-party, and loaded only
+            once a token is pasted into lib/seo-verification.ts. `defer` rather
+            than a hydration-managed script keeps it out of the React tree. */}
+        {cloudflareBeaconToken ? (
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: cloudflareBeaconToken })}
+          />
+        ) : null}
       </body>
     </html>
   );

@@ -781,6 +781,42 @@ for (const slug of detailSlugs) {
   check(sitemap.includes(`/workbench/${slug}`), `sitemap must include ${slug}`);
 }
 
+// Ownership and analytics artefacts (Objective 1, 2026-09-19). The codes live
+// in lib/seo-verification.ts; the gate checks the wiring in both directions and
+// reads the built homepage document, because the verification tags render in
+// <head> and the beacon at the end of <body>, outside renderedMain().
+const seoVerificationSource = readFileSync(new URL("../lib/seo-verification.ts", import.meta.url), "utf8");
+
+function seoConstant(name) {
+  return seoVerificationSource.match(new RegExp(`export const ${name} = "([^"]*)"`))?.[1] ?? null;
+}
+
+const googleVerification = seoConstant("googleSiteVerification");
+const bingVerification = seoConstant("bingSiteVerification");
+const beaconToken = seoConstant("cloudflareBeaconToken");
+check(
+  [googleVerification, bingVerification, beaconToken].every((value) => value !== null),
+  "lib/seo-verification.ts must export googleSiteVerification, bingSiteVerification and cloudflareBeaconToken",
+);
+
+for (const [label, code, name] of [["google", googleVerification, "google-site-verification"], ["bing", bingVerification, "msvalidate.01"]]) {
+  const tag = homeDoc.match(new RegExp(`<meta name="${name}" content="([^"]*)"`));
+  if (code) {
+    check(tag !== null && tag[1] === code, `${label} verification: a configured code must ship on the homepage`);
+  } else {
+    check(tag === null || tag[1] !== "", `${label} verification: an unconfigured code must not ship an empty meta tag`);
+  }
+}
+
+const beacon = homeDoc.match(/<script[^>]*data-cf-beacon="([^"]*)"/);
+if (beaconToken) {
+  check(beacon !== null, "the analytics beacon must ship once a token is configured");
+  check(homeDoc.includes("https://static.cloudflareinsights.com/beacon.min.js"), "the analytics beacon must load Cloudflare's beacon script");
+  check((beacon?.[1] ?? "").includes(beaconToken), "the analytics beacon must carry the configured token");
+} else {
+  check(beacon === null && !homeDoc.includes("cloudflareinsights.com"), "no analytics may ship without a configured token");
+}
+
 // og:type is inherited from the root layout by every route that does not declare
 // its own openGraph. Next replaces that object wholesale rather than merging it,
 // so a route that overrides even one key silently drops site_name, locale and the
