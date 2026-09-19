@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 
 const failures = [];
 
@@ -779,6 +780,48 @@ check(!sitemap.includes("/projects/esp32-drone"), "sitemap must not include the 
 check(!sitemap.includes("/workbench/esp32-drone-reproduction"), "sitemap must not publish the gated ESP32 Workbench route");
 for (const slug of detailSlugs) {
   check(sitemap.includes(`/workbench/${slug}`), `sitemap must include ${slug}`);
+}
+
+// Sitemap lastmod (2026-09-19). The defect this replaces was one `new Date()`
+// for all fifteen URLs, which tells a crawler nothing. Every URL must now carry
+// a dated entry whose value is the last content commit the manifest declares --
+// recomputed here from git, not trusted from the build.
+const routeSources = JSON.parse(readFileSync(new URL("../lib/sitemap-route-sources.json", import.meta.url), "utf8"));
+
+function gitLastModified(route) {
+  const files = routeSources[route];
+  if (!files) return null;
+  const committedAt = execFileSync("git", ["log", "-1", "--format=%cI", "--", ...files], { encoding: "utf8" }).trim();
+  return committedAt ? Date.parse(committedAt) : null;
+}
+
+const sitemapEntries = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(([, block]) => ({
+  loc: block.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? "",
+  lastmod: block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1] ?? "",
+}));
+check(
+  sitemapEntries.length === (sitemap.match(/<loc>/g) ?? []).length,
+  "every sitemap <loc> must sit in a <url> block that carries its own <lastmod>",
+);
+check(sitemapEntries.every((entry) => entry.loc !== "" && entry.lastmod !== ""), "every sitemap <url> must carry both <loc> and <lastmod>");
+const lastmodInstants = sitemapEntries.map((entry) => Date.parse(entry.lastmod));
+check(lastmodInstants.every(Number.isFinite), "every sitemap lastmod must parse as a real date");
+check(lastmodInstants.every((instant) => instant <= Date.now()), "no sitemap lastmod may be in the future");
+check(lastmodInstants.every((instant) => instant >= Date.parse("2025-01-01T00:00:00Z")), "sitemap lastmod values must be content dates, not placeholders");
+// One timestamp for every URL is the defect this gate exists for (all fifteen
+// carried a single `new Date()`), and the exact per-route oracle below is the
+// real protection. This coarse guard stays at "more than one value" on purpose:
+// a single future commit that touches every content file would legitimately
+// collapse the dates, and a three-distinct floor would then go red while the
+// oracle stayed honest.
+check(new Set(sitemapEntries.map((entry) => entry.lastmod)).size > 1, "sitemap lastmod must vary per page, not repeat one build timestamp");
+for (const entry of sitemapEntries) {
+  const route = new URL(entry.loc).pathname;
+  const expected = gitLastModified(route);
+  check(expected !== null, `${route}: lib/sitemap-route-sources.json must declare this route`);
+  if (expected !== null) {
+    check(Date.parse(entry.lastmod) === expected, `${route}: lastmod must equal the last content commit (${new Date(expected).toISOString()})`);
+  }
 }
 
 // Ownership and analytics artefacts (Objective 1, 2026-09-19). The codes live

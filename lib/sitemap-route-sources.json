@@ -1,0 +1,95 @@
+{
+  "/": [
+    "app/page.tsx",
+    "components/HomepageEpilogue.tsx",
+    "components/ProjectRow.tsx",
+    "lib/projects.ts",
+    "lib/site.ts",
+    "lib/workbench.ts"
+  ],
+  "/projects": [
+    "app/projects/page.tsx",
+    "components/ProjectJourneyLanes.tsx",
+    "components/ProjectJourneyLane.tsx",
+    "lib/project-index.ts",
+    "lib/projects.ts"
+  ],
+  "/workbench": [
+    "app/workbench/page.tsx",
+    "components/WorkbenchEntryPreview.tsx",
+    "lib/workbench.ts"
+  ],
+  "/profile": [
+    "app/profile/page.tsx",
+    "components/ProjectRow.tsx",
+    "lib/projects.ts",
+    "lib/site.ts"
+  ],
+  "/about": [
+    "app/about/page.tsx",
+    "components/ToolsStandardsNetwork.tsx"
+  ],
+  "/resume": [
+    "app/resume/page.tsx",
+    "lib/site.ts",
+    "public/nathan-noot-resume.txt"
+  ],
+  "/contact": [
+    "app/contact/page.tsx",
+    "components/CopyEmailButton.tsx",
+    "lib/site.ts"
+  ],
+  "/projects/lv-cabling-design-commercial-complex": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/LvCablingWriteUp.tsx",
+    "components/WriteUpIndex.tsx",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
+  "/projects/solar-grid-connection-assessment": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/PvConnectionWriteUp.tsx",
+    "components/WriteUpIndex.tsx",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
+  "/projects/gps-denied-autonomous-uav": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/UavTestGatesWriteUp.tsx",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
+  "/projects/solar-manufacturing-dfma": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
+  "/workbench/bench-fume-extractor": [
+    "app/workbench/[slug]/page.tsx",
+    "lib/workbench.ts",
+    "components/WorkbenchEvidenceGallery.tsx"
+  ],
+  "/workbench/tarmo5": [
+    "app/workbench/[slug]/page.tsx",
+    "lib/workbench.ts",
+    "components/WorkbenchEvidenceGallery.tsx"
+  ],
+  "/workbench/sesame-robot": [
+    "app/workbench/[slug]/page.tsx",
+    "lib/workbench.ts",
+    "components/WorkbenchEvidenceGallery.tsx"
+  ],
+  "/workbench/servo-mini-arm": [
+    "app/workbench/[slug]/page.tsx",
+    "lib/workbench.ts",
+    "components/WorkbenchEvidenceGallery.tsx"
+  ]
+}

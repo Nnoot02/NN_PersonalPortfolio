@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/lib/projects";
+import { routeLastModified } from "@/lib/route-last-modified";
 import { absoluteUrl } from "@/lib/site";
 import { workbenchEntries } from "@/lib/workbench";
 
@@ -12,6 +13,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [...staticRoutes, ...projectRoutes, ...workbenchRoutes].map((route) => ({
     url: absoluteUrl(route || "/"),
-    lastModified: new Date(),
+    // Real per-route dates from git, not one build timestamp for the whole
+    // sitemap. The manifest behind them is itself gated
+    // (scripts/sitemap-route-sources.test.mjs) and the contract recomputes
+    // every date from the same source.
+    lastModified: routeLastModified(route || "/"),
   }));
 }
