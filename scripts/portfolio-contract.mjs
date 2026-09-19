@@ -71,7 +71,7 @@ check(resumeWordmark.includes('class="wordmark-desktop"') && resumeWordmark.incl
 check(resumeWordmark.includes('class="wordmark-mobile"') && resumeWordmark.includes("NN") && resumeWordmark.includes('class="wordmark-period"'), "non-home mobile wordmark must render NN. with accent period");
 const heroMedia = home.match(/<figure[^>]*class="hero-image"[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
 check(heroMedia.length > 0, "home must expose hero media figure");
-check(heroMedia.includes("/images/lv-cabling-sld.svg"), "home hero must use the LV cabling single-line diagram");
+check((heroMedia.match(/<svg[^>]*role="img"/g) ?? []).length === 1, "hero artifact must inline exactly one accessible svg");
 check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"), "home hero must exclude miniature content");
 // The hero figure links to the LV case study at every viewport (decision
 // 2026-09-02): on phones the diagram is unreadable and needs somewhere to go.
@@ -83,7 +83,31 @@ check(heroAnchor.includes('class="hero-artifact"') && heroAnchor.includes('href=
 check(heroMedia.includes("Commercial LV cabling design - 400 V, three tenancies"), "home hero must name the artifact visibly");
 check(heroMedia.includes('class="hero-artifact-action">Open the case study'), "home hero must show the case-study action without hover");
 check(!heroMedia.includes("sr-only"), "home hero must not keep the old sr-only destination sentence");
-check(heroMedia.includes('loading="eager"') && heroMedia.includes('fetchPriority="high"'), "home hero image must load eagerly at high fetch priority");
+check(!/<img[^>]*lv-cabling-sld\.svg/.test(heroMedia), "hero must not fall back to the <img> form");
+// The plot schedule is declared once, on the svg root; the wrapper and the key
+// mirror it. 47 = scripts/add-plot-attributes.mjs printout (re-measure with the
+// script if the drawing is ever redrawn).
+const ANIMATED_LEAVES = 47;
+check((heroMedia.match(/pathLength="1"/g) ?? []).length === ANIMATED_LEAVES, `hero plot must normalise all ${ANIMATED_LEAVES} animated leaves`);
+const rootStyle = heroMedia.match(/<svg[^>]*style="([^"]*--plot-[^"]*)"/)?.[1] ?? "";
+const rootPlotEnd = rootStyle.match(/--plot-end:([0-9.]+ms)/)?.[1] ?? "";
+const rootPlotN = rootStyle.match(/--plot-n:(\d+)/)?.[1] ?? "";
+const wrapperPlotEnd = heroMedia.match(/class="hero-sld"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
+check(rootPlotN === String(ANIMATED_LEAVES), `svg root --plot-n must equal the animated-leaf count (got ${rootPlotN})`);
+check(rootPlotEnd.length > 0 && rootPlotEnd === wrapperPlotEnd, `wrapper --plot-end must mirror the svg root (${rootPlotEnd} vs ${wrapperPlotEnd})`);
+check((heroMedia.match(/class="hero-sld-key"/g) ?? []).length === 1, "hero artifact must render the narrow-width key list");
+check(/<div class="hero-artifact-figure">[\s\S]*?class="hero-sld"[\s\S]*?class="hero-sld-key"/.test(heroMedia), "hero artifact figure must be a div containing the drawing layer then the key");
+const keyPlotEnd = heroMedia.match(/class="hero-sld-key"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
+check(keyPlotEnd === rootPlotEnd, `key --plot-end must mirror the svg root (${keyPlotEnd} vs ${rootPlotEnd})`);
+const CALLOUT_LABELS = ["500 kVA · 400 V 3-ph", "25 mm² X-90 Cu · Ib 123.6 A", "ΔV 0.74 % vs 1 % limit", "125 A Type C · PFC 8.0 kA"];
+for (const label of CALLOUT_LABELS) check(normalizeTextEntities(heroMedia).includes(label), `hero callout missing: ${label}`);
+check((heroMedia.match(/class="hero-artifact-callout"/g) ?? []).length === 4, "exactly four hero callouts");
+check((heroMedia.match(/class="hero-sld-key"/g) ?? []).length === 1 && (heroMedia.match(/hero-sld-key-dot/g) ?? []).length === 4, "the narrow key must carry all four rows");
+const desc = heroMedia.match(/<desc[^>]*>([\s\S]*?)<\/desc>/)?.[1] ?? "";
+check(desc.length > 0, "hero svg must carry a description");
+for (const phrase of ["500 kVA", "400 V", "25 mm squared X-90 copper", "123.6 A", "0.74 per cent", "1 per cent limit", "125 A Type C", "8.0 kA"]) {
+  check(desc.includes(phrase), `hero svg description missing the approved phrase: ${phrase}`);
+}
 
 const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 check(hero.includes("Electrical Engineering Intern, Tindo Solar") && hero.includes("Aug 2026"), "home hero must contain the current-role credential as labelled fields");

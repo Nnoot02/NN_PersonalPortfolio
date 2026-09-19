@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="sldTitle sldDesc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="sldTitle sldDesc" style="--plot-n:47;--plot-step:19.15ms;--plot-end:1421ms">
   <title id="sldTitle">Commercial LV cabling design — one-line diagram</title>
-  <desc id="sldDesc">Redrawn one-line diagram of a 400 V three-tenancy commercial complex: a 500 kVA transformer feeds the main switchboard through 25 mm squared X-90 copper consumer mains, and the switchboard supplies a communal finals group and the supermarket, hairdresser and butcher distribution boards.</desc>
+  <desc id="sldDesc">Redrawn one-line diagram of a 400 V three-tenancy commercial complex: a 500 kVA transformer feeds the main switchboard through 25 mm squared X-90 copper consumer mains, and the switchboard supplies a communal finals group and the supermarket, hairdresser and butcher distribution boards. The consumer mains carry a design current of 123.6 A at 0.74 per cent voltage drop against the 1 per cent limit, and the 125 A Type C main switch is rated for the 8.0 kA prospective fault current.</desc>
 
   <!-- Vector redraw of the published figure. Palette is inlined from :root in
        app/globals.css: an SVG loaded through <img> cannot inherit custom properties. -->
@@ -14,21 +14,21 @@
   <rect width="1200" height="800" fill="url(#grid)"/>
 
   <g font-family="'Inter',Arial,Helvetica,sans-serif" fill="#242321">
-    <line x1="50" y1="52" x2="122" y2="52" stroke="#c84b1a" stroke-width="5"/>
+    <line x1="50" y1="52" x2="122" y2="52" stroke="#c84b1a" stroke-width="5" pathLength="1" style="--plot-i:1" />
 
     <!-- Supply transformer -->
-    <circle cx="236" cy="112" r="38" fill="none" stroke="#242321" stroke-width="4"/>
-    <circle cx="236" cy="152" r="38" fill="none" stroke="#242321" stroke-width="4"/>
+    <circle cx="236" cy="112" r="38" fill="none" stroke="#242321" stroke-width="4" pathLength="1" style="--plot-i:2" />
+    <circle cx="236" cy="152" r="38" fill="none" stroke="#242321" stroke-width="4" pathLength="1" style="--plot-i:3" />
     <text x="296" y="112" font-size="23" font-weight="700">500 kVA transformer</text>
     <text x="296" y="141" font-size="19" fill="#6d6962">400 V three-phase supply</text>
     <text x="296" y="167" font-size="19" fill="#6d6962">PFC 15 kA at transformer</text>
 
     <!-- Consumer mains -->
-    <line x1="236" y1="190" x2="236" y2="367" stroke="#242321" stroke-width="4"/>
+    <line x1="236" y1="190" x2="236" y2="367" stroke="#242321" stroke-width="4" pathLength="1" style="--plot-i:4" />
     <g stroke="#242321" stroke-width="3">
-      <line x1="219" y1="235" x2="253" y2="221"/>
-      <line x1="219" y1="247" x2="253" y2="233"/>
-      <line x1="219" y1="259" x2="253" y2="245"/>
+      <line x1="219" y1="235" x2="253" y2="221" pathLength="1" style="--plot-i:5" />
+      <line x1="219" y1="247" x2="253" y2="233" pathLength="1" style="--plot-i:6" />
+      <line x1="219" y1="259" x2="253" y2="245" pathLength="1" style="--plot-i:7" />
     </g>
     <text x="264" y="233" font-size="19" fill="#6d6962">Consumer mains — 15 m buried, separate conduits, trefoil</text>
     <text x="264" y="262" font-size="21" fill="#9f3510" font-family="Consolas,'Courier New',monospace">25 mm² X-90 Cu (A, N) + 6 mm² E</text>
@@ -37,9 +37,9 @@
 
     <!-- Main switchboard busbar -->
     <text x="127" y="352" font-size="25" font-weight="700">MSB</text>
-    <rect x="225" y="312" width="22" height="42" fill="#f3f0e9" stroke="#242321" stroke-width="3"/>
+    <rect x="225" y="312" width="22" height="42" fill="#f3f0e9" stroke="#242321" stroke-width="3" pathLength="1" style="--plot-i:8" />
     <text x="258" y="341" font-size="17" fill="#6d6962">125 A</text>
-    <line x1="127" y1="367" x2="1094" y2="367" stroke="#242321" stroke-width="6"/>
+    <line x1="127" y1="367" x2="1094" y2="367" stroke="#242321" stroke-width="6" pathLength="1" style="--plot-i:9" />
 
     <!-- Feeder identities -->
     <g font-size="20" font-weight="700">
@@ -51,16 +51,16 @@
 
     <!-- Feeders: drop, protective device, distribution board -->
     <g stroke="#242321" stroke-width="4">
-      <line x1="359" y1="367" x2="359" y2="565"/>
-      <line x1="594" y1="367" x2="594" y2="565"/>
-      <line x1="812" y1="367" x2="812" y2="565"/>
-      <line x1="1031" y1="367" x2="1031" y2="565"/>
+      <line x1="359" y1="367" x2="359" y2="565" pathLength="1" style="--plot-i:10" />
+      <line x1="594" y1="367" x2="594" y2="565" pathLength="1" style="--plot-i:11" />
+      <line x1="812" y1="367" x2="812" y2="565" pathLength="1" style="--plot-i:12" />
+      <line x1="1031" y1="367" x2="1031" y2="565" pathLength="1" style="--plot-i:13" />
     </g>
     <g fill="#f3f0e9" stroke="#242321" stroke-width="3">
-      <rect x="348" y="394" width="22" height="42"/>
-      <rect x="583" y="394" width="22" height="42"/>
-      <rect x="801" y="394" width="22" height="42"/>
-      <rect x="1020" y="394" width="22" height="42"/>
+      <rect x="348" y="394" width="22" height="42" pathLength="1" style="--plot-i:14" />
+      <rect x="583" y="394" width="22" height="42" pathLength="1" style="--plot-i:15" />
+      <rect x="801" y="394" width="22" height="42" pathLength="1" style="--plot-i:16" />
+      <rect x="1020" y="394" width="22" height="42" pathLength="1" style="--plot-i:17" />
     </g>
     <g font-size="17" fill="#6d6962">
       <text x="617" y="422">40 A</text>
@@ -79,12 +79,12 @@
     </g>
 
     <!-- Distribution boards -->
-    <rect x="289" y="565" width="141" height="46" fill="none" stroke="#d1cbc0" stroke-width="3"/>
+    <rect x="289" y="565" width="141" height="46" fill="none" stroke="#d1cbc0" stroke-width="3" pathLength="1" style="--plot-i:18" />
     <text x="359" y="595" font-size="19" fill="#6d6962" text-anchor="middle">finals @ MSB</text>
     <g fill="none" stroke="#242321" stroke-width="3">
-      <rect x="524" y="565" width="141" height="46"/>
-      <rect x="742" y="565" width="141" height="46"/>
-      <rect x="961" y="565" width="141" height="46"/>
+      <rect x="524" y="565" width="141" height="46" pathLength="1" style="--plot-i:19" />
+      <rect x="742" y="565" width="141" height="46" pathLength="1" style="--plot-i:20" />
+      <rect x="961" y="565" width="141" height="46" pathLength="1" style="--plot-i:21" />
     </g>
     <g font-size="22" font-weight="700" text-anchor="middle">
       <text x="594" y="596">SUP-DB</text>
@@ -94,14 +94,14 @@
 
     <!-- Final subcircuits -->
     <g stroke="#242321" stroke-width="3">
-      <line x1="322" y1="611" x2="322" y2="650"/><line x1="359" y1="611" x2="359" y2="650"/><line x1="396" y1="611" x2="396" y2="650"/>
-      <line x1="557" y1="611" x2="557" y2="650"/><line x1="594" y1="611" x2="594" y2="650"/><line x1="631" y1="611" x2="631" y2="650"/>
-      <line x1="775" y1="611" x2="775" y2="650"/><line x1="812" y1="611" x2="812" y2="650"/><line x1="849" y1="611" x2="849" y2="650"/>
-      <line x1="994" y1="611" x2="994" y2="650"/><line x1="1031" y1="611" x2="1031" y2="650"/><line x1="1068" y1="611" x2="1068" y2="650"/>
-      <line x1="311" y1="650" x2="333" y2="650"/><line x1="348" y1="650" x2="370" y2="650"/><line x1="385" y1="650" x2="407" y2="650"/>
-      <line x1="546" y1="650" x2="568" y2="650"/><line x1="583" y1="650" x2="605" y2="650"/><line x1="620" y1="650" x2="642" y2="650"/>
-      <line x1="764" y1="650" x2="786" y2="650"/><line x1="801" y1="650" x2="823" y2="650"/><line x1="838" y1="650" x2="860" y2="650"/>
-      <line x1="983" y1="650" x2="1005" y2="650"/><line x1="1020" y1="650" x2="1042" y2="650"/><line x1="1057" y1="650" x2="1079" y2="650"/>
+      <line x1="322" y1="611" x2="322" y2="650" pathLength="1" style="--plot-i:22" /><line x1="359" y1="611" x2="359" y2="650" pathLength="1" style="--plot-i:23" /><line x1="396" y1="611" x2="396" y2="650" pathLength="1" style="--plot-i:24" />
+      <line x1="557" y1="611" x2="557" y2="650" pathLength="1" style="--plot-i:25" /><line x1="594" y1="611" x2="594" y2="650" pathLength="1" style="--plot-i:26" /><line x1="631" y1="611" x2="631" y2="650" pathLength="1" style="--plot-i:27" />
+      <line x1="775" y1="611" x2="775" y2="650" pathLength="1" style="--plot-i:28" /><line x1="812" y1="611" x2="812" y2="650" pathLength="1" style="--plot-i:29" /><line x1="849" y1="611" x2="849" y2="650" pathLength="1" style="--plot-i:30" />
+      <line x1="994" y1="611" x2="994" y2="650" pathLength="1" style="--plot-i:31" /><line x1="1031" y1="611" x2="1031" y2="650" pathLength="1" style="--plot-i:32" /><line x1="1068" y1="611" x2="1068" y2="650" pathLength="1" style="--plot-i:33" />
+      <line x1="311" y1="650" x2="333" y2="650" pathLength="1" style="--plot-i:34" /><line x1="348" y1="650" x2="370" y2="650" pathLength="1" style="--plot-i:35" /><line x1="385" y1="650" x2="407" y2="650" pathLength="1" style="--plot-i:36" />
+      <line x1="546" y1="650" x2="568" y2="650" pathLength="1" style="--plot-i:37" /><line x1="583" y1="650" x2="605" y2="650" pathLength="1" style="--plot-i:38" /><line x1="620" y1="650" x2="642" y2="650" pathLength="1" style="--plot-i:39" />
+      <line x1="764" y1="650" x2="786" y2="650" pathLength="1" style="--plot-i:40" /><line x1="801" y1="650" x2="823" y2="650" pathLength="1" style="--plot-i:41" /><line x1="838" y1="650" x2="860" y2="650" pathLength="1" style="--plot-i:42" />
+      <line x1="983" y1="650" x2="1005" y2="650" pathLength="1" style="--plot-i:43" /><line x1="1020" y1="650" x2="1042" y2="650" pathLength="1" style="--plot-i:44" /><line x1="1057" y1="650" x2="1079" y2="650" pathLength="1" style="--plot-i:45" />
     </g>
     <g font-size="19" fill="#6d6962">
       <text x="269" y="684">communal lighting · HWS</text>
@@ -109,9 +109,9 @@
     </g>
 
     <!-- Title block -->
-    <rect x="51" y="703" width="496" height="72" fill="none" stroke="#242321" stroke-width="3"/>
+    <rect x="51" y="703" width="496" height="72" fill="none" stroke="#242321" stroke-width="3" pathLength="1" style="--plot-i:46" />
     <text x="67" y="727" font-size="17" font-weight="700" letter-spacing="0.3">LV CABLING DESIGN — THREE-TENANCY COMPLEX</text>
-    <line x1="51" y1="738" x2="547" y2="738" stroke="#242321" stroke-width="2"/>
+    <line x1="51" y1="738" x2="547" y2="738" stroke="#242321" stroke-width="2" pathLength="1" style="--plot-i:47" />
     <text x="299" y="756" font-size="16" fill="#6d6962" text-anchor="middle">One-line diagram · AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025</text>
     <text x="299" y="771" font-size="16" fill="#6d6962" text-anchor="middle">Figure D.1 · redrawn schematic · not to scale</text>
   </g>
