@@ -1,8 +1,22 @@
 {
   "name": "noot-portfolio",
   "compatibility_date": "2025-07-12",
+  // The canonical host/scheme consolidation runs here, ahead of the assets.
+  // _redirects cannot match a hostname, so a Worker script is the only in-repo
+  // mechanism that can answer the http:// and www. entry points.
+  "main": "worker/index.mjs",
   "assets": {
     "directory": "./out",
-    "not_found_handling": "404-page"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
+  },
+  // Both alternate platform hostnames served byte-identical copies of the
+  // site; the redirect above covers the custom domains, these close the
+  // hostnames wrangler creates. Version previews default to off in wrangler
+  // 4.134.0; the key is set anyway so a changed default cannot silently open
+  // an entry point. Set preview_urls to true if a versioned preview is ever
+  // wanted (wrangler versions upload).
+  "workers_dev": false,
+  "preview_urls": false
 }

@@ -11,9 +11,10 @@
     "build:resume": "node scripts/build-resume-pdf.mjs",
     "check": "tsc --noEmit",
     "check:repo": "node scripts/repo-hygiene.mjs",
-    "test:repo": "node --test scripts/repo-hygiene.test.mjs",
+    "test:repo": "node --test \"scripts/*.test.mjs\"",
     "test:contract": "node scripts/portfolio-contract.mjs",
     "test:layout": "node scripts/layout-check.mjs",
+    "probe:redirects": "node scripts/canonical-host-probe.mjs",
     "verify": "pnpm check && pnpm test:repo && pnpm check:repo && pnpm build && pnpm test:contract && pnpm test:layout"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "playwright": "^1.61.1",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "wrangler": "4.134.0"
   }
 }
