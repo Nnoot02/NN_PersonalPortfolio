@@ -429,11 +429,15 @@ async function main() {
             return [];
           }
         }).filter((text) => text.includes("@container") && text.includes("figure")).join("\n");
+          const figStyle = getComputedStyle(document.querySelector(".hero-artifact-figure"));
+          const figureContentW = document.querySelector(".hero-artifact-figure").clientWidth
+            - parseFloat(figStyle.paddingLeft) - parseFloat(figStyle.paddingRight);
           return {
             rows,
             hits,
             columns,
             cqText,
+            figureContentW,
             figure: { t: figure.top, b: figure.bottom },
             panel: { t: panel.top, b: panel.bottom, h: Math.round(panel.height) },
             stageW: Math.round(stage.width),
@@ -459,8 +463,8 @@ async function main() {
         if (cqPositive < 2 || cqNegated < 1 || /560px|561px/.test(revealGeo.cqText)) {
           failures.push(`/ @ ${width}x${height}: the interaction boundary must be one threshold with no gap (positive ${cqPositive}, negated ${cqNegated})`);
         }
-        if (revealGeo.columns !== (revealGeo.panelW >= 560.5 ? 2 : 1)) {
-          failures.push(`/ @ ${width}x${height}: reveal rows must use ${revealGeo.panelW >= 560.5 ? 2 : 1} column(s) at a ${revealGeo.panelW}px panel (got ${revealGeo.columns})`);
+        if (revealGeo.columns !== (revealGeo.figureContentW >= 560.5 ? 2 : 1)) {
+          failures.push(`/ @ ${width}x${height}: reveal rows must use ${revealGeo.figureContentW >= 560.5 ? 2 : 1} column(s) at a ${Math.round(revealGeo.figureContentW)}px figure (got ${revealGeo.columns})`);
         }
         for (let a = 0; a < revealGeo.rows.length; a += 1) {
           for (let b = a + 1; b < revealGeo.rows.length; b += 1) {
@@ -473,9 +477,10 @@ async function main() {
         }
         // below 561 the drawing is 300x200: a 24px floor would make neighbouring
         // targets overlap, so the hits go inert and the labelled rows take over
-        const hitsInteractive = revealGeo.panelW >= 560.5;
+        // the container query resolves against the figure's content box
+        const hitsInteractive = revealGeo.figureContentW >= 560.5;
         if (revealGeo.hits.some((h) => h.interactive !== hitsInteractive)) {
-          failures.push(`/ @ ${width}x${height}: hits must be ${hitsInteractive ? "interactive" : "inert"} at a ${revealGeo.panelW}px panel (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.interactive]))})`);
+          failures.push(`/ @ ${width}x${height}: hits must be ${hitsInteractive ? "interactive" : "inert"} at a ${Math.round(revealGeo.figureContentW)}px figure (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.interactive]))})`);
         }
         if (!hitsInteractive) {
           const narrowHits = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-hit")].map((el) => getComputedStyle(el).visibility));
@@ -521,15 +526,18 @@ async function main() {
           // hover paints the component's own linework (differential: every one
           // of its elements must change) and nothing else on the drawing may
           // change -- the control is the full complement of leaves
-          // every painted thing: tagged leaves, every label (tagged or not) and the
-        // untagged background rect -- a future rule matching bare svg text or a
-        // rect must not slip through the complement control (R2 finding 1)
-        const readLeaves = () => page.evaluate(() => [...document.querySelectorAll(".hero-sld svg [pathLength], .hero-sld svg text, .hero-sld svg rect:not([pathLength])")].map((el) => ({
+        // every painted thing: tagged leaves, every label (tagged or not), the
+        // untagged background rect and the pattern geometry in <defs> -- a rule
+        // matching bare svg text/path/rect must not slip the complement control
+        // (R2 finding 1, R3 finding 1)
+        const readLeaves = () => page.evaluate(() => [...document.querySelectorAll(".hero-sld svg [pathLength], .hero-sld svg text:not([pathLength]), .hero-sld svg rect:not([pathLength]), .hero-sld svg path:not([pathLength])")].map((el) => ({
             hit: el.getAttribute("data-hit"),
             s: getComputedStyle(el).stroke,
             f: getComputedStyle(el).fill,
             w: getComputedStyle(el).strokeWidth,
-              g: getComputedStyle(el).fontWeight,
+            g: getComputedStyle(el).fontWeight,
+            d: getComputedStyle(el).textDecorationLine,
+            o: getComputedStyle(el).opacity,
           })));
           for (const t of TARGET_IDS) {
             await page.mouse.move(0, 0);
@@ -538,11 +546,11 @@ async function main() {
             await page.hover(`.hero-sld-hit[data-target="${t}"]`);
             await page.waitForTimeout(40);
             const afterPaint = await readLeaves();
-            const ownChanged = beforePaint.every((b, i) => b.hit !== t || b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g);
+            const ownChanged = beforePaint.every((b, i) => b.hit !== t || b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g || b.d !== afterPaint[i].d || b.o !== afterPaint[i].o);
             const ownCount = beforePaint.filter((b) => b.hit === t).length;
             if (ownCount === 0) failures.push(`/ @ ${width}x${height}: hovering ${t} found no elements carrying its data-hit`);
             if (!ownChanged) failures.push(`/ @ ${width}x${height}: hovering ${t} must paint every one of its elements`);
-            const leaked = beforePaint.filter((b, i) => b.hit !== t && (b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g));
+            const leaked = beforePaint.filter((b, i) => b.hit !== t && (b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g || b.d !== afterPaint[i].d || b.o !== afterPaint[i].o));
             if (leaked.length) failures.push(`/ @ ${width}x${height}: hovering ${t} must not paint other components (${leaked.length} leaf/leaves changed, e.g. ${leaked[0].hit})`);
             if (t !== "vd") {
               const ownWidths = afterPaint.filter((b) => b.hit === t).map((b) => b.w);
