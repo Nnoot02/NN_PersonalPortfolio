@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 // The hero artifact's interaction island. Hovering a component (or its legend
@@ -30,14 +30,14 @@ const TARGETS: Target[] = [
     name: "Supply",
     value: "500 kVA · 400 V 3-ph",
     detail: "S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity.",
-    hit: { x: "11.7%", y: "7.5%", w: "13.3%", h: "17.5%" },
+    hit: { x: "11.7%", y: "7.5%", w: "13.3%", h: "14.0%" },
   },
   {
     id: "mains",
     name: "Consumer mains",
     value: "25 mm² X-90 Cu · Ib 123.6 A",
     detail: "I_b = S / (√3 · U₀); I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3.",
-    hit: { x: "16.5%", y: "22.5%", w: "6.3%", h: "24.0%" },
+    hit: { x: "16.5%", y: "22.5%", w: "6.3%", h: "14.0%" },
   },
   {
     id: "vd",
@@ -78,6 +78,14 @@ const TARGETS: Target[] = [
 
 export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd: string }) {
   const [active, setActive] = useState<TargetId | null>(null);
+  const detailRef = useRef<HTMLDivElement | null>(null);
+  const rowRefs = useRef<Partial<Record<TargetId, HTMLButtonElement | null>>>({});
+  // focus management (R1 finding 2): opening from a row moves focus into the
+  // detail (the rows leave the focus tree while a detail is open), and closing
+  // from the keyboard or the close button hands focus back to that row.
+  const restoreTo = useRef<TargetId | null>(null);
+  const openedFromRow = useRef(false);
+  const restoreFocus = useRef(false);
 
   const drawing = useMemo(
     () => <div className="hero-sld-svg" dangerouslySetInnerHTML={{ __html: svg }} />,
@@ -88,14 +96,39 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
     setActive((current) => (current === id ? null : id));
   }, []);
 
+  const openFromRow = useCallback((id: TargetId) => {
+    restoreTo.current = id;
+    openedFromRow.current = true;
+    toggle(id);
+  }, [toggle]);
+
+  const closeFromKey = useCallback(() => {
+    restoreFocus.current = true;
+    setActive(null);
+  }, []);
+
+  useEffect(() => {
+    if (active) {
+      if (openedFromRow.current) {
+        openedFromRow.current = false;
+        detailRef.current?.focus();
+      }
+    } else if (restoreFocus.current) {
+      restoreFocus.current = false;
+      const row = restoreTo.current ? rowRefs.current[restoreTo.current] : null;
+      restoreTo.current = null;
+      row?.focus();
+    }
+  }, [active]);
+
   useEffect(() => {
     if (!active) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActive(null);
+      if (event.key === "Escape") closeFromKey();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active]);
+  }, [active, closeFromKey]);
 
   return (
     <div className="hero-artifact-figure" data-active={active ?? undefined}>
@@ -130,7 +163,8 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
                 data-target={t.id}
                 aria-pressed={active === t.id}
                 style={{ "--ping-i": i } as CSSProperties}
-                onClick={() => toggle(t.id)}
+                ref={(el) => { rowRefs.current[t.id] = el; }}
+                onClick={() => openFromRow(t.id)}
               >
                 <span className="hero-sld-row-name">{t.name}</span>
                 <span className="hero-sld-row-value">{t.value}</span>
@@ -139,9 +173,18 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
           ))}
         </ul>
         {TARGETS.map((t) => (
-          <div className="hero-sld-detail" data-target={t.id} key={t.id}>
+          <div
+            className="hero-sld-detail"
+            data-target={t.id}
+            key={t.id}
+            tabIndex={-1}
+            ref={(el) => { if (active === t.id) detailRef.current = el; }}
+          >
             <p className="hero-sld-detail-title">{`${t.name} · ${t.value}`}</p>
             <p className="hero-sld-detail-body">{t.detail}</p>
+            <button type="button" className="hero-sld-detail-close" aria-label="Close the detail" onClick={closeFromKey}>
+              ✕
+            </button>
           </div>
         ))}
       </div>

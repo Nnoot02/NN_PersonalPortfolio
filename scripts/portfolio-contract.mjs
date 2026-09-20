@@ -85,8 +85,9 @@ check(heroMedia.includes('class="hero-artifact-action">Open the case study'), "h
 check(!heroMedia.includes("sr-only"), "home hero must not keep the old sr-only destination sentence");
 check(!/<img[^>]*lv-cabling-sld\.svg/.test(heroMedia), "hero must not fall back to the <img> form");
 // The plot schedule is declared once, on the svg root; the wrapper and the key
-// mirror it. 47 = scripts/add-plot-attributes.mjs printout (re-measure with the
-// script if the drawing is ever redrawn).
+// mirror it. 46 = scripts/add-plot-attributes.mjs printout (re-measure with the
+// script if the drawing is ever redrawn); it tags 35 of them as hit targets
+// (34 leaves + the ΔV text label).
 const ANIMATED_LEAVES = 46;
 check((heroMedia.match(/pathLength="1"/g) ?? []).length === ANIMATED_LEAVES, `hero plot must normalise all ${ANIMATED_LEAVES} animated leaves`);
 const rootStyle = heroMedia.match(/<svg[^>]*style="([^"]*--plot-[^"]*)"/)?.[1] ?? "";
@@ -98,39 +99,37 @@ check(rootPlotEnd.length > 0 && rootPlotEnd === wrapperPlotEnd, `wrapper --plot-
 check(/<div class="hero-artifact-figure"[^>]*>[\s\S]*?class="hero-sld"[\s\S]*?class="hero-sld-panel"/.test(heroMedia), "hero artifact figure must contain the drawing layer then the reveal panel");
 const panelPlotEnd = heroMedia.match(/class="hero-sld-panel"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
 check(panelPlotEnd === rootPlotEnd, `reveal panel --plot-end must mirror the svg root (${panelPlotEnd} vs ${rootPlotEnd})`);
-const CALLOUT_LABELS = ["500 kVA · 400 V 3-ph", "25 mm² X-90 Cu · Ib 123.6 A", "ΔV 0.74 % vs 1 % limit", "125 A Type C · PFC 8.0 kA"];
-// Scope to the legend block: the drawing prints three of these strings itself, so a
-// page-wide includes() pin is satisfied even with the legend row deleted.
-const legend = heroMedia.match(/<ul class="hero-sld-rows"[\s\S]*?<\/ul>/)?.[0] ?? "";
-check(legend.length > 0, "hero row list must render");
-for (const label of CALLOUT_LABELS) check(normalizeTextEntities(legend).includes(label), `hero rows missing: ${label}`);
-
-const HERO_TARGETS = ["supply", "mains", "vd", "device", "sup", "hai", "but"];
-for (const t of HERO_TARGETS) {
-  check(new RegExp(`data-target="${t}"`).test(heroMedia), `hero target missing: ${t}`);
-}
-check((heroMedia.match(/class="hero-sld-detail"/g) ?? []).length === HERO_TARGETS.length, "exactly seven detail blocks");
-check((heroMedia.match(/class="hero-sld-hit"/g) ?? []).length === HERO_TARGETS.length, "exactly seven hit areas");
-check((heroMedia.match(/class="hero-sld-row"/g) ?? []).length === HERO_TARGETS.length, "exactly seven legend rows");
-// Per-block pins: a phrase that appears in four detail blocks cannot prove any
-// one of them (a copy mutation stayed green page-wide). Each target's own
-// block must carry its own citation.
-const DETAIL_PHRASES = {
-  supply: ["I_psc = 15 kA", "Cl 2.2.2(a)"],
-  mains: ["Table 3.13 Col 19", "Cl 3.4.3"],
-  vd: ["Cl 3.6.2 sets the 5", "project brief"],
-  device: ["Cl 2.5.4.2(a)", "Cl 5.7.3, Table 8.1"],
-  sup: ["Table 3.12 Col 17"],
-  hai: ["Table 3.12 Col 17"],
-  but: ["Table 3.12 Col 17"],
-};
-for (const [target, phrases] of Object.entries(DETAIL_PHRASES)) {
+// Verbatim pins (R1 finding 7): phrase-level pins left the brief's own figure
+// (<= 1 %) unpinned and could not tell the three byte-identical submain
+// bodies apart, so every approved string is pinned inside its own block. The
+// list mirrors components/FeaturedSldInteractive.tsx TARGETS -- keep in step.
+const APPROVED = [
+  ["supply", "500 kVA · 400 V 3-ph", "S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity."],
+  ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S / (√3 · U₀); I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
+  ["vd", "ΔV 0.74 % vs 1 % limit", "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit."],
+  ["device", "125 A Type C · PFC 8.0 kA", "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1."],
+  ["sup", "SUP-DB · 40 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
+  ["hai", "HAI-DB · 25 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
+  ["but", "BUT-DB · 50 A · 10 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
+];
+for (const [target, value, detail] of APPROVED) {
   const start = heroMedia.indexOf(`class="hero-sld-detail" data-target="${target}"`);
-  const block = start === -1 ? "" : heroMedia.slice(start, heroMedia.indexOf("</div>", start));
+  const block = start === -1 ? "" : normalizeTextEntities(heroMedia.slice(start, heroMedia.indexOf("</div>", start)));
   check(block.length > 0, `hero detail block missing: ${target}`);
-  for (const phrase of phrases) {
-    check(normalizeTextEntities(block).includes(phrase), `hero ${target} detail missing: ${phrase}`);
-  }
+  check(block.includes(value), `hero ${target} detail must carry its value verbatim (${value})`);
+  check(block.includes(detail), `hero ${target} detail must carry its approved body verbatim (${detail})`);
+  const rowStart = heroMedia.indexOf(`class="hero-sld-row" data-target="${target}"`);
+  const row = rowStart === -1 ? "" : normalizeTextEntities(heroMedia.slice(rowStart, heroMedia.indexOf("</button>", rowStart)));
+  check(row.includes(value), `hero ${target} legend row must carry its value verbatim (${value})`);
+}
+check(heroMedia.includes('class="hero-sld-detail-close"'), "the detail must carry its close affordance");
+// the HITS map is keyed by leaf document index: pin the number of tagged
+// elements per target so an inserted/removed leaf cannot silently shift a
+// target's linework onto another component (R1 finding 3)
+const TARGET_COUNTS = { supply: 2, mains: 4, device: 1, vd: 1, sup: 9, hai: 9, but: 9 };
+for (const [target, count] of Object.entries(TARGET_COUNTS)) {
+  const got = (heroMedia.match(new RegExp(`data-hit="${target}"`, "g")) ?? []).length;
+  check(got === count, `hero target ${target} must tag ${count} element(s) (got ${got})`);
 }
 
 const desc = heroMedia.match(/<desc[^>]*>([\s\S]*?)<\/desc>/)?.[1] ?? "";

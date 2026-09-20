@@ -40,10 +40,20 @@ body = body.replace(/<(line|path|circle|rect|polyline|polygon)\b([^>]*?)\/?>/g, 
     skipped += 1;
     return m;
   }
+  if (/\bstyle=/.test(attrs)) {
+    // merge explicitly instead of writing a duplicate style attribute (a future
+    // redraw that carries its own inline style would otherwise silently drop the
+    // plot index)
+    throw new Error(`leaf ${n + 1} carries its own style attribute; extend the rewriter to merge`);
+  }
   n += 1;
   const hit = hitOf.has(n) ? ` data-hit="${hitOf.get(n)}"` : "";
   return `<${tag}${attrs.trimEnd()}${hit} pathLength="1" style="--plot-i:${n}" />`;
 });
+for (const [target, idxs] of Object.entries(HITS)) {
+  const over = idxs.filter((i) => i > n);
+  if (over.length) throw new Error(`HITS.${target} names leaves the drawing no longer has: ${over.join()}`);
+}
 // the voltage-drop target is a text label, not a leaf
 body = body.replace(/<text\b([^>]*)>(ΔV[^<]*)<\/text>/g, (m, attrs, content) => `<text${attrs} data-hit="vd">${content}</text>`);
 
