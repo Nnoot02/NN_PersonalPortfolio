@@ -161,50 +161,29 @@ button { font: inherit; }
 .hero-sld-stage { position: relative; width: 100%; width: min(100%, calc(100cqh * 1.5)); aspect-ratio: 3 / 2; }
 .hero-sld-svg { position: absolute; inset: 0; }
 .hero-sld-svg > svg { display: block; width: 100%; height: 100%; }
-/* WIDE (stage >= 560 px): dot on the feature, leader to the label. C uses a
-   downward leader: B (34.8%) and C (36.1%) share a band, so a horizontal
-   leader would overlap B's label. */
-.hero-artifact-callouts { position: absolute; inset: 0; pointer-events: none; }
-/* height: 0 + align-items: center puts the leader and label on the anchor's
-   own line; the dot (absolute, translate -50%/-50%) centres on that point. */
-.hero-artifact-callout { position: absolute; left: var(--x); top: var(--y); height: 0; display: flex; align-items: center; gap: .35rem; }
-.hero-artifact-callout[data-side="down"] { flex-direction: column; align-items: flex-start; }
-.hero-artifact-dot { position: absolute; left: 0; top: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); transform: translate(-50%, -50%); }
-/* flex: 0 0 auto on both children: inside the height:0 flex parent they would
-   otherwise shrink to nothing -- the down-leader collapsed to 0px and pulled C
-   into B's band (measured, execution round). */
-.hero-artifact-leader { display: block; flex: 0 0 auto; width: 46px; height: 1px; margin-left: 6px; background: var(--accent); }
-.hero-artifact-callout[data-side="down"] .hero-artifact-leader { width: 1px; height: 64px; margin: 6px 0 0 0; }
-/* locked exception: fixed 11 px decorative annotation type AND fixed-px
-   padding -- rem padding would double the label box at 200% root text and
-   re-introduce the B/D overlap. Labels stay on one line: a wrapped label
-   grows tall enough to collide with the next band at the 6.8% B/D spacing,
-   and at >= 560 px the longest label (~185 px) still ends inside the stage. */
-.hero-artifact-callout-label { background: var(--paper); border: 1px solid var(--accent); color: var(--accent-dark); font: 600 11px/1.25 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; padding: 4px 7px; white-space: nowrap; flex: 0 0 auto; }
+/* Callouts (design direction 2026-09-19, re-cut 2026-09-20): lettered markers
+   sit ON the features and the four facts live in the legend under the drawing.
+   Chips-on-drawing were dropped -- the drawing's own labels occupy the space
+   beside every feature, so an overlaid chip always covered art. */
+.hero-sld-marks { position: absolute; inset: 0; pointer-events: none; }
+/* locked exception: fixed 15 px marker and 10 px legend type -- rem sizing
+   grows the markers at 200% root text and re-covers the features they label. */
+.hero-sld-mark { position: absolute; left: var(--x); top: var(--y); width: 15px; height: 15px; transform: translate(-50%, -50%); background: var(--paper); border: 1px solid var(--accent); color: var(--accent-dark); font: 700 10px/13px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; text-align: center; }
+@keyframes marker-ping { from { opacity: 0; transform: translate(-50%, -50%) scale(.86); } to { opacity: 1; transform: translate(-50%, -50%); } }
 @keyframes callout-ping { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-artifact-callout { animation: callout-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
+  .hero-sld-mark { animation: marker-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
 }
-/* NARROW (< 560 px stage) and no-container-support: the absolute layer is
-   hidden and the in-flow key under the drawing carries the four facts. Block
-   flow makes label overlap geometrically impossible. */
-.hero-sld-key { display: none; margin: 0; padding: .6rem .9rem; list-style: none; gap: .35rem; border-top: 1px solid var(--line); font: 600 11px/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
-.hero-sld-key li { display: flex; align-items: center; gap: .45rem; }
-.hero-sld-key-dot { display: block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
-/* The switch tests BOTH axes on the ONE named container: the stage width is
-   min(W, 1.5H), so a wide-but-short figure must also fall to the key.
-   560 px / 1.5 = 373.33 px exactly (372 would leave a 559.5 px stage under
-   the overlay). */
-@container figure (max-width: 560px) or (max-height: 373.33px) {
-  .hero-artifact-callouts { display: none; }
-  .hero-sld-key { display: grid; }
-}
-/* the key consumes ~90px of the mobile artifact budget; the floor is a media
-   query because a container cannot style itself via its own query */
+/* Legend: in flow under the drawing at EVERY width, so nothing can cover the
+   drawing at any viewport. Two columns once the figure can afford them. */
+.hero-sld-key { display: grid; margin: 0; padding: .55rem .9rem; list-style: none; gap: .3rem .9rem; border-top: 1px solid var(--line); font: 600 10px/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+.hero-sld-key li { display: flex; align-items: center; gap: .45rem; white-space: nowrap; }
+.hero-sld-key-letter { flex: 0 0 auto; width: 13px; height: 13px; border: 1px solid var(--accent); color: var(--accent-dark); font-size: 9px; line-height: 11px; text-align: center; }
+/* the legend consumes ~50-90px of the mobile artifact budget; the floor is a
+   media query because a container cannot style itself via its own query */
 @media (max-width: 960px) { .hero-artifact-figure { min-height: 340px; } }
-@supports not (container-type: size) {
-  .hero-artifact-callouts { display: none; }
-  .hero-sld-key { display: grid; }
+@container figure (min-width: 561px) {
+  .hero-sld-key { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-sld-key li { animation: callout-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
@@ -215,7 +194,6 @@ button { font: inherit; }
   .hero-sld svg [pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; animation: plot 380ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(140ms + (var(--plot-i) - 1) * var(--plot-step)); }
   .hero-sld svg text { animation: hero-rise 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) - 320ms); }
 }
-@supports not (container-type: size) { .hero-artifact-callouts { display: none; } }
 /* Site screening audit 2026-09-16, F4: the artifact names itself and its
    destination without hover; the caption sits IN FLOW below the diagram (it
    must never cover the SVG's own Figure D.1 title line) and stays inside the
@@ -794,5 +772,5 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72rem; color: #555; }
   .project-journey-list { display: block; }
   .project-journey-list > li { break-inside: avoid; margin-bottom: 1rem; }
-  .hero-copy > *, .hero-name > span, .hero-sld svg [pathLength], .hero-sld svg text, .hero-artifact-callout, .hero-sld-key li { animation: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; stroke-dashoffset: 0 !important; }
+  .hero-copy > *, .hero-name > span, .hero-sld svg [pathLength], .hero-sld svg text, .hero-sld-mark, .hero-sld-key li { animation: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; stroke-dashoffset: 0 !important; }
 }

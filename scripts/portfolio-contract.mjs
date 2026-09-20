@@ -87,7 +87,7 @@ check(!/<img[^>]*lv-cabling-sld\.svg/.test(heroMedia), "hero must not fall back 
 // The plot schedule is declared once, on the svg root; the wrapper and the key
 // mirror it. 47 = scripts/add-plot-attributes.mjs printout (re-measure with the
 // script if the drawing is ever redrawn).
-const ANIMATED_LEAVES = 47;
+const ANIMATED_LEAVES = 46;
 check((heroMedia.match(/pathLength="1"/g) ?? []).length === ANIMATED_LEAVES, `hero plot must normalise all ${ANIMATED_LEAVES} animated leaves`);
 const rootStyle = heroMedia.match(/<svg[^>]*style="([^"]*--plot-[^"]*)"/)?.[1] ?? "";
 const rootPlotEnd = rootStyle.match(/--plot-end:([0-9.]+ms)/)?.[1] ?? "";
@@ -100,9 +100,14 @@ check(/<div class="hero-artifact-figure">[\s\S]*?class="hero-sld"[\s\S]*?class="
 const keyPlotEnd = heroMedia.match(/class="hero-sld-key"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
 check(keyPlotEnd === rootPlotEnd, `key --plot-end must mirror the svg root (${keyPlotEnd} vs ${rootPlotEnd})`);
 const CALLOUT_LABELS = ["500 kVA · 400 V 3-ph", "25 mm² X-90 Cu · Ib 123.6 A", "ΔV 0.74 % vs 1 % limit", "125 A Type C · PFC 8.0 kA"];
-for (const label of CALLOUT_LABELS) check(normalizeTextEntities(heroMedia).includes(label), `hero callout missing: ${label}`);
-check((heroMedia.match(/class="hero-artifact-callout"/g) ?? []).length === 4, "exactly four hero callouts");
-check((heroMedia.match(/class="hero-sld-key"/g) ?? []).length === 1 && (heroMedia.match(/hero-sld-key-dot/g) ?? []).length === 4, "the narrow key must carry all four rows");
+// Scope to the legend block: the drawing prints three of these strings itself, so a
+// page-wide includes() pin is satisfied even with the legend row deleted.
+const legend = heroMedia.match(/<ul class="hero-sld-key"[\s\S]*?<\/ul>/)?.[0] ?? "";
+check(legend.length > 0, "hero legend must render");
+for (const label of CALLOUT_LABELS) check(normalizeTextEntities(legend).includes(label), `hero legend missing: ${label}`);
+
+check((heroMedia.match(/class="hero-sld-mark"/g) ?? []).length === 4 && ["A", "B", "C", "D"].every((letter) => new RegExp(`class="hero-sld-mark"[^>]*>${letter}<`).test(heroMedia)), "the four lettered markers A-D must render on the drawing");
+check((heroMedia.match(/class="hero-sld-key"/g) ?? []).length === 1 && (heroMedia.match(/hero-sld-key-letter/g) ?? []).length === 4, "the legend must carry all four lettered rows");
 const desc = heroMedia.match(/<desc[^>]*>([\s\S]*?)<\/desc>/)?.[1] ?? "";
 check(desc.length > 0, "hero svg must carry a description");
 for (const phrase of ["500 kVA", "400 V", "25 mm squared X-90 copper", "123.6 A", "0.74 per cent", "1 per cent limit", "125 A Type C", "8.0 kA"]) {

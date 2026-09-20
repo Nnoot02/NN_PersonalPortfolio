@@ -12,15 +12,15 @@ if (!plotEndMatch) {
 }
 const plotEnd = plotEndMatch[1];
 
-// The four callouts print values the drawing already carries: the supply, the
-// mains, the voltage drop and the switchboard device. Anchors are the
-// features' viewBox coordinates as percentages of 1200x800; `side` picks the
-// leader direction (C runs down because B and C share a band).
+// The four facts the drawing proves, as lettered callouts (re-cut 2026-09-20):
+// the markers sit ON the features so the drawing is never covered, and the
+// legend under the drawing carries the values. Anchors are the features'
+// viewBox coordinates as percentages of 1200x800.
 const CALLOUTS = [
-  { x: "19.7%", y: "14.0%", side: "right", label: "500 kVA · 400 V 3-ph" },
-  { x: "19.7%", y: "34.8%", side: "right", label: "25 mm² X-90 Cu · Ib 123.6 A" },
-  { x: "39.2%", y: "36.1%", side: "down", label: "ΔV 0.74 % vs 1 % limit" },
-  { x: "19.7%", y: "41.6%", side: "right", label: "125 A Type C · PFC 8.0 kA" },
+  { key: "A", x: "19.7%", y: "14.0%", label: "500 kVA · 400 V 3-ph" },
+  { key: "B", x: "19.7%", y: "30.0%", label: "25 mm² X-90 Cu · Ib 123.6 A" },
+  { key: "C", x: "39.2%", y: "36.1%", label: "ΔV 0.74 % vs 1 % limit" },
+  { key: "D", x: "19.7%", y: "41.6%", label: "125 A Type C · PFC 8.0 kA" },
 ] as const;
 
 export function FeaturedSld() {
@@ -28,17 +28,14 @@ export function FeaturedSld() {
     <div className="hero-sld" style={{ "--plot-end": plotEnd } as CSSProperties}>
       <div className="hero-sld-stage">
         <div className="hero-sld-svg" dangerouslySetInnerHTML={{ __html: sld }} />
-        <span className="hero-artifact-callouts" aria-hidden="true">
+        <span className="hero-sld-marks" aria-hidden="true">
           {CALLOUTS.map((c, i) => (
             <span
-              className="hero-artifact-callout"
-              key={c.label}
-              data-side={c.side}
+              className="hero-sld-mark"
+              key={c.key}
               style={{ "--x": c.x, "--y": c.y, "--ping-i": i } as CSSProperties}
             >
-              <b className="hero-artifact-dot" />
-              <i className="hero-artifact-leader" />
-              <span className="hero-artifact-callout-label">{c.label}</span>
+              {c.key}
             </span>
           ))}
         </span>
@@ -49,12 +46,13 @@ export function FeaturedSld() {
 
 export function FeaturedSldKey() {
   // --plot-end lives on .hero-sld, a sibling of this list, so it cannot be
-  // inherited; carry the parsed value onto the key itself.
+  // inherited; carry the parsed value onto the legend itself. The legend is in
+  // flow under the drawing at every width.
   return (
     <ul className="hero-sld-key" aria-hidden="true" style={{ "--plot-end": plotEnd } as CSSProperties}>
       {CALLOUTS.map((c, i) => (
-        <li key={c.label} style={{ "--ping-i": i } as CSSProperties}>
-          <b className="hero-sld-key-dot" />
+        <li key={c.key} style={{ "--ping-i": i } as CSSProperties}>
+          <b className="hero-sld-key-letter">{c.key}</b>
           {c.label}
         </li>
       ))}

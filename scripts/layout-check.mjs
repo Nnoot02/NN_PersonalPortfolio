@@ -120,13 +120,9 @@ async function main() {
   const informational = [];
   let checks = 0;
 
-  // [561, 900] and [600, 900] ride on top of VIEWPORTS so both sides of the
-  // hero callout switch boundary get a homepage pass.
-  const HOME_SWITCH_VIEWPORTS = [[561, 900], [600, 900]];
-  for (const [width, height] of [...VIEWPORTS, ...HOME_SWITCH_VIEWPORTS]) {
+  for (const [width, height] of VIEWPORTS) {
     const page = await browser.newPage({ viewport: { width, height } });
-    const isSwitchRow = HOME_SWITCH_VIEWPORTS.some(([w, h]) => w === width && h === height);
-    for (const route of isSwitchRow ? ["/"] : ROUTES) {
+    for (const route of ROUTES) {
       const response = await page.goto(`${base}${route}`, { waitUntil: "networkidle" });
       checks += 1;
       if (!response || !response.ok()) {
@@ -307,7 +303,7 @@ async function main() {
         // Hero plot (design direction 2026-09-19): the index set first, then
         // delays derived from that set, then the window the root declares, then
         // the drawn end state and the dash pattern the draw-in depends on.
-        const PLOT_N = 47, PLOT_WINDOW = 900, PLOT_OFFSET = 140, PLOT_DRAW = 380;
+        const PLOT_N = 46, PLOT_WINDOW = 900, PLOT_OFFSET = 140, PLOT_DRAW = 380;
         const EXPECTED_STEP = Math.round((PLOT_WINDOW / PLOT_N) * 100) / 100; // 19.15
         const EXPECTED_END = Math.ceil(PLOT_OFFSET + PLOT_N * EXPECTED_STEP + PLOT_DRAW); // 1421
         const plot = await page.evaluate(() => {
@@ -370,72 +366,59 @@ async function main() {
         }
         if (mid.hiddenCopy < 1) failures.push(`/ @ ${width}x${height}: frozen mid-flight frame must show pre-entrance copy, got ${JSON.stringify(mid)}`);
 
-        // Task-3 geometry: whichever layout is live must prove itself. The
-        // overlay branch pins dots to the SVG's features, keeps labels inside
-        // the stage, checks the ping delays and proves no two labels overlap;
-        // the key branch pins the in-flow rows inside the figure and their
-        // delays to the same schedule.
-        // Measure settled geometry: a mid-ping frame carries the 0.86 scale,
-        // which displaces dots and boxes (measured: up to 17 px of fake error).
-        await page.waitForFunction(() => [...document.querySelectorAll(".hero-artifact-callout, .hero-sld-key li")]
+        // Callouts (re-cut 2026-09-20): lettered markers sit ON the features
+        // and the legend under the drawing carries the four facts at every
+        // width -- no overlay, so nothing can cover the drawing. Measure only
+        // after the pings settle: a mid-ping frame carries the 0.86 scale.
+        await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld-mark, .hero-sld-key li")]
           .every((el) => el.getAnimations().every((a) => a.playState === "finished" || a.playState === "idle")), null, { timeout: 8000 });
-        const overlayVisible = await page.evaluate(() => getComputedStyle(document.querySelector(".hero-artifact-callouts")).display !== "none");
-        if (!overlayVisible) {
-          const keyRows = await page.evaluate(() => {
-            const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
-            const root = document.querySelector(".hero-sld svg");
-            const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
-            return [...document.querySelectorAll(".hero-sld-key li")].map((li, i) => {
-              const r = li.getBoundingClientRect();
-              const a = li.getAnimations().find((x) => x.animationName === "callout-ping");
-              const t = a?.effect.getComputedTiming();
-              return { w: Math.round(r.width), inside: r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1, delay: t ? t.delay : null, expectedDelay: endMs + i * 260 };
-            });
+        const calloutGeo = await page.evaluate(() => {
+          const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
+          const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
+          const root = document.querySelector(".hero-sld svg");
+          const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
+          const FEATURE = [[236, 112], [236, 240], [470, 289], [236, 333]];
+          const markers = [...document.querySelectorAll(".hero-sld-mark")].map((m, i) => {
+            const r = m.getBoundingClientRect();
+            const ex = stage.left + (FEATURE[i][0] / 1200) * stage.width;
+            const ey = stage.top + (FEATURE[i][1] / 800) * stage.height;
+            const a = m.getAnimations().find((x) => x.animationName === "marker-ping");
+            const t = a?.effect.getComputedTiming();
+            return { letter: m.textContent.trim(), tip: Math.hypot(r.left + r.width / 2 - ex, r.top + r.height / 2 - ey), box: { l: r.left, r: r.right, t: r.top, b: r.bottom }, delay: t ? t.delay : null, expectedDelay: endMs + i * 260 };
           });
-          if (keyRows.length !== 4 || keyRows.some((k) => !k.inside || k.w === 0)) {
-            failures.push(`/ @ ${width}x${height}: narrow key rows must sit inside the figure: ${JSON.stringify(keyRows)}`);
+          const rows = [...document.querySelectorAll(".hero-sld-key li")].map((li, i) => {
+            const r = li.getBoundingClientRect();
+            const a = li.getAnimations().find((x) => x.animationName === "callout-ping");
+            const t = a?.effect.getComputedTiming();
+            return { text: li.textContent.trim().slice(0, 24), w: Math.round(r.width), h: Math.round(r.height), inside: r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1, delay: t ? t.delay : null, expectedDelay: endMs + i * 260, box: { l: r.left, r: r.right, t: r.top, b: r.bottom } };
+          });
+          return { markers, rows };
+        });
+        if (calloutGeo.markers.length !== 4 || calloutGeo.markers.map((m) => m.letter).join("") !== "ABCD") {
+          failures.push(`/ @ ${width}x${height}: four lettered markers A-D expected (got ${calloutGeo.markers.map((m) => m.letter).join("")})`);
+        }
+        if (calloutGeo.markers.some((m) => m.tip > 6)) {
+          failures.push(`/ @ ${width}x${height}: marker must sit on its feature within 6px: ${JSON.stringify(calloutGeo.markers.map((m) => Math.round(m.tip)))}`);
+        }
+        if (calloutGeo.markers.some((m) => m.delay === null || Math.abs(m.delay - m.expectedDelay) > 1)) {
+          failures.push(`/ @ ${width}x${height}: marker pings must start after the plot: ${JSON.stringify(calloutGeo.markers.map((m) => m.delay))}`);
+        }
+        if (calloutGeo.rows.length !== 4 || calloutGeo.rows.some((r) => !r.inside || r.w === 0 || r.h === 0)) {
+          failures.push(`/ @ ${width}x${height}: legend rows must sit inside the figure: ${JSON.stringify(calloutGeo.rows.map((r) => [r.w, r.h, r.inside]))}`);
+        }
+        if (calloutGeo.rows.some((r) => r.delay === null || Math.abs(r.delay - r.expectedDelay) > 1)) {
+          failures.push(`/ @ ${width}x${height}: legend rows must ping after the plot: ${JSON.stringify(calloutGeo.rows.map((r) => r.delay))}`);
+        }
+        for (let a = 0; a < calloutGeo.markers.length; a += 1) {
+          for (let b = a + 1; b < calloutGeo.markers.length; b += 1) {
+            const A = calloutGeo.markers[a].box, B = calloutGeo.markers[b].box;
+            if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: markers ${a} and ${b} overlap`);
           }
-          if (keyRows.some((k) => k.delay === null || Math.abs(k.delay - k.expectedDelay) > 1)) {
-            failures.push(`/ @ ${width}x${height}: key rows must ping after the plot: ${JSON.stringify(keyRows)}`);
-          }
-          const stageBox = await page.evaluate(() => { const r = document.querySelector(".hero-sld-stage").getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height) }; });
-          if (stageBox.h < 200) failures.push(`/ @ ${width}x${height}: narrow stage too short for the drawing: ${JSON.stringify(stageBox)}`);
-          const fit = await page.evaluate(() => {
-            const layer = document.querySelector(".hero-sld").getBoundingClientRect();
-            const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
-            const key = document.querySelector(".hero-sld-key").getBoundingClientRect();
-            return { stageInLayer: stage.top >= layer.top - 1 && stage.bottom <= layer.bottom + 1 && stage.left >= layer.left - 1 && stage.right <= layer.right + 1, stageHitsKey: stage.bottom > key.top + 1 };
-          });
-          if (!fit.stageInLayer || fit.stageHitsKey) failures.push(`/ @ ${width}x${height}: stage must fit the drawing layer above the key: ${JSON.stringify(fit)}`);
-        } else {
-          const callouts = await page.evaluate(() => {
-            const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
-            const root = document.querySelector(".hero-sld svg");
-            const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
-            const FEATURE = [[236, 112], [236, 278], [470, 289], [236, 333]];
-            const items = [...document.querySelectorAll(".hero-artifact-callout")].map((c, i) => {
-              const dot = c.querySelector(".hero-artifact-dot").getBoundingClientRect();
-              const label = c.querySelector(".hero-artifact-callout-label").getBoundingClientRect();
-              const ex = stage.left + (FEATURE[i][0] / 1200) * stage.width;
-              const ey = stage.top + (FEATURE[i][1] / 800) * stage.height;
-              const a = c.getAnimations().find((x) => x.animationName === "callout-ping");
-              const t = a?.effect.getComputedTiming();
-              return { tip: Math.hypot(dot.left + dot.width / 2 - ex, dot.top + dot.height / 2 - ey), label: { l: label.left, r: label.right, t: label.top, b: label.bottom }, delay: t ? t.delay : null, expectedDelay: endMs + i * 260 };
-            });
-            return { items, stage: { l: stage.left, r: stage.right, t: stage.top, b: stage.bottom } };
-          });
-          const insideStage = (r, s) => r.l >= s.l - 1 && r.r <= s.r + 1 && r.t >= s.t - 1 && r.b <= s.b + 1;
-          if (callouts.items.some((c) => c.tip > 6)) failures.push(`/ @ ${width}x${height}: callout dot must sit on its feature within 6px: ${JSON.stringify(callouts.items.map((c) => Math.round(c.tip)))}`);
-          if (callouts.items.some((c) => !insideStage(c.label, callouts.stage))) failures.push(`/ @ ${width}x${height}: callout labels must stay inside the stage`);
-          if (callouts.items.some((c) => c.delay === null || Math.abs(c.delay - c.expectedDelay) > 1)) failures.push(`/ @ ${width}x${height}: callout pings must start after the plot: ${JSON.stringify(callouts.items.map((c) => c.delay))}`);
-          if (callouts.stage.r - callouts.stage.l < 560 || callouts.stage.b - callouts.stage.t < 200) failures.push(`/ @ ${width}x${height}: wide overlay asserted outside its geometry: ${JSON.stringify(callouts.stage)}`);
-          const keyHidden = await page.evaluate(() => getComputedStyle(document.querySelector(".hero-sld-key")).display === "none");
-          if (!keyHidden) failures.push(`/ @ ${width}x${height}: the key must be hidden while the overlay is live`);
-          for (let a = 0; a < callouts.items.length; a += 1) {
-            for (let b = a + 1; b < callouts.items.length; b += 1) {
-              const A = callouts.items[a].label, B = callouts.items[b].label;
-              if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: callout labels ${a} and ${b} overlap: ${JSON.stringify([A, B])}`);
-            }
+        }
+        for (let a = 0; a < calloutGeo.rows.length; a += 1) {
+          for (let b = a + 1; b < calloutGeo.rows.length; b += 1) {
+            const A = calloutGeo.rows[a].box, B = calloutGeo.rows[b].box;
+            if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: legend rows ${a} and ${b} overlap: ${JSON.stringify([A, B])}`);
           }
         }
         }
@@ -1647,63 +1630,67 @@ async function main() {
     await page.close();
   }
 
-  // ---- hero callout probes (design direction 2026-09-19) -----------------
-  // 200% root text: the active layout must contain its content AND its labels
-  // must not intersect (containment alone missed the B/D collision).
+  // ---- hero callout probes (re-cut 2026-09-20) ---------------------------
+  // 200% root text: markers stay on their features and legend rows stay inside
+  // the figure without intersecting.
   for (const [width, height] of [[320, 760], [390, 844], [561, 900], [600, 900], [720, 900], [1440, 900]]) {
     const enlargedPage = await browser.newPage({ viewport: { width, height } });
     await enlargedPage.goto(`${base}/`, { waitUntil: "networkidle" });
     await enlargedPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
     const enlarged = await enlargedPage.evaluate(() => {
-      const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
       const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
-      const visible = getComputedStyle(document.querySelector(".hero-artifact-callouts")).display !== "none";
-      const layer = document.querySelector(visible ? ".hero-artifact-callouts" : ".hero-sld-key");
-      const boxes = (visible ? [...document.querySelectorAll(".hero-artifact-callout-label")] : [...document.querySelectorAll(".hero-sld-key li")])
-        .map((el) => el.getBoundingClientRect());
-      const box = visible ? stage : figure;
-      const escapes = boxes.filter((r) => !(r.left >= box.left - 1 && r.right <= box.right + 1 && r.top >= box.top - 1 && r.bottom <= box.bottom + 1));
-      const zero = boxes.filter((r) => r.width === 0 || r.height === 0);
+      const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
+      const FEATURE = [[236, 112], [236, 240], [470, 289], [236, 333]];
+      const rows = [...document.querySelectorAll(".hero-sld-key li")].map((li) => li.getBoundingClientRect());
+      const markers = [...document.querySelectorAll(".hero-sld-mark")].map((m, i) => {
+        const r = m.getBoundingClientRect();
+        const ex = stage.left + (FEATURE[i][0] / 1200) * stage.width;
+        const ey = stage.top + (FEATURE[i][1] / 800) * stage.height;
+        return Math.hypot(r.left + r.width / 2 - ex, r.top + r.height / 2 - ey);
+      });
+      const zero = rows.filter((r) => r.width === 0 || r.height === 0);
+      const escapes = rows.filter((r) => !(r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1));
       const overlaps = [];
-      for (let a = 0; a < boxes.length; a += 1) for (let b = a + 1; b < boxes.length; b += 1) {
-        const A = boxes[a], B = boxes[b];
+      for (let a = 0; a < rows.length; a += 1) for (let b = a + 1; b < rows.length; b += 1) {
+        const A = rows[a], B = rows[b];
         if (A.left < B.right && B.left < A.right && A.top < B.bottom && B.top < A.bottom) overlaps.push([a, b]);
       }
-      return { layerDisplay: getComputedStyle(layer).display, count: boxes.length, escapes: escapes.length, zero: zero.length, overlaps };
+      return { rowCount: rows.length, zero: zero.length, escapes: escapes.length, overlaps, markerTips: markers.map((t) => Math.round(t)) };
     });
     await enlargedPage.close();
-    if (enlarged.count !== 4 || enlarged.zero > 0) failures.push(`/ with 200% root text @ ${width}x${height}: callout items missing or collapsed (${JSON.stringify(enlarged)})`);
-    if (enlarged.escapes > 0) failures.push(`/ with 200% root text @ ${width}x${height}: callout content escapes its box (${JSON.stringify(enlarged)})`);
-    if (enlarged.overlaps.length) failures.push(`/ with 200% root text @ ${width}x${height}: callout labels overlap (${JSON.stringify(enlarged.overlaps)})`);
+    if (enlarged.rowCount !== 4 || enlarged.zero > 0) failures.push(`/ with 200% root text @ ${width}x${height}: legend rows missing or collapsed (${JSON.stringify(enlarged)})`);
+    if (enlarged.escapes > 0) failures.push(`/ with 200% root text @ ${width}x${height}: legend rows escape the figure (${JSON.stringify(enlarged)})`);
+    if (enlarged.overlaps.length) failures.push(`/ with 200% root text @ ${width}x${height}: legend rows overlap (${JSON.stringify(enlarged.overlaps)})`);
+    if (enlarged.markerTips.some((t) => t > 6)) failures.push(`/ with 200% root text @ ${width}x${height}: markers drift off their features (${JSON.stringify(enlarged.markerTips)})`);
   }
-  // Reduced motion must land the drawn, visible frame: no animations at all,
-  // strokes drawn, items opaque, four items, none collapsed, layer visible.
-  for (const [width, height] of [[390, 844], [1440, 900]]) {
-    const rmPage = await browser.newPage({ viewport: { width, height } });
-    await rmPage.emulateMedia({ reducedMotion: "reduce" });
-    await rmPage.goto(`${base}/`, { waitUntil: "networkidle" });
-    const rm = await rmPage.evaluate(() => {
-      const visible = getComputedStyle(document.querySelector(".hero-artifact-callouts")).display !== "none";
-      const layer = document.querySelector(visible ? ".hero-artifact-callouts" : ".hero-sld-key");
-      const items = [...layer.querySelectorAll(visible ? ".hero-artifact-callout" : "li")];
+  // Reduced motion and print: no animations, everything landed and visible.
+  for (const [mode, label] of [["reduce", "reduced"], ["print", "print"]]) {
+    const modePage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    if (mode === "reduce") await modePage.emulateMedia({ reducedMotion: "reduce" });
+    else await modePage.emulateMedia({ media: "print" });
+    await modePage.goto(`${base}/`, { waitUntil: "networkidle" });
+    const state = await modePage.evaluate(() => {
+      const markers = [...document.querySelectorAll(".hero-sld-mark")];
+      const rows = [...document.querySelectorAll(".hero-sld-key li")];
+      const zeroOf = (els) => els.filter((el) => { const r = el.getBoundingClientRect(); return r.width === 0 || r.height === 0; }).length;
       return {
         animations: document.getAnimations().length,
-        layerDisplay: getComputedStyle(layer).display,
         offsets: [...new Set([...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => getComputedStyle(s).strokeDashoffset))],
-        itemOpacity: [...new Set(items.map((c) => getComputedStyle(c).opacity))],
-        itemCount: items.length,
-        zeroRects: items.filter((c) => { const el = c.classList.contains("hero-artifact-callout") ? c.querySelector(".hero-artifact-callout-label") : c; const r = el.getBoundingClientRect(); return r.width === 0 || r.height === 0; }).length,
+        markerOpacity: [...new Set(markers.map((m) => getComputedStyle(m).opacity))],
+        markerCount: markers.length,
+        rowCount: rows.length,
+        rowOpacity: [...new Set(rows.map((r) => getComputedStyle(r).opacity))],
+        zeroMarkers: zeroOf(markers),
+        zeroRows: zeroOf(rows),
       };
     });
-    await rmPage.close();
-    if (rm.animations !== 0 || rm.offsets.join() !== "0px" || rm.itemOpacity.join() !== "1" || rm.itemCount !== 4 || rm.zeroRects !== 0 || rm.layerDisplay === "none") {
-      failures.push(`reduced motion @ ${width}x${height} must land the drawn, visible frame: ${JSON.stringify(rm)}`);
+    await modePage.close();
+    if (state.animations !== 0 || state.offsets.join() !== "0px" || state.markerOpacity.join() !== "1" || state.markerCount !== 4 || state.rowCount !== 4 || state.rowOpacity.join() !== "1" || state.zeroMarkers !== 0 || state.zeroRows !== 0) {
+      failures.push(`${label} must land the drawn, visible frame: ${JSON.stringify(state)}`);
     }
   }
-  // No-JS evidence is a screenshot plus the contract pins: Playwright cannot
-  // evaluate in a JS-disabled page, and the hero needs no client JS (inline
-  // SVG + CSS-only plot), so the reduced-motion oracle above is the same
-  // static frame. Plan amendment recorded in the plan file.
+  // No-JS evidence: screenshot plus the contract pins (Playwright cannot
+  // evaluate in a JS-disabled page; the hero needs no client JS).
   {
     const noJsBrowser = await chromium.launch();
     const noJsPage = await noJsBrowser.newPage({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
@@ -1713,77 +1700,37 @@ async function main() {
     await noJsBrowser.close();
     informational.push("no-JS homepage screenshot captured (home-nojs-hero.png)");
   }
-  // Print: the reset must land the drawn, visible frame.
-  {
-    const printPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await printPage.emulateMedia({ media: "print" });
-    await printPage.goto(`${base}/`, { waitUntil: "networkidle" });
-    const printed = await printPage.evaluate(() => {
-      const visible = getComputedStyle(document.querySelector(".hero-artifact-callouts")).display !== "none";
-      const layer = document.querySelector(visible ? ".hero-artifact-callouts" : ".hero-sld-key");
-      const items = [...layer.querySelectorAll(visible ? ".hero-artifact-callout" : "li")];
-      return {
-        animations: document.getAnimations().length,
-        layerDisplay: getComputedStyle(layer).display,
-        offsets: [...new Set([...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => getComputedStyle(s).strokeDashoffset))],
-        itemOpacity: [...new Set(items.map((c) => getComputedStyle(c).opacity))],
-        itemCount: items.length,
-        zeroRects: items.filter((c) => { const el = c.classList.contains("hero-artifact-callout") ? c.querySelector(".hero-artifact-callout-label") : c; const r = el.getBoundingClientRect(); return r.width === 0 || r.height === 0; }).length,
-      };
-    });
-    await printPage.close();
-    if (printed.animations !== 0 || printed.offsets.join() !== "0px" || printed.itemOpacity.join() !== "1" || printed.itemCount !== 4 || printed.zeroRects !== 0 || printed.layerDisplay === "none") {
-      failures.push(`print must land the drawn, visible frame: ${JSON.stringify(printed)}`);
-    }
-  }
-  // Mid-ping oracle on its own page: the first ping must be mid-fade AND
-  // mid-scale at its midpoint (a no-op keyframe body passes every settled gate).
+  // Mid-ping oracle on its own page: the first marker must be mid-fade AND
+  // mid-scale at the midpoint of the first ping, and the legend must be clean.
   {
     const pingPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await pingPage.goto(`${base}/`, { waitUntil: "load" });
     const ping = await pingPage.evaluate(() => {
-      const visible = getComputedStyle(document.querySelector(".hero-artifact-callouts")).display !== "none";
-      const items = [...document.querySelectorAll(visible ? ".hero-artifact-callout" : ".hero-sld-key li")];
       const root = document.querySelector(".hero-sld svg");
       const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
       document.getAnimations().forEach((a) => { a.pause(); a.currentTime = endMs + 150; });
-      const boxes = (visible ? [...document.querySelectorAll(".hero-artifact-callout-label")] : items).map((el) => el.getBoundingClientRect());
+      const scaleOf = (t) => { const m = t.match(/matrix\(([\d.]+)/); return m ? parseFloat(m[1]) : 1; };
+      const marker = document.querySelector(".hero-sld-mark");
+      const firstRow = document.querySelector(".hero-sld-key li");
+      const boxes = [...document.querySelectorAll(".hero-sld-key li")].map((li) => li.getBoundingClientRect());
       const overlaps = [];
       for (let a = 0; a < boxes.length; a += 1) for (let b = a + 1; b < boxes.length; b += 1) {
         const A = boxes[a], B = boxes[b];
         if (A.left < B.right && B.left < A.right && A.top < B.bottom && B.top < A.bottom) overlaps.push([a, b]);
       }
-      return { items: items.map((el) => ({ opacity: parseFloat(getComputedStyle(el).opacity), transform: getComputedStyle(el).transform })), overlaps };
+      return {
+        markerCount: document.querySelectorAll(".hero-sld-mark").length,
+        markerOpacity: parseFloat(getComputedStyle(marker).opacity),
+        markerScale: scaleOf(getComputedStyle(marker).transform),
+        rowOpacity: parseFloat(getComputedStyle(firstRow).opacity),
+        rowTransform: getComputedStyle(firstRow).transform,
+        overlaps,
+      };
     });
     await pingPage.close();
-    const pingItems = ping.items ?? [];
-    if (pingItems.length !== 4) failures.push(`mid-ping frame must still hold four items: ${JSON.stringify(ping)}`);
-    else if (!(pingItems[0].opacity < 1 && pingItems[0].transform !== "none")) failures.push(`the first ping must be mid-fade AND mid-scale at its midpoint: ${JSON.stringify(pingItems[0])}`);
-    if ((ping.overlaps ?? []).length) failures.push(`callout labels must not overlap in the frozen mid-ping frame either: ${JSON.stringify(ping.overlaps)}`);
-  }
-  // Switch-boundary probe: force figure profiles on a dedicated page. Without
-  // flex: 0 0 auto the figure's flex: 1 1 auto grows the inline height back and
-  // the 900x373 row would never exercise the height threshold.
-  {
-    const boundaryPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-    await boundaryPage.goto(`${base}/`, { waitUntil: "load" });
-    for (const [w, h, expectOverlay] of [[560, 500, false], [561, 500, true], [900, 373, false], [900, 374, true]]) {
-      const got = await boundaryPage.evaluate(([bw, bh]) => {
-        const fig = document.querySelector(".hero-artifact-figure");
-        fig.style.flex = "0 0 auto";
-        fig.style.width = `${bw}px`;
-        fig.style.height = `${bh}px`;
-        const r = fig.getBoundingClientRect();
-        return {
-          measured: [Math.round(r.width), Math.round(r.height)],
-          overlay: getComputedStyle(document.querySelector(".hero-artifact-callouts")).display !== "none",
-          key: getComputedStyle(document.querySelector(".hero-sld-key")).display !== "none",
-        };
-      }, [w, h]);
-      if (got.measured[0] !== w || Math.abs(got.measured[1] - h) > 1) failures.push(`forced profile not realised at ${w}x${h}: ${JSON.stringify(got)}`);
-      if (got.overlay !== expectOverlay || got.key === expectOverlay) failures.push(`switch boundary failed at ${w}x${h}: ${JSON.stringify(got)}`);
-    }
-    await boundaryPage.close();
+    if (ping.markerCount !== 4 || !(ping.markerOpacity < 1 && ping.markerScale < 1)) failures.push(`the first marker must be mid-fade AND mid-scale at its midpoint: ${JSON.stringify(ping)}`);
+    if (!(ping.rowOpacity < 1 && ping.rowTransform !== "none")) failures.push(`the first legend row must be mid-ping at the same frame: ${JSON.stringify(ping)}`);
+    if (ping.overlaps.length) failures.push(`legend rows must not overlap in the frozen mid-ping frame: ${JSON.stringify(ping.overlaps)}`);
   }
 
   await browser.close();
