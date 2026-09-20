@@ -237,8 +237,9 @@ async function main() {
         const heroRoleSize = await page.locator(".hero-role").evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
         if (heroRoleSize < 24) failures.push(`/ @ ${width}x${height}: .hero-role is ${heroRoleSize}px, below the 24px large-text floor its accent colour needs`);
 
-        const heroLink = page.locator("a.hero-artifact");
-        if ((await heroLink.count()) !== 1) failures.push(`/ @ ${width}x${height}: hero artifact link count is not 1`);
+        // the figure is click-to-reveal now; the case-study link lives on the caption row
+        const heroLink = page.locator("a.hero-artifact-caption");
+        if ((await heroLink.count()) !== 1) failures.push(`/ @ ${width}x${height}: hero caption link count is not 1`);
         else {
           await heroLink.focus();
           const heroFocus = await heroLink.evaluate((node) => {
@@ -366,59 +367,137 @@ async function main() {
         }
         if (mid.hiddenCopy < 1) failures.push(`/ @ ${width}x${height}: frozen mid-flight frame must show pre-entrance copy, got ${JSON.stringify(mid)}`);
 
-        // Callouts (re-cut 2026-09-20): lettered markers sit ON the features
-        // and the legend under the drawing carries the four facts at every
-        // width -- no overlay, so nothing can cover the drawing. Measure only
-        // after the pings settle: a mid-ping frame carries the 0.86 scale.
-        await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld-mark, .hero-sld-key li")]
+        // Hover/click reveal (re-cut 2026-09-20): hovering a component paints
+        // its linework; clicking opens its detail in the panel. Measure only
+        // after the row pings settle (a mid-ping frame carries the 0.86 scale).
+        await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld-row, .hero-sld-hit")]
           .every((el) => el.getAnimations().every((a) => a.playState === "finished" || a.playState === "idle")), null, { timeout: 8000 });
-        const calloutGeo = await page.evaluate(() => {
+        const TARGET_IDS = ["supply", "mains", "vd", "device", "sup", "hai", "but"];
+        const revealGeo = await page.evaluate((ids) => {
           const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
           const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
+          const panel = document.querySelector(".hero-sld-panel").getBoundingClientRect();
           const root = document.querySelector(".hero-sld svg");
           const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
-          const FEATURE = [[236, 112], [236, 240], [470, 289], [236, 333]];
-          const markers = [...document.querySelectorAll(".hero-sld-mark")].map((m, i) => {
-            const r = m.getBoundingClientRect();
-            const ex = stage.left + (FEATURE[i][0] / 1200) * stage.width;
-            const ey = stage.top + (FEATURE[i][1] / 800) * stage.height;
-            const a = m.getAnimations().find((x) => x.animationName === "marker-ping");
-            const t = a?.effect.getComputedTiming();
-            return { letter: m.textContent.trim(), tip: Math.hypot(r.left + r.width / 2 - ex, r.top + r.height / 2 - ey), box: { l: r.left, r: r.right, t: r.top, b: r.bottom }, delay: t ? t.delay : null, expectedDelay: endMs + i * 260 };
+          const rows = [...document.querySelectorAll(".hero-sld-row")].map((el, i) => {
+            const r = el.getBoundingClientRect();
+            const a = el.getAnimations().find((x) => x.animationName === "callout-ping");
+            return { target: el.getAttribute("data-target"), w: Math.round(r.width), h: Math.round(r.height), inside: r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1, delay: a?.effect.getComputedTiming().delay ?? null, expected: endMs + i * 260, box: { l: r.left, r: r.right, t: r.top, b: r.bottom } };
           });
-          const rows = [...document.querySelectorAll(".hero-sld-key li")].map((li, i) => {
-            const r = li.getBoundingClientRect();
-            const a = li.getAnimations().find((x) => x.animationName === "callout-ping");
-            const t = a?.effect.getComputedTiming();
-            return { text: li.textContent.trim().slice(0, 24), w: Math.round(r.width), h: Math.round(r.height), inside: r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1, delay: t ? t.delay : null, expectedDelay: endMs + i * 260, box: { l: r.left, r: r.right, t: r.top, b: r.bottom } };
+          const hits = [...document.querySelectorAll(".hero-sld-hit")].map((el) => {
+            const r = el.getBoundingClientRect();
+            return { target: el.getAttribute("data-target"), w: Math.round(r.width), h: Math.round(r.height), inside: r.left >= stage.left - 1 && r.right <= stage.right + 1 && r.top >= stage.top - 1 && r.bottom <= stage.bottom + 1 };
           });
-          return { markers, rows };
-        });
-        if (calloutGeo.markers.length !== 4 || calloutGeo.markers.map((m) => m.letter).join("") !== "ABCD") {
-          failures.push(`/ @ ${width}x${height}: four lettered markers A-D expected (got ${calloutGeo.markers.map((m) => m.letter).join("")})`);
+          const columns = getComputedStyle(document.querySelector(".hero-sld-rows")).gridTemplateColumns.split(" ").length;
+          return { rows, hits, columns, figure: { t: figure.top, b: figure.bottom }, panel: { t: panel.top, b: panel.bottom, h: Math.round(panel.height) }, stageW: Math.round(stage.width), panelW: Math.round(panel.width) };
+        }, TARGET_IDS);
+        if (revealGeo.rows.length !== 7 || revealGeo.rows.map((r) => r.target).join() !== TARGET_IDS.join()) {
+          failures.push(`/ @ ${width}x${height}: seven reveal rows in order expected (got ${revealGeo.rows.map((r) => r.target).join()})`);
         }
-        if (calloutGeo.markers.some((m) => m.tip > 6)) {
-          failures.push(`/ @ ${width}x${height}: marker must sit on its feature within 6px: ${JSON.stringify(calloutGeo.markers.map((m) => Math.round(m.tip)))}`);
+        if (revealGeo.rows.some((r) => !r.inside || r.w === 0 || r.h === 0)) {
+          failures.push(`/ @ ${width}x${height}: reveal rows must sit inside the figure (${JSON.stringify(revealGeo.rows.map((r) => [r.w, r.h, r.inside]))})`);
         }
-        if (calloutGeo.markers.some((m) => m.delay === null || Math.abs(m.delay - m.expectedDelay) > 1)) {
-          failures.push(`/ @ ${width}x${height}: marker pings must start after the plot: ${JSON.stringify(calloutGeo.markers.map((m) => m.delay))}`);
+        if (revealGeo.rows.some((r) => r.delay === null || Math.abs(r.delay - r.expected) > 1)) {
+          failures.push(`/ @ ${width}x${height}: reveal rows must ping after the plot (${JSON.stringify(revealGeo.rows.map((r) => r.delay))})`);
         }
-        if (calloutGeo.rows.length !== 4 || calloutGeo.rows.some((r) => !r.inside || r.w === 0 || r.h === 0)) {
-          failures.push(`/ @ ${width}x${height}: legend rows must sit inside the figure: ${JSON.stringify(calloutGeo.rows.map((r) => [r.w, r.h, r.inside]))}`);
+        if (revealGeo.columns !== (revealGeo.panelW >= 561 ? 2 : 1)) {
+          failures.push(`/ @ ${width}x${height}: reveal rows must use ${revealGeo.panelW >= 561 ? 2 : 1} column(s) at a ${revealGeo.panelW}px panel (got ${revealGeo.columns})`);
         }
-        if (calloutGeo.rows.some((r) => r.delay === null || Math.abs(r.delay - r.expectedDelay) > 1)) {
-          failures.push(`/ @ ${width}x${height}: legend rows must ping after the plot: ${JSON.stringify(calloutGeo.rows.map((r) => r.delay))}`);
-        }
-        for (let a = 0; a < calloutGeo.markers.length; a += 1) {
-          for (let b = a + 1; b < calloutGeo.markers.length; b += 1) {
-            const A = calloutGeo.markers[a].box, B = calloutGeo.markers[b].box;
-            if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: markers ${a} and ${b} overlap`);
+        for (let a = 0; a < revealGeo.rows.length; a += 1) {
+          for (let b = a + 1; b < revealGeo.rows.length; b += 1) {
+            const A = revealGeo.rows[a].box, B = revealGeo.rows[b].box;
+            if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: reveal rows ${a} and ${b} overlap`);
           }
         }
-        for (let a = 0; a < calloutGeo.rows.length; a += 1) {
-          for (let b = a + 1; b < calloutGeo.rows.length; b += 1) {
-            const A = calloutGeo.rows[a].box, B = calloutGeo.rows[b].box;
-            if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: legend rows ${a} and ${b} overlap: ${JSON.stringify([A, B])}`);
+        if (revealGeo.hits.length !== 7 || revealGeo.hits.some((h) => !h.inside)) {
+          failures.push(`/ @ ${width}x${height}: seven hit areas inside the stage expected (${JSON.stringify(revealGeo.hits)})`);
+        }
+        const narrowStage = revealGeo.stageW < 561;
+        const minTarget = narrowStage ? 12 : 24;
+        if (revealGeo.hits.some((h) => h.w < minTarget || h.h < minTarget)) {
+          failures.push(`/ @ ${width}x${height}: hit areas must be at least ${minTarget}px (${JSON.stringify(revealGeo.hits.map((h) => [h.w, h.h]))})`);
+        }
+        if (!narrowStage) {
+          // hover paints the component's own linework (differential: every one
+          // of its elements must change); a control leaf must not change
+          const control = '.hero-sld svg [style*="--plot-i:8"]';
+          for (const t of TARGET_IDS) {
+            const readPaint = () => page.evaluate(([id, sel]) => {
+              const els = [...document.querySelectorAll(`.hero-sld svg [data-hit="${id}"]`)];
+              return {
+                els: els.map((el) => ({ stroke: getComputedStyle(el).stroke, fill: getComputedStyle(el).fill, sw: getComputedStyle(el).strokeWidth })),
+                control: getComputedStyle(document.querySelector(sel)).stroke,
+              };
+            }, [t, control]);
+            const beforePaint = await readPaint();
+            await page.hover(`.hero-sld-hit[data-target="${t}"]`);
+            const afterPaint = await readPaint();
+            const painted = beforePaint.els.every((b, i) => b.stroke !== afterPaint.els[i].stroke || b.fill !== afterPaint.els[i].fill || b.sw !== afterPaint.els[i].sw);
+            if (!painted) failures.push(`/ @ ${width}x${height}: hovering ${t} must paint every one of its elements`);
+            if (afterPaint.control !== beforePaint.control) failures.push(`/ @ ${width}x${height}: hovering ${t} must not paint other components`);
+          }
+          await page.mouse.move(0, 0);
+        }
+        // click reveal (sticky), second click returns, Escape returns; keyboard via rows
+        if (width === 1440 || width === 390) {
+          const heightOf = () => page.evaluate(() => Math.round(document.querySelector(".hero-artifact-figure").getBoundingClientRect().height));
+          const beforeH = await heightOf();
+          const mainsPaint = () => page.evaluate(() => {
+            const els = [...document.querySelectorAll('.hero-sld svg [data-hit="mains"]')];
+            return els.map((el) => getComputedStyle(el).stroke + "|" + getComputedStyle(el).strokeWidth);
+          });
+          const paintBefore = await mainsPaint();
+          await page.click('.hero-sld-hit[data-target="mains"]');
+          await page.mouse.move(0, 0);
+          await page.waitForTimeout(60);
+          const paintAfter = await mainsPaint();
+          if (paintBefore.join() === paintAfter.join()) {
+            failures.push(`/ @ ${width}x${height}: an open detail must paint its component (active state)`);
+          }
+          const openState = await page.evaluate(() => ({
+            detail: getComputedStyle(document.querySelector('.hero-sld-detail[data-target="mains"]')).display,
+            rows: getComputedStyle(document.querySelector(".hero-sld-rows")).display,
+            active: document.querySelector(".hero-artifact-figure").getAttribute("data-active"),
+          }));
+          if (openState.detail === "none" || openState.rows !== "none" || openState.active !== "mains") {
+            failures.push(`/ @ ${width}x${height}: clicking the mains must reveal its detail (${JSON.stringify(openState)})`);
+          }
+          const openH = await heightOf();
+          if (Math.abs(openH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: the figure must not resize when a detail opens (${beforeH} -> ${openH})`);
+          // a re-rendered drawing node would replay the whole plot: the strokes
+          // must still be drawn right after the click
+          const replot = await page.evaluate(() => {
+            const leaves = [...document.querySelectorAll(".hero-sld svg [pathLength]")];
+            const offsets = leaves.map((el) => parseFloat(getComputedStyle(el).strokeDashoffset));
+            return { max: Math.max(...offsets), running: document.getAnimations().filter((a) => a.animationName === "plot" && a.playState === "running").length };
+          });
+          if (replot.max > 0.02 || replot.running !== 0) {
+            failures.push(`/ @ ${width}x${height}: clicking a component must not replay the plot (${JSON.stringify(replot)})`);
+          }
+          await page.click('.hero-sld-hit[data-target="mains"]');
+          const closedState = await page.evaluate(() => ({
+            detail: getComputedStyle(document.querySelector('.hero-sld-detail[data-target="mains"]')).display,
+            rows: getComputedStyle(document.querySelector(".hero-sld-rows")).display,
+          }));
+          if (closedState.detail !== "none" || closedState.rows === "none") {
+            failures.push(`/ @ ${width}x${height}: clicking the same component again must return to the rows (${JSON.stringify(closedState)})`);
+          }
+          await page.focus('.hero-sld-row[data-target="sup"]');
+          await page.keyboard.press("Enter");
+          const keyboardState = await page.evaluate(() => ({
+            detail: getComputedStyle(document.querySelector('.hero-sld-detail[data-target="sup"]')).display,
+            active: document.querySelector(".hero-artifact-figure").getAttribute("data-active"),
+          }));
+          if (keyboardState.detail === "none" || keyboardState.active !== "sup") {
+            failures.push(`/ @ ${width}x${height}: Enter on a row must reveal its detail (${JSON.stringify(keyboardState)})`);
+          }
+          await page.keyboard.press("Escape");
+          const escaped = await page.evaluate(() => ({
+            active: document.querySelector(".hero-artifact-figure").getAttribute("data-active"),
+            rows: getComputedStyle(document.querySelector(".hero-sld-rows")).display,
+          }));
+          if (escaped.active !== null || escaped.rows === "none") {
+            failures.push(`/ @ ${width}x${height}: Escape must return to the rows (${JSON.stringify(escaped)})`);
           }
         }
         }
@@ -1630,67 +1709,72 @@ async function main() {
     await page.close();
   }
 
-  // ---- hero callout probes (re-cut 2026-09-20) ---------------------------
-  // 200% root text: markers stay on their features and legend rows stay inside
-  // the figure without intersecting.
-  for (const [width, height] of [[320, 760], [390, 844], [561, 900], [600, 900], [720, 900], [1440, 900]]) {
-    const enlargedPage = await browser.newPage({ viewport: { width, height } });
+  // ---- hero reveal probes (re-cut 2026-09-20) ----------------------------
+  // 200% root text: rows inside the figure, details fit, panel height stable
+  // across every state (the reserved-height promise).
+  {
+    const enlargedPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await enlargedPage.goto(`${base}/`, { waitUntil: "networkidle" });
     await enlargedPage.evaluate(() => { document.documentElement.style.fontSize = "200%"; });
-    const enlarged = await enlargedPage.evaluate(() => {
+    const states = [];
+    const read = () => enlargedPage.evaluate(() => {
       const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
-      const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
-      const FEATURE = [[236, 112], [236, 240], [470, 289], [236, 333]];
-      const rows = [...document.querySelectorAll(".hero-sld-key li")].map((li) => li.getBoundingClientRect());
-      const markers = [...document.querySelectorAll(".hero-sld-mark")].map((m, i) => {
-        const r = m.getBoundingClientRect();
-        const ex = stage.left + (FEATURE[i][0] / 1200) * stage.width;
-        const ey = stage.top + (FEATURE[i][1] / 800) * stage.height;
-        return Math.hypot(r.left + r.width / 2 - ex, r.top + r.height / 2 - ey);
-      });
-      const zero = rows.filter((r) => r.width === 0 || r.height === 0);
-      const escapes = rows.filter((r) => !(r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1));
+      const panel = document.querySelector(".hero-sld-panel").getBoundingClientRect();
+      const rows = [...document.querySelectorAll(".hero-sld-row")].map((el) => el.getBoundingClientRect());
+      const visibleDetail = document.querySelector(".hero-sld-detail[data-target]");
+      const shown = [...document.querySelectorAll(".hero-sld-detail")].find((el) => getComputedStyle(el).display !== "none");
+      const boxes = shown ? [shown.getBoundingClientRect()] : rows;
+      const escapes = boxes.filter((r) => !(r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1));
+      const zero = boxes.filter((r) => r.width === 0 || r.height === 0);
       const overlaps = [];
       for (let a = 0; a < rows.length; a += 1) for (let b = a + 1; b < rows.length; b += 1) {
         const A = rows[a], B = rows[b];
         if (A.left < B.right && B.left < A.right && A.top < B.bottom && B.top < A.bottom) overlaps.push([a, b]);
       }
-      return { rowCount: rows.length, zero: zero.length, escapes: escapes.length, overlaps, markerTips: markers.map((t) => Math.round(t)) };
+      return { panelH: Math.round(panel.height), count: boxes.length, escapes: escapes.length, zero: zero.length, overlaps, visibleDetail: Boolean(visibleDetail) };
     });
+    states.push(await read());
+    for (const t of ["supply", "mains", "vd", "device", "sup", "hai", "but"]) {
+      await enlargedPage.click(`.hero-sld-hit[data-target="${t}"]`);
+      states.push(await read());
+      await enlargedPage.click(`.hero-sld-hit[data-target="${t}"]`);
+    }
     await enlargedPage.close();
-    if (enlarged.rowCount !== 4 || enlarged.zero > 0) failures.push(`/ with 200% root text @ ${width}x${height}: legend rows missing or collapsed (${JSON.stringify(enlarged)})`);
-    if (enlarged.escapes > 0) failures.push(`/ with 200% root text @ ${width}x${height}: legend rows escape the figure (${JSON.stringify(enlarged)})`);
-    if (enlarged.overlaps.length) failures.push(`/ with 200% root text @ ${width}x${height}: legend rows overlap (${JSON.stringify(enlarged.overlaps)})`);
-    if (enlarged.markerTips.some((t) => t > 6)) failures.push(`/ with 200% root text @ ${width}x${height}: markers drift off their features (${JSON.stringify(enlarged.markerTips)})`);
+    for (const [i, st] of states.entries()) {
+      if (st.count === 0 || st.zero > 0) failures.push(`/ with 200% root text: state ${i} rows/detail missing or collapsed (${JSON.stringify(st)})`);
+      if (st.escapes > 0) failures.push(`/ with 200% root text: state ${i} content escapes the figure (${JSON.stringify(st)})`);
+      if (st.overlaps.length) failures.push(`/ with 200% root text: state ${i} rows overlap (${JSON.stringify(st.overlaps)})`);
+    }
+    const heights = new Set(states.map((st) => st.panelH));
+    if (heights.size !== 1) failures.push(`/ with 200% root text: the panel must keep one height across states (got ${[...heights].join(", ")})`);
   }
-  // Reduced motion and print: no animations, everything landed and visible.
+  // Reduced motion and print: the default frame, no animations.
   for (const [mode, label] of [["reduce", "reduced"], ["print", "print"]]) {
     const modePage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     if (mode === "reduce") await modePage.emulateMedia({ reducedMotion: "reduce" });
     else await modePage.emulateMedia({ media: "print" });
     await modePage.goto(`${base}/`, { waitUntil: "networkidle" });
     const state = await modePage.evaluate(() => {
-      const markers = [...document.querySelectorAll(".hero-sld-mark")];
-      const rows = [...document.querySelectorAll(".hero-sld-key li")];
+      const rows = [...document.querySelectorAll(".hero-sld-row")];
+      const hits = [...document.querySelectorAll(".hero-sld-hit")];
       const zeroOf = (els) => els.filter((el) => { const r = el.getBoundingClientRect(); return r.width === 0 || r.height === 0; }).length;
       return {
         animations: document.getAnimations().length,
         offsets: [...new Set([...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => getComputedStyle(s).strokeDashoffset))],
-        markerOpacity: [...new Set(markers.map((m) => getComputedStyle(m).opacity))],
-        markerCount: markers.length,
         rowCount: rows.length,
         rowOpacity: [...new Set(rows.map((r) => getComputedStyle(r).opacity))],
-        zeroMarkers: zeroOf(markers),
+        hitCount: hits.length,
         zeroRows: zeroOf(rows),
+        detailsHidden: [...document.querySelectorAll(".hero-sld-detail")].every((el) => getComputedStyle(el).display === "none"),
       };
     });
     await modePage.close();
-    if (state.animations !== 0 || state.offsets.join() !== "0px" || state.markerOpacity.join() !== "1" || state.markerCount !== 4 || state.rowCount !== 4 || state.rowOpacity.join() !== "1" || state.zeroMarkers !== 0 || state.zeroRows !== 0) {
-      failures.push(`${label} must land the drawn, visible frame: ${JSON.stringify(state)}`);
+    if (state.animations !== 0 || state.offsets.join() !== "0px" || state.rowCount !== 7 || state.rowOpacity.join() !== "1" || state.hitCount !== 7 || state.zeroRows !== 0 || !state.detailsHidden) {
+      failures.push(`${label} must land the default, drawn frame: ${JSON.stringify(state)}`);
     }
   }
   // No-JS evidence: screenshot plus the contract pins (Playwright cannot
-  // evaluate in a JS-disabled page; the hero needs no client JS).
+  // evaluate in a JS-disabled page; the reveal copy ships in the HTML).
   {
     const noJsBrowser = await chromium.launch();
     const noJsPage = await noJsBrowser.newPage({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
@@ -1700,8 +1784,8 @@ async function main() {
     await noJsBrowser.close();
     informational.push("no-JS homepage screenshot captured (home-nojs-hero.png)");
   }
-  // Mid-ping oracle on its own page: the first marker must be mid-fade AND
-  // mid-scale at the midpoint of the first ping, and the legend must be clean.
+  // Mid-ping oracle on its own page: the first row must be mid-fade AND
+  // mid-scale at the midpoint of the first ping, and the rows must be clean.
   {
     const pingPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await pingPage.goto(`${base}/`, { waitUntil: "load" });
@@ -1710,27 +1794,18 @@ async function main() {
       const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
       document.getAnimations().forEach((a) => { a.pause(); a.currentTime = endMs + 150; });
       const scaleOf = (t) => { const m = t.match(/matrix\(([\d.]+)/); return m ? parseFloat(m[1]) : 1; };
-      const marker = document.querySelector(".hero-sld-mark");
-      const firstRow = document.querySelector(".hero-sld-key li");
-      const boxes = [...document.querySelectorAll(".hero-sld-key li")].map((li) => li.getBoundingClientRect());
+      const first = document.querySelector(".hero-sld-row");
+      const boxes = [...document.querySelectorAll(".hero-sld-row")].map((el) => el.getBoundingClientRect());
       const overlaps = [];
       for (let a = 0; a < boxes.length; a += 1) for (let b = a + 1; b < boxes.length; b += 1) {
         const A = boxes[a], B = boxes[b];
         if (A.left < B.right && B.left < A.right && A.top < B.bottom && B.top < A.bottom) overlaps.push([a, b]);
       }
-      return {
-        markerCount: document.querySelectorAll(".hero-sld-mark").length,
-        markerOpacity: parseFloat(getComputedStyle(marker).opacity),
-        markerScale: scaleOf(getComputedStyle(marker).transform),
-        rowOpacity: parseFloat(getComputedStyle(firstRow).opacity),
-        rowTransform: getComputedStyle(firstRow).transform,
-        overlaps,
-      };
+      return { rowCount: boxes.length, opacity: parseFloat(getComputedStyle(first).opacity), scale: scaleOf(getComputedStyle(first).transform), overlaps };
     });
     await pingPage.close();
-    if (ping.markerCount !== 4 || !(ping.markerOpacity < 1 && ping.markerScale < 1)) failures.push(`the first marker must be mid-fade AND mid-scale at its midpoint: ${JSON.stringify(ping)}`);
-    if (!(ping.rowOpacity < 1 && ping.rowTransform !== "none")) failures.push(`the first legend row must be mid-ping at the same frame: ${JSON.stringify(ping)}`);
-    if (ping.overlaps.length) failures.push(`legend rows must not overlap in the frozen mid-ping frame: ${JSON.stringify(ping.overlaps)}`);
+    if (ping.rowCount !== 7 || !(ping.opacity < 1 && ping.scale < 1)) failures.push(`the first reveal row must be mid-fade AND mid-scale at its midpoint: ${JSON.stringify(ping)}`);
+    if (ping.overlaps.length) failures.push(`reveal rows must not overlap in the frozen mid-ping frame: ${JSON.stringify(ping.overlaps)}`);
   }
 
   await browser.close();

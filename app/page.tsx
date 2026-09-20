@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
-import { FeaturedSld, FeaturedSldKey } from "@/components/FeaturedSld";
+import { FeaturedSldArtifact } from "@/components/FeaturedSld";
 import { HomepageEpilogue } from "@/components/HomepageEpilogue";
 import { ProjectRow } from "@/components/ProjectRow";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -73,16 +73,13 @@ export default function HomePage() {
           </div>
         </div>
         <figure className="hero-image">
-          <Link className="hero-artifact" href="/projects/lv-cabling-design-commercial-complex">
-            <div className="hero-artifact-figure">
-              <FeaturedSld />
-              <FeaturedSldKey />
-            </div>
-            <span className="hero-artifact-caption">
+          <div className="hero-artifact">
+            <FeaturedSldArtifact />
+            <Link className="hero-artifact-caption" href="/projects/lv-cabling-design-commercial-complex">
               <span className="hero-artifact-caption-text">Commercial LV cabling design - 400 V, three tenancies</span>
               <span className="hero-artifact-action">Open the case study</span>
-            </span>
-          </Link>
+            </Link>
+          </div>
         </figure>
       </section>
 

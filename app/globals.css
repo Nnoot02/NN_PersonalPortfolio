@@ -161,32 +161,62 @@ button { font: inherit; }
 .hero-sld-stage { position: relative; width: 100%; width: min(100%, calc(100cqh * 1.5)); aspect-ratio: 3 / 2; }
 .hero-sld-svg { position: absolute; inset: 0; }
 .hero-sld-svg > svg { display: block; width: 100%; height: 100%; }
-/* Callouts (design direction 2026-09-19, re-cut 2026-09-20): lettered markers
-   sit ON the features and the four facts live in the legend under the drawing.
-   Chips-on-drawing were dropped -- the drawing's own labels occupy the space
-   beside every feature, so an overlaid chip always covered art. */
-.hero-sld-marks { position: absolute; inset: 0; pointer-events: none; }
-/* locked exception: fixed 15 px marker and 10 px legend type -- rem sizing
-   grows the markers at 200% root text and re-covers the features they label. */
-.hero-sld-mark { position: absolute; left: var(--x); top: var(--y); width: 15px; height: 15px; transform: translate(-50%, -50%); background: var(--paper); border: 1px solid var(--accent); color: var(--accent-dark); font: 700 10px/13px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; text-align: center; }
-@keyframes marker-ping { from { opacity: 0; transform: translate(-50%, -50%) scale(.86); } to { opacity: 1; transform: translate(-50%, -50%); } }
+/* Callouts (re-cut 2026-09-20, hover/click): hovering a component (or focusing
+   its row) paints that component's linework in accent; clicking opens its
+   detail in the panel under the drawing, sticky until clicked again or Escape.
+   Nothing overlays the drawing -- the hit areas are transparent. */
+.hero-sld-hits { position: absolute; inset: 0; }
+.hero-sld-hit { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); min-width: 24px; min-height: 24px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.hero-sld-hit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @keyframes callout-ping { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: no-preference) {
-  .hero-sld-mark { animation: marker-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
-}
-/* Legend: in flow under the drawing at EVERY width, so nothing can cover the
-   drawing at any viewport. Two columns once the figure can afford them. */
-.hero-sld-key { display: grid; margin: 0; padding: .55rem .9rem; list-style: none; gap: .3rem .9rem; border-top: 1px solid var(--line); font: 600 10px/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
-.hero-sld-key li { display: flex; align-items: center; gap: .45rem; white-space: nowrap; }
-.hero-sld-key-letter { flex: 0 0 auto; width: 13px; height: 13px; border: 1px solid var(--accent); color: var(--accent-dark); font-size: 9px; line-height: 11px; text-align: center; }
-/* the legend consumes ~50-90px of the mobile artifact budget; the floor is a
-   media query because a container cannot style itself via its own query */
+/* hover/focus paint. A component's own linework paints; its text labels stay
+   ink. The voltage-drop target IS a text label, so it is the one target whose
+   glyphs paint. */
+.hero-artifact-figure:has([data-target="supply"]:hover, [data-target="supply"]:focus-visible) .hero-sld svg [data-hit="supply"],
+.hero-artifact-figure[data-active="supply"] .hero-sld svg [data-hit="supply"] { stroke: var(--accent); stroke-width: 3.5; }
+.hero-artifact-figure:has([data-target="mains"]:hover, [data-target="mains"]:focus-visible) .hero-sld svg [data-hit="mains"],
+.hero-artifact-figure[data-active="mains"] .hero-sld svg [data-hit="mains"] { stroke: var(--accent); stroke-width: 3.5; }
+.hero-artifact-figure:has([data-target="vd"]:hover, [data-target="vd"]:focus-visible) .hero-sld svg [data-hit="vd"],
+.hero-artifact-figure[data-active="vd"] .hero-sld svg [data-hit="vd"] { fill: var(--accent); }
+.hero-artifact-figure:has([data-target="device"]:hover, [data-target="device"]:focus-visible) .hero-sld svg [data-hit="device"],
+.hero-artifact-figure[data-active="device"] .hero-sld svg [data-hit="device"] { stroke: var(--accent); stroke-width: 3.5; }
+.hero-artifact-figure:has([data-target="sup"]:hover, [data-target="sup"]:focus-visible) .hero-sld svg [data-hit="sup"],
+.hero-artifact-figure[data-active="sup"] .hero-sld svg [data-hit="sup"] { stroke: var(--accent); stroke-width: 3.5; }
+.hero-artifact-figure:has([data-target="hai"]:hover, [data-target="hai"]:focus-visible) .hero-sld svg [data-hit="hai"],
+.hero-artifact-figure[data-active="hai"] .hero-sld svg [data-hit="hai"] { stroke: var(--accent); stroke-width: 3.5; }
+.hero-artifact-figure:has([data-target="but"]:hover, [data-target="but"]:focus-visible) .hero-sld svg [data-hit="but"],
+.hero-artifact-figure[data-active="but"] .hero-sld svg [data-hit="but"] { stroke: var(--accent); stroke-width: 3.5; }
+/* The panel: seven rows by default (each a button -- the keyboard path), one
+   detail block while a target is active. min-height reserves the taller state
+   so the drawing never resizes between states. */
+/* min-height reserves the TALLER of the two states (the seven default rows
+   measure 86 px at 1440; every detail state fits inside 88) so the drawing
+   never resizes when a reveal opens. */
+.hero-sld-panel { border-top: 1px solid var(--line); min-height: 88px; }
+.hero-sld-rows { display: grid; gap: 5px 14px; margin: 0; padding: 9px 14px; list-style: none; }
+.hero-sld-row { display: flex; align-items: baseline; gap: .5rem; white-space: nowrap; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; text-align: left; font: 600 10px/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+.hero-sld-row:hover, .hero-sld-row:focus-visible { color: var(--accent-dark); }
+.hero-sld-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hero-sld-row-name::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: .45rem; border: 1px solid var(--accent); background: var(--paper); }
+.hero-sld-row[aria-pressed="true"] .hero-sld-row-name::before { background: var(--accent); }
+.hero-sld-row-value { color: var(--muted); }
+.hero-sld-detail { display: none; padding: 8px 14px; }
+.hero-sld-detail-title { margin: 0 0 .2rem; font: 700 10px/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; color: var(--accent-dark); }
+.hero-sld-detail-body { margin: 0; font: 600 10px/1.35 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+.hero-artifact-figure[data-active] .hero-sld-rows { display: none; }
+[data-active="supply"] .hero-sld-detail[data-target="supply"],
+[data-active="mains"] .hero-sld-detail[data-target="mains"],
+[data-active="vd"] .hero-sld-detail[data-target="vd"],
+[data-active="device"] .hero-sld-detail[data-target="device"],
+[data-active="sup"] .hero-sld-detail[data-target="sup"],
+[data-active="hai"] .hero-sld-detail[data-target="hai"],
+[data-active="but"] .hero-sld-detail[data-target="but"] { display: block; }
 @media (max-width: 960px) { .hero-artifact-figure { min-height: 340px; } }
 @container figure (min-width: 561px) {
-  .hero-sld-key { grid-template-columns: 1fr 1fr; }
+  .hero-sld-rows { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-sld-key li { animation: callout-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
+  .hero-sld-row { animation: callout-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
 }
 /* The plot: stroke-dashoffset is the locked exception (Global Constraints). */
 @keyframes plot { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
@@ -204,7 +234,12 @@ button { font: inherit; }
   border-top: 1px solid var(--line);
   padding: .6rem .9rem; font: 600 .75rem/1.35 var(--display);
   letter-spacing: .12em; text-transform: uppercase;
-}
+
+  display: flex; flex-wrap: wrap;
+  gap: .3rem 1rem; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--line);
+  padding: .6rem .9rem; font: 600 .75rem/1.35 var(--display);
+  letter-spacing: .12em; text-transform: uppercase; min-height: 44px; }
 .hero-artifact-caption-text { color: var(--muted); }
 .hero-artifact-action { color: var(--accent-dark); text-decoration: underline; text-underline-offset: .25em; }
 .hero-artifact:hover .hero-artifact-action, .hero-artifact:focus-visible .hero-artifact-action { color: var(--accent); }
@@ -772,5 +807,5 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72rem; color: #555; }
   .project-journey-list { display: block; }
   .project-journey-list > li { break-inside: avoid; margin-bottom: 1rem; }
-  .hero-copy > *, .hero-name > span, .hero-sld svg [pathLength], .hero-sld svg text, .hero-sld-mark, .hero-sld-key li { animation: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; stroke-dashoffset: 0 !important; }
+  .hero-copy > *, .hero-name > span, .hero-sld svg [pathLength], .hero-sld svg text, .hero-sld-row, .hero-sld-hit, .hero-sld-detail { animation: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; stroke-dashoffset: 0 !important; }
 }

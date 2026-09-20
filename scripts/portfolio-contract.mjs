@@ -77,7 +77,7 @@ check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"
 // 2026-09-02): on phones the diagram is unreadable and needs somewhere to go.
 check((heroMedia.match(/<a\b/g) ?? []).length === 1, "home hero media must contain exactly one link");
 const heroAnchor = heroMedia.match(/<a\b[^>]*>/)?.[0] ?? "";
-check(heroAnchor.includes('class="hero-artifact"') && heroAnchor.includes('href="/projects/lv-cabling-design-commercial-complex"'), "home hero link must be the artifact and target the LV case study");
+check(heroAnchor.includes('class="hero-artifact-caption"') && heroAnchor.includes('href="/projects/lv-cabling-design-commercial-complex"'), "home hero link must be the caption row (the drawing is click-to-reveal) and target the LV case study");
 // Site screening audit 2026-09-16, F4: the artifact states its name and action
 // visibly; the sr-only destination sentence was folded into the caption.
 check(heroMedia.includes("Commercial LV cabling design - 400 V, three tenancies"), "home hero must name the artifact visibly");
@@ -95,19 +95,44 @@ const rootPlotN = rootStyle.match(/--plot-n:(\d+)/)?.[1] ?? "";
 const wrapperPlotEnd = heroMedia.match(/class="hero-sld"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
 check(rootPlotN === String(ANIMATED_LEAVES), `svg root --plot-n must equal the animated-leaf count (got ${rootPlotN})`);
 check(rootPlotEnd.length > 0 && rootPlotEnd === wrapperPlotEnd, `wrapper --plot-end must mirror the svg root (${rootPlotEnd} vs ${wrapperPlotEnd})`);
-check((heroMedia.match(/class="hero-sld-key"/g) ?? []).length === 1, "hero artifact must render the narrow-width key list");
-check(/<div class="hero-artifact-figure">[\s\S]*?class="hero-sld"[\s\S]*?class="hero-sld-key"/.test(heroMedia), "hero artifact figure must be a div containing the drawing layer then the key");
-const keyPlotEnd = heroMedia.match(/class="hero-sld-key"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
-check(keyPlotEnd === rootPlotEnd, `key --plot-end must mirror the svg root (${keyPlotEnd} vs ${rootPlotEnd})`);
+check(/<div class="hero-artifact-figure"[^>]*>[\s\S]*?class="hero-sld"[\s\S]*?class="hero-sld-panel"/.test(heroMedia), "hero artifact figure must contain the drawing layer then the reveal panel");
+const panelPlotEnd = heroMedia.match(/class="hero-sld-panel"[^>]*style="[^"]*--plot-end:([0-9.]+ms)/)?.[1] ?? "";
+check(panelPlotEnd === rootPlotEnd, `reveal panel --plot-end must mirror the svg root (${panelPlotEnd} vs ${rootPlotEnd})`);
 const CALLOUT_LABELS = ["500 kVA · 400 V 3-ph", "25 mm² X-90 Cu · Ib 123.6 A", "ΔV 0.74 % vs 1 % limit", "125 A Type C · PFC 8.0 kA"];
 // Scope to the legend block: the drawing prints three of these strings itself, so a
 // page-wide includes() pin is satisfied even with the legend row deleted.
-const legend = heroMedia.match(/<ul class="hero-sld-key"[\s\S]*?<\/ul>/)?.[0] ?? "";
-check(legend.length > 0, "hero legend must render");
-for (const label of CALLOUT_LABELS) check(normalizeTextEntities(legend).includes(label), `hero legend missing: ${label}`);
+const legend = heroMedia.match(/<ul class="hero-sld-rows"[\s\S]*?<\/ul>/)?.[0] ?? "";
+check(legend.length > 0, "hero row list must render");
+for (const label of CALLOUT_LABELS) check(normalizeTextEntities(legend).includes(label), `hero rows missing: ${label}`);
 
-check((heroMedia.match(/class="hero-sld-mark"/g) ?? []).length === 4 && ["A", "B", "C", "D"].every((letter) => new RegExp(`class="hero-sld-mark"[^>]*>${letter}<`).test(heroMedia)), "the four lettered markers A-D must render on the drawing");
-check((heroMedia.match(/class="hero-sld-key"/g) ?? []).length === 1 && (heroMedia.match(/hero-sld-key-letter/g) ?? []).length === 4, "the legend must carry all four lettered rows");
+const HERO_TARGETS = ["supply", "mains", "vd", "device", "sup", "hai", "but"];
+for (const t of HERO_TARGETS) {
+  check(new RegExp(`data-target="${t}"`).test(heroMedia), `hero target missing: ${t}`);
+}
+check((heroMedia.match(/class="hero-sld-detail"/g) ?? []).length === HERO_TARGETS.length, "exactly seven detail blocks");
+check((heroMedia.match(/class="hero-sld-hit"/g) ?? []).length === HERO_TARGETS.length, "exactly seven hit areas");
+check((heroMedia.match(/class="hero-sld-row"/g) ?? []).length === HERO_TARGETS.length, "exactly seven legend rows");
+// Per-block pins: a phrase that appears in four detail blocks cannot prove any
+// one of them (a copy mutation stayed green page-wide). Each target's own
+// block must carry its own citation.
+const DETAIL_PHRASES = {
+  supply: ["I_psc = 15 kA", "Cl 2.2.2(a)"],
+  mains: ["Table 3.13 Col 19", "Cl 3.4.3"],
+  vd: ["Cl 3.6.2 sets the 5", "project brief"],
+  device: ["Cl 2.5.4.2(a)", "Cl 5.7.3, Table 8.1"],
+  sup: ["Table 3.12 Col 17"],
+  hai: ["Table 3.12 Col 17"],
+  but: ["Table 3.12 Col 17"],
+};
+for (const [target, phrases] of Object.entries(DETAIL_PHRASES)) {
+  const start = heroMedia.indexOf(`class="hero-sld-detail" data-target="${target}"`);
+  const block = start === -1 ? "" : heroMedia.slice(start, heroMedia.indexOf("</div>", start));
+  check(block.length > 0, `hero detail block missing: ${target}`);
+  for (const phrase of phrases) {
+    check(normalizeTextEntities(block).includes(phrase), `hero ${target} detail missing: ${phrase}`);
+  }
+}
+
 const desc = heroMedia.match(/<desc[^>]*>([\s\S]*?)<\/desc>/)?.[1] ?? "";
 check(desc.length > 0, "hero svg must carry a description");
 for (const phrase of ["500 kVA", "400 V", "25 mm squared X-90 copper", "123.6 A", "0.74 per cent", "1 per cent limit", "125 A Type C", "8.0 kA"]) {
