@@ -420,10 +420,20 @@ async function main() {
             };
           });
           const columns = getComputedStyle(document.querySelector(".hero-sld-rows")).gridTemplateColumns.split(" ").length;
+        // the interaction boundary must be one threshold, no gap: read it back
+        // from the shipped CSSOM rather than trusting the source text
+        const cqText = [...document.styleSheets].flatMap((sheet) => {
+          try {
+            return [...sheet.cssRules].map((rule) => rule.cssText);
+          } catch {
+            return [];
+          }
+        }).filter((text) => text.includes("@container") && text.includes("figure")).join("\n");
           return {
             rows,
             hits,
             columns,
+            cqText,
             figure: { t: figure.top, b: figure.bottom },
             panel: { t: panel.top, b: panel.bottom, h: Math.round(panel.height) },
             stageW: Math.round(stage.width),
@@ -431,7 +441,6 @@ async function main() {
           };
         }, TARGET_IDS);
         const inter = (a, b) => Math.max(0, Math.min(a.r, b.r) - Math.max(a.l, b.l)) * Math.max(0, Math.min(a.b, b.b) - Math.max(a.t, b.t));
-        const area = (a) => (a.r - a.l) * (a.b - a.t);
         if (revealGeo.rows.length !== 7 || revealGeo.rows.map((r) => r.target).join() !== TARGET_IDS.join()) {
           failures.push(`/ @ ${width}x${height}: seven reveal rows in order expected (got ${revealGeo.rows.map((r) => r.target).join()})`);
         }
@@ -445,8 +454,13 @@ async function main() {
         if (revealGeo.rows.some((r) => r.delay === null || Math.abs(r.delay - r.expected) > 1)) {
           failures.push(`/ @ ${width}x${height}: reveal rows must ping after the plot (${JSON.stringify(revealGeo.rows.map((r) => r.delay))})`);
         }
-        if (revealGeo.columns !== (revealGeo.panelW >= 561 ? 2 : 1)) {
-          failures.push(`/ @ ${width}x${height}: reveal rows must use ${revealGeo.panelW >= 561 ? 2 : 1} column(s) at a ${revealGeo.panelW}px panel (got ${revealGeo.columns})`);
+        const cqPositive = (revealGeo.cqText.match(/\(min-width: 560\.5px\)/g) ?? []).length;
+        const cqNegated = (revealGeo.cqText.match(/not \(min-width: 560\.5px\)/g) ?? []).length;
+        if (cqPositive < 2 || cqNegated < 1 || /560px|561px/.test(revealGeo.cqText)) {
+          failures.push(`/ @ ${width}x${height}: the interaction boundary must be one threshold with no gap (positive ${cqPositive}, negated ${cqNegated})`);
+        }
+        if (revealGeo.columns !== (revealGeo.panelW >= 560.5 ? 2 : 1)) {
+          failures.push(`/ @ ${width}x${height}: reveal rows must use ${revealGeo.panelW >= 560.5 ? 2 : 1} column(s) at a ${revealGeo.panelW}px panel (got ${revealGeo.columns})`);
         }
         for (let a = 0; a < revealGeo.rows.length; a += 1) {
           for (let b = a + 1; b < revealGeo.rows.length; b += 1) {
@@ -459,9 +473,15 @@ async function main() {
         }
         // below 561 the drawing is 300x200: a 24px floor would make neighbouring
         // targets overlap, so the hits go inert and the labelled rows take over
-        const hitsInteractive = revealGeo.panelW >= 561;
+        const hitsInteractive = revealGeo.panelW >= 560.5;
         if (revealGeo.hits.some((h) => h.interactive !== hitsInteractive)) {
           failures.push(`/ @ ${width}x${height}: hits must be ${hitsInteractive ? "interactive" : "inert"} at a ${revealGeo.panelW}px panel (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.interactive]))})`);
+        }
+        if (!hitsInteractive) {
+          const narrowHits = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-hit")].map((el) => getComputedStyle(el).visibility));
+          if (narrowHits.some((v) => v !== "hidden")) {
+            failures.push(`/ @ ${width}x${height}: below the 560.5px boundary the hits must be invisible too (tab order), got ${JSON.stringify(narrowHits)}`);
+          }
         }
         if (hitsInteractive) {
           if (revealGeo.hits.some((h) => h.w < 24 || h.h < 24)) {
@@ -501,7 +521,10 @@ async function main() {
           // hover paints the component's own linework (differential: every one
           // of its elements must change) and nothing else on the drawing may
           // change -- the control is the full complement of leaves
-          const readLeaves = () => page.evaluate(() => [...document.querySelectorAll(".hero-sld svg [pathLength], .hero-sld svg text[data-hit]")].map((el) => ({
+          // every painted thing: tagged leaves, every label (tagged or not) and the
+        // untagged background rect -- a future rule matching bare svg text or a
+        // rect must not slip through the complement control (R2 finding 1)
+        const readLeaves = () => page.evaluate(() => [...document.querySelectorAll(".hero-sld svg [pathLength], .hero-sld svg text, .hero-sld svg rect:not([pathLength])")].map((el) => ({
             hit: el.getAttribute("data-hit"),
             s: getComputedStyle(el).stroke,
             f: getComputedStyle(el).fill,
@@ -593,6 +616,8 @@ async function main() {
           });
         };
         const rowFocus = await openFromRow("sup");
+        const rowOpenH = await heightOf();
+        if (Math.abs(rowOpenH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: the row path must not resize the figure (${beforeH} -> ${rowOpenH})`);
         if (rowFocus.cls !== "hero-sld-detail" || rowFocus.target !== "sup" || rowFocus.tabindex !== "-1") {
           failures.push(`/ @ ${width}x${height}: opening from a row must move focus into the detail (${JSON.stringify(rowFocus)})`);
         }

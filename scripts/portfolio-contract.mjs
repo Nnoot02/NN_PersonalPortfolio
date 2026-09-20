@@ -118,11 +118,11 @@ for (const [target, value, detail] of APPROVED) {
   check(block.length > 0, `hero detail block missing: ${target}`);
   check(block.includes(value), `hero ${target} detail must carry its value verbatim (${value})`);
   check(block.includes(detail), `hero ${target} detail must carry its approved body verbatim (${detail})`);
+  check(block.includes('class="hero-sld-detail-close"'), `hero ${target} detail must carry its close affordance`);
   const rowStart = heroMedia.indexOf(`class="hero-sld-row" data-target="${target}"`);
   const row = rowStart === -1 ? "" : normalizeTextEntities(heroMedia.slice(rowStart, heroMedia.indexOf("</button>", rowStart)));
   check(row.includes(value), `hero ${target} legend row must carry its value verbatim (${value})`);
 }
-check(heroMedia.includes('class="hero-sld-detail-close"'), "the detail must carry its close affordance");
 // the HITS map is keyed by leaf document index: pin the number of tagged
 // elements per target so an inserted/removed leaf cannot silently shift a
 // target's linework onto another component (R1 finding 3)

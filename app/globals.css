@@ -216,10 +216,15 @@ button { font: inherit; }
 [data-active="hai"] .hero-sld-detail[data-target="hai"],
 [data-active="but"] .hero-sld-detail[data-target="but"] { display: block; }
 @media (max-width: 960px) { .hero-artifact-figure { min-height: 340px; } }
-@container figure (max-width: 560px) {
-  .hero-sld-hit { pointer-events: none; }
+/* One boundary, no gap: a fractional container width must match exactly one of
+   these (the 560/561 integer pair left 560.5px matching neither). Below it the
+   hits are invisible AND inert -- visibility also keeps them out of the tab
+   order, so Tab does not cycle seven invisible targets floating over the
+   drawing. The labelled rows are the pointer and keyboard path there. */
+@container figure not (min-width: 560.5px) {
+  .hero-sld-hit { pointer-events: none; visibility: hidden; }
 }
-@container figure (min-width: 561px) {
+@container figure (min-width: 560.5px) {
   .hero-sld-rows { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: no-preference) {
