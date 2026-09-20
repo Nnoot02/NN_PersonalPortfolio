@@ -4,6 +4,9 @@
 // secret: paste the code the dashboard gives you, commit it, and the artefact
 // stays put through every later deploy. An empty string renders nothing.
 //
+// Paste only the value: the content attribute of the meta tag, or the token
+// from the snippet -- not the surrounding tag or script element.
+//
 // Google Search Console: add a URL-prefix property for https://nnoott.com,
 // choose "HTML tag", and paste the value of the tag's content attribute. A
 // Domain property works too, verified by a DNS TXT record on the apex with
@@ -13,8 +16,8 @@
 // Cloudflare Web Analytics: Web Analytics -> add nnoott.com -> Manage site ->
 // "Enable with JS Snippet installation", then copy the token.
 
-export const googleSiteVerification = "";
+export const googleSiteVerification = "mKmhSVVPJKdwygRGAfdzSJCv4oC6wp7OraGwmVzVyzI";
 
-export const bingSiteVerification = "";
+export const bingSiteVerification = "58C24E2AA51BF9FE993B902304B3759C";
 
-export const cloudflareBeaconToken = "";
+export const cloudflareBeaconToken = "db35db87d442467594a4d701a3602aaa";
