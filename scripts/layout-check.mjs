@@ -242,6 +242,47 @@ async function main() {
         const heroRoleSize = await page.locator(".hero-role").evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
         if (heroRoleSize < 24) failures.push(`/ @ ${width}x${height}: .hero-role is ${heroRoleSize}px, below the 24px large-text floor its accent colour needs`);
 
+        // Legend and detail text are functional: DESIGN.md's 12px floor, and
+        // the value colour must clear 4.5:1 on the painted panel (--muted
+        // measured 4.26:1 on --paper-deep, audit U1).
+        const legendText = await page.evaluate(() => {
+          const lum = (rgb) => {
+            const [r, g, b] = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map((v) => {
+              const c = Number(v) / 255;
+              return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+            });
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          };
+          const painted = (node) => {
+            for (let el = node; el; el = el.parentElement) {
+              const bg = getComputedStyle(el).backgroundColor;
+              if (bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") return bg;
+            }
+            return getComputedStyle(document.body).backgroundColor;
+          };
+          const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
+            .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
+            .filter((entry) => entry.size < 12);
+          const ratios = [...document.querySelectorAll(".hero-sld-row-value")].map((node) => {
+            const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
+            return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+          });
+          return { small, count: ratios.length, minRatio: Math.min(...ratios) };
+        });
+        if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
+        if (legendText.count !== 7 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7`);
+
+        // Stacked hero (<=960, audit U2): the drawing takes the figure's full
+        // width at 3:2; it measured 185x123 at 390 when the legend squeezed it.
+        if (width <= 960) {
+          const stacked = await page.evaluate(() => {
+            const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
+            const svg = document.querySelector(".hero-sld svg").getBoundingClientRect();
+            return { figureW: figure.width, svgW: svg.width, svgH: svg.height };
+          });
+          if (stacked.svgW < stacked.figureW - 1 || Math.abs(stacked.svgH * 1.5 - stacked.svgW) > 2) failures.push(`/ @ ${width}x${height}: stacked hero drawing is ${Math.round(stacked.svgW)}x${Math.round(stacked.svgH)} in a ${Math.round(stacked.figureW)}px figure, expected full width at 3:2`);
+        }
+
         // the figure is click-to-reveal now; the case-study link lives on the caption row
         const heroLink = page.locator("a.hero-artifact-caption");
         if ((await heroLink.count()) !== 1) failures.push(`/ @ ${width}x${height}: hero caption link count is not 1`);
