@@ -1070,6 +1070,34 @@ async function main() {
               return Math.max(...lefts) - Math.min(...lefts) <= 1;
             });
           if (!alignedStages) failures.push(`/projects @ ${width}x${height}: process columns are not aligned`);
+          // Audit 2026-09-24, S3: the relation note starts at the stage columns,
+          // not inside the anchor column.
+          const relationStart = await page.locator("[data-project-relation]").evaluate((node) => {
+            const stage = node.closest("li").querySelector(".project-journey-stages").getBoundingClientRect();
+            return { relationLeft: node.getBoundingClientRect().left, stageLeft: stage.left };
+          });
+          if (relationStart.relationLeft < relationStart.stageLeft - 1) {
+            failures.push(`/projects @ ${width}x${height}: relation note starts ${Math.round(relationStart.stageLeft - relationStart.relationLeft)}px inside the anchor column`);
+          }
+        }
+        // Audit 2026-09-24, S3: at desktop widths the anchor column gives each
+        // title at most two lines (three at 961-1024, where the column is
+        // narrower) and each CTA one line. Measured in lines of the element's
+        // own computed line-height.
+        if (portalBoxes.length === 3 && width >= 961) {
+          const anchorLines = await portals.evaluateAll((nodes) => nodes.map((node) => {
+            const lines = (el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight));
+            return {
+              slug: node.getAttribute("data-project-slug"),
+              title: lines(node.querySelector(".project-journey-title")),
+              action: lines(node.querySelector(".project-journey-action")),
+            };
+          }));
+          const maxTitleLines = width >= 1440 ? 2 : 3;
+          for (const metric of anchorLines) {
+            if (metric.title > maxTitleLines) failures.push(`/projects @ ${width}x${height}: ${metric.slug} title runs ${metric.title} lines, expected <=${maxTitleLines}`);
+            if (metric.action > 1) failures.push(`/projects @ ${width}x${height}: ${metric.slug} CTA wraps to ${metric.action} lines`);
+          }
         }
         if (portalBoxes.length === 3 && width >= 961) {
           const heroHeight = await page.locator(".projects-hero").evaluate((node) => node.getBoundingClientRect().height);
@@ -1108,7 +1136,9 @@ async function main() {
         );
         for (const [index, metric] of imageMetrics.entries()) {
           if (metric.naturalWidth !== 1280 || metric.naturalHeight !== 720) failures.push(`/projects @ ${width}x${height}: journey miniature ${index + 1} source is ${metric.naturalWidth}x${metric.naturalHeight}`);
-          const widthBand = width >= 1200 ? [190, 250] : width >= 961 ? [145, 195] : width >= 721 ? [110, 155] : null;
+          // 961-1199 floor re-based for the S3 anchor split (audit 2026-09-24):
+          // 38% column with a 44% thumbnail measures 141px at 961, 146px at 1024.
+          const widthBand = width >= 1200 ? [190, 250] : width >= 961 ? [135, 195] : width >= 721 ? [110, 155] : null;
           if (widthBand && (metric.width < widthBand[0] || metric.width > widthBand[1])) failures.push(`/projects @ ${width}x${height}: journey miniature ${index + 1} renders ${Math.round(metric.width)}px wide`);
           if (width <= 720) {
             const availableWidth = await images.nth(index).evaluate((node) => Math.min(640, node.parentElement?.parentElement?.getBoundingClientRect().width ?? 0));
