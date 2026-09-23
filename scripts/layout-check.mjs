@@ -272,6 +272,15 @@ async function main() {
         if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
         if (legendText.count !== 7 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7`);
 
+        // Hits are pointer-only (audit U4): the rows are the one keyboard path,
+        // so the figure holds exactly 7 sequential stops, not 14.
+        const heroStops = await page.evaluate(() => {
+          const figure = document.querySelector(".hero-artifact-figure");
+          const stops = [...figure.querySelectorAll("button, a[href], [tabindex]")].filter((el) => el.tabIndex >= 0 && getComputedStyle(el).visibility !== "hidden" && !el.closest(".hero-sld-detail"));
+          return { stops: stops.length, hitsHidden: figure.querySelector(".hero-sld-hits")?.getAttribute("aria-hidden") === "true" };
+        });
+        if (heroStops.stops !== 7 || !heroStops.hitsHidden) failures.push(`/ @ ${width}x${height}: hero figure must hold exactly the 7 row tab stops with the hits aria-hidden (${JSON.stringify(heroStops)})`);
+
         // Stacked hero (<=960, audit U2): the drawing takes the figure's full
         // width at 3:2; it measured 185x123 at 390 when the legend squeezed it.
         if (width <= 960) {

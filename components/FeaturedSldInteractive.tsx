@@ -137,12 +137,15 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
           {/* memoized: re-rendering this subtree re-sets the innerHTML node and
               replays the whole plot animation (measured on the built page) */}
           {drawing}
-          <span className="hero-sld-hits">
+          {/* pointer-only (audit U4): the labelled rows are the one keyboard and
+              screen-reader path, so Tab no longer walks the same seven targets twice */}
+          <span className="hero-sld-hits" aria-hidden="true">
             {TARGETS.map((t, i) => (
               <button
                 type="button"
                 key={t.id}
                 className="hero-sld-hit"
+                tabIndex={-1}
                 data-target={t.id}
                 aria-pressed={active === t.id}
                 aria-label={`${t.name}: ${t.value}`}
