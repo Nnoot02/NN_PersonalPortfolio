@@ -19,7 +19,9 @@ const SHOT_DIR = "test-results/layout";
 // not a green sweep, and the summary line says which one ran.
 const FAST = process.env.LAYOUT_FAST === "1";
 
-const ROUTES = FAST ? ["/"] : [
+// LAYOUT_ROUTES (fast mode only) picks the swept routes, comma-separated, so a
+// mutant on a non-home route can be seen red without the full sweep.
+const ROUTES = FAST ? (process.env.LAYOUT_ROUTES?.split(",") ?? ["/"]) : [
   "/",
   "/projects",
   "/about",
@@ -1006,6 +1008,20 @@ async function main() {
         else if (opening.top > height * 2) failures.push(`${route} @ ${width}x${height}: case-study opening sits at ${opening.top}px, beyond one scroll`);
         if (opening.specTop !== null && opening.bottom !== null && opening.specTop < opening.bottom) {
           failures.push(`${route} @ ${width}x${height}: spec table starts at ${opening.specTop}px, inside the opening card (bottom ${opening.bottom}px)`);
+        }
+      }
+
+      // Audit 2026-09-24, S5: the first workbench row starts one small offset
+      // under the hero's rule (24px), not the full .featured padding (115px
+      // at 1440, 80px on phones).
+      if (route === "/workbench") {
+        const heroGap = await page.evaluate(() => {
+          const hero = document.querySelector(".workbench-hero")?.getBoundingClientRect();
+          const list = document.querySelector(".workbench-list")?.getBoundingClientRect();
+          return hero && list ? Math.round(list.top - hero.bottom) : null;
+        });
+        if (heroGap === null || heroGap < 0 || heroGap > 32) {
+          failures.push(`/workbench @ ${width}x${height}: first row starts ${heroGap}px under the hero, expected 0-32px`);
         }
       }
 
@@ -2093,7 +2109,7 @@ async function main() {
     for (const failure of failures) console.error(`- ${failure}`);
     process.exit(1);
   }
-  console.log(`Layout checks passed: ${checks} route/viewport combinations${FAST ? " (LAYOUT_FAST: homepage only, two viewports)" : ""}, screenshots in ${SHOT_DIR}/.`);
+  console.log(`Layout checks passed: ${checks} route/viewport combinations${FAST ? ` (LAYOUT_FAST: ${ROUTES.join(",")}, two viewports)` : ""}, screenshots in ${SHOT_DIR}/.`);
 }
 
 main().catch((error) => {

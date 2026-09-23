@@ -313,6 +313,11 @@ button { font: inherit; }
 .homepage-portal-arrow { color: var(--accent-dark); transition: transform .2s ease; }
 .homepage-portal:hover .homepage-portal-arrow, .homepage-portal:focus-visible .homepage-portal-arrow { transform: translateX(3px); }
 
+/* Audit 2026-09-24, S5: the hero already closes on a rule and its own bottom
+   padding, so the collection starts at the /projects offset, not the full
+   .featured top padding (115px at 1440). Two classes so the <=720px .featured
+   rule cannot restore it. */
+.featured.workbench-collection { padding-top: 1.5rem; }
 .workbench-list { border-top: 1px solid var(--line); }
 .workbench-preview { display: grid; grid-template-columns: minmax(180px, .9fr) minmax(0, 1.1fr); gap: 1.5rem; padding: 1.6rem 0; position: relative; border-bottom: 1px solid var(--line); }
 .workbench-preview:focus-within { outline: 2px solid var(--accent-dark); outline-offset: -2px; }
