@@ -1011,6 +1011,32 @@ async function main() {
         }
       }
 
+      // Audit 2026-09-24, S4: the default footer shows one treatment per
+      // group. Contact actions are bordered boxes; site links are borderless
+      // text on a row below them; every link keeps a 46px target.
+      const footerGroups = await page.evaluate(() => {
+        const contact = document.querySelector('[data-footer-group="contact"]');
+        const site = document.querySelector('[data-footer-group="site"]');
+        if (!contact || !site) return null;
+        const links = (group) => [...group.querySelectorAll("a")].map((a) => {
+          const cs = getComputedStyle(a);
+          return { text: a.textContent.trim(), border: parseFloat(cs.borderTopWidth), height: a.getBoundingClientRect().height };
+        });
+        return { contact: links(contact), site: links(site), contactBottom: contact.getBoundingClientRect().bottom, siteTop: site.getBoundingClientRect().top };
+      });
+      if (await page.locator('[data-footer-variant="default"]').count()) {
+        if (!footerGroups) {
+          failures.push(`${route} @ ${width}x${height}: default footer must render the contact and site groups`);
+        } else {
+          const boxed = footerGroups.contact.filter((link) => link.border < 1).map((link) => link.text);
+          const texty = footerGroups.site.filter((link) => link.border !== 0).map((link) => link.text);
+          const small = [...footerGroups.contact, ...footerGroups.site].filter((link) => link.height < 46).map((link) => link.text);
+          if (boxed.length || texty.length) failures.push(`${route} @ ${width}x${height}: footer mixes treatments (unbordered actions ${JSON.stringify(boxed)}, bordered site links ${JSON.stringify(texty)})`);
+          if (small.length) failures.push(`${route} @ ${width}x${height}: footer targets under 46px ${JSON.stringify(small)}`);
+          if (footerGroups.siteTop < footerGroups.contactBottom - 1) failures.push(`${route} @ ${width}x${height}: footer site links start above the contact actions end`);
+        }
+      }
+
       // Audit 2026-09-24, S5: the first workbench row starts one small offset
       // under the hero's rule (24px), not the full .featured padding (115px
       // at 1440, 80px on phones).

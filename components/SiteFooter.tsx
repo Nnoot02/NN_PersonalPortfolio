@@ -27,18 +27,23 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
         <p className="footer-summary">Nathan No-ot · Electrical engineering student</p>
         <p className="footer-location">Adelaide, South Australia</p>
       </div>
-      <div className="footer-links">
-        {/* First, not last: portfolio-contract pins the Fact sheet utility as
-            the final anchor, so appending here would break it. */}
-        <a href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={22} /> <span>Email</span></a>
-        <Link href="/contact">Contact</Link>
-        {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
-        {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
-        <a href={profile.resumePath} target="_blank" rel="noopener">Résumé<span className="sr-only"> (PDF, opens in a new tab)</span></a>
-        <a href={profile.resumeTextPath}>Plain-text résumé</a>
-        <Link href="/projects">Projects</Link>
-        <Link href="/workbench">Workbench</Link>
-        <Link className="footer-utility" data-footer-utility href="/profile">Fact sheet</Link>
+      {/* Audit 2026-09-24, S4: one treatment per group. Ways to reach Nathan
+          are boxed actions; site links are text. Fact sheet stays the final
+          anchor (portfolio-contract pins it), so append nothing after it. */}
+      <div className="footer-links footer-links--grouped">
+        <div className="footer-actions" data-footer-group="contact" role="group" aria-label="Contact and résumé">
+          <a href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={22} /> <span>Email</span></a>
+          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          <a href={profile.resumePath} target="_blank" rel="noopener">Résumé<span className="sr-only"> (PDF, opens in a new tab)</span></a>
+        </div>
+        <nav className="footer-site" data-footer-group="site" aria-label="Footer">
+          <Link href="/contact">Contact</Link>
+          <Link href="/projects">Projects</Link>
+          <Link href="/workbench">Workbench</Link>
+          <a href={profile.resumeTextPath}>Plain-text résumé</a>
+          <Link data-footer-utility href="/profile">Fact sheet</Link>
+        </nav>
       </div>
     </footer>
   );

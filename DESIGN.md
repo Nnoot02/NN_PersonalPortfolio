@@ -603,9 +603,14 @@ uppercase h3, and a muted 0.88rem description.
 **`site-footer`** — The single ink band closing every page. Background
 `{colors.ink}`, text `{colors.white}`, `min-height: 250px`. Kicker in
 `{colors.footer-warm}` (short, e.g. "Available for graduate roles"); large
-`{typography.footer-title}`; link boxes with 1px `{colors.footer-line}` borders
-(≥ 46px targets) that turn `{colors.footer-warm}` on hover. `flex-wrap` so
-links wrap rather than clip on narrow screens.
+`{typography.footer-title}`. Links come in two groups, one treatment each
+(audit 2026-09-24, S4): the ways to reach Nathan (Email, LinkedIn, GitHub,
+Résumé) are link boxes with 1px `{colors.footer-line}` borders that turn
+`{colors.footer-warm}` on hover; the site links (Contact, Projects, Workbench,
+Plain-text résumé, Fact sheet) sit on the row below as underlined
+`{colors.footer-warm}` text. Every footer link keeps a ≥ 46px target, and
+both groups `flex-wrap` rather than clip on narrow screens. The compact
+variant keeps a single row of boxes.
 
 ## Do's and Don'ts
 

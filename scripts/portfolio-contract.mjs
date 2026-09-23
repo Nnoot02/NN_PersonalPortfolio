@@ -309,6 +309,18 @@ check(profileFacts.includes('href="/nathan-noot-resume.txt"'), "fact sheet must 
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
 check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
+// Audit 2026-09-24, S4: one treatment per group. Ways to reach Nathan sit in
+// the contact group; every site link sits in the text group, none in both.
+const footerContactGroup = footer.match(/<div[^>]*data-footer-group="contact"[^>]*>[\s\S]*?<\/div>/)?.[0] ?? "";
+const footerSiteGroup = footer.match(/<nav[^>]*data-footer-group="site"[^>]*>[\s\S]*?<\/nav>/)?.[0] ?? "";
+for (const marker of ["mailto:", "linkedin.com", "github.com/Nnoot02", 'href="/nathan-noot-resume.pdf"']) {
+  check(footerContactGroup.includes(marker), `footer contact group must carry ${marker}`);
+  check(!footerSiteGroup.includes(marker), `footer site group must not carry ${marker}`);
+}
+for (const destination of ["/contact", "/projects", "/workbench", "/nathan-noot-resume.txt", "/profile"]) {
+  check(footerSiteGroup.includes(`href="${destination}"`), `footer site group must link ${destination}`);
+  check(!footerContactGroup.includes(`href="${destination}"`), `footer contact group must not link ${destination}`);
+}
 
 const aboutStory = about.match(/<section[^>]*class="about-story"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 const aboutTools = about.match(/<section[^>]*id="tools-and-standards"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
