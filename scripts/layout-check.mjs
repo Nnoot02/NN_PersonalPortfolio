@@ -272,6 +272,14 @@ async function main() {
         if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
         if (legendText.count !== 8 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values and the caption`);
 
+        // Legend markers are line swatches, not boxes (audit U5): a hollow
+        // square read as an unticked checkbox.
+        const marker = await page.locator(".hero-sld-row-name").first().evaluate((node) => {
+          const style = getComputedStyle(node, "::before");
+          return { w: parseFloat(style.width), h: parseFloat(style.height), border: style.borderTopStyle };
+        });
+        if (!(marker.w >= 4 * marker.h) || marker.border !== "none") failures.push(`/ @ ${width}x${height}: legend marker must be a line swatch, got ${JSON.stringify(marker)}`);
+
         // Hits are pointer-only (audit U4): the rows are the one keyboard path,
         // so the figure holds exactly 7 sequential stops, not 14.
         const heroStops = await page.evaluate(() => {

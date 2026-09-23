@@ -198,8 +198,11 @@ button { font: inherit; }
 .hero-sld-row { display: flex; align-items: center; min-height: 24px; gap: 0 .5rem; flex-wrap: wrap; min-width: 0; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; text-align: left; font: 600 0.75rem/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
 .hero-sld-row:hover, .hero-sld-row:focus-visible { color: var(--accent-dark); }
 .hero-sld-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hero-sld-row-name::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: .45rem; border: 1px solid var(--accent); background: var(--paper); }
-.hero-sld-row[aria-pressed="true"] .hero-sld-row-name::before { background: var(--accent); }
+/* Line swatch, not a box (audit U5): the hollow square read as an unticked
+   checkbox; a short accent dash reads as a drawing key, like the linework
+   hover paints. */
+.hero-sld-row-name::before { content: ""; display: inline-block; vertical-align: middle; width: 12px; height: 2px; margin-right: .5rem; background: var(--accent); }
+.hero-sld-row[aria-pressed="true"] .hero-sld-row-name::before { height: 4px; }
 .hero-sld-row-value { color: var(--ink); font-weight: 400; }
 .hero-sld-detail { display: none; position: relative; padding: 8px 44px 8px 14px; }
 .hero-sld-detail-close { position: absolute; top: 4px; right: 6px; width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 1px solid transparent; background: none; color: var(--muted); font: 700 11px/1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; cursor: pointer; }
