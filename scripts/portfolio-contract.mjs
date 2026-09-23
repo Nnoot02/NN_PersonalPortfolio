@@ -663,6 +663,10 @@ check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).incl
 for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"]) {
   check(!readExport(`/projects/${slug}.html`).includes("\u2014"), `${slug}: published case-study page must contain no U+2014 character`);
 }
+// Audit 2026-09-23, U8: the hero inlines the one-line diagram, so its SVG text
+// is homepage copy too. Pin the source file and the built homepage.
+check(!readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").includes("\u2014"), "lv-cabling-sld.svg must contain no U+2014 character");
+check(!homeDoc.includes("\u2014"), "published homepage must contain no U+2014 character");
 check(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")).includes("with each conclusion argued against AS/NZS inverter standards and SAPN TS132/TS133"), "grid summary must argue each conclusion against the standards");
 check(globalsCss.includes("scroll-margin-top"), "indexed sections must clear the sticky header on a fragment jump");
 

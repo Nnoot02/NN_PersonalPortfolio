@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="sldTitle sldDesc" style="--plot-n:46;--plot-step:19.57ms;--plot-end:1421ms">
-  <title id="sldTitle">Commercial LV cabling design — one-line diagram</title>
+  <title id="sldTitle">Commercial LV cabling design - one-line diagram</title>
   <desc id="sldDesc">Redrawn one-line diagram of a 400 V three-tenancy commercial complex: a 500 kVA transformer feeds the main switchboard through 25 mm squared X-90 copper consumer mains, and the switchboard supplies a communal finals group and the supermarket, hairdresser and butcher distribution boards. The consumer mains carry a design current of 123.6 A at 0.74 per cent voltage drop against the 1 per cent limit, and the 125 A Type C main switch is rated for the 8.0 kA prospective fault current.</desc>
 
   <!-- Vector redraw of the published figure. Palette is inlined from :root in
@@ -29,7 +29,7 @@
       <line x1="219" y1="247" x2="253" y2="233" data-hit="mains" pathLength="1" style="--plot-i:5" />
       <line x1="219" y1="259" x2="253" y2="245" data-hit="mains" pathLength="1" style="--plot-i:6" />
     </g>
-    <text x="264" y="233" font-size="19" fill="#6d6962">Consumer mains — 15 m buried, separate conduits, trefoil</text>
+    <text x="264" y="233" font-size="19" fill="#6d6962">Consumer mains - 15 m buried, separate conduits, trefoil</text>
     <text x="264" y="262" font-size="21" fill="#9f3510" font-family="Consolas,'Courier New',monospace">25 mm² X-90 Cu (A, N) + 6 mm² E</text>
     <text x="264" y="289" font-size="21" fill="#9f3510" font-family="Consolas,'Courier New',monospace">Ib 123.6 A</text>
     <text x="440" y="289" font-size="21" fill="#9f3510" font-family="Consolas,'Courier New',monospace" data-hit="vd">ΔV 0.74 %</text>
@@ -109,7 +109,7 @@
 
     <!-- Title block -->
     <rect x="51" y="703" width="496" height="72" fill="none" stroke="#242321" stroke-width="3" pathLength="1" style="--plot-i:45" />
-    <text x="67" y="727" font-size="17" font-weight="700" letter-spacing="0.3">LV CABLING DESIGN — THREE-TENANCY COMPLEX</text>
+    <text x="67" y="727" font-size="17" font-weight="700" letter-spacing="0.3">LV CABLING DESIGN - THREE-TENANCY COMPLEX</text>
     <line x1="51" y1="738" x2="547" y2="738" stroke="#242321" stroke-width="2" pathLength="1" style="--plot-i:46" />
     <text x="299" y="756" font-size="16" fill="#6d6962" text-anchor="middle">One-line diagram · AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025</text>
     <text x="299" y="771" font-size="16" fill="#6d6962" text-anchor="middle">Figure D.1 · redrawn schematic · not to scale</text>
