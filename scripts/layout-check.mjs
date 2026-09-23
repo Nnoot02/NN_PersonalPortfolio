@@ -134,6 +134,14 @@ async function main() {
         failures.push(`${route} @ ${width}x${height}: HTTP ${response ? response.status() : "no response"}`);
         continue;
       }
+      // Label in name (WCAG 2.5.3, audit U6): the wordmark's accessible name
+      // must start with the wordmark text on screen at this viewport.
+      const wordmarkName = (await page.locator(".site-header .wordmark").ariaSnapshot()).match(/link "([^"]*)"/)?.[1] ?? "";
+      const wordmarkVisible = await page.locator(".site-header .wordmark").evaluate((node) =>
+        [...node.children].filter((el) => !el.classList.contains("sr-only") && getComputedStyle(el).display !== "none").map((el) => el.textContent).join("").trim());
+      if (!wordmarkVisible || !wordmarkName.toLowerCase().startsWith(wordmarkVisible.toLowerCase())) {
+        failures.push(`${route} @ ${width}x${height}: wordmark name "${wordmarkName}" must start with its visible text "${wordmarkVisible}"`);
+      }
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );

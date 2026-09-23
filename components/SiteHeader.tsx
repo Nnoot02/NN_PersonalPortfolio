@@ -63,7 +63,7 @@ export function SiteHeader() {
   return (
     <header className="site-header" ref={headerRef}>
       <a className="skip-link" href="#main-content">Skip to main content</a>
-      <Link className="wordmark" href="/" aria-label="Nathan portfolio home">
+      <Link className="wordmark" href="/">
         {isHome ? (
           <span className="wordmark-home">NN<span className="wordmark-period">.</span></span>
         ) : (
@@ -72,6 +72,7 @@ export function SiteHeader() {
             <span className="wordmark-mobile">NN<span className="wordmark-period">.</span></span>
           </>
         )}
+        <span className="sr-only">, portfolio home</span>
       </Link>
       <button
         ref={menuButtonRef}
