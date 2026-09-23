@@ -142,6 +142,15 @@ async function main() {
       if (!wordmarkVisible || !wordmarkName.toLowerCase().startsWith(wordmarkVisible.toLowerCase())) {
         failures.push(`${route} @ ${width}x${height}: wordmark name "${wordmarkName}" must start with its visible text "${wordmarkVisible}"`);
       }
+      // Case-study jump links: 24px targets that never overlap (audit U9).
+      const jumpTargets = await page.locator(".case-opening-links .text-link").evaluateAll((nodes) => {
+        const rects = nodes.map((node) => node.getBoundingClientRect());
+        const overlaps = rects.some((a, i) => rects.some((b, j) => i < j && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom));
+        return { count: rects.length, minHeight: Math.min(...rects.map((r) => r.height)), overlaps };
+      });
+      if (jumpTargets.count && (jumpTargets.minHeight < 24 || jumpTargets.overlaps)) {
+        failures.push(`${route} @ ${width}x${height}: jump links must be >=24px targets with no overlap ${JSON.stringify(jumpTargets)}`);
+      }
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );

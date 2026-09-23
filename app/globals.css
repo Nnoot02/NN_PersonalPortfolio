@@ -546,6 +546,9 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-opening dd { color: var(--ink); font-size: .88rem; line-height: 1.55; margin: 0; }
 .case-opening-links { align-items: baseline; display: flex; flex-wrap: wrap; gap: .45rem 1.25rem; margin: 0; }
 .case-opening-links .eyebrow { flex-basis: 100%; }
+/* 24px targets without moving anything (audit U9): the padding grows the hit
+   area, the equal negative margin keeps the 19px box and the 26px row pitch. */
+.case-opening-links .text-link { padding-block: .2rem; margin-block: -.2rem; }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 clamp(2rem, 3.2vw, 3.2rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 .profile-summary p, .profile-grid li, .disclosure-panel p, .disclosure-panel li, .case-sections p { color: var(--muted); line-height: 1.7; }
