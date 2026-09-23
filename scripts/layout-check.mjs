@@ -306,6 +306,17 @@ async function main() {
         });
         if (!(marker.w >= 4 * marker.h) || marker.border !== "none") failures.push(`/ @ ${width}x${height}: legend marker must be a line swatch, got ${JSON.stringify(marker)}`);
 
+        // A value that wraps hangs under its name, not under the swatch.
+        const hanging = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-row")].map((row) => {
+          const name = row.querySelector(".hero-sld-row-name");
+          const value = row.querySelector(".hero-sld-row-value").getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(name);
+          const text = range.getClientRects()[0];
+          return { target: row.dataset.target, wrapped: value.top > text.top + 2, drift: Math.round(value.left - text.left) };
+        }).filter((row) => row.wrapped && Math.abs(row.drift) > 1));
+        if (hanging.length) failures.push(`/ @ ${width}x${height}: wrapped legend values must hang under the name ${JSON.stringify(hanging)}`);
+
         // Hits are pointer-only (audit U4): the rows are the one keyboard path,
         // so the figure holds exactly 7 sequential stops, not 14.
         const heroStops = await page.evaluate(() => {
