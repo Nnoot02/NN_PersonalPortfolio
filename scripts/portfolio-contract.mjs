@@ -968,6 +968,7 @@ for (const link of [...iconLinks, ...(homeDocument.match(/<link[^>]*rel="apple-t
 // LV diagram link set the pattern; this pins it across every exported page.
 const exportedPages = [
   "/index.html", "/about.html", "/contact.html", "/projects.html", "/resume.html", "/profile.html", "/workbench.html",
+  "/internalos.html", "/privacy.html",
   ...caseStudySlugs.map((slug) => `/projects/${slug}.html`),
   ...detailSlugs.map((slug) => `/workbench/${slug}.html`),
 ];
@@ -995,6 +996,34 @@ for (const path of [...caseStudySlugs.map((slug) => `/projects/${slug}.html`), .
 }
 check(/<meta name="theme-color" content="#f3f0e9"/.test(homeDocument), "home must declare theme-color as --paper");
 check(/<meta name="color-scheme" content="light"/.test(homeDocument), "home must declare a light colour scheme");
+
+// OAuth branding pages (2026-09-23). The Google Cloud project behind this site
+// asks for a homepage URL and a privacy policy URL before the OAuth client that
+// Command Centre's calendar sync and the job-alert digest share can leave
+// Testing. Both pages are public but unlinked from navigation, so this block is
+// the only guard against a silent edit costing the disclosures Google's OAuth
+// policy requires: what is read, how it is used and stored, that it is not
+// shared, how access is revoked, and the Limited Use statement.
+const internalos = renderedMain(readExport("/internalos.html"));
+const privacyPage = renderedMain(readExport("/privacy.html"));
+check(internalos.includes('href="/privacy"'), "app page must link the privacy policy");
+for (const scope of ["calendar.readonly", "gmail.readonly"]) {
+  check(internalos.includes(scope), `app page must name the ${scope} scope it reads under`);
+}
+check(internalos.includes("One user, not published"), "app page must state that it has a single user and is not distributed");
+check(privacyPage.includes('href="https://myaccount.google.com/permissions"'), "privacy policy must link the Google Account permissions page where access is revoked");
+check(privacyPage.includes('href="mailto:nathannoott@gmail.com"'), "privacy policy must carry a contact address");
+for (const disclosure of [
+  "Google API Services User Data Policy",
+  "Limited Use",
+  "calendar.readonly",
+  "gmail.readonly",
+  "not sold, rented, or shared with any third party",
+  "not used to train or improve machine-learning models",
+  "stored as local files on the owner",
+]) {
+  check(privacyPage.includes(disclosure), `privacy policy must keep the disclosure: ${disclosure}`);
+}
 
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));

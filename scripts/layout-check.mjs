@@ -35,6 +35,11 @@ const ROUTES = FAST ? ["/"] : [
   // word-break defect went unmeasured there; added 2026-09-04.
   "/projects/solar-manufacturing-dfma",
   "/workbench/bench-fume-extractor",
+  // OAuth branding pages (2026-09-23): the Google Cloud project's Branding page
+  // asks for a homepage URL and a privacy policy URL before the OAuth client can
+  // be published. They are published routes like any other, so they are swept.
+  "/internalos",
+  "/privacy",
 ];
 
 const VIEWPORTS = FAST ? [[390, 844], [1440, 900]] : [

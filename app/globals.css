@@ -516,8 +516,11 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* .hero-summary is intentionally absent: it takes text-wrap: balance above. */
 /* Prose carries long standards tokens (AS/NZS 3008.1.1:2025) that have no
    break opportunity; break-word lets them wrap at large text sizes and never
-   touches a token that fits. */
-.prose, .contact-intro, .about-story-intro > p, .about-story-grid p, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p { overflow-wrap: break-word; text-wrap: pretty; }
+   touches a token that fits. The disclosure pages joined the list on
+   2026-09-23: their contact address is a 21-character token with no break
+   opportunity, and at 200% text on a 320px viewport it overflowed the document
+   by 110px. */
+.prose, .contact-intro, .about-story-intro > p, .about-story-grid p, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
 .back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; }
