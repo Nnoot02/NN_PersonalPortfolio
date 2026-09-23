@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -49,6 +50,17 @@ export default function AboutPage() {
         <p className="eyebrow">About</p>
         <h1>Solar systems, from grid to factory.</h1>
         <p>I became a chef to help people, then chose engineering to pursue net zero and Australia's energy dominance through solar.</p>
+        {/* Audit 2026-09-24, A3 (Nathan's call, photo cleared for release).
+            The export is unoptimized, so the <source> carries the srcset. */}
+        <figure className="about-hero-photo" data-about-photo>
+          <span className="about-hero-photo-frame">
+            <picture>
+              <source srcSet="/images/about/tindo-team-560.webp 560w, /images/about/tindo-team-936.webp 936w" sizes="(max-width: 720px) calc(100vw - 2.5rem), (max-width: 960px) 640px, 40vw" />
+              <Image src="/images/about/tindo-team-936.webp" alt="Nine members of the Tindo Solar team standing together on the factory floor" width={936} height={703} priority />
+            </picture>
+          </span>
+          <figcaption>Me (far right) with some of the team at Tindo Solar.</figcaption>
+        </figure>
       </section>
       <section className="about-story">
         <div className="about-story-intro">

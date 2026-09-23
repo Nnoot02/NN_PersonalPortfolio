@@ -329,6 +329,20 @@ const previousAboutIntroduction = "I am an electrical engineering student in Ade
 check(aboutIntroduction.split(/\s+/).length === 20, "about introduction must contain exactly 20 words");
 check(about.includes(aboutIntroduction), "about must use the exact approved 20-word introduction");
 check(!about.includes(previousAboutIntroduction), "about must not retain the previous introduction");
+// Audit 2026-09-24, A3 (Nathan's call; photo cleared for release): the hero
+// carries the Tindo team photo, captioned with where Nathan stands, inside the
+// hero section, with both widths in the srcset and each file kept small.
+const aboutHero = about.match(/<section[^>]*class="page-hero page-hero--about"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+const aboutPhoto = aboutHero.match(/<figure[^>]*data-about-photo[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
+check(aboutPhoto !== "", "about hero must carry the team photo figure");
+const aboutPhotoImg = aboutPhoto.match(/<img\b[^>]*>/)?.[0] ?? "";
+check(['src="/images/about/tindo-team-936.webp"', 'width="936"', 'height="703"'].every((attribute) => aboutPhotoImg.includes(attribute)), "about photo must be the 936x703 team photo");
+check(/\balt="[^"]{20,}"/.test(aboutPhotoImg), "about photo must carry a descriptive alt");
+check(aboutPhoto.includes("/images/about/tindo-team-560.webp 560w") && aboutPhoto.includes("/images/about/tindo-team-936.webp 936w"), "about photo srcset must offer 560w and 936w");
+check(aboutPhoto.includes("<figcaption>Me (far right) with some of the team at Tindo Solar.</figcaption>"), "about photo caption must say where Nathan stands");
+for (const [asset, limit] of [["/images/about/tindo-team-936.webp", 90_000], ["/images/about/tindo-team-560.webp", 45_000]]) {
+  check(publicFileSize(asset) <= limit, `${asset} must stay under ${limit} bytes`);
+}
 // Audit 2026-09-24, A2/A4/A5 (Nathan's call: dated timeline). Restated from
 // the three-column B layout pins: one ordered timeline, dates from the
 // plain-text résumé, one heading form (role, organisation), and the Approach

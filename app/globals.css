@@ -387,7 +387,10 @@ button { font: inherit; }
 .footer-links .footer-site a:hover { color: var(--white); }
 
 .page-hero { padding: clamp(4rem, 7vw, 6.5rem) 6vw clamp(2.5rem, 4vw, 3.5rem); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
-.page-hero--about { align-items: center; display: flex; min-height: 0; padding-top: clamp(2.75rem, 4vw, 3.5rem); row-gap: .8rem; }
+/* Audit 2026-09-24, A3 + A6: left-aligned like every other hero (it was the
+   only centred one), with the team photo in a second column above 960px. The
+   copy stays as direct children so the shared .page-hero rules still apply. */
+.page-hero--about { align-content: center; align-items: start; column-gap: clamp(2.5rem, 4vw, 4rem); display: grid; grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: clamp(2.75rem, 4vw, 3.5rem); row-gap: .8rem; }
 /* One break policy for display headings (overflow audit 2026-09-17). A word
    that fits is never broken: hyphens and word-break stay off everywhere, and
    at default text size this rule changes nothing (measured identical across
@@ -403,9 +406,22 @@ button { font: inherit; }
    no matter how the text wraps. */
 h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow-wrap: break-word; }
 .page-hero h1, .case-study h1 { font: 600 clamp(4.6rem, 9vw, 9rem)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; max-width: 100%; hyphens: none; text-wrap: balance; word-break: normal; }
-.page-hero--about > .eyebrow { align-self: flex-start; width: 100%; }
-.page-hero--about h1 { font-size: clamp(4rem, 6.5vw, 6.5rem); margin-bottom: 0; max-width: 1160px; text-align: center; text-wrap: balance; width: 100%; }
-.page-hero--about > p:last-of-type { margin: 0 0 .4rem; text-align: center; width: 100%; }
+.page-hero--about h1 { font-size: clamp(4rem, 6.5vw, 6.5rem); margin-bottom: 0; text-wrap: balance; }
+.page-hero--about > p:last-of-type { margin: 0 0 .4rem; }
+.about-hero-photo { margin: .8rem 0 0; max-width: 640px; min-width: 0; }
+.about-hero-photo-frame { aspect-ratio: 936 / 703; background: var(--paper-deep); display: block; overflow: hidden; }
+.about-hero-photo img { display: block; filter: sepia(.08); height: 100%; object-fit: cover; width: 100%; }
+.about-hero-photo figcaption { color: var(--muted); font-size: .82rem; line-height: 1.5; margin-top: .6rem; }
+@media (min-width: 961px) {
+  /* The photo is taller than the copy: the 1fr rows above and below take the
+     slack so the eyebrow, headline and lede stay together, centred beside it. */
+  .page-hero--about { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); grid-template-rows: 1fr auto auto auto 1fr; }
+  .page-hero--about > .eyebrow { grid-column: 1; grid-row: 2; }
+  .page-hero--about > h1 { grid-column: 1; grid-row: 3; }
+  .page-hero--about > p:last-of-type { grid-column: 1; grid-row: 4; }
+  .page-hero--about h1 { font-size: clamp(4rem, 5.4vw, 5.75rem); }
+  .about-hero-photo { align-self: center; grid-column: 2; grid-row: 1 / -1; justify-self: end; margin: 0; max-width: 640px; width: 100%; }
+}
 .page-hero > p:last-of-type { max-width: 670px; color: var(--muted); line-height: 1.7; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .projects-hero { min-height: 0; padding-top: clamp(1.75rem, 2.5vw, 2.25rem); padding-bottom: clamp(1.5rem, 2vw, 1.75rem); }
@@ -742,7 +758,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .site-footer { align-items: flex-start; flex-direction: column; padding: 4rem 1.25rem; }
   .page-hero { padding: 4rem 1.25rem 2.5rem; }
   .page-hero--about { align-items: flex-start; min-height: 0; padding-top: 3rem; row-gap: 1.5rem; }
-  .page-hero--about > .eyebrow { align-self: auto; margin-bottom: -.65rem; width: auto; }
+  .page-hero--about > .eyebrow { margin-bottom: -.65rem; }
   .page-hero h1, .case-study h1 { font-size: clamp(4rem, 21vw, 6rem); }
   /* Case-study and Workbench titles are real project names, not chosen copy,
      so they carry the longest single words on the site. Sized so the longest
@@ -751,8 +767,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
      clears it. Measured in the browser, not estimated: a canvas measureText
      estimate was 13% low and produced a size that still overflowed. */
   .case-study h1 { font-size: clamp(3rem, 15vw, 6rem); }
-  .page-hero--about h1, .contact-hero--compact h1 { font-size: clamp(3.8rem, 18vw, 5.4rem); text-align: left; }
-  .page-hero--about > p:last-of-type { text-align: left; }
+  .page-hero--about h1, .contact-hero--compact h1 { font-size: clamp(3.8rem, 18vw, 5.4rem); }
   .workbench-hero h1 { font-size: clamp(3.25rem, 17vw, 6rem); }
   .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.25rem; }
   .about-story { padding: 3rem 1.25rem; }

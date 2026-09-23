@@ -791,6 +791,34 @@ async function main() {
           failures.push(`/about @ ${width}x${height}: ledger capabilities overlap or sit side by side at a stacked width`);
         }
         if (!(await ledger.getByText("KiCad", { exact: false }).first().isVisible())) failures.push(`/about @ ${width}x${height}: tool names are not visible without interaction`);
+        // Audit 2026-09-24, A3 + A6: the hero copy is left-aligned on one edge
+        // like every other hero; the photo sits beside it above 960px and
+        // below the lede when stacked. With a w-descriptor srcset naturalWidth is
+        // density-corrected, so currentSrc is what proves the loaded file.
+        const hero = await page.evaluate(() => {
+          const section = document.querySelector(".page-hero--about");
+          const box = (el) => { const r = el?.getBoundingClientRect(); return r ? { left: Math.round(r.left), right: Math.round(r.right), top: Math.round(r.top), bottom: Math.round(r.bottom) } : null; };
+          const copy = [".eyebrow", "h1", ":scope > p"].map((selector) => section?.querySelector(selector));
+          const img = /** @type {HTMLImageElement | null} */ (section?.querySelector("[data-about-photo] img") ?? null);
+          return {
+            lefts: copy.map((el) => box(el)?.left ?? null),
+            aligns: copy.map((el) => (el ? getComputedStyle(el).textAlign : null)),
+            h1: box(copy[1]),
+            lede: box(copy[2]),
+            photo: box(img),
+            loaded: img && img.complete && img.naturalWidth > 0 ? (img.currentSrc.match(/tindo-team-(?:560|936)\.webp$/)?.[0] ?? `wrong file ${img.currentSrc}`) : null,
+          };
+        });
+        if (hero.lefts.includes(null) || Math.max(...hero.lefts) - Math.min(...hero.lefts) > 1 || hero.aligns.some((align) => align === "center")) {
+          failures.push(`/about @ ${width}x${height}: hero copy is not left-aligned on one edge ${JSON.stringify({ lefts: hero.lefts, aligns: hero.aligns })}`);
+        }
+        if (!hero.photo || !hero.loaded?.startsWith("tindo-team-")) {
+          failures.push(`/about @ ${width}x${height}: hero photo missing or not loaded (${hero.loaded})`);
+        } else if (width >= 961 && (hero.photo.left < hero.h1.right || hero.photo.top > hero.lede.bottom)) {
+          failures.push(`/about @ ${width}x${height}: hero photo does not sit beside the copy ${JSON.stringify(hero.photo)}`);
+        } else if (width <= 960 && hero.photo.top < hero.lede.bottom) {
+          failures.push(`/about @ ${width}x${height}: stacked hero photo starts above the end of the lede`);
+        }
         // Audit 2026-09-24, A2: each timeline step puts date and role beside
         // its text above 720px and above it when stacked.
         const steps = await page.locator("[data-about-timeline] > li").evaluateAll((items) => items.map((item) => {
