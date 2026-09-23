@@ -314,16 +314,32 @@ const aboutStory = about.match(/<section[^>]*class="about-story"[^>]*>[\s\S]*?<\
 const aboutTools = about.match(/<section[^>]*id="tools-and-standards"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
 const aboutIntroduction = "I became a chef to help people, then chose engineering to pursue net zero and Australia's energy dominance through solar.";
 const previousAboutIntroduction = "I am an electrical engineering student in Adelaide focused on solar power systems and grid integration. My work is grounded in standards-based design and Australian solar manufacturing experience.";
-const manufacturingEvidence = "At Tindo Solar I moved from the production line into an electrical engineering internship. The floor work gave me direct exposure to solar-panel manufacturing, 5S, Kaizen, quality checks, and fault-finding culture, and shadowing the engineers showed me how RCA and 8D problem-solving connect engineering decisions with process reliability and operator reality. As an intern I assist with BOM documentation, component selection, and circuit design under engineering direction, and I write the standard operating procedures, work instructions, and quality records that keep production consistent.";
-const benchEvidence = "small systems where limitations stay visible and useful. When I was a chef and was appointed as kitchen supervisor, I learnt how to coordinate teams, train staff, manage stock, and make calm decisions under pressure.";
 check(aboutIntroduction.split(/\s+/).length === 20, "about introduction must contain exactly 20 words");
 check(about.includes(aboutIntroduction), "about must use the exact approved 20-word introduction");
 check(!about.includes(previousAboutIntroduction), "about must not retain the previous introduction");
-check(aboutStory.includes('class="about-story-intro"') && aboutStory.includes('class="about-story-grid"'), "about must use the approved compact B story layout");
-check(aboutStory.includes("Approach") && aboutStory.includes("Study") && aboutStory.includes("Manufacturing made it practical.") && aboutStory.includes("Bench and teams"), "about B layout must expose its three evidence themes");
-check(!aboutStory.includes("<ul") && !aboutStory.includes("<li"), "about evidence themes must render paragraphs instead of lists");
-check(aboutStory.includes(manufacturingEvidence), "about manufacturing evidence must use approved paragraph copy");
-check(aboutStory.includes("Outside work and study, I keep building at the") && aboutStory.includes(benchEvidence), "about bench evidence must use approved paragraph copy");
+// Audit 2026-09-24, A2/A4/A5 (Nathan's call: dated timeline). Restated from
+// the three-column B layout pins: one ordered timeline, dates from the
+// plain-text résumé, one heading form (role, organisation), and the Approach
+// paragraph no longer repeats its heading.
+const aboutTimeline = aboutStory.match(/<ol[^>]*data-about-timeline[^>]*>[\s\S]*?<\/ol>/)?.[0] ?? "";
+check(aboutStory.includes('class="about-story-intro"') && aboutTimeline !== "" && !aboutStory.includes("about-story-grid"), "about story must render the intro and the dated timeline, not the three-column grid");
+const timelineSteps = [
+  ["Aug 2022 to Aug 2025", "Kitchen supervisor, Plus 82 Pocha"],
+  ["Nov 2025 to Aug 2026", "Production worker, Tindo Solar"],
+  ["Aug 2026 to now", "Electrical engineering intern, Tindo Solar"],
+  ["Now, final year", "Associate Degree in Electronics Engineering, TAFE SA"],
+  ["Expected 2028", "Bachelor of Electrical and Electronic Engineering, Adelaide University"],
+];
+check((aboutTimeline.match(/<li\b/g) ?? []).length === timelineSteps.length, `about timeline must have ${timelineSteps.length} steps`);
+let timelineCursor = -1;
+for (const [when, role] of timelineSteps) {
+  const at = aboutTimeline.indexOf(`>${when}</p><h3>${role}</h3>`);
+  check(at > timelineCursor, `about timeline must show "${when}" / "${role}" in order`);
+  timelineCursor = at;
+}
+check(aboutStory.includes("<p>Define the requirement, expose the assumptions, build the smallest useful test, then explain what the result means.</p>"), "about Approach must state the method once");
+check(!aboutStory.includes("I start with constraints") && !aboutStory.includes("degree-adjacent"), "about Approach must not repeat its heading or keep internal shorthand");
+check(aboutStory.includes("Outside work and study, I keep building at the") && aboutStory.includes("small systems where limitations stay visible and useful."), "about must keep the bench line");
 check(!aboutStory.includes("Work evidence"), "about story must omit the redundant Work evidence kicker");
 check(!about.includes("Technical direction"), "about must not retain the duplicated Technical direction section");
 check(about.includes('class="about-tools"'), "about must retain Tools and standards as the technical inventory");

@@ -470,14 +470,12 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .about-story-intro { align-items: start; display: grid; gap: clamp(2.5rem, 4vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
 .about-story-intro h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); text-transform: uppercase; margin: 0; }
 .about-story-intro > p { color: var(--muted); font-size: 1.05rem; line-height: 1.65; margin: 0; max-width: 62ch; }
-.about-story-grid { border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(2rem, 3vw, 3rem); }
-.about-story-grid article { min-width: 0; padding: clamp(1.5rem, 2.5vw, 2.25rem); }
-.about-story-grid article:first-child { padding-left: 0; }
-.about-story-grid article:last-child { padding-right: 0; }
-.about-story-grid article + article { border-left: 1px solid var(--line); }
-.about-story-grid h3 { font: 600 clamp(1.5rem, 2.2vw, 2.1rem)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
-.about-story-grid p { color: var(--muted); line-height: 1.7; margin: 0; }
-.about-story-grid p + p { margin-top: 1rem; }
+.about-timeline { border-top: 1px solid var(--line); list-style: none; margin: clamp(2rem, 3vw, 3rem) 0 0; padding: 0; }
+.about-timeline li { align-items: start; border-bottom: 1px solid var(--line); display: grid; gap: .6rem clamp(2.5rem, 4vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: clamp(1.25rem, 2vw, 1.75rem) 0; }
+.about-timeline-when { font: 600 .75rem/1.2 var(--display); letter-spacing: .13em; margin: 0 0 .5rem; text-transform: uppercase; }
+.about-timeline h3 { font: 600 clamp(1.3rem, 1.9vw, 1.75rem)/1.1 var(--display); margin: 0; text-transform: uppercase; }
+.about-timeline li > p, .about-bench { color: var(--muted); line-height: 1.7; margin: 0; max-width: 62ch; }
+.about-bench { margin-top: 1.5rem; }
 .about-tools { padding: clamp(2.75rem, 4vw, 3.5rem) 6vw; }
 .tools-heading-row { align-items: flex-end; display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; }
 .tools-heading-row h2 { font: 600 clamp(2.4rem, 4vw, 4rem)/.95 var(--display); margin: 0; text-transform: uppercase; }
@@ -509,7 +507,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    2026-09-23: their contact address is a 21-character token with no break
    opportunity, and at 200% text on a 320px viewport it overflowed the document
    by 110px. */
-.prose, .contact-intro, .about-story-intro > p, .about-story-grid p, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
+.prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
 .back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; }
@@ -741,10 +739,8 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .workbench-hero h1 { font-size: clamp(3.25rem, 17vw, 6rem); }
   .content-grid { grid-template-columns: 1fr; gap: 1.5rem; padding: 5rem 1.25rem; }
   .about-story { padding: 3rem 1.25rem; }
-  .about-story-intro, .about-story-grid { grid-template-columns: minmax(0, 1fr); }
+  .about-story-intro, .about-timeline li { grid-template-columns: minmax(0, 1fr); }
   .about-story-intro { gap: 1.5rem; }
-  .about-story-grid article { padding: 1.5rem 0; }
-  .about-story-grid article + article { border-left: 0; border-top: 1px solid var(--line); }
   .about-tools { padding: 3rem 1.25rem; }
   .tools-heading-row { align-items: flex-start; display: grid; }
   .tools-proof-ledger { grid-template-columns: minmax(0, 1fr); }

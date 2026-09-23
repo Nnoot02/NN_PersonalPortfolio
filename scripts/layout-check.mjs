@@ -789,6 +789,16 @@ async function main() {
           failures.push(`/about @ ${width}x${height}: ledger capabilities overlap or sit side by side at a stacked width`);
         }
         if (!(await ledger.getByText("KiCad", { exact: false }).first().isVisible())) failures.push(`/about @ ${width}x${height}: tool names are not visible without interaction`);
+        // Audit 2026-09-24, A2: each timeline step puts date and role beside
+        // its text above 720px and above it when stacked.
+        const steps = await page.locator("[data-about-timeline] > li").evaluateAll((items) => items.map((item) => {
+          const head = item.querySelector(":scope > div")?.getBoundingClientRect();
+          const body = item.querySelector(":scope > p")?.getBoundingClientRect();
+          return head && body ? { headRight: Math.round(head.right), headBottom: Math.round(head.bottom), bodyLeft: Math.round(body.left), bodyTop: Math.round(body.top), headTop: Math.round(head.top) } : null;
+        }));
+        if (steps.length !== 5 || steps.includes(null)) failures.push(`/about @ ${width}x${height}: timeline has ${steps.length} well-formed steps, expected 5`);
+        else if (width > 720 && steps.some((step) => step.bodyLeft < step.headRight || step.bodyTop !== step.headTop)) failures.push(`/about @ ${width}x${height}: timeline text does not sit beside its date and role (${JSON.stringify(steps[0])})`);
+        else if (width <= 720 && steps.some((step) => step.bodyTop < step.headBottom)) failures.push(`/about @ ${width}x${height}: stacked timeline text overlaps its date and role`);
         if (width === 390 || width === 1440) {
           await page.evaluate(() => {
             for (const selector of [".site-header", ".skip-link"]) {
