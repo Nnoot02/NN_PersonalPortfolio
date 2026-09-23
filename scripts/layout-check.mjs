@@ -773,26 +773,22 @@ async function main() {
         }
       }
       if (route === "/about") {
-        const desktopNetwork = page.locator("[data-tools-desktop-network]");
-        const mobileProof = page.locator("[data-tools-mobile-proof]");
-        const lvNode = page.locator('[data-node-id="lv"]');
-        if (width > 720) {
-          if (!(await desktopNetwork.isVisible())) failures.push(`/about @ ${width}x${height}: desktop network is hidden`);
-          if (await mobileProof.isVisible()) failures.push(`/about @ ${width}x${height}: mobile proof ledger remains visible on desktop`);
-          if ((await lvNode.getAttribute("aria-pressed")) !== "true") failures.push(`/about @ ${width}x${height}: strongest project is not selected by default`);
-          if (width === 1440) {
-            const gridNode = page.locator('[data-node-id="grid"]');
-            await gridNode.click();
-            const selectedDetail = await page.locator("[data-tools-detail-rail] h3").textContent();
-            if (selectedDetail !== "1 MW grid connection") failures.push(`/about desktop interaction: detail rail did not update after project selection`);
-            await lvNode.click();
-          }
-        } else {
-          if (await desktopNetwork.isVisible()) failures.push(`/about @ ${width}x${height}: desktop network remains visible on mobile`);
-          if (!(await mobileProof.isVisible())) failures.push(`/about @ ${width}x${height}: mobile proof ledger is hidden`);
-          const capabilityCount = await mobileProof.locator(".tools-proof-capability").count();
-          if (capabilityCount !== 4) failures.push(`/about @ ${width}x${height}: mobile proof ledger has ${capabilityCount} capabilities, expected 4`);
+        // Audit 2026-09-24, A1: one ledger at every width, every tool name
+        // visible without interaction; two columns above 720px, one below.
+        const ledger = page.locator("[data-tools-ledger]");
+        if (!(await ledger.isVisible())) failures.push(`/about @ ${width}x${height}: proof ledger is hidden`);
+        const capabilityBoxes = await ledger.locator(".tools-proof-capability").evaluateAll((nodes) => nodes.map((node) => {
+          const box = node.getBoundingClientRect();
+          return { top: Math.round(box.top), bottom: Math.round(box.bottom), left: Math.round(box.left), right: Math.round(box.right) };
+        }));
+        if (capabilityBoxes.length !== 4) failures.push(`/about @ ${width}x${height}: proof ledger has ${capabilityBoxes.length} capabilities, expected 4`);
+        else if (width > 720) {
+          const [first, second] = capabilityBoxes;
+          if (first.top !== second.top || second.left <= first.right) failures.push(`/about @ ${width}x${height}: ledger is not two columns (${JSON.stringify(capabilityBoxes.slice(0, 2))})`);
+        } else if (capabilityBoxes.some((box, index) => index > 0 && box.top < capabilityBoxes[index - 1].bottom)) {
+          failures.push(`/about @ ${width}x${height}: ledger capabilities overlap or sit side by side at a stacked width`);
         }
+        if (!(await ledger.getByText("KiCad", { exact: false }).first().isVisible())) failures.push(`/about @ ${width}x${height}: tool names are not visible without interaction`);
         if (width === 390 || width === 1440) {
           await page.evaluate(() => {
             for (const selector of [".site-header", ".skip-link"]) {

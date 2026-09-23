@@ -318,14 +318,14 @@ check(!about.includes("Technical direction"), "about must not retain the duplica
 check(about.includes('class="about-tools"'), "about must retain Tools and standards as the technical inventory");
 check(about.includes('id="tools-and-standards-heading">Tools and standards</h2>'), "about tools inventory must use Tools and standards as its headline");
 check(!about.includes("What I have actually used.") && !about.includes("Nothing is listed here"), "about tools inventory must omit implicit supporting copy");
-check(aboutTools.includes("data-tools-desktop-network"), "about must render the desktop project-centred network");
-check(aboutTools.includes("data-tools-mobile-proof"), "about must render the mobile proof-led ledger");
-check(aboutTools.includes("data-tools-detail-rail"), "about desktop network must include its bottom detail rail");
+// Audit 2026-09-24, A1 (Nathan's call): one proof-led ledger at every width.
+// The desktop network hid every tool name until a node was clicked, and its
+// node/edge data had drifted from the ledger. Restated from the network pins.
+check(aboutTools.includes("data-tools-ledger"), "about must render the proof-led ledger");
+check(!aboutTools.includes("data-tools-desktop-network") && !aboutTools.includes("data-tools-detail-rail") && !aboutTools.includes("data-node-id="), "about must not bring back the click-to-reveal network");
 check(!aboutTools.includes("data-capability-list"), "about must not retain the ungrounded flat capability list");
-const defaultProjectNode = aboutTools.match(/<button[^>]*data-node-id="lv"[^>]*>/)?.[0] ?? "";
-check(defaultProjectNode.includes('aria-pressed="true"'), "about desktop network must select Commercial LV cabling by default");
 for (const evidenceState of ["verified", "associated", "pending"]) {
-  check(aboutTools.includes(`data-state="${evidenceState}"`), `about desktop network must expose ${evidenceState} evidence links`);
+  check(aboutTools.includes(`data-state="${evidenceState}"`), `about ledger must expose ${evidenceState} evidence`);
 }
 for (const projectSlug of [
   "lv-cabling-design-commercial-complex",
@@ -338,13 +338,13 @@ for (const projectSlug of [
 // pending DFMA study is unlinked from About until its copy clears employer
 // review. The node keeps its evidence state; it loses its case-study link.
 check(!aboutTools.includes("/projects/solar-manufacturing-dfma"), "about must not link the pending DFMA study while its copy is under review");
-// The desktop rail link is computed on selection, so it never appears in the
-// static HTML: pin the source too, or re-adding the slug would stay green.
+// The ledger renders every link statically, so the HTML pin above covers it;
+// the source pin stays as a second guard. (The desktop network's computed rail
+// link and its source pin went with the network, audit 2026-09-24 A1.)
 const toolsNetworkSource = readFileSync(new URL("../components/ToolsStandardsNetwork.tsx", import.meta.url), "utf8");
-check(!toolsNetworkSource.includes('label: "Solar manufacturing", slug:'), "solar network node must not regain its DFMA case-study slug");
-check(!toolsNetworkSource.includes('project: "Solar Manufacturing & DFMA"'), "mobile ledger must not regain its DFMA case-study link");
-for (const mobileCapability of ["Power design", "Grid connection", "Embedded systems", "Manufacturing and quality"]) {
-  check(aboutTools.includes(`>${mobileCapability}</h3>`), `about mobile proof ledger must expose ${mobileCapability}`);
+check(!toolsNetworkSource.includes('project: "Solar Manufacturing & DFMA"'), "about ledger must not regain its DFMA case-study link");
+for (const capability of ["Power design", "Grid connection", "Embedded systems", "Manufacturing and quality"]) {
+  check(aboutTools.includes(`>${capability}</h3>`), `about proof ledger must expose ${capability}`);
 }
 for (const toolEvidence of [
   "AS/NZS 3000",
@@ -377,9 +377,9 @@ for (const toolEvidence of [
 ]) {
   check(aboutTools.includes(toolEvidence), `about Tools and standards must retain: ${toolEvidence}`);
 }
-check(globalsCss.includes(".tools-proof-mobile { display: none; }"), "desktop must hide the mobile proof ledger");
-check(globalsCss.includes(".tools-network-desktop, .tools-network-desktop-only { display: none; }"), "mobile must hide the desktop network");
-check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile must show the proof-led ledger");
+// Restated 2026-09-24 (A1): no width hides the ledger; two columns above 720px.
+check(!globalsCss.includes(".tools-proof-mobile") && !globalsCss.includes(".tools-network-"), "no width may hide the proof ledger or keep network styles");
+check(globalsCss.includes(".tools-proof-ledger { column-gap: clamp(2rem, 4vw, 4rem); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));"), "the proof ledger must set two columns above the mobile breakpoint");
 // Site screening audit 2026-09-13, finding 6 (dispositioned 2026-09-16): the
 // labelled divs are named role=group groups so their aria-label is honoured,
 // and the workbench attribution block is not a landmark (an aside inside main
@@ -387,7 +387,6 @@ check(globalsCss.includes(".tools-proof-mobile { display: block; }"), "mobile mu
 for (const [block, pattern, groupName] of [
   [projectsIndex, /<div[^>]*class="project-journey-guide"[^>]*>/, "project journey guide"],
   [aboutTools, /<div[^>]*class="tools-evidence-legend"[^>]*>/, "tools evidence legend"],
-  [aboutTools, /<div[^>]*class="tools-network-map"[^>]*>/, "tools network map"],
 ]) {
   const tag = block.match(pattern)?.[0] ?? "";
   check(tag !== "" && tag.includes('role="group"'), `${groupName} must carry role=group so its aria-label is honoured`);
