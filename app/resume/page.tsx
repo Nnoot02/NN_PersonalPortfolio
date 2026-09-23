@@ -10,6 +10,17 @@ export const metadata: Metadata = {
     "Electrical engineering student résumé focused on solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience.",
 };
 
+// Audit 2026-09-24, S1 (Nathan's call, option a): /profile is the fact sheet,
+// so this page is the download plus what the PDF covers. The positioning
+// paragraph and strengths list it used to repeat live on /profile only.
+const pdfContents = [
+  "Summary and target roles",
+  "Skills: standards and documentation, CAD, instrumentation, programming, manufacturing and quality",
+  "Experience: Tindo Solar and Plus 82 Pocha",
+  "Project evidence",
+  "Education: TAFE SA and Adelaide University",
+];
+
 export default function ResumePage() {
   return (
     <>
@@ -23,11 +34,13 @@ export default function ResumePage() {
           Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
         </a>
       </section>
-      <section className="profile-summary" aria-labelledby="resume-summary-heading">
+      <section className="profile-summary" aria-labelledby="resume-contents-heading">
         <div>
-          <p className="eyebrow">Positioning</p>
-          <h2 id="resume-summary-heading">Electrical engineering student.</h2>
-          <p>{profile.summary}</p>
+          <p className="eyebrow">Contents</p>
+          <h2 id="resume-contents-heading">What the PDF covers</h2>
+          <ul className="resume-contents">
+            {pdfContents.map((item) => <li key={item}>{item}</li>)}
+          </ul>
         </div>
         <dl className="profile-facts">
           <div>
@@ -47,24 +60,6 @@ export default function ResumePage() {
             <dd><a className="text-link" href={profile.resumeTextPath}>Plain-text résumé</a></dd>
           </div>
         </dl>
-      </section>
-      <section className="profile-grid">
-        <div>
-          <p className="eyebrow">Core skills</p>
-          <h2>Solar-first capability</h2>
-          <ul>
-            {profile.strengths.map((strength) => <li key={strength}>{strength}</li>)}
-          </ul>
-        </div>
-        <div>
-          <p className="eyebrow">Resume base</p>
-          <h2>Built from verified evidence</h2>
-          <p>
-            This public version leads with verified power-system design and
-            solar manufacturing experience. Broader embedded, UAV, and hands-on
-            electronics work sits behind it as supporting context.
-          </p>
-        </div>
       </section>
     </main>
     <SiteFooter />

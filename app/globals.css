@@ -549,6 +549,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .profile-facts div { padding: 1.4rem 1rem 1.4rem 0; border-bottom: 1px solid var(--line); }
 .profile-facts dt { font: 600 .75rem/1.2 var(--display); text-transform: uppercase; letter-spacing: .13em; margin-bottom: .5rem; }
 .profile-facts dd { margin: 0; color: var(--muted); line-height: 1.45; overflow-wrap: anywhere; }
+.resume-contents { color: var(--muted); line-height: 1.7; margin: 0; padding-left: 1.1rem; }
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-grid--about { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: clamp(4rem, 6vw, 5.5rem) 6vw; }
 .profile-grid ul, .disclosure-panel ul { margin: 1.5rem 0 0; padding-left: 1.2rem; }

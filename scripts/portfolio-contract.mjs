@@ -181,6 +181,17 @@ check(!profile.includes("Recruiter &amp; AI Brief"), "profile must not retain th
 check(!resume.includes("Download resume"), "resume page must use the accented résumé spelling on its download button");
 check(!profile.includes("Download resume"), "profile page must use the accented résumé spelling on its download button");
 check(resume.includes("Plain-text résumé"), "resume page must use the accented résumé spelling on the plain-text link");
+// Audit 2026-09-24, S1 (Nathan's call, option a): /profile is the fact sheet;
+// /resume is the download plus what the PDF covers, without repeating the
+// positioning paragraph or the strengths list.
+{
+  const resumeMain = normalizeTextEntities(renderedMain(resume));
+  check(resumeMain.includes("What the PDF covers"), "resume page must say what the PDF covers");
+  check(!resumeMain.includes("Solar manufacturing experience in a Kaizen and 5S production culture"), "resume page must not repeat the fact sheet's strengths list");
+  check(!resumeMain.includes("with verified standards-based power design and Australian solar manufacturing experience."), "resume page must not repeat the fact sheet's positioning paragraph");
+  check(!resumeMain.includes("Built from verified evidence"), "resume page must not bring back the resume-base block");
+  check(normalizeTextEntities(renderedMain(profile)).includes("Solar manufacturing experience in a Kaizen and 5S production culture"), "the fact sheet must keep the strengths list");
+}
 
 // C1: the plain-text résumé must match the site's positioning (decision
 // 2026-09-02; summary sentence approved 2026-09-03).
