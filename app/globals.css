@@ -259,7 +259,7 @@ button { font: inherit; }
   border-top: 1px solid var(--line);
   padding: .6rem .9rem; font: 600 .75rem/1.35 var(--display);
   letter-spacing: .12em; text-transform: uppercase; min-height: 44px; }
-.hero-artifact-caption-text { color: var(--muted); }
+.hero-artifact-caption-text { color: var(--ink); }
 .hero-artifact-action { color: var(--accent-dark); text-decoration: underline; text-underline-offset: .25em; }
 .hero-artifact:hover .hero-artifact-action, .hero-artifact:focus-visible .hero-artifact-action { color: var(--accent); }
 .project-row:hover .project-image img, .project-row:focus-within .project-image img { transform: scale(1.025); }

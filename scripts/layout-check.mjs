@@ -263,14 +263,14 @@ async function main() {
           const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
             .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
             .filter((entry) => entry.size < 12);
-          const ratios = [...document.querySelectorAll(".hero-sld-row-value")].map((node) => {
+          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text")].map((node) => {
             const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
             return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
           });
           return { small, count: ratios.length, minRatio: Math.min(...ratios) };
         });
         if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
-        if (legendText.count !== 7 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7`);
+        if (legendText.count !== 8 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values and the caption`);
 
         // Hits are pointer-only (audit U4): the rows are the one keyboard path,
         // so the figure holds exactly 7 sequential stops, not 14.
