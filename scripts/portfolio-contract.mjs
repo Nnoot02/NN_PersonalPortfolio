@@ -785,6 +785,15 @@ for (const asset of projectIndexAssets) {
   check(projectsIndex.includes(asset), `projects atlas must render ${asset}`);
   check(publicFileSize(asset) <= 160 * 1024, `${asset} must not exceed 160 KB`);
 }
+// The LV mini is a render of lv-cabling-sld.svg (1:1 at left 40 / top 27 on a
+// 1280x720 #e8e3d9 canvas, headless Chrome). It went stale once already: the
+// SVG lost its em dashes and accent rule while the mini kept them. Any SVG
+// edit must re-render the mini and update both hashes together.
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+const lvSvgHash = sha256(readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").replace(/\r\n/g, "\n"));
+const lvMiniHash = sha256(readFileSync(new URL("../public/images/project-index/lv-cabling-artifact.webp", import.meta.url)));
+check(lvSvgHash === "9f846dcde86319e87af77a421eb6e9b0a3a653c316c8d27a586753821561d002", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
+check(lvMiniHash === "95274afec42f5e0615fd04b5d434759348b9986c730103ce3f00ae945e671665", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
 check(!projectsIndex.includes(".superpowers") && !projectsIndex.includes("generated_images"), "projects page must not reference disposable generated assets");
 check(!existsSync(new URL("../public/images/project-index/esp32-drone-process.webp", import.meta.url)), "obsolete ESP32 project-index miniature must be removed");
 check(!existsSync(new URL("../public/images/esp32-drone.webp", import.meta.url)), "obsolete ESP32 project image must be removed");
