@@ -104,6 +104,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
         <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
         {project.imageIsDiagram ? (
           <p className="case-image-note">
+            {project.imageNote ? <span className="case-image-provenance">{project.imageNote} </span> : null}
             <a className="text-link" href={project.image} target="_blank" rel="noopener">
               Open the full-size diagram<span className="sr-only"> (opens in a new tab)</span>
             </a>

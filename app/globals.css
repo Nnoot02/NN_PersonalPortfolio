@@ -532,6 +532,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-lede { max-width: 760px; color: var(--muted); font-size: 1.15rem; line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
 .case-image-note { margin: .9rem 0 0; font-size: .82rem; }
+.case-image-provenance { color: var(--muted); display: block; line-height: 1.55; }
 .case-image-note .text-link, .profile-facts .text-link, .case-contact .text-link { align-items: center; display: inline-flex; max-width: 100%; min-height: 44px; overflow-wrap: anywhere; }
 /* Closes every case study with one direct contact vector, so a reviewer who
    read to the end does not have to navigate to /contact to ask about it. */

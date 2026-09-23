@@ -662,6 +662,10 @@ const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commerc
 const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";
 check(fullSizeDiagramLink.length > 0, "LV case study must link the full-size one-line diagram");
 check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.includes("noopener"), "full-size diagram link must open in a new tab with noopener");
+// Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
+// names the authoring tool and says the page carries a redraw.
+const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");
+check(lvImageNote.includes("I drew the original diagram in Autodesk Inventor; this is a vector redraw of it for the web."), "LV diagram note must name Autodesk Inventor as the authoring tool");
 
 // Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
 // be a named region so the stop announces what it is (WCAG 4.1.2).

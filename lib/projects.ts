@@ -25,6 +25,8 @@ export type Project = {
   spec?: SpecRow[];
   // Diagram artifacts are unreadable at mobile widths; offer the full-size file.
   imageIsDiagram?: boolean;
+  /** Provenance line shown under a diagram, before the full-size link. */
+  imageNote?: string;
 };
 
 export const projects: Project[] = [
@@ -37,6 +39,8 @@ export const projects: Project[] = [
     image: "/images/lv-cabling-sld.svg",
     imageAlt: "One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards",
     imageIsDiagram: true,
+    // Nathan, 2026-09-24: the original SLD was drawn in Autodesk Inventor.
+    imageNote: "I drew the original diagram in Autodesk Inventor; this is a vector redraw of it for the web.",
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
     status: "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown",
