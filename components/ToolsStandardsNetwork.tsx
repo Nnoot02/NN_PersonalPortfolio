@@ -27,7 +27,7 @@ const capabilities: Capability[] = [
     standards: "AS/NZS 3000 · AS/NZS 3008.1.1 · AS 1100 technical drawing",
     evidence: [
       { state: "verified" as const, label: "Verified public evidence", project: "Commercial LV Cabling Design", slug: "lv-cabling-design-commercial-complex" },
-      { state: "associated" as const, label: "Associated", note: "SLD public; CAD authoring tool unnamed." },
+      { state: "associated" as const, label: "Associated", note: "The single-line diagram is open to read in the LV cabling case study." },
     ],
   },
   {
@@ -42,14 +42,14 @@ const capabilities: Capability[] = [
     title: "Embedded systems",
     description: "Python, MATLAB, C, ROS 2, ESP and AVR microcontrollers, and MAVLink telemetry. Multimeter, oscilloscope, function generator, LTspice, and Logisim support bench work and simulation.",
     evidence: [
-      { state: "pending" as const, label: "Public evidence pending", project: "GPS-Denied Autonomous UAV", slug: "gps-denied-autonomous-uav", note: "Systems design active; integrated results pending." },
+      { state: "pending" as const, label: "Public evidence pending", project: "GPS-Denied Autonomous UAV", slug: "gps-denied-autonomous-uav", note: "Systems design is under way; staged test results come next." },
     ],
   },
   {
     title: "Manufacturing and quality",
     description: "5S, Kaizen, root cause analysis, 8D problem-solving, inspection, soldering, and production fault-finding.",
     evidence: [
-      { state: "pending" as const, label: "Public evidence pending", note: "Solar Manufacturing & DFMA: current experience; sanitised engineering evidence incomplete." },
+      { state: "pending" as const, label: "Public evidence pending", note: "Current work at Tindo Solar. A sanitised DFMA write-up is still in review." },
     ],
   },
 ];

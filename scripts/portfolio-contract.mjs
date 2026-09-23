@@ -377,6 +377,19 @@ for (const projectSlug of [
 // pending DFMA study is unlinked from About until its copy clears employer
 // review. The node keeps its evidence state; it loses its case-study link.
 check(!aboutTools.includes("/projects/solar-manufacturing-dfma"), "about must not link the pending DFMA study while its copy is under review");
+// Audit 2026-09-24, A8: evidence notes are written from the reader's side
+// (what they can open, what comes next), not as notes to the author.
+const aboutToolsText = normalizeTextEntities(aboutTools);
+for (const note of [
+  "The single-line diagram is open to read in the LV cabling case study.",
+  "Systems design is under way; staged test results come next.",
+  "Current work at Tindo Solar. A sanitised DFMA write-up is still in review.",
+]) {
+  check(aboutToolsText.includes(note), `about ledger must carry the evidence note: ${note}`);
+}
+for (const retired of ["authoring tool unnamed", "integrated results pending", "sanitised engineering evidence incomplete"]) {
+  check(!aboutToolsText.includes(retired), `about ledger must not carry the retired audit-language note: ${retired}`);
+}
 // The ledger renders every link statically, so the HTML pin above covers it;
 // the source pin stays as a second guard. (The desktop network's computed rail
 // link and its source pin went with the network, audit 2026-09-24 A1.)
