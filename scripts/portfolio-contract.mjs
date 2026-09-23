@@ -253,10 +253,10 @@ const uavPortal = portalAnchors.find((match) => match[1] === "uav")?.[0] ?? "";
 const workbenchPortal = portalAnchors.find((match) => match[1] === "workbench")?.[0] ?? "";
 check(uavPortal.includes('href="/projects/gps-denied-autonomous-uav"'), "UAV portal must target its project detail route");
 check(uavPortal.includes("In progress") && uavPortal.includes("GPS-Denied UAV") && uavPortal.includes("Indoor autonomy and staged verification."), "UAV portal must use approved visible copy");
-check(uavPortal.includes("/images/gps-denied-uav.webp"), "UAV portal must use authentic project photo");
+check(uavPortal.includes("/images/thumbs/gps-denied-uav-236.webp"), "UAV portal must use the 236px crop of the authentic project photo");
 check(workbenchPortal.includes('href="/workbench"'), "Workbench portal must target Workbench collection");
 check(workbenchPortal.includes("After hours") && workbenchPortal.includes("Builds, failures, and next iterations."), "Workbench portal must use approved visible copy");
-check(workbenchPortal.includes("/images/workbench/bench-fume-extractor/bench-fume-extractor.webp"), "Workbench portal must use approved authentic fume-extractor photo");
+check(workbenchPortal.includes("/images/thumbs/bench-fume-extractor-236.webp"), "Workbench portal must use the 236px crop of the approved fume-extractor photo");
 for (const [kind, portal] of [["uav", uavPortal], ["workbench", workbenchPortal]]) {
   check((portal.match(/<a\b/g) ?? []).length === 1, `${kind} portal must contain one anchor and no nested link`);
 }

@@ -224,6 +224,15 @@ async function main() {
             failures.push(`/ @ ${width}x${height}: portal ${index + 1} image is ${Math.round(box.width)}x${Math.round(box.height)}, expected ${expectedImageSize}px square`);
           }
         }
+        // Portal photos ship at 2x their box, not full size (audit U7: the
+        // originals were 1536/1200px wide for a 118px square).
+        await page.locator(".homepage-epilogue").scrollIntoViewIfNeeded();
+        await page.waitForFunction(() => [...document.querySelectorAll(".homepage-portal-image img")].every((img) => img.complete && img.naturalWidth > 0), null, { timeout: 5000 }).catch(() => {});
+        const portalNatural = await page.locator(".homepage-portal-image img").evaluateAll((nodes) => nodes.map((img) => img.naturalWidth));
+        await page.evaluate(() => window.scrollTo(0, 0));
+        for (const [index, natural] of portalNatural.entries()) {
+          if (!natural || natural > 2 * 118 + 1) failures.push(`/ @ ${width}x${height}: portal ${index + 1} photo is ${natural}px wide, expected at most 2x the 118px box`);
+        }
 
         if (width >= 760) {
           const epilogueHeight = await epilogue.evaluate((node) => node.getBoundingClientRect().height);

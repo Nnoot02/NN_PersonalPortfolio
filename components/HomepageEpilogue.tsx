@@ -4,6 +4,12 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import type { Project } from "@/lib/projects";
 import type { WorkbenchEntry } from "@/lib/workbench";
 
+// 236px centre crops (2x the 118px box) of the same photos: the full-size
+// originals cost ~178 KiB on mobile for a 118px square (audit U7). The
+// export is unoptimized, so next/image serves src as-is.
+const UAV_THUMB = "/images/thumbs/gps-denied-uav-236.webp";
+const WORKBENCH_THUMB = "/images/thumbs/bench-fume-extractor-236.webp";
+
 export function HomepageEpilogue({
   uavProject,
   workbenchEntry,
@@ -22,7 +28,7 @@ export function HomepageEpilogue({
 
       <Link className="homepage-portal" data-homepage-portal="uav" href={`/projects/${uavProject.slug}`}>
         <span className="homepage-portal-image">
-          <Image src={uavProject.image} alt={uavProject.imageAlt} fill sizes="(max-width: 760px) 92px, 118px" />
+          <Image src={UAV_THUMB} alt={uavProject.imageAlt} fill sizes="(max-width: 760px) 92px, 118px" />
         </span>
         <div className="homepage-portal-copy">
           <span className="homepage-portal-status">In progress</span>
@@ -34,7 +40,7 @@ export function HomepageEpilogue({
 
       <Link className="homepage-portal" data-homepage-portal="workbench" href="/workbench">
         <span className="homepage-portal-image">
-          <Image src={workbenchEntry.image} alt={workbenchEntry.imageAlt} fill sizes="(max-width: 760px) 92px, 118px" />
+          <Image src={WORKBENCH_THUMB} alt={workbenchEntry.imageAlt} fill sizes="(max-width: 760px) 92px, 118px" />
         </span>
         <div className="homepage-portal-copy">
           <span className="homepage-portal-status">After hours</span>
