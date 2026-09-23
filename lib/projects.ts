@@ -10,6 +10,8 @@ export type Project = {
   title: string;
   summary: string;
   image: string;
+  /** Optional srcset for list rows, whose box never exceeds ~574px (audit U7 follow-up). */
+  imageSrcSet?: string;
   imageAlt: string;
   scope: string;
   role: string;
@@ -62,6 +64,7 @@ export const projects: Project[] = [
     summary:
       "Technical assessment for connecting a 1 MW solar plant to the SA Power Networks distribution grid: connection voltage, power-quality compliance, protection, and storage, with each conclusion argued against AS/NZS inverter standards and SAPN TS132/TS133.",
     image: "/images/solar-grid-connection.webp",
+    imageSrcSet: "/images/thumbs/solar-grid-connection-800.webp 800w, /images/solar-grid-connection.webp 1536w",
     imageAlt: "Single-line concept of a 1 MW solar plant connecting to a distribution grid at the point of common coupling",
     imageIsDiagram: true,
     scope: "Power systems, grid connection, compliance",

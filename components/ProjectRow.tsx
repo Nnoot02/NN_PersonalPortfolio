@@ -36,7 +36,18 @@ export function ProjectRow({
         </span>
       </div>
       <div className="project-image">
-        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />
+        {/* The export is unoptimized, so next/image emits no srcset. Where a
+            project has one, a <source> lets the browser pick the smaller file;
+            sizes follows the measured box (viewport - 40px up to 720, then
+            about a third of it). */}
+        {project.imageSrcSet ? (
+          <picture>
+            <source srcSet={project.imageSrcSet} sizes="(max-width: 720px) calc(100vw - 40px), (max-width: 960px) 34vw, 30vw" />
+            <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />
+          </picture>
+        ) : (
+          <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />
+        )}
       </div>
     </article>
   );

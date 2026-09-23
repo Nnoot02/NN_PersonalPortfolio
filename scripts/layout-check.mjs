@@ -238,6 +238,13 @@ async function main() {
         await page.locator(".homepage-epilogue").scrollIntoViewIfNeeded();
         await page.waitForFunction(() => [...document.querySelectorAll(".homepage-portal-image img")].every((img) => img.complete && img.naturalWidth > 0), null, { timeout: 5000 }).catch(() => {});
         const portalNatural = await page.locator(".homepage-portal-image img").evaluateAll((nodes) => nodes.map((img) => img.naturalWidth));
+        // The solar row's box never exceeds ~574px, so at 1x it must take the
+        // 800w srcset candidate, not the 1536px original.
+        const solarRow = page.locator('[data-project-slug="solar-grid-connection-assessment"] .project-image img');
+        await solarRow.scrollIntoViewIfNeeded();
+        await solarRow.evaluate((img) => (img.complete && img.naturalWidth ? null : new Promise((ok) => { img.addEventListener("load", ok, { once: true }); setTimeout(ok, 5000); })));
+        const solarSrc = await solarRow.evaluate((img) => img.currentSrc);
+        if (!solarSrc.endsWith("/images/thumbs/solar-grid-connection-800.webp")) failures.push(`/ @ ${width}x${height}: solar row image at 1x must be the 800w candidate, got ${solarSrc}`);
         await page.evaluate(() => window.scrollTo(0, 0));
         for (const [index, natural] of portalNatural.entries()) {
           if (!natural || natural > 2 * 118 + 1) failures.push(`/ @ ${width}x${height}: portal ${index + 1} photo is ${natural}px wide, expected at most 2x the 118px box`);
