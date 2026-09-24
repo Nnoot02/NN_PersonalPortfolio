@@ -340,6 +340,13 @@ check(['src="/images/about/tindo-team-936.webp"', 'width="936"', 'height="703"']
 check(/\balt="[^"]{20,}"/.test(aboutPhotoImg), "about photo must carry a descriptive alt");
 check(aboutPhoto.includes("/images/about/tindo-team-560.webp 560w") && aboutPhoto.includes("/images/about/tindo-team-936.webp 936w"), "about photo srcset must offer 560w and 936w");
 check(aboutPhoto.includes("<figcaption>Me (far right) with some of the team at Tindo Solar.</figcaption>"), "about photo caption must say where Nathan stands");
+// Nathan's "me" marker (2026-09-24): a decorative overlay, so aria-hidden, with
+// the loop, its second pen pass, the hand-lettered label, arrow and arrowhead.
+const aboutMarker = aboutPhoto.match(/<svg[^>]*data-about-marker[^>]*>[\s\S]*?<\/svg>/)?.[0] ?? "";
+check(aboutMarker.includes('aria-hidden="true"') && aboutMarker.includes('viewBox="0 0 936 703"'), "about marker must be an aria-hidden overlay in the photo's 936x703 space");
+for (const part of ["loop", "loop-second-pass", "label", "arrow", "arrowhead"]) {
+  check(aboutMarker.includes(`data-marker-part="${part}"`), `about marker must draw its ${part}`);
+}
 for (const [asset, limit] of [["/images/about/tindo-team-936.webp", 90_000], ["/images/about/tindo-team-560.webp", 45_000]]) {
   check(publicFileSize(asset) <= limit, `${asset} must stay under ${limit} bytes`);
 }

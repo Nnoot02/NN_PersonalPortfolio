@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { AboutPhotoMarker } from "@/components/AboutPhotoMarker";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ToolsStandardsNetwork } from "@/components/ToolsStandardsNetwork";
@@ -58,6 +59,7 @@ export default function AboutPage() {
               <source srcSet="/images/about/tindo-team-560.webp 560w, /images/about/tindo-team-936.webp 936w" sizes="(max-width: 720px) calc(100vw - 2.5rem), (max-width: 960px) 640px, 40vw" />
               <Image src="/images/about/tindo-team-936.webp" alt="Nine members of the Tindo Solar team standing together on the factory floor" width={936} height={703} priority />
             </picture>
+            <AboutPhotoMarker />
           </span>
           <figcaption>Me (far right) with some of the team at Tindo Solar.</figcaption>
         </figure>

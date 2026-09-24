@@ -409,7 +409,21 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .page-hero--about h1 { font-size: clamp(4rem, 6.5vw, 6.5rem); margin-bottom: 0; text-wrap: balance; }
 .page-hero--about > p:last-of-type { margin: 0 0 .4rem; }
 .about-hero-photo { margin: .8rem 0 0; max-width: 640px; min-width: 0; }
-.about-hero-photo-frame { aspect-ratio: 936 / 703; background: var(--paper-deep); display: block; overflow: hidden; }
+.about-hero-photo-frame { aspect-ratio: 936 / 703; background: var(--paper-deep); display: block; overflow: hidden; position: relative; }
+/* The "me" marker (Nathan's pick, 2026-09-24). Drawn by default, so no-JS and
+   reduced-motion readers get the finished mark; the draw-in is added only when
+   motion is welcome. pathLength=1 on every path makes a dash of 1 the whole
+   stroke. The white halo keeps the pen legible over hi-vis and ceiling lights. */
+.about-photo-marker { height: 100%; inset: 0; pointer-events: none; position: absolute; width: 100%; }
+.about-photo-marker path { fill: none; stroke-dasharray: 1; stroke-dashoffset: 0; stroke-linecap: round; stroke-linejoin: round; }
+.about-photo-marker-pen { stroke: var(--accent); stroke-width: 4.2; }
+.about-photo-marker-halo { opacity: .55; stroke: #fff; stroke-width: 9; }
+.about-photo-marker .is-second-pass .about-photo-marker-pen { opacity: .75; stroke-width: 2.4; }
+.about-photo-marker .is-second-pass .about-photo-marker-halo { opacity: .35; stroke-width: 6; }
+@media (prefers-reduced-motion: no-preference) {
+  .about-photo-marker path { animation-fill-mode: both; animation-name: about-marker-draw; animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
+}
+@keyframes about-marker-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .about-hero-photo img { display: block; filter: sepia(.08); height: 100%; object-fit: cover; width: 100%; }
 .about-hero-photo figcaption { color: var(--muted); font-size: .82rem; line-height: 1.5; margin-top: .6rem; }
 @media (min-width: 961px) {

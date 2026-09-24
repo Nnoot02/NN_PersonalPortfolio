@@ -819,6 +819,35 @@ async function main() {
         } else if (width <= 960 && hero.photo.top < hero.lede.bottom) {
           failures.push(`/about @ ${width}x${height}: stacked hero photo starts above the end of the lede`);
         }
+        // Nathan's "me" marker (2026-09-24): the overlay covers the photo
+        // exactly, the loop sits on Nathan (far right, head height), every pen
+        // stroke has a draw-in animation, and each one ends fully drawn.
+        const marker = await page.evaluate(() => {
+          const svg = document.querySelector("[data-about-marker]");
+          const img = document.querySelector("[data-about-photo] img");
+          const loop = svg?.querySelector('[data-marker-part="loop"]');
+          if (!svg || !img || !loop) return null;
+          const s = svg.getBoundingClientRect(), i = img.getBoundingClientRect(), l = loop.getBoundingClientRect();
+          const pens = [...svg.querySelectorAll(".about-photo-marker-pen")];
+          const animated = pens.filter((pen) => pen.getAnimations().some((a) => a.animationName === "about-marker-draw")).length;
+          for (const pen of svg.querySelectorAll("path")) for (const a of pen.getAnimations()) a.finish();
+          const undrawn = pens.filter((pen) => parseFloat(getComputedStyle(pen).strokeDashoffset) !== 0).length;
+          return {
+            offset: Math.max(Math.abs(s.left - i.left), Math.abs(s.top - i.top), Math.abs(s.width - i.width), Math.abs(s.height - i.height)),
+            loopX: (l.left + l.width / 2 - i.left) / i.width,
+            loopY: (l.top + l.height / 2 - i.top) / i.height,
+            pens: pens.length,
+            animated,
+            undrawn,
+          };
+        });
+        if (!marker) failures.push(`/about @ ${width}x${height}: "me" marker is missing`);
+        else {
+          if (marker.offset > 1) failures.push(`/about @ ${width}x${height}: "me" marker is off the photo by ${marker.offset.toFixed(1)}px`);
+          if (marker.loopX < 0.82 || marker.loopX > 0.93 || marker.loopY < 0.3 || marker.loopY > 0.45) failures.push(`/about @ ${width}x${height}: "me" loop is not on Nathan (${marker.loopX.toFixed(2)}, ${marker.loopY.toFixed(2)} of the photo)`);
+          if (marker.pens !== 5 || marker.animated !== 5) failures.push(`/about @ ${width}x${height}: "me" marker has ${marker.animated}/${marker.pens} animated pen strokes, expected 5/5`);
+          if (marker.undrawn) failures.push(`/about @ ${width}x${height}: ${marker.undrawn} "me" strokes do not end fully drawn`);
+        }
         // Audit 2026-09-24, A2: each timeline step puts date and role beside
         // its text above 720px and above it when stacked.
         const steps = await page.locator("[data-about-timeline] > li").evaluateAll((items) => items.map((item) => {
@@ -1595,6 +1624,21 @@ async function main() {
       }
     }
     await projectTabletPage.close();
+  }
+
+  // Reduced motion: the "me" marker is drawn at once, with no animation.
+  if (ROUTES.includes("/about")) {
+    const reducedAboutPage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+    await reducedAboutPage.goto(`${base}/about`, { waitUntil: "networkidle" });
+    checks += 1;
+    const reducedMarker = await reducedAboutPage.evaluate(() => [...document.querySelectorAll("[data-about-marker] .about-photo-marker-pen")].map((pen) => ({
+      animations: pen.getAnimations().length,
+      offset: parseFloat(getComputedStyle(pen).strokeDashoffset),
+    })));
+    if (reducedMarker.length !== 5 || reducedMarker.some((pen) => pen.animations !== 0 || pen.offset !== 0)) {
+      failures.push(`/about @ 390x844 reduced motion: "me" marker must be drawn with no animation ${JSON.stringify(reducedMarker)}`);
+    }
+    await reducedAboutPage.close();
   }
 
   const accessibilityPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
