@@ -108,6 +108,30 @@ function resolveFile(urlPath) {
   return candidates.find((candidate) => existsSync(candidate) && extname(candidate) !== "");
 }
 
+// Fragment navigation can still be smooth-scrolling after load/networkidle.
+// Poll the original geometry bounds instead of sampling an arbitrary frame.
+// Locator geometry also works with page JavaScript disabled. A wrong landing
+// still fails after the deadline; the allowed gap is never widened.
+async function waitForFragmentGap(page, min, max, includeStrip = false) {
+  const deadline = Date.now() + 5000;
+  let gap = null;
+  let matchingFrames = 0;
+  do {
+    const target = await page.locator("#fault-level").boundingBox();
+    const header = await page.locator(".site-header").boundingBox();
+    const strip = page.locator(".case-spec__strip");
+    const stripBox = includeStrip && await strip.isVisible() ? await strip.boundingBox() : null;
+    if (target && header) {
+      const chromeBottom = Math.max(header.y + header.height, stripBox ? stripBox.y + stripBox.height : 0);
+      gap = Math.round(target.y - chromeBottom);
+      matchingFrames = gap >= min && gap <= max ? matchingFrames + 1 : 0;
+      if (matchingFrames >= 3) return gap;
+    }
+    await page.waitForTimeout(50);
+  } while (Date.now() < deadline);
+  return gap;
+}
+
 async function main() {
   if (!existsSync(join(OUT_DIR, "index.html"))) {
     console.error(`No ${OUT_DIR}/index.html. Run \`pnpm build\` first.`);
@@ -2013,13 +2037,9 @@ async function main() {
       await noJsPage.waitForLoadState("networkidle").catch(() => {});
       await noJsPage.waitForTimeout(300);
       await noJsPage.goto(url, { waitUntil: "load" }).catch(() => {});
-      const targetBox = await noJsPage.locator("#fault-level").boundingBox().catch(() => null);
-      const headerBox = await noJsPage.locator(".site-header").boundingBox().catch(() => null);
-      if (!targetBox || !headerBox) failures.push(`no-JS jump @ ${width}x${height}: box model unavailable`);
-      else {
-        const gap = Math.round(targetBox.y - (headerBox.y + headerBox.height));
-        if (Math.abs(gap - expectedGap) > 2) failures.push(`no-JS jump @ ${width}x${height}: fragment gap is ${gap}px, expected the reserved ${expectedGap}px`);
-      }
+      const gap = await waitForFragmentGap(noJsPage, expectedGap - 2, expectedGap + 2);
+      if (gap === null) failures.push(`no-JS jump @ ${width}x${height}: box model unavailable`);
+      else if (Math.abs(gap - expectedGap) > 2) failures.push(`no-JS jump @ ${width}x${height}: fragment gap is ${gap}px, expected the reserved ${expectedGap}px`);
     }
     await noJsContext.close();
   }
@@ -2074,16 +2094,8 @@ async function main() {
     } else {
       await zoomPage.evaluate(() => document.fonts.ready);
       await zoomPage.waitForTimeout(700);
-      const deep = await zoomPage.evaluate(() => {
-        const target = document.getElementById("fault-level");
-        const header = document.querySelector(".site-header");
-        const strip = document.querySelector(".case-spec__strip");
-        const headerBottom = header.getBoundingClientRect().bottom;
-        const stripOn = strip.classList.contains("is-on");
-        const stripBottom = strip.getBoundingClientRect().bottom;
-        return { gap: Math.round(target.getBoundingClientRect().top - (stripOn && stripBottom > headerBottom ? stripBottom : headerBottom)) };
-      });
-      if (deep.gap < 6 || deep.gap > 20) failures.push(`deep link @ 200% text: heading gap is ${deep.gap}px, expected 6-20px (pre-hydration floor plus measured header)`);
+      const gap = await waitForFragmentGap(zoomPage, 6, 20, true);
+      if (gap === null || gap < 6 || gap > 20) failures.push(`deep link @ 200% text: heading gap is ${gap}px, expected 6-20px (pre-hydration floor plus measured header)`);
     }
     await zoomContext.close();
   }
