@@ -110,11 +110,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
             </a>
           </p>
         ) : null}
-        <dl className="case-meta">
-          <div><dt>Scope</dt><dd>{project.scope}</dd></div>
-          <div><dt>Role</dt><dd>{project.role}</dd></div>
-          <div><dt>Status</dt><dd>{project.status}</dd></div>
-        </dl>
+        <p className="case-scope"><span className="eyebrow">Scope</span> {project.scope}</p>
         <section className="case-sections" aria-label={`${project.title} evidence summary`}>
           <div>
             <p className="eyebrow">Problem</p>
@@ -125,16 +121,6 @@ export default async function ProjectPage({ params }: ProjectParams) {
             <p className="eyebrow">Approach</p>
             <h2>How the work is framed</h2>
             <p>{project.approach}</p>
-          </div>
-          <div>
-            <p className="eyebrow">Result</p>
-            <h2>Current public outcome</h2>
-            <p>{project.result}</p>
-          </div>
-          <div>
-            <p className="eyebrow">Evidence status</p>
-            <h2>Limits and open items</h2>
-            <p>{project.evidenceStatus}</p>
           </div>
         </section>
         {WriteUp ? <WriteUp /> : null}

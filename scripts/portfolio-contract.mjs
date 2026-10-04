@@ -139,11 +139,15 @@ for (const phrase of ["500 kVA", "400 V", "25 mm squared X-90 copper", "123.6 A"
 }
 
 const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[0] ?? "";
+// UI/UX 2026-10-04: an immediate path into inspectable work.
+const heroActions = hero.match(/<div class="hero-actions">[\s\S]*?<\/div>/)?.[0] ?? "";
+check(heroActions.includes('href="/projects"') && heroActions.includes("View projects"), "hero actions must offer View projects beside the resume");
+check(heroMedia.includes("Select a row to inspect the design basis."), "hero diagram must explain its interactive legend");
 check(hero.includes("Electrical Engineering Intern, Tindo Solar") && hero.includes("Aug 2026"), "home hero must contain the current-role credential as labelled fields");
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
 // Site screening audit 2026-09-13, finding 1 (Nathan's call, 2026-09-16): the
-// hero dates the availability window; the plain-text résumé mirrors the line.
-check(hero.includes("<dt>Availability</dt><dd>South Australian internships from 2027</dd>"), "home hero must date the availability window");
+// revised by Nathan on 2026-10-04: homepage availability carries no date.
+check(hero.includes("<dt>Availability</dt><dd>South Australian internships</dd>"), "home hero must use the approved undated availability");
 check(!home.includes("tindo-strip"), "home must not render standalone Tindo section");
 check(!home.includes("Some project evidence remains pending where marked."), "home must not show global evidence-pending warning");
 check(/href="\/nathan-noot-resume\.pdf"[^>]*target="_blank"/.test(home), "home must offer the resume in a new tab");
@@ -639,6 +643,10 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
   const opening = openingIndex >= 0 ? doc.slice(openingIndex, doc.indexOf("</section>", openingIndex)) : "";
   check(opening.includes(role), `${slug}: opening block must state the role`);
   check(opening.includes(outcome), `${slug}: opening block must state the outcome`);
+  check(!doc.includes('class="case-meta"'), `${slug}: role/status metadata must not repeat below the diagram`);
+  const uniqueSummary = doc.match(/<section class="case-sections"[\s\S]*?<\/section>/)?.[0] ?? "";
+  check(!uniqueSummary.includes("Current public outcome") && !uniqueSummary.includes("Limits and open items"), `${slug}: result and limits must appear once in the opening`);
+  check(uniqueSummary.includes("What needed solving") && uniqueSummary.includes("How the work is framed"), `${slug}: unique problem and approach must remain`);
   if (firstWriteUpId) {
     check(doc.indexOf(firstWriteUpId) > openingIndex, `${slug}: opening block must precede the write-up sections`);
   }
@@ -654,7 +662,8 @@ for (const [slug, expectedStatus] of [
   const doc = renderedMain(readExport(`/projects/${slug}.html`));
   check(doc.includes(expectedStatus), `${slug}: status must name the verification basis plainly`);
   check(doc.includes("Complete."), `${slug}: evidence status must open plainly with "Complete."`);
-  check(doc.includes("Limits and open items"), `${slug}: the plain limits heading must render`);
+  const limitsOpening = doc.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "";
+  check(limitsOpening.includes("<dt>Where it stops</dt>") && limitsOpening.includes("Complete."), `${slug}: plain limits must remain in the opening block`);
   check(!doc.includes("Evidence verified"), `${slug}: the old "Evidence verified" status must not return`);
   check(!doc.includes("Sanitised public write-up complete"), `${slug}: the old publication-workflow sentence must not return`);
   check(!doc.includes("What still needs proof"), `${slug}: the old proof heading must not return`);

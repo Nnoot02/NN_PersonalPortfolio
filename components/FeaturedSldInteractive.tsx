@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 // The hero artifact's interaction island. Hovering a component (or its legend
@@ -77,6 +77,7 @@ const TARGETS: Target[] = [
 ];
 
 export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd: string }) {
+  const panelId = useId();
   const [active, setActive] = useState<TargetId | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
   const rowRefs = useRef<Partial<Record<TargetId, HTMLButtonElement | null>>>({});
@@ -103,9 +104,12 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
   }, [toggle]);
 
   const closeFromKey = useCallback(() => {
+    // Pointer targets have a matching legend row too. Restore to the selected
+    // component whether the detail was opened by keyboard, touch, or drawing.
+    restoreTo.current = active;
     restoreFocus.current = true;
     setActive(null);
-  }, []);
+  }, [active]);
 
   useEffect(() => {
     if (active) {
@@ -117,7 +121,7 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
       restoreFocus.current = false;
       const row = restoreTo.current ? rowRefs.current[restoreTo.current] : null;
       restoreTo.current = null;
-      row?.focus();
+      row?.focus({ preventScroll: true });
     }
   }, [active]);
 
@@ -156,6 +160,8 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
           </span>
         </div>
       </div>
+      <noscript><style>{".hero-sld-hint, .hero-sld-row-disclosure { visibility: hidden; }"}</style></noscript>
+      <p className="hero-sld-hint">Select a row to inspect the design basis.</p>
       <div className="hero-sld-panel" style={{ "--plot-end": plotEnd } as CSSProperties}>
         <ul className="hero-sld-rows">
           {TARGETS.map((t, i) => (
@@ -164,6 +170,8 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
                 type="button"
                 className="hero-sld-row"
                 data-target={t.id}
+                aria-expanded={active === t.id}
+                aria-controls={`${panelId}-${t.id}`}
                 aria-pressed={active === t.id}
                 style={{ "--ping-i": i } as CSSProperties}
                 ref={(el) => { rowRefs.current[t.id] = el; }}
@@ -171,6 +179,7 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
               >
                 <span className="hero-sld-row-name">{t.name}</span>
                 <span className="hero-sld-row-value">{t.value}</span>
+                <span className="hero-sld-row-disclosure" aria-hidden="true">+</span>
               </button>
             </li>
           ))}
@@ -179,6 +188,7 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
           <div
             className="hero-sld-detail"
             data-target={t.id}
+            id={`${panelId}-${t.id}`}
             key={t.id}
             tabIndex={-1}
             ref={(el) => { if (active === t.id) detailRef.current = el; }}

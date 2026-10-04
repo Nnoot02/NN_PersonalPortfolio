@@ -127,7 +127,7 @@ async function main() {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"] });
   const failures = [];
   const informational = [];
   let checks = 0;
@@ -1213,8 +1213,9 @@ async function main() {
         const imageMetrics = await images.evaluateAll((nodes) =>
           nodes.map((node) => {
             const image = /** @type {HTMLImageElement} */ (node);
-            const rect = image.getBoundingClientRect();
-            return { width: rect.width, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight };
+            // Measure the layout box: scrolling can put the pointer over the
+            // existing 1.015 hover zoom, which stays clipped inside its frame.
+            return { width: image.clientWidth, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight };
           }),
         );
         for (const [index, metric] of imageMetrics.entries()) {
@@ -2196,7 +2197,7 @@ async function main() {
   // No-JS evidence: screenshot plus the contract pins (Playwright cannot
   // evaluate in a JS-disabled page; the reveal copy ships in the HTML).
   {
-    const noJsBrowser = await chromium.launch();
+    const noJsBrowser = await chromium.launch({ args: ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"] });
     const noJsPage = await noJsBrowser.newPage({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
     await noJsPage.goto(`${base}/`, { waitUntil: "load" });
     await noJsPage.waitForTimeout(2500);

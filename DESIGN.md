@@ -752,9 +752,23 @@ so they keep natural width and wrap to a new row rather than clipping.
 
 ### Motion
 
-Image hover scale and button lift are the only transitions; all are disabled
-under `prefers-reduced-motion: reduce`, which also switches
-`scroll-behavior` to auto.
+Motion reinforces interaction and state. The existing hero rise/name reveal,
+one-line plot, legend pings, and About photo marker remain the expressive
+sequences. Project links add restrained colour/arrow emphasis; diagram details
+enter over 180 ms with a 4 px shift; mobile navigation uses the same timing;
+email-copy success fades a check over 120 ms; the native evidence dialog fades
+its backdrop/image over 200 ms. Small effects use
+`cubic-bezier(.2, 0, 0, 1)` without overshoot and do not delay interaction.
+The drawing is never replayed when a detail opens. Panel space remains reserved.
+Movement/reveal keyframes are gated by `prefers-reduced-motion: no-preference`;
+the reduced-motion rule removes transition duration and switches scrolling to
+auto. Content and state remain readable immediately.
+
+Phone home actions expose the resume and Projects together (stacked at 360 px
+and below). Project/build intro type is smaller than homepage identity. Case
+studies render contribution, outcome, and limits once, followed by the unique
+problem/approach and detailed working. Diagram legend rows have a disclosure
+cue and 44 px phone targets; captions and hints stay outside the artwork.
 
 ## Notes
 

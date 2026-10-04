@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { FeaturedSldArtifact } from "@/components/FeaturedSld";
 import { HomepageEpilogue } from "@/components/HomepageEpilogue";
 import { ProjectRow } from "@/components/ProjectRow";
@@ -63,13 +63,16 @@ export default function HomePage() {
             </div>
             <div>
               <dt>Availability</dt>
-              <dd>South Australian internships from 2027</dd>
+              <dd>South Australian internships</dd>
             </div>
           </dl>
           <div className="hero-actions">
             <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
               Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
             </a>
+            <Link className="button button-secondary" href="/projects">
+              View projects <ArrowRight size={20} />
+            </Link>
           </div>
         </div>
         <figure className="hero-image">

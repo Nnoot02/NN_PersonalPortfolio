@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy } from "@phosphor-icons/react";
+import { Check, Copy } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
 
 type CopyState = "idle" | "copying" | "copied" | "failed";
@@ -37,8 +37,9 @@ export function CopyEmailButton({ email }: { email: string }) {
 
   return (
     <>
-      <button className="button button-secondary" type="button" onClick={copyEmail} disabled={state === "copying"}>
-        <Copy size={20} /> {LABELS[state]}
+      <button className="button button-secondary copy-email-button" data-copy-state={state} type="button" onClick={copyEmail} disabled={state === "copying"}>
+        {state === "copied" ? <Check size={20} weight="bold" /> : <Copy size={20} />}
+        <span className="copy-email-label">{LABELS[state]}</span>
       </button>
       <span className="sr-only" role="status">{ANNOUNCEMENTS[state] ?? ""}</span>
     </>
