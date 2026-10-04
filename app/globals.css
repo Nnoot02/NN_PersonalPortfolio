@@ -190,10 +190,11 @@ button { font: inherit; }
 .hero-artifact-figure[data-active="hai"] .hero-sld svg [data-hit="hai"] { stroke: var(--accent); }
 .hero-artifact-figure:has([data-target="but"]:hover, [data-target="but"]:focus-visible) .hero-sld svg [data-hit="but"],
 .hero-artifact-figure[data-active="but"] .hero-sld svg [data-hit="but"] { stroke: var(--accent); }
-/* Overlay rows and details in the same grid cell to reserve the taller state.
-   The 4 px bottom padding contains the detail's entry motion. */
+/* Keep the legend available above a reserved detail row. Hidden details
+   share one cell, reserving the tallest response without layout jumps. */
 .hero-sld-panel { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); min-height: 88px; padding-bottom: 4px; }
-.hero-sld-rows, .hero-sld-detail { grid-area: 1 / 1; }
+.hero-sld-rows { grid-area: 1 / 1; }
+.hero-sld-detail { grid-area: 2 / 1; }
 .hero-sld-rows { display: grid; gap: 5px 14px; margin: 0; padding: 9px 14px; list-style: none; }
 .hero-sld-row { position: relative; width: 100%; display: flex; align-items: center; min-height: 24px; gap: 0 .5rem; flex-wrap: wrap; min-width: 0; background: none; border: 0; padding: 0 20px 0 calc(12px + .5rem); color: inherit; cursor: pointer; text-align: left; font: 600 0.75rem/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
 .hero-sld-row:hover, .hero-sld-row:focus-visible { color: var(--accent-dark); }
@@ -205,20 +206,19 @@ button { font: inherit; }
 .hero-sld-row-name::before { content: ""; display: inline-block; vertical-align: middle; width: 12px; height: 2px; margin: 0 .5rem 0 calc(-12px - .5rem); background: var(--accent); }
 .hero-sld-row[aria-expanded="true"] .hero-sld-row-name::before { height: 4px; }
 .hero-sld-row-value { color: var(--ink); font-weight: 400; }
-.hero-sld-detail { display: none; position: relative; padding: 8px 44px 8px 14px; }
+.hero-sld-detail { display: block; visibility: hidden; border-top: 1px solid var(--line); position: relative; padding: 8px 44px 8px 14px; }
 .hero-sld-detail-close { position: absolute; top: 4px; right: 6px; width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 1px solid transparent; background: none; color: var(--muted); font: 700 11px/1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; cursor: pointer; }
 .hero-sld-detail-close:hover { color: var(--accent-dark); border-color: var(--line); }
 .hero-sld-detail-close:focus-visible { color: var(--accent-dark); border-color: var(--line); outline: 2px solid var(--accent); outline-offset: 2px; }
 .hero-sld-detail-title { margin: 0 0 .2rem; font: 700 0.75rem/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; color: var(--accent-dark); }
 .hero-sld-detail-body { margin: 0; font: 600 0.75rem/1.35 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
-.hero-artifact-figure[data-active] .hero-sld-rows { visibility: hidden; }
 [data-active="supply"] .hero-sld-detail[data-target="supply"],
 [data-active="mains"] .hero-sld-detail[data-target="mains"],
 [data-active="vd"] .hero-sld-detail[data-target="vd"],
 [data-active="device"] .hero-sld-detail[data-target="device"],
 [data-active="sup"] .hero-sld-detail[data-target="sup"],
 [data-active="hai"] .hero-sld-detail[data-target="hai"],
-[data-active="but"] .hero-sld-detail[data-target="but"] { display: block; }
+[data-active="but"] .hero-sld-detail[data-target="but"] { visibility: visible; --detail-animation: detail-reveal; }
 /* Stacked hero (audit U2): the figure is width-only there, so the drawing
    takes the full width at 3:2 and the panel sits under it in flow. A fixed
    size box left the drawing 185x123 at 390 once the legend took its share. */
@@ -857,7 +857,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 @keyframes icon-reveal { from { opacity: .5; transform: rotate(-45deg); } to { opacity: 1; transform: none; } }
 @keyframes state-fade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-artifact-figure[data-active] .hero-sld-detail { animation: detail-reveal var(--motion-standard) var(--motion-ease) both; }
+  .hero-artifact-figure[data-active] .hero-sld-detail { animation-name: var(--detail-animation, none); animation-duration: var(--motion-standard); animation-timing-function: var(--motion-ease); animation-fill-mode: both; }
   .menu-button[aria-expanded="true"] svg { animation: icon-reveal var(--motion-standard) var(--motion-ease); }
   .copy-email-button[data-copy-state="copied"] svg { animation: state-fade var(--motion-quick) var(--motion-ease); }
   .evidence-dialog[open]::backdrop, .evidence-dialog[open] img { animation: state-fade var(--motion-slow) var(--motion-ease); }
@@ -867,6 +867,19 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 }
 @media (max-width: 360px) {
   .hero-actions { grid-template-columns: 1fr; }
+}
+
+
+/* UI/UX inspection fixes: enlarge the artifact directly; keep completed
+   phone journeys compact while preserving every stage and evidence value. */
+.hero-artifact-full-size { display: flex; align-items: center; min-height: 44px; padding: .5rem .875rem; border-top: 1px solid var(--line); font-size: .82rem; }
+@media (max-width: 720px) {
+  .project-journey-stages[data-complete="true"] { gap: .25rem; }
+  .project-journey-stages[data-complete="true"] > li { border: 0; padding: .25rem 0; }
+  .project-journey-stages[data-complete="true"] > li::before { display: none; }
+  .project-journey-stages[data-complete="true"] .project-journey-stage-label { display: inline; letter-spacing: 0; }
+  .project-journey-stages[data-complete="true"] small { display: inline; margin: 0; }
+  .project-journey-stages[data-complete="true"] small::before { content: ": "; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -767,10 +767,15 @@ auto. Content and state remain readable immediately.
 Phone home actions expose the resume and Projects together (stacked at 360 px
 and below). Project/build intro type is smaller than homepage identity. Case
 studies render contribution, outcome, and limits once, followed by the unique
-problem/approach and detailed working. Diagram legend rows have a disclosure
+detailed working, with problem/approach context retained afterwards. Completed
+project journey stages use compact text rows on phones; active current/future
+stages retain their expanded presentation. The hero offers a direct full-size
+diagram link. Diagram legend rows have a disclosure
 cue and 44 px phone targets; captions and hints stay outside the artwork.
-While a detail is open, the hint gives close guidance and focus moves into the
-selected detail. Rows expose aria-expanded, without a second toggle state.
+While a detail is open, all legend rows remain available above a reserved
+detail row, so readers can compare components without closing first. Keyboard
+activation moves focus into the selected detail; closing restores the selected
+row. Rows expose aria-expanded, without a second toggle state.
 Without JavaScript, the interaction hint is removed from layout. Copy feedback
 keeps the same width in idle, copying, success, and failure states.
 

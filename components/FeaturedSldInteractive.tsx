@@ -82,7 +82,7 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
   const detailRef = useRef<HTMLDivElement | null>(null);
   const rowRefs = useRef<Partial<Record<TargetId, HTMLButtonElement | null>>>({});
   // focus management (R1 finding 2): opening from a row moves focus into the
-  // detail (the rows leave the focus tree while a detail is open), and closing
+  // detail while the legend stays available for comparison; closing
   // from the keyboard or the close button hands focus back to that row.
   const restoreTo = useRef<TargetId | null>(null);
   const openedFromRow = useRef(false);
@@ -160,8 +160,8 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
           </span>
         </div>
       </div>
-      <noscript><style>{".hero-sld-hint { display: none; } .hero-sld-row-disclosure { visibility: hidden; }"}</style></noscript>
-      <p className="hero-sld-hint">{active ? "Close the detail to return to the legend." : "Select a row to inspect the design basis."}</p>
+      <noscript><style>{".hero-sld-detail { display: none; } .hero-sld-hint { display: none; } .hero-sld-row-disclosure { visibility: hidden; }"}</style></noscript>
+      <p className="hero-sld-hint">Select a row to inspect the design basis.</p>
       <div className="hero-sld-panel" style={{ "--plot-end": plotEnd } as CSSProperties}>
         <ul className="hero-sld-rows">
           {TARGETS.map((t, i) => (

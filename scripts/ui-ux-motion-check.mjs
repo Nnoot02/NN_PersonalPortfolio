@@ -22,15 +22,15 @@ await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
 await mkdir(shots, { recursive: true });
 const browser = await chromium.launch({ args: ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"] });
-// Opt-in causal regression: restoring the old duration must fail focus return.
-const focusMutant = process.env.UI_UX_FOCUS_MUTANT === "1";
+// Opt-in causal regression: restoring hidden rows must fail direct comparison.
+const legendMutant = process.env.UI_UX_LEGEND_MUTANT === "1";
 let checks = 0;
 const settle = page => page.waitForFunction(() => document.getAnimations().every(a => a.playState !== "running"), null, { timeout: 10000 });
 const focusAt = async (page, selector) => { try { await page.waitForFunction(s => document.activeElement.matches(s), selector, { timeout: 2000 }); } catch (error) { console.error(JSON.stringify({ expected: selector, ...await page.evaluate(() => ({ width: innerWidth, active: document.activeElement.outerHTML.slice(0,400), selected: document.querySelector(".hero-artifact-figure")?.getAttribute("data-active"), rowVisibility: getComputedStyle(document.querySelector(".hero-sld-row")).visibility })) })); await page.screenshot({ path: join(shots, "failure.png"), fullPage: true }); throw error; } };
 
 try {
-  for (const reducedMotion of focusMutant ? ["reduce"] : ["no-preference", "reduce"]) {
-    for (const width of focusMutant ? [320] : [320, 390, 768, 1440]) {
+  for (const reducedMotion of legendMutant ? ["reduce"] : ["no-preference", "reduce"]) {
+    for (const width of legendMutant ? [390] : [320, 390, 768, 1440]) {
       console.log(`Checking ${width}px / ${reducedMotion}`);
       const context = await browser.newContext({ viewport: { width, height: 844 }, reducedMotion });
       const page = await context.newPage();
@@ -43,7 +43,7 @@ try {
       }));
       await page.goto(base, { waitUntil: "networkidle" });
       await settle(page);
-      if (focusMutant) await page.addStyleTag({ content: "* { transition-duration: .01ms !important; }" });
+      if (legendMutant) await page.addStyleTag({ content: ".hero-artifact-figure[data-active] .hero-sld-rows { visibility: hidden !important; }" });
       const hint = page.locator(".hero-sld-hint");
       assert.equal(await hint.innerText(), "Select a row to inspect the design basis.");
       const actions = page.locator(".hero-actions");
@@ -52,6 +52,9 @@ try {
         const bottom = await actions.evaluate(e => e.getBoundingClientRect().bottom);
         assert.ok(bottom <= 844, `390px: hero actions below first viewport (${bottom})`);
       }
+      const fullSize = page.getByRole("link", { name: "Open the full-size diagram", exact: false });
+      assert.equal(await fullSize.getAttribute("href"), "/images/lv-cabling-sld.svg");
+      assert.ok((await fullSize.boundingBox()).height >= 44);
       const rows = page.locator(".hero-sld-row");
       assert.equal(await rows.count(), 7);
       for (const row of await rows.all()) {
@@ -68,7 +71,13 @@ try {
         await page.keyboard.press("Enter");
         await focusAt(page, '.hero-sld-detail[data-target="supply"]');
         assert.equal(await row.getAttribute("aria-expanded"), "true");
-        assert.equal(await hint.innerText(), "Close the detail to return to the legend.");
+        assert.equal(await hint.innerText(), "Select a row to inspect the design basis.");
+        assert.equal(await page.locator(".hero-sld-rows").isVisible(), true, "legend must remain selectable with detail open");
+        await page.locator('.hero-sld-row[data-target="vd"]').click();
+        assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').isVisible(), true, "switch directly between details");
+        assert.equal(await page.locator('.hero-sld-detail[data-target="supply"]').evaluate(e => getComputedStyle(e).animationName), "none", "unselected detail must stop its reveal");
+        assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
+        await row.click();
         const detail = page.locator('.hero-sld-detail[data-target="supply"]');
         assert.equal(await detail.evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
         await settle(page);
@@ -138,7 +147,7 @@ try {
     }
   }
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
-  for (const [slug, ceiling] of [["lv-cabling-design-commercial-complex", 2800], ["solar-grid-connection-assessment", 3600], ["gps-denied-autonomous-uav", 2700]]) {
+  for (const [slug, ceiling] of [["lv-cabling-design-commercial-complex", 1900], ["solar-grid-connection-assessment", 2400], ["gps-denied-autonomous-uav", 2000]]) {
     await page.goto(`${base}/projects/${slug}`, { waitUntil: "networkidle" });
     assert.equal(await page.locator(".case-meta").count(), 0);
     const headings = await page.locator(".case-sections h2").allTextContents();
@@ -150,6 +159,9 @@ try {
     checks++;
   }
   await page.goto(`${base}/projects`, { waitUntil: "networkidle" });
+  const stageHeights = await page.locator(".project-journey-stages").evaluateAll(nodes => nodes.map(node => ({ height: node.getBoundingClientRect().height, complete: node.dataset.complete })));
+  assert.ok(stageHeights.slice(0, 2).every(stage => stage.complete === "true" && stage.height < 150), "completed phone journeys must remain compact");
+  assert.equal(stageHeights[2].complete, undefined, "UAV retains current/future journey");
   assert.ok((await page.locator("h1").boundingBox()).height <= 180, "Projects intro exceeds phone heading budget");
   await page.screenshot({ path: join(shots, "projects-390.png"), fullPage: true });
   await page.close();

@@ -75,14 +75,14 @@ check((heroMedia.match(/<svg[^>]*role="img"/g) ?? []).length === 1, "hero artifa
 check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"), "home hero must exclude miniature content");
 // The hero figure links to the LV case study at every viewport (decision
 // 2026-09-02): on phones the diagram is unreadable and needs somewhere to go.
-check((heroMedia.match(/<a\b/g) ?? []).length === 1, "home hero media must contain exactly one link");
+check((heroMedia.match(/<a\b/g) ?? []).length === 2, "home hero media must contain case-study and full-size diagram links");
 const heroAnchor = heroMedia.match(/<a\b[^>]*>/)?.[0] ?? "";
 check(heroAnchor.includes('class="hero-artifact-caption"') && heroAnchor.includes('href="/projects/lv-cabling-design-commercial-complex"'), "home hero link must be the caption row (the drawing is click-to-reveal) and target the LV case study");
 // Site screening audit 2026-09-16, F4: the artifact states its name and action
 // visibly; the sr-only destination sentence was folded into the caption.
 check(heroMedia.includes("Commercial LV cabling design - 400 V, three tenancies"), "home hero must name the artifact visibly");
 check(heroMedia.includes('class="hero-artifact-action">Open the case study'), "home hero must show the case-study action without hover");
-check(!heroMedia.includes("sr-only"), "home hero must not keep the old sr-only destination sentence");
+check(!heroMedia.match(/<a[^>]*class="hero-artifact-caption"[\s\S]*?<\/a>/)?.[0].includes("sr-only"), "hero case-study caption must keep its destination visible");
 check(!/<img[^>]*lv-cabling-sld\.svg/.test(heroMedia), "hero must not fall back to the <img> form");
 // The plot schedule is declared once, on the svg root; the wrapper and the key
 // mirror it. 46 = scripts/add-plot-attributes.mjs printout (re-measure with the
@@ -142,6 +142,7 @@ const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[
 // UI/UX 2026-10-04: an immediate path into inspectable work.
 const heroActions = hero.match(/<div class="hero-actions">[\s\S]*?<\/div>/)?.[0] ?? "";
 check(heroActions.includes('href="/projects"') && heroActions.includes("View projects"), "hero actions must offer View projects beside the resume");
+check(heroMedia.includes('class="hero-artifact-full-size text-link" href="/images/lv-cabling-sld.svg"'), "hero must offer direct diagram enlargement");
 check(heroMedia.includes("Select a row to inspect the design basis."), "hero diagram must explain its interactive legend");
 check(hero.includes("Electrical Engineering Intern, Tindo Solar") && hero.includes("Aug 2026"), "home hero must contain the current-role credential as labelled fields");
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");

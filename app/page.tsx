@@ -82,6 +82,9 @@ export default function HomePage() {
               <span className="hero-artifact-caption-text">Commercial LV cabling design - 400 V, three tenancies</span>
               <span className="hero-artifact-action">Open the case study</span>
             </Link>
+            <a className="hero-artifact-full-size text-link" href="/images/lv-cabling-sld.svg" target="_blank" rel="noopener">
+              Open the full-size diagram<span className="sr-only"> (opens in a new tab)</span>
+            </a>
           </div>
         </figure>
       </section>

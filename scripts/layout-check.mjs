@@ -713,7 +713,7 @@ async function main() {
           const openPlot = await plotState();
           if (openPlot.max > 0.02 || openPlot.running !== 0) failures.push(`/ @ ${width}x${height}: opening a detail must not replay the plot (${JSON.stringify(openPlot)})`);
           const openRows = await legendState();
-          if (openRows.visibility !== "hidden") failures.push(`/ @ ${width}x${height}: the rows give way to the open detail (${JSON.stringify(openRows)})`);
+          if (openRows.visibility !== "visible") failures.push(`/ @ ${width}x${height}: the legend must remain available with an open detail (${JSON.stringify(openRows)})`);
           await page.click('.hero-sld-hit[data-target="mains"]');
           await waitActive(null);
           const closed = await legendState();
@@ -1689,7 +1689,7 @@ async function main() {
     nodes.map((node) => {
       const stages = Array.from(node.querySelectorAll(":scope > li"));
       const boxes = stages.map((stage) => stage.getBoundingClientRect());
-      const stacked = boxes.every((box, index) => index === 0 || box.top >= boxes[index - 1].bottom + 4);
+      const stacked = boxes.every((box, index) => index === 0 || box.top >= boxes[index - 1].bottom + (node.dataset.complete === "true" ? 0 : 4));
       const minWidth = boxes.length > 0 ? Math.min(...boxes.map((box) => box.width)) : 0;
       const clipped = stages.some((stage) =>
         stage.scrollWidth > stage.clientWidth + 1 ||
@@ -2143,7 +2143,7 @@ async function main() {
       const panel = document.querySelector(".hero-sld-panel").getBoundingClientRect();
       const rows = [...document.querySelectorAll(".hero-sld-row")].map((el) => el.getBoundingClientRect());
       const visibleDetail = document.querySelector(".hero-sld-detail[data-target]");
-      const shown = [...document.querySelectorAll(".hero-sld-detail")].find((el) => getComputedStyle(el).display !== "none");
+      const shown = [...document.querySelectorAll(".hero-sld-detail")].find((el) => getComputedStyle(el).visibility === "visible");
       const boxes = shown ? [shown.getBoundingClientRect()] : rows;
       const escapes = boxes.filter((r) => !(r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1));
       const zero = boxes.filter((r) => r.width === 0 || r.height === 0);
@@ -2186,7 +2186,7 @@ async function main() {
         rowOpacity: [...new Set(rows.map((r) => getComputedStyle(r).opacity))],
         hitCount: hits.length,
         zeroRows: zeroOf(rows),
-        detailsHidden: [...document.querySelectorAll(".hero-sld-detail")].every((el) => getComputedStyle(el).display === "none"),
+        detailsHidden: [...document.querySelectorAll(".hero-sld-detail")].every((el) => getComputedStyle(el).display === "none" || getComputedStyle(el).visibility === "hidden"),
       };
     });
     await modePage.close();

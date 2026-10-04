@@ -54,7 +54,7 @@ export function ProjectJourneyLane({ entry, relation }: { entry: ProjectIndexEnt
           {relation.targetTitle}: {relation.label}
         </p>
       ) : null}
-      <ol className="project-journey-stages" aria-label={entry.project.title + " project journey"}>
+      <ol className="project-journey-stages" data-complete={entry.stages.every((stage) => stage.state === "resolved") ? "true" : undefined} aria-label={entry.project.title + " project journey"}>
         {entry.stages.map((stage) => (
           <li data-journey-stage={stage.state} key={stage.label + "-" + stage.detail}>
             <span className="project-journey-stage-label">{stage.label}</span>

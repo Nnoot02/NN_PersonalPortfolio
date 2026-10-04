@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
         <p className="eyebrow">{project.number ? `Case study ${project.number}` : "Case study"}</p>
         <h1>{project.title}</h1>
         <p className="case-status">{project.status}</p>
-        <p className="case-lede">{project.summary}</p>
+        {!WriteUp ? <p className="case-lede">{project.summary}</p> : null}
         <CaseOpening
           role={project.role}
           outcome={project.result}
@@ -111,6 +111,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </p>
         ) : null}
         <p className="case-scope"><span className="eyebrow">Scope</span> {project.scope}</p>
+        {WriteUp ? <WriteUp /> : null}
         <section className="case-sections" aria-label={`${project.title} evidence summary`}>
           <div>
             <p className="eyebrow">Problem</p>
@@ -123,7 +124,6 @@ export default async function ProjectPage({ params }: ProjectParams) {
             <p>{project.approach}</p>
           </div>
         </section>
-        {WriteUp ? <WriteUp /> : null}
         {projectStudyNext[project.slug] ? (
           <p className="case-next">
             Next in the evidence:{" "}
