@@ -22,20 +22,30 @@ await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
 await mkdir(shots, { recursive: true });
 const browser = await chromium.launch({ args: ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"] });
+// Opt-in causal regression: restoring the old duration must fail focus return.
+const focusMutant = process.env.UI_UX_FOCUS_MUTANT === "1";
 let checks = 0;
 const settle = page => page.waitForFunction(() => document.getAnimations().every(a => a.playState !== "running"), null, { timeout: 10000 });
 const focusAt = async (page, selector) => { try { await page.waitForFunction(s => document.activeElement.matches(s), selector, { timeout: 2000 }); } catch (error) { console.error(JSON.stringify({ expected: selector, ...await page.evaluate(() => ({ width: innerWidth, active: document.activeElement.outerHTML.slice(0,400), selected: document.querySelector(".hero-artifact-figure")?.getAttribute("data-active"), rowVisibility: getComputedStyle(document.querySelector(".hero-sld-row")).visibility })) })); await page.screenshot({ path: join(shots, "failure.png"), fullPage: true }); throw error; } };
 
 try {
-  for (const reducedMotion of ["no-preference", "reduce"]) {
-    for (const width of [320, 390, 768, 1440]) {
+  for (const reducedMotion of focusMutant ? ["reduce"] : ["no-preference", "reduce"]) {
+    for (const width of focusMutant ? [320] : [320, 390, 768, 1440]) {
       console.log(`Checking ${width}px / ${reducedMotion}`);
       const context = await browser.newContext({ viewport: { width, height: 844 }, reducedMotion });
       const page = await context.newPage();
       const errors = [];
       page.on("pageerror", e => errors.push(e.message));
+      // Hold/reject isolated clipboard requests to exercise every actual state.
+      // No OS clipboard writes or permission grants during browser checks.
+      await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: () => new Promise((resolve, reject) => { window.copyRequest = { resolve, reject }; }) },
+      }));
       await page.goto(base, { waitUntil: "networkidle" });
       await settle(page);
+      if (focusMutant) await page.addStyleTag({ content: "* { transition-duration: .01ms !important; }" });
+      const hint = page.locator(".hero-sld-hint");
+      assert.equal(await hint.innerText(), "Select a row to inspect the design basis.");
       const actions = page.locator(".hero-actions");
       assert.equal(await actions.getByRole("link", { name: "View projects", exact: true }).getAttribute("href"), "/projects");
       if (width === 390) {
@@ -48,6 +58,7 @@ try {
         const control = await row.getAttribute("aria-controls");
         assert.ok(await page.locator(`[id="${control}"]`).count() === 1, `disclosure target must be unique: ${control}`);
         assert.equal(await row.getAttribute("aria-expanded"), "false");
+        assert.equal(await row.getAttribute("aria-pressed"), null, "disclosure must not also announce a toggle state");
         if (width <= 720) assert.ok((await row.boundingBox()).height >= 44, "phone legend row misses 44px target");
       }
       const originalHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
@@ -57,6 +68,7 @@ try {
         await page.keyboard.press("Enter");
         await focusAt(page, '.hero-sld-detail[data-target="supply"]');
         assert.equal(await row.getAttribute("aria-expanded"), "true");
+        assert.equal(await hint.innerText(), "Close the detail to return to the legend.");
         const detail = page.locator('.hero-sld-detail[data-target="supply"]');
         assert.equal(await detail.evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
         await settle(page);
@@ -67,7 +79,7 @@ try {
         await focusAt(page, '.hero-sld-row[data-target="supply"]');
         assert.equal(await row.getAttribute("aria-expanded"), "false");
       }
-      if (width === 1440) {
+      if (width >= 768) {
         await page.locator('.hero-sld-hit[data-target="mains"]').click();
         await page.getByRole("button", { name: "Close the detail", exact: true }).click();
         await focusAt(page, '.hero-sld-row[data-target="mains"]');
@@ -83,15 +95,28 @@ try {
         await focusAt(page, ".menu-button");
       }
       await page.goto(`${base}/contact`, { waitUntil: "networkidle" });
-      await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: base });
+      await page.evaluate(() => document.fonts.ready);
       const copy = page.getByRole("button", { name: "Copy address", exact: true });
       const copyWidth = (await copy.boundingBox()).width;
       await copy.click();
+      const copying = page.getByRole("button", { name: "Copying email", exact: true });
+      await copying.waitFor();
+      assert.equal(await copying.isDisabled(), true, "copy request must disable duplicate submissions");
+      assert.ok(Math.abs((await copying.boundingBox()).width - copyWidth) <= 1, "copying state changed button width");
+      await page.evaluate(() => window.copyRequest.resolve());
       const copied = page.getByRole("button", { name: "Copied email", exact: true });
       await copied.waitFor();
       assert.ok(Math.abs((await copied.boundingBox()).width - copyWidth) <= 1, "copy success changed button width");
       assert.equal(await page.locator('[role="status"]').innerText(), "Email address copied to clipboard.");
       assert.equal(await copied.locator("svg").evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "state-fade");
+      await copy.waitFor();
+      await copy.click();
+      await page.getByRole("button", { name: "Copying email", exact: true }).waitFor();
+      await page.evaluate(() => window.copyRequest.reject(new Error("Simulated clipboard denial")));
+      const failed = page.getByRole("button", { name: "Copy failed", exact: true });
+      await failed.waitFor();
+      assert.ok(Math.abs((await failed.boundingBox()).width - copyWidth) <= 1, "failed state changed button width");
+      assert.equal(await page.locator('[role="status"]').innerText(), "Could not copy. Use the address shown next to this button.");
       await page.goto(`${base}/workbench/bench-fume-extractor`, { waitUntil: "networkidle" });
       if (width === 390) assert.ok((await page.locator("h1").boundingBox()).height < 200, "build heading still exceeds compact phone budget");
       const photo = page.locator(".evidence-trigger").first();
@@ -133,6 +158,7 @@ try {
   assert.equal(await noJS.getByRole("link", { name: "View projects", exact: true }).isVisible(), true);
   assert.equal(await noJS.locator(".hero-sld-row").count(), 7);
   assert.equal(await noJS.locator(".hero-sld-hint").isVisible(), false, "no-JS page must not promise unavailable disclosure interaction");
+  assert.equal(await noJS.locator(".hero-sld-hint").evaluate(e => e.getBoundingClientRect().height), 0, "no-JS hint must not reserve an empty band");
   assert.equal(await noJS.locator(".hero-summary").evaluate(e => getComputedStyle(e).opacity), "1");
   await noJS.close();
   console.log(`UI/UX motion checks passed: ${checks} viewport/motion and case-study scenarios, plus Projects/no-JS checks.`);

@@ -190,12 +190,8 @@ button { font: inherit; }
 .hero-artifact-figure[data-active="hai"] .hero-sld svg [data-hit="hai"] { stroke: var(--accent); }
 .hero-artifact-figure:has([data-target="but"]:hover, [data-target="but"]:focus-visible) .hero-sld svg [data-hit="but"],
 .hero-artifact-figure[data-active="but"] .hero-sld svg [data-hit="but"] { stroke: var(--accent); }
-/* The panel: seven rows by default (each a button -- the keyboard path), one
-   detail block while a target is active. min-height reserves the taller state
-   so the drawing never resizes between states. */
-/* min-height reserves the TALLER of the two states (the seven default rows
-   measure 86 px at 1440; every detail state fits inside 88) so the drawing
-   never resizes when a reveal opens. */
+/* Overlay rows and details in the same grid cell to reserve the taller state.
+   The 4 px bottom padding contains the detail's entry motion. */
 .hero-sld-panel { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); min-height: 88px; padding-bottom: 4px; }
 .hero-sld-rows, .hero-sld-detail { grid-area: 1 / 1; }
 .hero-sld-rows { display: grid; gap: 5px 14px; margin: 0; padding: 9px 14px; list-style: none; }
@@ -207,7 +203,7 @@ button { font: inherit; }
    hover paints. The row's left padding is the swatch plus its gap and the
    swatch pulls back into it, so a value that wraps hangs under the name. */
 .hero-sld-row-name::before { content: ""; display: inline-block; vertical-align: middle; width: 12px; height: 2px; margin: 0 .5rem 0 calc(-12px - .5rem); background: var(--accent); }
-.hero-sld-row[aria-pressed="true"] .hero-sld-row-name::before { height: 4px; }
+.hero-sld-row[aria-expanded="true"] .hero-sld-row-name::before { height: 4px; }
 .hero-sld-row-value { color: var(--ink); font-weight: 400; }
 .hero-sld-detail { display: none; position: relative; padding: 8px 44px 8px 14px; }
 .hero-sld-detail-close { position: absolute; top: 4px; right: 6px; width: 24px; height: 24px; display: grid; place-items: center; padding: 0; border: 1px solid transparent; background: none; color: var(--muted); font: 700 11px/1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; cursor: pointer; }

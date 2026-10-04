@@ -769,6 +769,10 @@ and below). Project/build intro type is smaller than homepage identity. Case
 studies render contribution, outcome, and limits once, followed by the unique
 problem/approach and detailed working. Diagram legend rows have a disclosure
 cue and 44 px phone targets; captions and hints stay outside the artwork.
+While a detail is open, the hint gives close guidance and focus moves into the
+selected detail. Rows expose aria-expanded, without a second toggle state.
+Without JavaScript, the interaction hint is removed from layout. Copy feedback
+keeps the same width in idle, copying, success, and failure states.
 
 ## Notes
 

@@ -160,8 +160,8 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
           </span>
         </div>
       </div>
-      <noscript><style>{".hero-sld-hint, .hero-sld-row-disclosure { visibility: hidden; }"}</style></noscript>
-      <p className="hero-sld-hint">Select a row to inspect the design basis.</p>
+      <noscript><style>{".hero-sld-hint { display: none; } .hero-sld-row-disclosure { visibility: hidden; }"}</style></noscript>
+      <p className="hero-sld-hint">{active ? "Close the detail to return to the legend." : "Select a row to inspect the design basis."}</p>
       <div className="hero-sld-panel" style={{ "--plot-end": plotEnd } as CSSProperties}>
         <ul className="hero-sld-rows">
           {TARGETS.map((t, i) => (
@@ -172,7 +172,6 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
                 data-target={t.id}
                 aria-expanded={active === t.id}
                 aria-controls={`${panelId}-${t.id}`}
-                aria-pressed={active === t.id}
                 style={{ "--ping-i": i } as CSSProperties}
                 ref={(el) => { rowRefs.current[t.id] = el; }}
                 onClick={() => openFromRow(t.id)}

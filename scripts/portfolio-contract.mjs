@@ -207,7 +207,8 @@ for (const stale of ["Graduate electrical engineer", "Defence engineering gradua
   check(!resumeText.includes(stale), `plain-text résumé must not retain the graduate-role positioning: ${stale}`);
 }
 check(!resumeText.includes("building toward graduate electrical engineering work"), "plain-text résumé summary must not retain the graduate positioning");
-// Site screening audit 2026-09-13, finding 1 (Nathan's call, 2026-09-16).
+// Nathan's 2026-10-04 change named homepage availability only. The resume
+// intentionally retains its original date; this pin protects that distinction.
 check(resumeText.includes("- South Australian internships from 2027"), "plain-text résumé must carry the dated availability window");
 // Settled 2026-09-03 against the coursework title page, which reads
 // "THREE-TENANCY COMPLEX (SUPERMARKET, HAIRDRESSER, BUTCHER) WITH COMMUNAL
