@@ -25,8 +25,12 @@ export default function ContactPage() {
             <div className="contact-details" data-contact-details>
               <p className="contact-intro">Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and practical electrical engineering.</p>
               <div className="contact-actions">
-                <a className="button button-primary contact-email-link" href={"mailto:" + profile.contactEmail}>
-                  <EnvelopeSimple size={20} /> {profile.contactEmail}
+                <a className="button button-primary contact-email-link" href={"mailto:" + profile.contactEmail} aria-label={`Email me at ${profile.contactEmail}`}>
+                  <EnvelopeSimple size={20} aria-hidden="true" />
+                  <span className="contact-email-label" aria-hidden="true">
+                    <span className="contact-email-address">{profile.contactEmail}</span>
+                    <span className="contact-email-prompt">EMAIL ME</span>
+                  </span>
                 </a>
                 <CopyEmailButton email={profile.contactEmail} />
               </div>

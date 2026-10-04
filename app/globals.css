@@ -486,6 +486,20 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .resume-hero .button { margin-top: 1.4rem; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.5rem; }
 .contact-actions .button { padding-bottom: .75rem; padding-top: .75rem; }
+/* Both labels share a grid cell so the address reserves the button width. */
+.contact-email-label { display: grid; text-align: center; }
+.contact-email-label > span { grid-area: 1 / 1; transition: opacity var(--motion-standard) var(--motion-ease); }
+.contact-email-prompt { opacity: 0; }
+.contact-email-link:focus-visible .contact-email-address { opacity: 0; }
+.contact-email-link:focus-visible .contact-email-prompt { opacity: 1; }
+@media (hover: hover) {
+  .contact-email-link:hover .contact-email-address { opacity: 0; }
+  .contact-email-link:hover .contact-email-prompt { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-email-link:hover, .contact-email-link:focus-visible { transform: none; }
+}
+
 .contact-hero--compact { align-items: stretch; min-height: 0; padding-top: clamp(2.5rem, 4vw, 4rem); padding-bottom: clamp(2.5rem, 4vw, 3.5rem); }
 .contact-hero--compact h1 { font-size: clamp(4rem, 6.2vw, 6.25rem); line-height: .82; margin-bottom: 1.25rem; max-width: 100%; text-wrap: balance; word-break: normal; }
 .contact-layout { align-items: stretch; display: grid; gap: clamp(1.25rem, 2vw, 1.75rem); grid-template-columns: 1fr; width: 100%; }
