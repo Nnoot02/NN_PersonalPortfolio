@@ -409,7 +409,7 @@ check(!aboutTools.includes("/projects/solar-manufacturing-dfma"), "about must no
 const aboutToolsText = normalizeTextEntities(aboutTools);
 for (const note of [
   "The single-line diagram is open to read in the LV cabling case study.",
-  "Systems design is under way; staged test results come next.",
+  "Phase 0 simulation results are published; hardware verification comes next.",
   "Current work at Tindo Solar. A sanitised DFMA write-up is still in review.",
 ]) {
   check(aboutToolsText.includes(note), `about ledger must carry the evidence note: ${note}`);
@@ -536,7 +536,7 @@ check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 9, "proje
 const expectedProjectJourneyStages = new Map([
   ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
   ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
-  ["gps-denied-autonomous-uav", ["Planning:resolved:Requirements and architecture", "Current frontier:current:Hardware and software integration", "Verification:future:Staged tests and measured results"]],
+  ["gps-denied-autonomous-uav", ["Simulation:resolved:Baseline and held-out trials", "Current frontier:current:Hardware and software integration", "Verification:future:Phase 3/HITL clearance validation"]],
 ]);
 for (const [slug, expectedStages] of expectedProjectJourneyStages) {
   const lane = projectJourneys.match(new RegExp('(<li[^>]*data-project-slug="' + slug + '"[\\s\\S]*?)(?=<li[^>]*data-project-slug=|<\\/ol>)'))?.[1] ?? "";
@@ -628,7 +628,7 @@ const caseOpenings = [
   {
     slug: "gps-denied-autonomous-uav",
     role: "Systems planning and verification",
-    outcome: "roughly 1.9–2.2:1 thrust-to-weight carrying the full autonomy payload",
+    outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
     firstWriteUpId: null,
   },
   {
@@ -740,9 +740,8 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   }
   check((writeUp.match(/<h3\b/g) ?? []).length === ids.length, `${slug}: index must cover every section`);
 }
-// The three-section UAV write-up is deliberately unindexed: an index of three
-// items directly above those three items is noise.
-check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the three-section UAV write-up must stay unindexed");
+// The compact UAV results write-up stays unindexed.
+check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the compact UAV results write-up must stay unindexed");
 // Site screening audit 2026-09-13, findings 4 and 5 (dispositioned 2026-09-16):
 // the grid summary argues each conclusion against the standards rather than
 // deciding against them, and the two published case-study pages carry no
@@ -793,10 +792,10 @@ const caseSpecs = {
     ["Standards", "SAPN TS132/TS133 · AS/NZS 4777.2", null],
   ],
   "gps-denied-autonomous-uav": [
-    ["Motors", "2212-class, ~920 KV", "as-shipped; a 2216 upgrade is budgeted"],
-    ["Thrust-to-weight", "1.9–2.2:1", "full autonomy payload, ~1.27 kg all-up"],
-    ["Flight gate", "≥ 2.3:1", "this project's full-payload gate for integrated flight"],
-    ["Hover throttle", "~55 %", "as-shipped propulsion, full payload"],
+    ["Baseline", "30 / 30", "goal reached, collision-free"],
+    ["Held-out", "30 / 30", "goal reached, collision-free"],
+    ["Clearance", "27 / 30", "held-out trials ≥ 0.5 m, aircraft centre"],
+    ["Next", "Phase 3 / HITL", "final clearance validation"],
   ],
 };
 for (const [slug, rows] of Object.entries(caseSpecs)) {

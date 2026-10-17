@@ -1,101 +1,68 @@
-const gates = [
-  [
-    "0",
-    "Simulation",
-    "Scripted Gazebo worlds with obstacles at known poses.",
-    "Success rate over repeated runs (target ≥ 8 in 10), path length against optimal, and replan latency.",
-  ],
-  [
-    "1",
-    "Airframe and failsafe",
-    "Bench prop-balance and vibration check, tethered first hover, override-switch failover with props off.",
-    "Logged vibration stays inside the safe band, and manual override takes control on demand.",
-  ],
-  [
-    "2",
-    "Position hold without GPS",
-    "GPS disabled in parameters. Drift measured against a marked floor target over 60 s from logged local position, run VIO-only, flow-only, and across controlled transitions in both directions.",
-    "Measured drift, pose jump at each source transition, recovery time, and whether the transition stays inside the safety envelope.",
-  ],
-  [
-    "3",
-    "Closed-loop tracking",
-    "Commanded 1 m square, logged trajectory compared against the commanded path.",
-    "Overshoot and settling time.",
-  ],
-  [
-    "4",
-    "Replan around an unmarked obstacle",
-    "An unmarked box placed in the planned straight-line path, after a full-payload thrust-margin precondition is met.",
-    "Detection range honoured, occupancy map updated, a new path generated, and the obstacle cleared with the costmap inflation margin intact.",
-  ],
-];
-
 export function UavTestGatesWriteUp() {
   return (
-    <section className="writeup" aria-label="UAV verification gates">
+    <section className="writeup" aria-label="Phase 0 simulation evidence">
       <div className="writeup-heading">
-        <p className="eyebrow">Verification design</p>
-        <h2>The test gates, defined before the data</h2>
-        <p>
-          This is the acceptance criteria for the capstone, not a results table. Each
-          gate names its method and its pass metric before the test is run, and a lower
-          gate has to pass before the layer above it is touched. Publishing the standard
-          ahead of the evidence is the point: it is what stops a demo video from
-          standing in for a measurement. No gate below is claimed as passed.
-        </p>
+        <p className="eyebrow">Phase 0 · simulation evidence</p>
+        <h2>Simulation demonstrated.<br />Clearance validation continues.</h2>
+        <p>In Gazebo, the GPS-disabled aircraft reached its goal without collision in all 30 baseline trials and all 30 trials on held-out obstacle geometry. However, three held-out trials fell below the 0.5 m centre-clearance requirement, so clearance remains an open validation item for Phase 3 with hardware-in-the-loop (HITL) testing.</p>
       </div>
-
       <div className="writeup-block">
-        <h3>Gates and pass metrics</h3>
-        <ol className="gate-list" data-gate-list>
-          {gates.map(([id, proves, method, metric]) => (
-            <li key={id}>
-              <p className="gate-marker">Gate {id}</p>
-              <h4>{proves}</h4>
-              <dl>
-                <div>
-                  <dt>Method</dt>
-                  <dd>{method}</dd>
-                </div>
-                <div>
-                  <dt>Pass metric</dt>
-                  <dd>{metric}</dd>
-                </div>
-              </dl>
-            </li>
-          ))}
-        </ol>
+        <h3>What the trials measured</h3>
+        <p>The simulation connects ArduPilot SITL and Gazebo to ROS 2 and MAVROS, with a depth-based occupancy grid feeding the D* Lite planner. Both batches used 0.7 m planner inflation, a commanded speed of 0.5 m/s and a 3.0 m sensing range, with ten runs each against a box, pillar and wall.</p>
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="Simulation batch comparison">
+          <table className="uav-results-table">
+            <thead>
+              <tr>
+                <th scope="col">Measure</th>
+                <th scope="col">Baseline</th>
+                <th scope="col">Held-out geometry</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Goal reached, collision-free</th>
+                <td>30 / 30</td>
+                <td>30 / 30</td>
+              </tr>
+              <tr>
+                <th scope="row">Centre clearance ≥ 0.5 m</th>
+                <td>30 / 30</td>
+                <td>27 / 30</td>
+              </tr>
+              <tr>
+                <th scope="row">Minimum centre clearance</th>
+                <td>0.57 m</td>
+                <td>0.41 m</td>
+              </tr>
+              <tr>
+                <th scope="row">First-detection latency, worst</th>
+                <td>0.726 s</td>
+                <td>0.696 s</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Collision-free success uses a 0.35 m aircraft envelope; the 0.5 m clearance requirement is a separate, stricter test. Clearance is measured from the aircraft centre to the obstacle surface, not from the propeller tip.</p>
+        <figure className="uav-clearance-figure">
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Clearance plot, scrollable">
+            <img className="uav-clearance-plot" src="/images/uav-phase0-clearance.svg" width="860" height="270" alt="All 30 baseline trials clear 0.5 m; three of 30 held-out trials fall below it, with a minimum centre clearance of 0.41 m." />
+          </div>
+          <figcaption>Scroll sideways to compare both batches on a narrow screen. All 60 trials are plotted, including the three held-out runs below the clearance requirement. Trial dates: baseline, 2 October 2026; held-out, 8 October 2026.</figcaption>
+        </figure>
       </div>
-
       <div className="writeup-block">
-        <h3>Why the estimator gates carry the weight</h3>
-        <p>
-          Gates 2 and 3 are the control and estimation evidence. Removing GPS does not
-          simply degrade position accuracy; it moves the aircraft onto an estimator that
-          fuses visual-inertial odometry with an optical-flow and rangefinder fallback,
-          and the interesting failure is not steady-state drift but the transition
-          between those sources. That is why gate 2 measures pose jump and recovery time
-          across a source change in both directions, rather than only logging drift over
-          60 s. Gate 3 then closes the loop: a commanded 1 m square exposes overshoot and
-          settling that a stationary hold test cannot.
-        </p>
-        <p>
-          Gate 4 carries a precondition that is a measurement, not a schedule item. The
-          as-shipped motors sit under the thrust-to-weight margin set for integrated
-          flight at full payload, so the upgrade decision is gated on measured
-          thrust-stand data rather than a catalogue figure.
-        </p>
+        <h3>What held-out testing exposed</h3>
+        <p>The frozen planner was tested on new obstacle positions and sizes without retuning, and the new geometry exposed two box runs at 0.41 m clearance and one pillar run at 0.48 m. Inflation protects the surfaces the camera has observed, so unseen obstacle depth can reduce clearance around corners.</p>
+        <p>My advisor recommended finalising clearance in Phase 3 with HITL, which leaves the three misses as open validation work for that phase.</p>
       </div>
-
       <div className="writeup-block">
-        <h3>Declared limits</h3>
-        <p>
-          The gate definitions and methods are current; the results are not published
-          because they do not exist yet. Where a gate has been partially exercised, the
-          partial state is not reported here as a pass. Flight and verification data will
-          be published as logs and measured values, or not at all.
-        </p>
+        <h3>Where simulation stops</h3>
+        <p>The simulator's estimator did not respond to the injected vision and IMU errors, so these GPS-disabled trials do not validate real visual-inertial odometry, estimator drift or sensor-source transitions.</p>
+        <p>The latency figures cover the first obstacle detection to publication of an avoidance path on the simulation laptop, excluding real camera, stereo and USB delays. In the baseline batch, 12 of 62 blocking events exceeded 1.0 s, so the first-detection result does not establish a deadline for every event. Raspberry Pi 5 timing and real flight still need validation.</p>
+      </div>
+      <div className="writeup-block">
+        <h3>Next verification gates</h3>
+        <p>Props-off electronics and failsafe checks come before real flight. Position hold and estimator-source transitions need hardware evidence, while final clearance checks are planned for Phase 3/HITL. Integrated obstacle avoidance also depends on measured full-payload thrust margin.</p>
       </div>
     </section>
   );

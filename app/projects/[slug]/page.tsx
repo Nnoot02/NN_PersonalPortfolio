@@ -102,6 +102,9 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </ul>
         )}
         <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
+        {project.imageNote && !project.imageIsDiagram ? (
+          <p className="case-image-note case-image-provenance">{project.imageNote}</p>
+        ) : null}
         {project.imageIsDiagram ? (
           <p className="case-image-note">
             {project.imageNote ? <span className="case-image-provenance">{project.imageNote} </span> : null}
