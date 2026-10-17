@@ -2036,7 +2036,11 @@ async function main() {
       // final metrics. Same-document navigation re-scrolls to the fragment.
       await noJsPage.waitForLoadState("networkidle").catch(() => {});
       await noJsPage.waitForTimeout(300);
-      await noJsPage.goto(url, { waitUntil: "load" }).catch(() => {});
+      // Leave the fragment before returning: repeating an identical URL can
+      // retain the first layout's fallback-font scroll position.
+      await noJsPage.goto(url.split("#")[0], { waitUntil: "networkidle" });
+      await noJsPage.evaluate(() => document.fonts.ready);
+      await noJsPage.goto(url, { waitUntil: "load" });
       const gap = await waitForFragmentGap(noJsPage, expectedGap - 2, expectedGap + 2);
       if (gap === null) failures.push(`no-JS jump @ ${width}x${height}: box model unavailable`);
       else if (Math.abs(gap - expectedGap) > 2) failures.push(`no-JS jump @ ${width}x${height}: fragment gap is ${gap}px, expected the reserved ${expectedGap}px`);
