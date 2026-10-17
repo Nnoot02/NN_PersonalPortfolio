@@ -676,6 +676,11 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
 .writeup p { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
+.case-image:has(img[src="/images/gps-denied-uav.webp"]) { min-height: 0; aspect-ratio: 16 / 9; }
+.uav-clearance-figure { margin: 1.5rem 0; }
+.uav-clearance-plot { display: block; width: 100%; min-width: 860px; height: auto; }
+.uav-clearance-figure figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
+.uav-results-table thead th { color: var(--ink); }
 .gate-list { display: grid; gap: 1.8rem; list-style: none; margin: 1.4rem 0 0; padding: 0; }
 .gate-list > li { border-top: 1px solid var(--line); padding-top: 1rem; }
 .gate-list h4 { font: 600 1.1rem/1.15 var(--display); text-transform: uppercase; letter-spacing: .04em; margin: .2rem 0 .9rem; }

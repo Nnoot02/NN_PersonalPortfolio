@@ -42,7 +42,7 @@ const capabilities: Capability[] = [
     title: "Embedded systems",
     description: "Python, MATLAB, C, ROS 2, ESP and AVR microcontrollers, and MAVLink telemetry. Multimeter, oscilloscope, function generator, LTspice, and Logisim support bench work and simulation.",
     evidence: [
-      { state: "pending" as const, label: "Public evidence pending", project: "GPS-Denied Autonomous UAV", slug: "gps-denied-autonomous-uav", note: "Systems design is under way; staged test results come next." },
+      { state: "pending" as const, label: "Hardware verification pending", project: "GPS-Denied Autonomous UAV", slug: "gps-denied-autonomous-uav", note: "Phase 0 simulation results are published; hardware verification comes next." },
     ],
   },
   {

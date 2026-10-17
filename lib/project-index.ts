@@ -60,17 +60,17 @@ const definitions = {
     ],
   },
   "gps-denied-autonomous-uav": {
-    stateLabel: "Active capstone · systems design",
-    summary: "Indoor autonomy planned through requirements, sensing, control, and staged test gates.",
+    stateLabel: "Active capstone · Phase 0 simulation reviewed",
+    summary: "30/30 held-out goals reached in simulation; three clearance misses remain for Phase 3/HITL.",
     ctaLabel: "See current work",
     miniature: {
       src: "/images/project-index/gps-denied-uav-artifact.webp",
-      alt: "Quadcopter prototype on a lab bench with its companion computer and depth camera, the UAV hardware mid-integration",
+      alt: "GPS-denied UAV bench mock-up: red-and-white quadcopter with electronics and landing gear in the workshop",
     },
     stages: [
-      { label: "Planning", detail: "Requirements and architecture", state: "resolved" },
+      { label: "Simulation", detail: "Baseline and held-out trials", state: "resolved" },
       { label: "Current frontier", detail: "Hardware and software integration", state: "current" },
-      { label: "Verification", detail: "Staged tests and measured results", state: "future" },
+      { label: "Verification", detail: "Phase 3/HITL clearance validation", state: "future" },
     ],
   },
 } satisfies ProjectIndexDefinitions;
