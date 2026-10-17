@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       <section className="page-hero">
         <p className="eyebrow">Privacy policy</p>
         <h1>Privacy policy.</h1>
-        <p>How InternalOS, including its Command Centre dashboard, accesses, uses, stores, and deletes Google user data. Last updated 23 September 2026.</p>
+        <p>How InternalOS, including its Command Centre dashboard, accesses, uses, stores, and deletes Google user data. Last updated 17 October 2026.</p>
       </section>
       <section className="disclosure-panel" aria-labelledby="privacy-scope-heading">
         <p className="eyebrow">Scope</p>
@@ -33,6 +33,7 @@ export default function PrivacyPage() {
         <h2 id="privacy-data-heading">Google user data this project reads</h2>
         <ul>
           <li><strong>Google Calendar</strong> (scope "calendar.readonly"): the list of calendars on the account, and the events in the next 14 days, including titles, start and end times, locations, and links to the events.</li>
+          <li><strong>Google Calendar, desk display</strong> (scope "calendar.events.owned.readonly"): events on the primary calendar only, for the next seven days, including titles, start and end times and whether the event is private. Descriptions, attendees, locations and meeting links are not displayed or kept.</li>
           <li><strong>Gmail</strong> (scope "gmail.readonly"): job-alert messages sent by SEEK, matched by sender and subject, read to extract the posting details used in a weekly digest.</li>
         </ul>
         <p>Nothing else in the account is read, and no other Google service is accessed. Both scopes are read-only: the project cannot create, edit, or delete calendar events or email.</p>
@@ -40,12 +41,12 @@ export default function PrivacyPage() {
       <section className="disclosure-panel" aria-labelledby="privacy-use-heading">
         <p className="eyebrow">Use</p>
         <h2 id="privacy-use-heading">How the data is used</h2>
-        <p>The calendar data is used only to show the agenda on a local dashboard. The Gmail data is used only to build the weekly job-alert digest. Both features serve the account owner alone, and the data is not used for anything else.</p>
+        <p>The calendar data is used only to show the agenda on a local dashboard and, once a day at local midnight, to draw a seven-day image for an e-paper picture frame on the owner&rsquo;s desk. Events marked private appear on that image as &ldquo;Busy&rdquo; with no title. The Gmail data is used only to build the weekly job-alert digest. Both features serve the account owner alone, and the data is not used for anything else.</p>
       </section>
       <section className="disclosure-panel" aria-labelledby="privacy-storage-heading">
         <p className="eyebrow">Storage</p>
         <h2 id="privacy-storage-heading">Where the data is stored</h2>
-        <p>OAuth tokens and the cached calendar events are stored as local files on the owner&rsquo;s Windows machine, in application data outside any synced folder. Alert emails are parsed by a local script on that same machine, and the digest and its seen-list are written to a local project folder. No Google user data is stored on a server or in the cloud.</p>
+        <p>OAuth tokens and the cached calendar events are stored as local files on the owner&rsquo;s Windows machine, in application data outside any synced folder. Alert emails are parsed by a local script on that same machine, and the digest and its seen-list are written to a local project folder. For the desk display, the OAuth token is encrypted with Windows data protection, and the rendered image is held in memory on that machine. The frame downloads it over the owner&rsquo;s home network using a device credential, and keeps showing the last image it received. No Google user data is stored on a server or in the cloud.</p>
       </section>
       <section className="disclosure-panel" aria-labelledby="privacy-limits-heading">
         <p className="eyebrow">Limits</p>
@@ -61,7 +62,7 @@ export default function PrivacyPage() {
       <section className="disclosure-panel" aria-labelledby="privacy-retention-heading">
         <p className="eyebrow">Retention and deletion</p>
         <h2 id="privacy-retention-heading">Keeping it, removing it</h2>
-        <p>Data is kept only while the integration is in use. Access can be revoked at any time from the Google Account permissions page at <a className="text-link" href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com<span className="sr-only"> (opens in a new tab)</span></a>, which stops every further read and leaves the app with no way to reach the account. Deleting the local token and cache files removes the stored copies; a deletion request can also be sent to the contact address below.</p>
+        <p>Data is kept only while the integration is in use. Access can be revoked at any time from the Google Account permissions page at <a className="text-link" href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">myaccount.google.com<span className="sr-only"> (opens in a new tab)</span></a>, which stops every further read and leaves the app with no way to reach the account. Deleting the local token and cache files removes the stored copies, and the frame&rsquo;s image is replaced at the next refresh or cleared by resetting the frame; a deletion request can also be sent to the contact address below.</p>
       </section>
       <section className="disclosure-panel" aria-labelledby="privacy-limited-use-heading">
         <p className="eyebrow">Limited Use</p>

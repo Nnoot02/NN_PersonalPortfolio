@@ -1094,9 +1094,10 @@ check(/<meta name="color-scheme" content="light"/.test(homeDocument), "home must
 const internalos = renderedMain(readExport("/internalos.html"));
 const privacyPage = renderedMain(readExport("/privacy.html"));
 check(internalos.includes('href="/privacy"'), "app page must link the privacy policy");
-for (const scope of ["calendar.readonly", "gmail.readonly"]) {
+for (const scope of ["calendar.readonly", "calendar.events.owned.readonly", "gmail.readonly"]) {
   check(internalos.includes(scope), `app page must name the ${scope} scope it reads under`);
 }
+check(internalos.includes("e-paper picture frame"), "app page must describe the e-paper frame image the desk display produces");
 check(internalos.includes("One user, not published"), "app page must state that it has a single user and is not distributed");
 check(privacyPage.includes('href="https://myaccount.google.com/permissions"'), "privacy policy must link the Google Account permissions page where access is revoked");
 check(privacyPage.includes('href="mailto:nathannoott@gmail.com"'), "privacy policy must carry a contact address");
@@ -1104,6 +1105,8 @@ for (const disclosure of [
   "Google API Services User Data Policy",
   "Limited Use",
   "calendar.readonly",
+  "calendar.events.owned.readonly",
+  "e-paper picture frame",
   "gmail.readonly",
   "not sold, rented, or shared with any third party",
   "not used to train or improve machine-learning models",
