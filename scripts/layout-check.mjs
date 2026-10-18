@@ -304,7 +304,9 @@ async function main() {
 
         // Legend and detail text are functional: DESIGN.md's 12px floor, and
         // the value colour must clear 4.5:1 on the painted panel (--muted
-        // measured 4.26:1 on --paper-deep, audit U1).
+        // measured 4.26:1 on --paper-deep, audit U1). The detail close button
+        // sits on the same panel at 11px/700, so its resting colour is pinned
+        // here too (dembrandt re-measured the pair at 4.27:1, 2026-10-18 F1).
         const legendText = await page.evaluate(() => {
           const lum = (rgb) => {
             const [r, g, b] = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map((v) => {
@@ -323,14 +325,14 @@ async function main() {
           const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
             .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
             .filter((entry) => entry.size < 12);
-          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-sld-hint")].map((node) => {
+          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-sld-hint, .hero-sld-detail-close")].map((node) => {
             const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
             return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
           });
           return { small, count: ratios.length, minRatio: Math.min(...ratios) };
         });
         if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
-        if (legendText.count !== 9 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption and hint`);
+        if (legendText.count !== 16 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption, the hint and the 7 detail close buttons`);
 
         // Legend markers are line swatches, not boxes (audit U5): a hollow
         // square read as an unticked checkbox.
