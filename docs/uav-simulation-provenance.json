@@ -1,0 +1,243 @@
+{
+  "inputs": {
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_01.json": "6d5f253043e38798e1935ebf1eedf790c639fe87761b22c2d400ff17b67624f3",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_02.json": "2ba5cdeddd239dff79b0c78745f3d69e7166d1455072a3924d61d2cf47c7145d",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_03.json": "502a3a16079b4d34af68f1a0412ef485c57566040150630a13b79c3c1797a746",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_04.json": "b85ef8f8e9d051703537c43a36a371f5da6e6243a355a190fd7fa774047550c4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_05.json": "3b047ebc58f7286ec3af4630cbc35818f9a6c0d199eb053160a23b552ca7edd4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_06.json": "00e080a6b012a5fd44839b4665e107f1f77802958a7d4ecc85ae02be5bfde379",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_07.json": "ebdcc5e9ec9f901d84eab3832b8cecd5c77112610e46e2639572ce72b8314200",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_08.json": "1b20a7a4d9181a03ed719d00cedf2c66b50e5851d3cff7f3793261b6d4036826",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_09.json": "da5961b4faf1ce82f0c3fec7cf4ed74d74d6030d762caef15af43abd491c3a1b",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S1_box_10.json": "c9e02809741b9621d36065c1833b0e86f4feb625ef24c635d8c820025ba761cb",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_01.json": "c907d8393cbdfdee13cbe1ed86dd86c3f8625796862393547e9dbb6e3ae21381",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_02.json": "8a168579f7ea1d16409f627e13f04b8293b4f9454c921708bd25a0ca595a4b72",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_03.json": "1a3352f96ceccef703e8af5af6f09c9a9b3e859ffdcccd2a06ceb96cf02b44cd",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_04.json": "c703cd93397ca4123e25b94c08bbf86cec1534b23fb554be4d12cedb395b9ab9",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_05.json": "a77bdf514c477a4d88a7f7cf34dca71537f9231500f0c00da5f430bee20ed8b1",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_06.json": "eb2560016b6106d25182fc39f379204c632ae04ea57fcb0d22bf6d525b157852",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_07.json": "0175d2ae29f7bef82195e97dc7bcc390f3f518bb93c19303085346e5d1439739",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_08.json": "d94236fa73e85fb3d46e0ce2b491086fcc7c65824e4adbf604d66ee21a54f27f",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_09.json": "bd9eb2e759ea3d599e0d18e3ba16b9edcb6e59ef13b6aec8b357d0ce7719c2d4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S2_pillar_10.json": "87ea72b975a49a15d8734720a3a3b2f3752c0fbaf9a18e932a7d2624d7021b0e",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_01.json": "d5b873c86c63a5fc875bd021caed4fff20a92eeae8953bd8d902284d5e8d258d",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_02.json": "23e2695aff7a24e50c8d9f5523a56232208213c924a9e1a3a20f946af802b9a5",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_03.json": "66e8d3a091e7cf35fc9f057d242d871a3aa8cb01f10305364ee98d7dbb05d070",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_04.json": "baea15d7f0a168ae7a07e6a5cd945f0a16026a2644bd4c9e481c61e1640a1673",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_05.json": "3ea1cbf20c52dbb819aad41574f0b056d737091b27fb9a14df842ac0dceed076",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_06.json": "3abd544f2840272d5ebe8ba6611bb13f93effc92460ccc347c41ee1f7b11c5a1",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_07.json": "4359506b8bc6f0d093a84a1eb19afffcdc00382b43427a83577d7c3a3108df2c",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_08.json": "f9bf561174809b53cc0261985a15af78d8439b8b3a77f2cd4525165e4d91e18e",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_09.json": "f5dd4a2035b200342eb6c90924e2ca3847c8cc3b29afd628dd22a291b81b3ba2",
+    "ros2_ws/tools/phase0_trials/results/2026-10-02-inflation-0.7/S3_wall_10.json": "b603e58e3dd0b79fb58944b96e7c4c0596739ce43a7b968675e857358769fa2f",
+    "ros2_ws/tools/phase0_trials/results/2026-10-07-heldout-inputs/manifest.json": "09f658732237e4ebce0cfbb8bc1d6afde2e164f8b3006b35e3fe2077d57fd9de",
+    "ros2_ws/tools/phase0_trials/results/2026-10-07-heldout/S1_box_02.json": "47786d83f12fe5307d0c73d53d918e9be5c2c4fbdae08e9a291839c1dcca7747",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_01.json": "3e61a965ce12bedc7eb02dc5102a5aad645d8e8dd32de73e064603fa6cb29812",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_02.json": "986246e7242149969b894a68dbbdd517a15f9cefc7237e58ec21cab142a19228",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_03.json": "75c9e965adea821ede2c188dfea3e7a17d678e5b96bf967d3cc265d7ca056bc0",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_04.json": "9b7358d821c334ba27de512fafcb92d7bf6c2b954e92f29b15cda81bc7a3bff3",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_05.json": "33a6e2773910e2b1f948bb15be68d91828f338bd017af8a3d7d929c4414deaee",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_06.json": "52a9c372effadae5cd719f3b7edd0bf65dd019e967192a2cb03c86a6fd19c48a",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_07.json": "82fd0a658dfa9a8ce69aba98a5de239ff5769ce4dbd08e8dd3b445604c4570a2",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_08.json": "2859e02fe1ccb57f06328f640abd2cf136a77cee9b4e27646b90eac442868c23",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_09.json": "bb9e35d39d95a18538190f9a17e1b8ba60f87059956a182bca20bab2f274c802",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S1_box_10.json": "9deaa0d66dd71869ef97a66163c463666ee4d24478d0b470201c05531fe77129",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_01.json": "b819efdeef73fa07e500ec768a5465f0ab495d8b292ac26442f8a7c7e96f0e1c",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_02.json": "490cb7e8c310265f1951c26e1c2bd0097d58cdc86b749df2357dbdc1e3fb714f",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_03.json": "14b1f409171a0be0b6e7a82bc02791f8cab573efdc107caddec79876ffc66518",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_04.json": "39e23039d3a9c9a6453e2d5998a2c14d80d5436289d7edd68f49fab0876eb6b1",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_05.json": "31ca6134854ecbcc7c90c05c82baa7749df39043e32fb686dd47d5a2484bed15",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_06.json": "cfe264e6ac4cd402cdac7b31e16f333ace643f0503259067af9b73628dea277a",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_07.json": "cc4d3fb0e68cf0c77ab95bd403cb7f2de08baf43227fe5a3dd8d4c1a187e2126",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_08.json": "5166b56d5837375ed71f5093d8611fc52d9c8c5216ebbbee37ccdcb055f6df10",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_09.json": "42c8793af6ea67b53cb561d95fc61a0603bc0f4cb506b87a9c4c4e05b2aa4847",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S2_pillar_10.json": "f4ba3d6929fbf9bc7fe3657b910c8037038e382a2c4f821febe25e9ce4eb3394",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_01.json": "d28d6a414462ab9ace070f5a66f3aa485e390efbe9f05f2b6526433fbc31151e",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_02.json": "9cdbf7a8ad77ba6319aba9ca2f3ef0cf2a5f18dc9907050df6a7bf277c3f81bd",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_03.json": "73ec7a08c5e35badbb0f323e3eb43984358a94389107564b06cca57c93423dfa",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_04.json": "34b1ac63115172aeba64a99f1e408db2b5844999aa1bdfb3b8b4e236a7b7a10a",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_05.json": "0fa3672ba6a718bd525822695e57ebe1990a798836d272bd5f23a5a8afeb277b",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_06.json": "3e19b288060cf9bfd9d50e5d85702401e5267d7fb1caad5fb0314a8a9e2e05c5",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_07.json": "b1abd03acbc132464cc8f6f78ec934cf14901cf21d0bface90bcb6606c951110",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_08.json": "445dab2a02be978c81298f0a9ff7ae6cd811cca1290d62d1edea70025fc29832",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_09.json": "c663a49acaf1b5db69056059f4b4fc7d5ed6366e6ad5d6b341f32c1c72011fd6",
+    "ros2_ws/tools/phase0_trials/results/2026-10-04-depth-delay-0.4/S3_wall_10.json": "717ad46a63edaa3872408584c35ff3b8de873a5e8a228b4ebc9f2074cabd1e13",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_01.json": "3aacf91ffe4374d9a2944ba58d4b1937e2a4e3252725b428a0a8fd815d22cdc2",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_02.json": "9fbcf2b1f085101dd50bac1be6e7db662b8bf772d3f0e0806055e289325a865a",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_03.json": "f324abc621afccc494c3537aedc1c97b2505f7007f98b720436e58be738321b4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_04.json": "cffcda0ca3599d4c5768d18876b6c634d38f4c403300bc76a80e79ff12d9f711",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_05.json": "a9f765122110391b00892fdb2e08d4290ae0967be094093e23274890fbb214bc",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_06.json": "07c98fc1d8f707857f8bda3e88b09c7f9047d2f6b81828a2148614ecda451af9",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_07.json": "e3bc1e51a6388b7c6358aecde3e92704dc88cc8404907545a2d0814fe20a100f",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_08.json": "535133ca9a4d6b089e8fa2d5917374c39e4fbf5064a7aa4e4ab098d98370afe6",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_09.json": "f41ee33cc821d262ec73933d4f2341b98c6d7146b1e19e34e9daf0fb89d444d4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S1_box_10.json": "ec7da683acc6d41036a6522dbc733dfd2517e155f80e31008572800ddb5454f9",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_01.json": "ca7c724981584ab5d419bc01725f49a85fae4b95721ef0db600d6f46bebd7770",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_02.json": "131628ceb7cb0c72515a92d4fd490960be4cc11ac9d378f585cc43ebbdd29bfc",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_03.json": "b46f42cd58e26f7e185564e7bd4ab4ba12479c2607a5a8bbba14e64c444f0061",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_04.json": "ed5cb78db51552636b28315bd338315ff3b4354d80efb534e77d6a4610c065e4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_05.json": "80223649b245211d1cf3f041144141d02a68005aed8c2943a77f7977055a0725",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_06.json": "2e00a2e76bcfde1822304b26e221d5d8682f0c91d5a868aae03c627519b19b34",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_07.json": "8a9e52688f2b21fc896593db3ffc8c058258cbd28bd4ecc1c913ecd2d61cc13a",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_08.json": "590a930a2ecd9eff668e094a64bef792e5b917824c0355e50cd99d8fd9150468",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_09.json": "c00285580d6431cc622d0f85501078c5f644bc2549f754b9008948d38425eac3",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S2_pillar_10.json": "7f78ce2312fcaee2961cd6161f203e78cbcbe39b75e6b555e5ce8d123ea170df",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_01.json": "51b616eda05fb2f1a1c1156ef5148d66d3a76614a6ec290b8959bb28556c0dc2",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_02.json": "30939f6c83e2360cd65d826e1eb8b832c0e7f83ea6c07419bf650bf77c3a0ab4",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_03.json": "50d5788959c1dce3685b9ef80ce633f05647e8e2925525a09d915af7453141cf",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_04.json": "c25110dc63b0acc3be04558774e3488b0e60c893875a3c32cfe4cfeb1ea4e04c",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_05.json": "81fd99c89dcc31d6d2864ff81b60c1e0a22b299d68ff8a6099af129572f97d25",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_06.json": "01a2bf9ae0b69dbd66009354313d7e0d40b2861fae1242ff24147240b3e1ce0d",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_07.json": "41ce87b039f25cb73bd696bc3edbb94e0899ad9a7bc05666c3e40a9bd604a913",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_08.json": "9ae73df84ce41df94cb754ab8765e516e4e78ca978c8a50271691399fecab8fb",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_09.json": "ffbbf86ee959932087d241631a2e8b4e3ffc0c8ec1454420e800b54130b34205",
+    "ros2_ws/tools/phase0_trials/results/2026-10-05-stamp-aware-0.4/S3_wall_10.json": "c198b23fbf37a54b5c2a4b0cc1cad21c355dbbe44914d80e6365b8dee69743f9"
+  },
+  "exports": {
+    "baseline-box": {
+      "runs": [
+        "S1_box_01",
+        "S1_box_02",
+        "S1_box_03",
+        "S1_box_04",
+        "S1_box_05",
+        "S1_box_06",
+        "S1_box_07",
+        "S1_box_08",
+        "S1_box_09",
+        "S1_box_10"
+      ],
+      "clearance_min_m": 0.6109533533748711,
+      "geometry": {
+        "box": [
+          -0.3,
+          0.3,
+          3.7,
+          4.3
+        ],
+        "wall": [
+          -3.5,
+          -1.5,
+          6.9,
+          7.1
+        ],
+        "pillar": [
+          3.7,
+          4.3,
+          1.2,
+          1.8
+        ]
+      }
+    },
+    "baseline-pillar": {
+      "runs": [
+        "S2_pillar_01",
+        "S2_pillar_02",
+        "S2_pillar_03",
+        "S2_pillar_04",
+        "S2_pillar_05",
+        "S2_pillar_06",
+        "S2_pillar_07",
+        "S2_pillar_08",
+        "S2_pillar_09",
+        "S2_pillar_10"
+      ],
+      "clearance_min_m": 0.6357106259926759,
+      "geometry": {
+        "box": [
+          -0.3,
+          0.3,
+          3.7,
+          4.3
+        ],
+        "wall": [
+          -3.5,
+          -1.5,
+          6.9,
+          7.1
+        ],
+        "pillar": [
+          3.7,
+          4.3,
+          1.2,
+          1.8
+        ]
+      }
+    },
+    "baseline-wall": {
+      "runs": [
+        "S3_wall_01",
+        "S3_wall_02",
+        "S3_wall_03",
+        "S3_wall_04",
+        "S3_wall_05",
+        "S3_wall_06",
+        "S3_wall_07",
+        "S3_wall_08",
+        "S3_wall_09",
+        "S3_wall_10"
+      ],
+      "clearance_min_m": 0.573690683208295,
+      "geometry": {
+        "box": [
+          -0.3,
+          0.3,
+          3.7,
+          4.3
+        ],
+        "wall": [
+          -3.5,
+          -1.5,
+          6.9,
+          7.1
+        ],
+        "pillar": [
+          3.7,
+          4.3,
+          1.2,
+          1.8
+        ]
+      }
+    },
+    "heldout-box-02": {
+      "runs": [
+        "S1_box_02"
+      ],
+      "clearance_min_m": 0.40522154434333846,
+      "geometry": {
+        "box": [
+          0.0405,
+          0.7355,
+          4.0465,
+          4.6075
+        ],
+        "wall": [
+          -3.5,
+          -1.5,
+          6.9,
+          7.1
+        ],
+        "pillar": [
+          3.7,
+          4.3,
+          1.2,
+          1.8
+        ]
+      }
+    },
+    "2026-10-04-depth-delay-0.4": {
+      "runs": 30,
+      "arrivals": 22,
+      "under_clearance": 12,
+      "min_m": 0.08700000000000004
+    },
+    "2026-10-05-stamp-aware-0.4": {
+      "runs": 30,
+      "arrivals": 30,
+      "under_clearance": 0,
+      "min_m": 0.6080131577523632
+    }
+  },
+  "inflation_m": 0.7,
+  "animation": "4x, aligned at each run's first horizontal motion"
+}
