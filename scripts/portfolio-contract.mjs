@@ -946,13 +946,8 @@ const lastmodInstants = sitemapEntries.map((entry) => Date.parse(entry.lastmod))
 check(lastmodInstants.every(Number.isFinite), "every sitemap lastmod must parse as a real date");
 check(lastmodInstants.every((instant) => instant <= Date.now()), "no sitemap lastmod may be in the future");
 check(lastmodInstants.every((instant) => instant >= Date.parse("2025-01-01T00:00:00Z")), "sitemap lastmod values must be content dates, not placeholders");
-// One timestamp for every URL is the defect this gate exists for (all fifteen
-// carried a single `new Date()`), and the exact per-route oracle below is the
-// real protection. This coarse guard stays at "more than one value" on purpose:
-// a single future commit that touches every content file would legitimately
-// collapse the dates, and a three-distinct floor would then go red while the
-// oracle stayed honest.
-check(new Set(sitemapEntries.map((entry) => entry.lastmod)).size > 1, "sitemap lastmod must vary per page, not repeat one build timestamp");
+// A bulk content commit can legitimately give every route the same date.
+// Require each route's actual Git content date below, not artificial variety.
 for (const entry of sitemapEntries) {
   const route = new URL(entry.loc).pathname;
   const expected = gitLastModified(route);
