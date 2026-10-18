@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 // The hero artifact's interaction island. Hovering a component (or its legend
 // row) paints that component's linework in accent via CSS (:has); clicking a
@@ -76,7 +76,7 @@ const TARGETS: Target[] = [
   },
 ];
 
-export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd: string }) {
+export function FeaturedSldInteractive({ svg, plotEnd, stageAction }: { svg: string; plotEnd: string; stageAction?: ReactNode }) {
   const panelId = useId();
   const [active, setActive] = useState<TargetId | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
@@ -158,10 +158,15 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
               />
             ))}
           </span>
+          {/* the drawing's bottom-right corner is clear of art (x > 700, y > 690
+              of the 1200x800 canvas); below the 560.5px boundary CSS drops this
+              into a row under the stage instead */}
+          {stageAction}
         </div>
       </div>
-      <noscript><style>{".hero-sld-detail { display: none; } .hero-sld-hint { display: none; } .hero-sld-row-disclosure { visibility: hidden; }"}</style></noscript>
-      <p className="hero-sld-hint">Select a row to inspect the design basis.</p>
+      {/* Rows show names only; the drawing already prints each value and the
+          detail repeats it. Without JS there is no detail, so the values return. */}
+      <noscript><style>{".hero-sld-detail { display: none; } .hero-sld-row-disclosure { visibility: hidden; } .hero-sld-row-value { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; }"}</style></noscript>
       <div className="hero-sld-panel" style={{ "--plot-end": plotEnd } as CSSProperties}>
         <ul className="hero-sld-rows">
           {TARGETS.map((t, i) => (
@@ -183,6 +188,9 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
             </li>
           ))}
         </ul>
+        {/* collapsed until a row opens; all seven details share one cell, so
+            every open state has one height and switching never jumps */}
+        <div className="hero-sld-details">
         {TARGETS.map((t) => (
           <div
             className="hero-sld-detail"
@@ -199,6 +207,7 @@ export function FeaturedSldInteractive({ svg, plotEnd }: { svg: string; plotEnd:
             </button>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

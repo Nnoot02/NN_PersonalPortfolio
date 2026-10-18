@@ -44,8 +44,11 @@ try {
       await page.goto(base, { waitUntil: "networkidle" });
       await settle(page);
       if (legendMutant) await page.addStyleTag({ content: ".hero-artifact-figure[data-active] .hero-sld-rows { visibility: hidden !important; }" });
-      const hint = page.locator(".hero-sld-hint");
-      assert.equal(await hint.innerText(), "Select a row to inspect the design basis.");
+      // Hero room pass 2026-10-18: no hint line; rows are names only and the
+      // value stays in each row's accessible name, visually hidden.
+      assert.equal(await page.locator(".hero-sld-hint").count(), 0, "retired hint line must not return");
+      assert.ok(await page.locator(".hero-sld-row-value").first().evaluate(e => e.getBoundingClientRect().width) <= 1, "legend values must be visually hidden with JS on");
+      assert.equal(await page.getByRole("button", { name: "Supply 500 kVA · 400 V 3-ph", exact: true }).count(), 1, "legend row must keep its value in its accessible name");
       const actions = page.locator(".hero-actions");
       assert.equal(await actions.getByRole("link", { name: "View projects", exact: true }).getAttribute("href"), "/projects");
       if (width === 390) {
@@ -71,7 +74,6 @@ try {
         await page.keyboard.press("Enter");
         await focusAt(page, '.hero-sld-detail[data-target="supply"]');
         assert.equal(await row.getAttribute("aria-expanded"), "true");
-        assert.equal(await hint.innerText(), "Select a row to inspect the design basis.");
         assert.equal(await page.locator(".hero-sld-rows").isVisible(), true, "legend must remain selectable with detail open");
         await page.locator('.hero-sld-row[data-target="vd"]').click();
         assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').isVisible(), true, "switch directly between details");
@@ -82,7 +84,11 @@ try {
         assert.equal(await detail.evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
         await settle(page);
         const openHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
-        assert.ok(Math.abs(originalHeight - openHeight) <= 1, `detail changed figure height: ${originalHeight} -> ${openHeight}`);
+        // compact by default (2026-10-18): stacked, the hero box expands to show
+        // the detail; side by side the hero row holds the figure height
+        if (width > 960) assert.ok(Math.abs(originalHeight - openHeight) <= 1, `side-by-side detail changed figure height: ${originalHeight} -> ${openHeight}`);
+        else assert.ok(openHeight > originalHeight + 20, `stacked detail must expand the hero box: ${originalHeight} -> ${openHeight}`);
+        assert.equal(await page.locator('.hero-sld-row[data-target="supply"] .hero-sld-row-disclosure').evaluate(e => getComputedStyle(e).transform), "matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0)", "open row's + must turn into a close mark");
         if (dismissal === "Escape") await page.keyboard.press("Escape");
         else {
           const close = page.getByRole("button", { name: "Close the detail", exact: true });
@@ -92,6 +98,9 @@ try {
         }
         await focusAt(page, '.hero-sld-row[data-target="supply"]');
         assert.equal(await row.getAttribute("aria-expanded"), "false");
+        await settle(page);
+        const closedHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
+        assert.ok(Math.abs(originalHeight - closedHeight) <= 1, `closing must return the hero to its compact height: ${originalHeight} -> ${closedHeight}`);
       }
       if (width >= 768) {
         await page.locator('.hero-sld-hit[data-target="mains"]').click();
@@ -174,8 +183,9 @@ try {
   await noJS.goto(base, { waitUntil: "networkidle" });
   assert.equal(await noJS.getByRole("link", { name: "View projects", exact: true }).isVisible(), true);
   assert.equal(await noJS.locator(".hero-sld-row").count(), 7);
-  assert.equal(await noJS.locator(".hero-sld-hint").isVisible(), false, "no-JS page must not promise unavailable disclosure interaction");
-  assert.equal(await noJS.locator(".hero-sld-hint").evaluate(e => e.getBoundingClientRect().height), 0, "no-JS hint must not reserve an empty band");
+  // there is no detail without JS, so the names-only rows must show their values
+  assert.ok(await noJS.locator(".hero-sld-row-value").first().evaluate(e => e.getBoundingClientRect().width) > 1, "no-JS legend must show its values");
+  assert.equal(await noJS.locator(".hero-sld-row-disclosure").first().isVisible(), false, "no-JS page must not promise unavailable disclosure interaction");
   assert.equal(await noJS.locator(".hero-summary").evaluate(e => getComputedStyle(e).opacity), "1");
   await noJS.close();
   console.log(`UI/UX motion checks passed: ${checks} viewport/motion and case-study scenarios, plus Projects/no-JS checks.`);

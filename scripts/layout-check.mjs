@@ -325,14 +325,14 @@ async function main() {
           const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
             .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
             .filter((entry) => entry.size < 12);
-          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-sld-hint, .hero-sld-detail-close")].map((node) => {
+          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-artifact-full-size, .hero-sld-detail-close")].map((node) => {
             const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
             return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
           });
           return { small, count: ratios.length, minRatio: Math.min(...ratios) };
         });
         if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
-        if (legendText.count !== 16 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption, the hint and the 7 detail close buttons`);
+        if (legendText.count !== 16 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption, the full-size link and the 7 detail close buttons`);
 
         // Legend markers are line swatches, not boxes (audit U5): a hollow
         // square read as an unticked checkbox.
@@ -349,18 +349,38 @@ async function main() {
           const range = document.createRange();
           range.selectNodeContents(name);
           const text = range.getClientRects()[0];
-          return { target: row.dataset.target, wrapped: value.top > text.top + 2, drift: Math.round(value.left - text.left) };
-        }).filter((row) => row.wrapped && Math.abs(row.drift) > 1));
+          // names-only rows (2026-10-18): the value is visually hidden with JS on
+          return { target: row.dataset.target, hidden: value.width <= 1, wrapped: value.top > text.top + 2, drift: Math.round(value.left - text.left) };
+        }).filter((row) => !row.hidden && row.wrapped && Math.abs(row.drift) > 1));
         if (hanging.length) failures.push(`/ @ ${width}x${height}: wrapped legend values must hang under the name ${JSON.stringify(hanging)}`);
 
         // Hits are pointer-only (audit U4): the rows are the one keyboard path,
-        // so the figure holds exactly 7 sequential stops, not 14.
+        // so the figure holds the 7 row stops plus the full-size link on the
+        // stage (2026-10-18), not 14 targets.
         const heroStops = await page.evaluate(() => {
           const figure = document.querySelector(".hero-artifact-figure");
           const stops = [...figure.querySelectorAll("button, a[href], [tabindex]")].filter((el) => el.tabIndex >= 0 && getComputedStyle(el).visibility !== "hidden" && !el.closest(".hero-sld-detail"));
-          return { stops: stops.length, hitsHidden: figure.querySelector(".hero-sld-hits")?.getAttribute("aria-hidden") === "true" };
+          return { stops: stops.length, rows: stops.filter((el) => el.matches(".hero-sld-row")).length, link: stops.filter((el) => el.matches("a.hero-artifact-full-size")).length, hitsHidden: figure.querySelector(".hero-sld-hits")?.getAttribute("aria-hidden") === "true" };
         });
-        if (heroStops.stops !== 7 || !heroStops.hitsHidden) failures.push(`/ @ ${width}x${height}: hero figure must hold exactly the 7 row tab stops with the hits aria-hidden (${JSON.stringify(heroStops)})`);
+        if (heroStops.stops !== 8 || heroStops.rows !== 7 || heroStops.link !== 1 || !heroStops.hitsHidden) failures.push(`/ @ ${width}x${height}: hero figure must hold exactly the 7 row tab stops and the full-size link, with the hits aria-hidden (${JSON.stringify(heroStops)})`);
+
+        // Hero room pass 2026-10-18: the full-size link sits in the drawing's
+        // clear corner. It must cover no drawing text or tagged linework, no
+        // live hit area, and never reach into the panel; side by side, the
+        // drawing keeps at least 60% of the figure height (it had 43%).
+        const room = await page.evaluate(() => {
+          const R = (el) => el.getBoundingClientRect();
+          const meets = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+          const link = R(document.querySelector(".hero-artifact-full-size"));
+          const figure = R(document.querySelector(".hero-artifact-figure"));
+          const stage = R(document.querySelector(".hero-sld-stage"));
+          const panel = R(document.querySelector(".hero-sld-panel"));
+          const covered = [...document.querySelectorAll(".hero-sld svg text, .hero-sld svg [data-hit]")].filter((el) => meets(R(el), link)).map((el) => (el.textContent || el.getAttribute("data-hit")).slice(0, 24));
+          const hits = [...document.querySelectorAll(".hero-sld-hit")].filter((el) => getComputedStyle(el).visibility !== "hidden" && meets(R(el), link)).map((el) => el.dataset.target);
+          return { covered, hits, h: Math.round(link.height), intoPanel: link.bottom > panel.top + 1, inside: link.left >= figure.left - 1 && link.right <= figure.right + 1, share: stage.height / figure.height, figureW: figure.width };
+        });
+        if (room.covered.length || room.hits.length || room.intoPanel || !room.inside || room.h < 44) failures.push(`/ @ ${width}x${height}: full-size link must sit clear of the drawing's text, linework and hits, inside the figure and above the panel, at 44px (${JSON.stringify(room)})`);
+        if (width > 960 && room.figureW >= 560.5 && room.share < 0.6) failures.push(`/ @ ${width}x${height}: the drawing must keep at least 60% of the figure height side by side (got ${Math.round(room.share * 100)}%)`);
 
         // Stacked hero (<=960, audit U2): the drawing takes the figure's full
         // width at 3:2; it measured 185x123 at 390 when the legend squeezed it.
@@ -550,7 +570,8 @@ async function main() {
               others,
             };
           });
-          const columns = getComputedStyle(document.querySelector(".hero-sld-rows")).gridTemplateColumns.split(" ").length;
+          const rowsStyle = getComputedStyle(document.querySelector(".hero-sld-rows"));
+          const columns = `${rowsStyle.display} ${rowsStyle.flexWrap}`;
         // the interaction boundary must be one threshold, no gap: read it back
         // from the shipped CSSOM rather than trusting the source text
         const cqText = [...document.styleSheets].flatMap((sheet) => {
@@ -594,8 +615,9 @@ async function main() {
         if (cqPositive < 2 || cqNegated < 1 || /560px|561px/.test(revealGeo.cqText)) {
           failures.push(`/ @ ${width}x${height}: the interaction boundary must be one threshold with no gap (positive ${cqPositive}, negated ${cqNegated})`);
         }
-        if (revealGeo.columns !== (revealGeo.figureContentW >= 560.5 ? 2 : 1)) {
-          failures.push(`/ @ ${width}x${height}: reveal rows must use ${revealGeo.figureContentW >= 560.5 ? 2 : 1} column(s) at a ${Math.round(revealGeo.figureContentW)}px figure (got ${revealGeo.columns})`);
+        // names-only rows (2026-10-18) wrap as one list at every width
+        if (revealGeo.columns !== "flex wrap") {
+          failures.push(`/ @ ${width}x${height}: reveal rows must wrap as one flex list (got ${revealGeo.columns})`);
         }
         for (let a = 0; a < revealGeo.rows.length; a += 1) {
           for (let b = a + 1; b < revealGeo.rows.length; b += 1) {
@@ -754,9 +776,28 @@ async function main() {
             return { cls: el?.className ?? "", target: el?.getAttribute?.("data-target") ?? null, tabindex: el?.getAttribute?.("tabindex") ?? null };
           });
         };
+        // Compact by default (Nathan, 2026-10-18): the detail area is collapsed
+        // until a row opens. Side by side the hero row fixes the figure height;
+        // stacked, the figure grows by exactly the panel's growth and the
+        // drawing itself never changes.
+        const panelOf = () => page.evaluate(() => {
+          const p = document.querySelector(".hero-sld-panel").getBoundingClientRect();
+          const s = document.querySelector(".hero-sld-stage").getBoundingClientRect();
+          return { panel: Math.round(p.height), stage: `${Math.round(s.width)}x${Math.round(s.height)}` };
+        });
+        await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
+        const closedPanel = await panelOf();
         const rowFocus = await openFromRow("sup");
+        await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
         const rowOpenH = await heightOf();
-        if (Math.abs(rowOpenH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: the row path must not resize the figure (${beforeH} -> ${rowOpenH})`);
+        const openPanel = await panelOf();
+        if (openPanel.panel <= closedPanel.panel + 20) failures.push(`/ @ ${width}x${height}: opening a row must expand the panel (${closedPanel.panel} -> ${openPanel.panel})`);
+        if (width > 960 && Math.abs(rowOpenH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: side by side, the row path must not resize the figure (${beforeH} -> ${rowOpenH})`);
+        if (width <= 960) {
+          const grew = rowOpenH - beforeH;
+          if (Math.abs(grew - (openPanel.panel - closedPanel.panel)) > 1) failures.push(`/ @ ${width}x${height}: stacked, the figure must grow by the panel's growth (${grew} vs ${openPanel.panel - closedPanel.panel})`);
+          if (openPanel.stage !== closedPanel.stage) failures.push(`/ @ ${width}x${height}: stacked, opening must not resize the drawing (${closedPanel.stage} -> ${openPanel.stage})`);
+        }
         if (rowFocus.cls !== "hero-sld-detail" || rowFocus.target !== "sup" || rowFocus.tabindex !== "-1") {
           failures.push(`/ @ ${width}x${height}: opening from a row must move focus into the detail (${JSON.stringify(rowFocus)})`);
         }
@@ -2145,8 +2186,7 @@ async function main() {
   }
 
   // ---- hero reveal probes (re-cut 2026-09-20) ----------------------------
-  // 200% root text: rows inside the figure, details fit, panel height stable
-  // across every state (the reserved-height promise).
+  // 200% root text: rows inside the figure, details fit, one open height.
   {
     const enlargedPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await enlargedPage.goto(`${base}/`, { waitUntil: "networkidle" });
@@ -2168,11 +2208,16 @@ async function main() {
       }
       return { panelH: Math.round(panel.height), count: boxes.length, escapes: escapes.length, zero: zero.length, overlaps, visibleDetail: Boolean(visibleDetail) };
     });
+    // the panel animates open (2026-10-18): read each state once it settles
+    const settled = () => enlargedPage.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
+    await settled();
     states.push(await read());
     for (const t of ["supply", "mains", "vd", "device", "sup", "hai", "but"]) {
       await enlargedPage.click(`.hero-sld-hit[data-target="${t}"]`);
+      await settled();
       states.push(await read());
       await enlargedPage.click(`.hero-sld-hit[data-target="${t}"]`);
+      await settled();
     }
     await enlargedPage.close();
     for (const [i, st] of states.entries()) {
@@ -2180,8 +2225,11 @@ async function main() {
       if (st.escapes > 0) failures.push(`/ with 200% root text: state ${i} content escapes the figure (${JSON.stringify(st)})`);
       if (st.overlaps.length) failures.push(`/ with 200% root text: state ${i} rows overlap (${JSON.stringify(st.overlaps)})`);
     }
-    const heights = new Set(states.map((st) => st.panelH));
-    if (heights.size !== 1) failures.push(`/ with 200% root text: the panel must keep one height across states (got ${[...heights].join(", ")})`);
+    // compact by default (2026-10-18): closed is shorter, and every open state
+    // shares one height because all details stack in one cell
+    const heights = new Set(states.slice(1).map((st) => st.panelH));
+    if (heights.size !== 1) failures.push(`/ with 200% root text: every open state must share one panel height (got ${[...heights].join(", ")})`);
+    if (!(states[0].panelH < states[1].panelH)) failures.push(`/ with 200% root text: the closed panel must be shorter than an open one (${states[0].panelH} vs ${states[1].panelH})`);
   }
   // Reduced motion and print: the default frame, no animations.
   for (const [mode, label] of [["reduce", "reduced"], ["print", "print"]]) {
