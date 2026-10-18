@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import type { ReactNode } from "react";
 import { FeaturedSldInteractive } from "@/components/FeaturedSldInteractive";
 
 // Read the published artifact at build time so the strokes become DOM the CSS
@@ -14,6 +15,6 @@ if (!plotEndMatch) {
 }
 const plotEnd = plotEndMatch[1];
 
-export function FeaturedSldArtifact() {
-  return <FeaturedSldInteractive svg={sld} plotEnd={plotEnd} />;
+export function FeaturedSldArtifact({ stageAction }: { stageAction?: ReactNode }) {
+  return <FeaturedSldInteractive svg={sld} plotEnd={plotEnd} stageAction={stageAction} />;
 }

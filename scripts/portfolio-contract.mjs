@@ -76,7 +76,9 @@ check(!heroMedia.includes("miniature") && !heroMedia.includes("generated_images"
 // The hero figure links to the LV case study at every viewport (decision
 // 2026-09-02): on phones the diagram is unreadable and needs somewhere to go.
 check((heroMedia.match(/<a\b/g) ?? []).length === 2, "home hero media must contain case-study and full-size diagram links");
-const heroAnchor = heroMedia.match(/<a\b[^>]*>/)?.[0] ?? "";
+// The full-size link now sits in the drawing's corner, ahead of the caption in
+// source order, so find the caption anchor by its class.
+const heroAnchor = heroMedia.match(/<a\b[^>]*class="hero-artifact-caption"[^>]*>/)?.[0] ?? "";
 check(heroAnchor.includes('class="hero-artifact-caption"') && heroAnchor.includes('href="/projects/lv-cabling-design-commercial-complex"'), "home hero link must be the caption row (the drawing is click-to-reveal) and target the LV case study");
 // Site screening audit 2026-09-16, F4: the artifact states its name and action
 // visibly; the sr-only destination sentence was folded into the caption.
@@ -143,7 +145,12 @@ const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[
 const heroActions = hero.match(/<div class="hero-actions">[\s\S]*?<\/div>/)?.[0] ?? "";
 check(heroActions.includes('href="/projects"') && heroActions.includes("View projects"), "hero actions must offer View projects beside the resume");
 check(heroMedia.includes('class="hero-artifact-full-size text-link" href="/images/lv-cabling-sld.svg"'), "hero must offer direct diagram enlargement");
-check(heroMedia.includes("Select a row to inspect the design basis."), "hero diagram must explain its interactive legend");
+// Hero room pass 2026-10-18 (Nathan picked variant B): the link lives on the
+// drawing stage, the hint line is gone, and the rows are names only with the
+// value kept for screen readers and restored without JS.
+check(/class="hero-sld-stage"[\s\S]*?class="hero-artifact-full-size text-link"[\s\S]*?class="hero-sld-panel"/.test(heroMedia), "full-size diagram link must sit on the drawing stage, before the panel");
+check(!heroMedia.includes("hero-sld-hint") && !heroMedia.includes("Select a row to inspect the design basis."), "hero must not carry the retired hint line");
+check(/<noscript>[\s\S]*?\.hero-sld-row-value \{ position: static;[\s\S]*?<\/noscript>/.test(heroMedia), "no-JS hero must restore the legend values (there is no detail without JS)");
 check(hero.includes("Electrical Engineering Intern, Tindo Solar") && hero.includes("Aug 2026"), "home hero must contain the current-role credential as labelled fields");
 check((home.match(/Tindo Solar/g) ?? []).length === 1, "home must mention Tindo Solar once, inside the hero credential");
 // Site screening audit 2026-09-13, finding 1 (Nathan's call, 2026-09-16): the

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, ArrowUpRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { FeaturedSldArtifact } from "@/components/FeaturedSld";
 import { HomepageEpilogue } from "@/components/HomepageEpilogue";
 import { ProjectRow } from "@/components/ProjectRow";
@@ -77,14 +77,17 @@ export default function HomePage() {
         </div>
         <figure className="hero-image">
           <div className="hero-artifact">
-            <FeaturedSldArtifact />
+            <FeaturedSldArtifact
+              stageAction={
+                <a className="hero-artifact-full-size text-link" href="/images/lv-cabling-sld.svg" target="_blank" rel="noopener">
+                  Open the full-size diagram<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight size={14} aria-hidden="true" />
+                </a>
+              }
+            />
             <Link className="hero-artifact-caption" href="/projects/lv-cabling-design-commercial-complex">
               <span className="hero-artifact-caption-text">Commercial LV cabling design - 400 V, three tenancies</span>
               <span className="hero-artifact-action">Open the case study</span>
             </Link>
-            <a className="hero-artifact-full-size text-link" href="/images/lv-cabling-sld.svg" target="_blank" rel="noopener">
-              Open the full-size diagram<span className="sr-only"> (opens in a new tab)</span>
-            </a>
           </div>
         </figure>
       </section>
