@@ -16,6 +16,8 @@
     "test:contract": "node scripts/portfolio-contract.mjs",
     "test:layout": "node scripts/layout-check.mjs && node scripts/ui-ux-motion-check.mjs",
     "probe:redirects": "node scripts/canonical-host-probe.mjs",
+    "probe:anchors": "node scripts/markup-anchor-probe.mjs",
+    "probe:bands": "node scripts/section-band-map.mjs",
     "verify": "pnpm check && pnpm test:repo && pnpm check:repo && pnpm build && pnpm test:contract && pnpm test:layout"
   },
   "dependencies": {
