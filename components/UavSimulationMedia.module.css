@@ -1,0 +1,22 @@
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.figure { margin: 1.4rem 0 0; min-width: 0; }
+.figure video, .figure img { display: block; width: 100%; height: auto; background: var(--paper-deep); }
+.figure video { aspect-ratio: 4 / 3; }
+.figure figcaption { margin-top: .75rem; color: var(--muted); font-size: .85rem; line-height: 1.65; max-width: 62ch; }
+.figure h4 { color: var(--ink); font: 600 1.2rem/1.2 var(--display); text-transform: uppercase; margin: 0 0 .35rem; }
+.figure figcaption p { margin: .5rem 0; }
+.figure a { color: var(--accent-dark); text-decoration: underline; text-underline-offset: .2em; }
+.figure a, .figure summary { display: inline-block; padding: .65rem 0; min-height: 44px; }
+.figure summary { cursor: pointer; color: var(--ink); display: list-item; }
+.row { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+.row video { aspect-ratio: 19 / 14; }
+.row figcaption { margin: 0; }
+.comparison { margin-top: 1.5rem; }
+@media (max-width: 640px) {
+  .pair, .row { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}
+@media print {
+  .figure video, .figure summary { display: none; }
+  .row, .pair { display: block; }
+  .figure { break-inside: avoid; }
+}

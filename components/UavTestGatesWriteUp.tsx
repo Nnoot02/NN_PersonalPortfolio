@@ -1,3 +1,5 @@
+import { UavFaultResponse, UavResultsGallery } from "./UavSimulationMedia";
+
 export function UavTestGatesWriteUp() {
   return (
     <section className="writeup" aria-label="Phase 0 simulation evidence">
@@ -50,6 +52,8 @@ export function UavTestGatesWriteUp() {
           <figcaption>Scroll sideways to compare both batches on a narrow screen. All 60 trials are plotted, including the three held-out runs below the clearance requirement. Trial dates: baseline, 2 October 2026; held-out, 8 October 2026.</figcaption>
         </figure>
       </div>
+      <UavFaultResponse />
+      <UavResultsGallery />
       <div className="writeup-block">
         <h3>What held-out testing exposed</h3>
         <p>The frozen planner was tested on new obstacle positions and sizes without retuning, and the new geometry exposed two box runs at 0.41 m clearance and one pillar run at 0.48 m. Inflation protects the surfaces the camera has observed, so unseen obstacle depth can reduce clearance around corners.</p>

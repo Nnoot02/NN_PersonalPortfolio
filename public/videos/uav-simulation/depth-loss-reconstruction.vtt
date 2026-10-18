@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00.000 --> 00:06.000
+Reconstruction using the old code. The original failed trial was not recorded.
+
+00:06.000 --> 00:16.000
+Depth stream cut after takeoff. Without a watchdog, the old planner continues flying.
+
+00:16.000 --> 00:31.000
+The aircraft reaches the box and collides; its path continues beyond the obstacle.
+
+00:31.000 --> 00:35.100
+ArduPilot's crash check disarms the aircraft. Event times are approximate.

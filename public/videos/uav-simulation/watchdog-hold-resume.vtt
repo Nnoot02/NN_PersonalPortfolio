@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00.000 --> 00:10.500
+Revised code with a perception watchdog. The aircraft takes off.
+
+00:10.500 --> 00:13.000
+Depth stream deliberately cut.
+
+00:13.000 --> 00:23.000
+Perception loss detected. The aircraft holds position.
+
+00:23.000 --> 00:24.500
+Depth bridge restarted. Perception returns.
+
+00:24.500 --> 00:41.500
+The planner resumes obstacle avoidance and the aircraft continues to its goal.
+
+00:41.500 --> 00:44.600
+Goal reached. Event times are approximate.

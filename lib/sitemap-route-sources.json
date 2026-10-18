@@ -62,6 +62,8 @@
     "lib/projects.ts",
     "lib/project-index.ts",
     "components/UavTestGatesWriteUp.tsx",
+    "components/UavSimulationMedia.tsx",
+    "components/UavSimulationMedia.module.css",
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],
