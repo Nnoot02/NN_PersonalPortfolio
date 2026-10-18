@@ -9,6 +9,7 @@
     "build:og": "node scripts/build-og-card.mjs",
     "build:icons": "node scripts/build-icons.mjs",
     "build:resume": "node scripts/build-resume-pdf.mjs",
+    "build:workbench-images": "node scripts/build-workbench-images.mjs",
     "check": "tsc --noEmit",
     "check:repo": "node scripts/repo-hygiene.mjs",
     "test:repo": "node --test \"scripts/*.test.mjs\"",

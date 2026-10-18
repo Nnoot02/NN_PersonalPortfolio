@@ -579,14 +579,10 @@ check(!projectIndexSource.includes("projectIndexRelations") && !projectIndexSour
 check(projectIndexSource.includes("projectIndexRelation") && projectIndexSource.includes('sourceSlug: "lv-cabling-design-commercial-complex"'), "project-index source must expose singular LV-to-Solar relationship");
 check(!projectJourneys.includes("solar-manufacturing-dfma"), "manufacturing entry must not appear in project journeys");
 
-// DFMA is off the projects index until it has evidence (decision 2026-09-02),
-// so it must not carry a case-study number that makes it look like a gap.
-// React 19 SSR separates a literal from an adjacent interpolation with an empty
-// comment ("Case study <!-- -->04"), so strip those before matching or this
-// assertion is a false green that can never go red.
-const dfmaCaseStudy = renderedMain(readExport("/projects/solar-manufacturing-dfma.html")).replaceAll("<!-- -->", "");
-check(!/Case study 0\d/.test(dfmaCaseStudy), "pending DFMA case study must not render a case-study number");
-check(dfmaCaseStudy.includes('<p class="eyebrow">Case study</p>'), "pending DFMA case study must keep the plain Case study eyebrow");
+// Nathan, 2026-10-18: evidence-pending employer work stays unpublished.
+check(!existsSync(new URL("../out/projects/solar-manufacturing-dfma.html", import.meta.url)), "pending DFMA route must not be exported");
+check(!sitemap.includes("/projects/solar-manufacturing-dfma"), "sitemap must exclude pending DFMA work");
+check(publicFileSize("/images/solar-manufacturing.webp") < 500 * 1024, "unpublishing DFMA must retain the draft source image");
 for (const [slug, number] of [["lv-cabling-design-commercial-complex", "01"], ["solar-grid-connection-assessment", "02"], ["gps-denied-autonomous-uav", "03"]]) {
   check(renderedMain(readExport(`/projects/${slug}.html`)).includes(`Case study ${number}`), `${slug} must keep case-study number ${number}`);
 }
@@ -629,12 +625,6 @@ const caseOpenings = [
     slug: "gps-denied-autonomous-uav",
     role: "Systems planning and verification",
     outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
-    firstWriteUpId: null,
-  },
-  {
-    slug: "solar-manufacturing-dfma",
-    role: "Production and DFMA observer",
-    outcome: "I will publish once the copy passes employer review",
     firstWriteUpId: null,
   },
 ];
@@ -816,10 +806,6 @@ for (const [slug, rows] of Object.entries(caseSpecs)) {
     lastAt = at;
   }
 }
-const dfmaPage = renderedMain(readExport("/projects/solar-manufacturing-dfma.html"));
-check(dfmaPage.includes("tag-list"), "DFMA must keep the evidence chips (no spec data)");
-check(!dfmaPage.includes("case-spec"), "DFMA must not render the spec sheet");
-
 // PLAN v7 S2. The pinned strip: a duplicate, non-interactive readout pinned
 // under the header at >=1100px only. Markup is pinned so it cannot silently
 // gain focusables or lose its aria-hidden; the print block must hide it (a
@@ -960,13 +946,8 @@ const lastmodInstants = sitemapEntries.map((entry) => Date.parse(entry.lastmod))
 check(lastmodInstants.every(Number.isFinite), "every sitemap lastmod must parse as a real date");
 check(lastmodInstants.every((instant) => instant <= Date.now()), "no sitemap lastmod may be in the future");
 check(lastmodInstants.every((instant) => instant >= Date.parse("2025-01-01T00:00:00Z")), "sitemap lastmod values must be content dates, not placeholders");
-// One timestamp for every URL is the defect this gate exists for (all fifteen
-// carried a single `new Date()`), and the exact per-route oracle below is the
-// real protection. This coarse guard stays at "more than one value" on purpose:
-// a single future commit that touches every content file would legitimately
-// collapse the dates, and a three-distinct floor would then go red while the
-// oracle stayed honest.
-check(new Set(sitemapEntries.map((entry) => entry.lastmod)).size > 1, "sitemap lastmod must vary per page, not repeat one build timestamp");
+// A bulk content commit can legitimately give every route the same date.
+// Require each route's actual Git content date below, not artificial variety.
 for (const entry of sitemapEntries) {
   const route = new URL(entry.loc).pathname;
   const expected = gitLastModified(route);
@@ -1113,6 +1094,45 @@ for (const disclosure of [
 ]) {
   check(privacyPage.includes(disclosure), `privacy policy must keep the disclosure: ${disclosure}`);
 }
+
+// Site audit 2026-10-18: publication boundaries and machine-readable entry points.
+check(!resumeText.includes("30 km/h"), "resume must not restore the unmeasured RC speed claim");
+check(!home.includes('class="hero-proof"'), "homepage must retain treatment A until mobile evidence links are reconsidered");
+const solarAttribution = normalizeTextEntities(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")));
+check(!solarAttribution.includes("university-generated") && (solarAttribution.match(/TAFE SA/g) ?? []).length >= 3, "solar assessment must attribute all coursework references to TAFE SA");
+for (const route of ["profile", "resume", "workbench"]) {
+  const footer = readExport(`/${route}.html`).match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
+  check(new RegExp(`<a(?=[^>]*href="/${route}")(?=[^>]*aria-current="page")[^>]*>`).test(footer), `/${route}: footer must identify the current page`);
+}
+for (const [route, title] of [["projects", "Projects"], ["workbench", "Workbench"], ["profile", "Fact sheet"], ["about", "About"], ["resume", "Résumé"], ["contact", "Contact"]]) {
+  const document = readExport(`/${route}.html`);
+  check(ogTag(document, "title") === title, `/${route}: social title must identify this page`);
+}
+for (const route of ["/index", "/projects", "/workbench", "/profile", "/about", "/resume", "/contact", ...caseStudySlugs.map(slug => `/projects/${slug}`), ...detailSlugs.map(slug => `/workbench/${slug}`)]) {
+  const document = readExport(`${route}.html`);
+  const footer = document.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
+  check(/href="\/resume"/.test(footer), `${route}: footer must link the resume overview`);
+}
+for (const slug of detailSlugs) {
+  check(workbench.includes(`/images/thumbs/workbench-${slug}-600.webp 600w`) && workbench.includes(`/images/thumbs/workbench-${slug}-1200.webp 1200w`), `${slug}: list must offer both thumbnail sizes`);
+  for (const width of [600, 1200]) {
+    const budgetKiB = width === 600 ? 100 : 200;
+    check(publicFileSize(`/images/thumbs/workbench-${slug}-${width}.webp`) < budgetKiB * 1024, `${slug}: ${width}px thumbnail must stay below ${budgetKiB} KiB`);
+  }
+}
+for (const path of [...caseStudySlugs.map(slug => `/projects/${slug}.html`), ...detailSlugs.map(slug => `/workbench/${slug}.html`)]) {
+  const document = readExport(path);
+  check(/\.webp$/.test(ogTag(document, "image")), `${path}: social image must be raster WebP`);
+  check(Number(ogTag(document, "image:width")) >= 1200 && Number(ogTag(document, "image:height")) >= 630, `${path}: social image dimensions must describe a landscape card`);
+}
+for (const path of [...caseStudySlugs.map(slug => `/projects/${slug}.html`), ...detailSlugs.map(slug => `/workbench/${slug}.html`)]) {
+  const document = readExport(path);
+  const blocks = [...document.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+  check(blocks.some(block => block["@type"] === "CreativeWork" && Number.isFinite(Date.parse(block.dateModified))), `${path}: CreativeWork must carry a real modification date`);
+}
+check(exportedHeaders.includes("frame-ancestors 'none'") && exportedHeaders.includes("X-Frame-Options: DENY"), "headers must deny framing");
+check(exportedHeaders.includes("object-src 'none'") && exportedHeaders.includes("base-uri 'self'"), "headers must restrict embedded objects and base URLs");
+check(/\/images\/\*\r?\n  Cache-Control: public, max-age=3600, must-revalidate/.test(exportedHeaders), "mutable images must use bounded caching");
 
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));

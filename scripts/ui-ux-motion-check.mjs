@@ -62,7 +62,7 @@ try {
         assert.ok(await page.locator(`[id="${control}"]`).count() === 1, `disclosure target must be unique: ${control}`);
         assert.equal(await row.getAttribute("aria-expanded"), "false");
         assert.equal(await row.getAttribute("aria-pressed"), null, "disclosure must not also announce a toggle state");
-        if (width <= 720) assert.ok((await row.boundingBox()).height >= 44, "phone legend row misses 44px target");
+        assert.ok((await row.boundingBox()).height >= 44, "legend row misses 44px target");
       }
       const originalHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
       for (const dismissal of ["Escape", "button", "Escape"]) {
@@ -84,7 +84,12 @@ try {
         const openHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
         assert.ok(Math.abs(originalHeight - openHeight) <= 1, `detail changed figure height: ${originalHeight} -> ${openHeight}`);
         if (dismissal === "Escape") await page.keyboard.press("Escape");
-        else await page.getByRole("button", { name: "Close the detail", exact: true }).click();
+        else {
+          const close = page.getByRole("button", { name: "Close the detail", exact: true });
+          const box = await close.boundingBox();
+          assert.ok(box.width >= 44 && box.height >= 44, "detail close misses 44px target");
+          await close.click();
+        }
         await focusAt(page, '.hero-sld-row[data-target="supply"]');
         assert.equal(await row.getAttribute("aria-expanded"), "false");
       }

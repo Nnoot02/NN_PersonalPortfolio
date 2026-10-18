@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import type { WorkbenchEntry } from "@/lib/workbench";
@@ -9,7 +8,13 @@ export function WorkbenchEntryPreview({ entry, headingLevel: Heading = "h2" }: {
 
   return (
     <article className="workbench-preview" data-workbench-entry={entry.slug} data-requires-source={source ? "true" : undefined}>
-      <div className="workbench-preview-image"><Image src={entry.image} alt={entry.imageAlt} fill sizes="(max-width: 720px) 100vw, 50vw" /></div>
+      <div className="workbench-preview-image"><img
+        src={entry.previewImage}
+        srcSet={entry.previewSrcSet}
+        sizes="(max-width: 720px) calc(100vw - 40px), 40vw"
+        loading="lazy" decoding="async"
+        alt={entry.imageAlt} style={{ position: "absolute", width: "100%", height: "100%", inset: 0 }}
+      /></div>
       <div className="workbench-preview-copy">
         <p className="eyebrow" data-build-type>{entry.buildType}</p>
         <Heading><Link className="workbench-preview-link" href={`/workbench/${entry.slug}`} aria-describedby={actionId}>{entry.title}</Link></Heading>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { FooterNavLink } from "@/components/FooterNavLink";
 import { EnvelopeSimple, GithubLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { profile } from "@/lib/site";
 
@@ -10,10 +10,12 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
           <p className="footer-summary">NATHAN NO-OT · ADELAIDE, SA</p>
         </div>
         <div className="footer-links">
-          <Link href="/projects">Projects</Link>
-          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          <FooterNavLink href="/projects">Projects</FooterNavLink>
+          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} aria-hidden="true" /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} aria-hidden="true" /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
           <a href={profile.resumePath} target="_blank" rel="noopener">Résumé<span className="sr-only"> (PDF, opens in a new tab)</span></a>
-          <Link href="/workbench">Workbench</Link>
+          <FooterNavLink href="/workbench">Workbench</FooterNavLink>
+          <FooterNavLink href="/resume">Résumé overview</FooterNavLink>
         </div>
       </footer>
     );
@@ -32,17 +34,18 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
           anchor (portfolio-contract pins it), so append nothing after it. */}
       <div className="footer-links footer-links--grouped">
         <div className="footer-actions" data-footer-group="contact" role="group" aria-label="Contact and résumé">
-          <a href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={22} /> <span>Email</span></a>
-          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
-          {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          <a href={`mailto:${profile.contactEmail}`}><EnvelopeSimple size={22} aria-hidden="true" /> <span>Email</span></a>
+          {profile.links.linkedin ? <a href={profile.links.linkedin} target="_blank" rel="me noopener"><LinkedinLogo size={22} aria-hidden="true" /> <span>LinkedIn</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
+          {profile.links.github ? <a href={profile.links.github} target="_blank" rel="me noopener"><GithubLogo size={22} aria-hidden="true" /> <span>GitHub</span><span className="sr-only"> (opens in a new tab)</span></a> : null}
           <a href={profile.resumePath} target="_blank" rel="noopener">Résumé<span className="sr-only"> (PDF, opens in a new tab)</span></a>
         </div>
         <nav className="footer-site" data-footer-group="site" aria-label="Footer">
-          <Link href="/contact">Contact</Link>
-          <Link href="/projects">Projects</Link>
-          <Link href="/workbench">Workbench</Link>
+          <FooterNavLink href="/contact">Contact</FooterNavLink>
+          <FooterNavLink href="/projects">Projects</FooterNavLink>
+          <FooterNavLink href="/workbench">Workbench</FooterNavLink>
+          <FooterNavLink href="/resume">Résumé overview</FooterNavLink>
           <a href={profile.resumeTextPath}>Plain-text résumé</a>
-          <Link data-footer-utility href="/profile">Fact sheet</Link>
+          <FooterNavLink data-footer-utility href="/profile">Fact sheet</FooterNavLink>
         </nav>
       </div>
     </footer>

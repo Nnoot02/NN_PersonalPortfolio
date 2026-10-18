@@ -1,3 +1,4 @@
+import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
   title: "Résumé",
   description:
     "Electrical engineering student résumé focused on solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Résumé", description: "Electrical engineering student résumé focused on solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience.", url: "/resume" },
 };
 
 // Audit 2026-09-24, S1 (Nathan's call, option a): /profile is the fact sheet,
@@ -31,7 +33,7 @@ export default function ResumePage() {
         <h1>Solar power<br />{" "}student résumé.</h1>
         <p>This public résumé leads with solar power systems, grid integration, standards-based power design, and Australian solar manufacturing experience. Phone number and street address are left off the public copy.</p>
         <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
-          Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
+          Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} aria-hidden="true" />
         </a>
       </section>
       <section className="profile-summary" aria-labelledby="resume-contents-heading">

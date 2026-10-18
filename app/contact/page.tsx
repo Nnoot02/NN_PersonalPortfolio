@@ -1,3 +1,4 @@
+import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
 import { CopyEmailButton } from "@/components/CopyEmailButton";
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Email is the public contact path for student and internship conversations with Nathan, an electrical engineering student in Adelaide focused on solar power systems and grid integration.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Contact", description: "Email is the public contact path for student and internship conversations with Nathan, an electrical engineering student in Adelaide focused on solar power systems and grid integration.", url: "/contact" },
 };
 
 export default function ContactPage() {

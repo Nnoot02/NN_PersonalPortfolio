@@ -13,11 +13,18 @@ import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { projectStudyNext } from "@/lib/project-index";
 import { projects } from "@/lib/projects";
 import { profile, projectStructuredData, sharedOpenGraph } from "@/lib/site";
+import { routeLastModified } from "@/lib/route-last-modified";
 
 const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
   "solar-grid-connection-assessment": PvConnectionWriteUp,
   "gps-denied-autonomous-uav": UavTestGatesWriteUp,
+};
+
+const shareImages: Record<string, { url: string; width: number; height: number }> = {
+  "lv-cabling-design-commercial-complex": { url: "/images/project-index/lv-cabling-artifact.webp", width: 1280, height: 720 },
+  "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
+  "gps-denied-autonomous-uav": { url: "/images/gps-denied-uav.webp", width: 1920, height: 1080 },
 };
 
 // Write-up section links per case study (the ids live in the write-up
@@ -63,7 +70,7 @@ export async function generateMetadata({ params }: ProjectParams): Promise<Metad
       description: project.summary,
       type: "article",
       url: `/projects/${project.slug}`,
-      images: [{ url: project.image, alt: project.imageAlt }],
+      images: [{ ...shareImages[project.slug], type: "image/webp", alt: project.imageAlt }],
     },
   };
 }
@@ -80,7 +87,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
     <main id="main-content" tabIndex={-1}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectStructuredData(project)) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({ ...projectStructuredData(project), dateModified: routeLastModified(`/projects/${project.slug}`).toISOString() }) }}
       />
       <article className="case-study">
         <Link className="back-link" href="/projects"><ArrowLeft size={18} /> Project index</Link>
