@@ -214,7 +214,9 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .hero-sld-row[aria-expanded="true"] .hero-sld-row-name::before { height: 4px; }
 .hero-sld-row-value { color: var(--ink); font-weight: 400; }
 .hero-sld-detail { display: block; visibility: hidden; border-top: 1px solid var(--line); position: relative; min-height: 52px; padding: 8px 58px 8px 14px; }
-.hero-sld-detail-close { position: absolute; top: 4px; right: 6px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid transparent; background: none; color: var(--muted); font: 700 11px/1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; cursor: pointer; }
+/* The close glyph rests on --paper-deep at 11px/700: --muted measured 4.27:1 there
+   (2026-10-18 audit F1), so it rests on --ink like the row values (audit U1). */
+.hero-sld-detail-close { position: absolute; top: 4px; right: 6px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1px solid transparent; background: none; color: var(--ink); font: 700 11px/1 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; cursor: pointer; }
 .hero-sld-detail-close:hover { color: var(--accent-dark); border-color: var(--line); }
 .hero-sld-detail-close:focus-visible { color: var(--accent-dark); border-color: var(--line); outline: 2px solid var(--accent); outline-offset: 2px; }
 .hero-sld-detail-title { margin: 0 0 .2rem; font: 700 0.75rem/1.3 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; color: var(--accent-dark); }
