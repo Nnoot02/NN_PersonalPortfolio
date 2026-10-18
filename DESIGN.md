@@ -391,6 +391,13 @@ display roles; Barlow Condensed is never set as body copy.
 | Prose (about/contact) | Inter | 1.05rem | 400 | 1.65 | — | Sentence case. |
 | Tag | Inter | 0.75rem | 400 | — | 0.08em | Uppercase (short label). 12px is the floor, do not lower. |
 
+The CSS declares these roles as tokens in `app/globals.css :root` —
+`--text-<role>`, e.g. `--text-tag`, `--text-section-heading` — and rules
+reference the token instead of repeating its value (2026-10-18 audit F2).
+Sizes on page-specific and mobile-only surfaces (the case-study mobile clamps,
+and the `.9rem` / `.76rem` / `.85rem` one-offs) have no role here yet, so they
+stay literal until a role is declared for them.
+
 ### Principles
 
 - **Display line-height runs tight on purpose.** Single-line display may go as
