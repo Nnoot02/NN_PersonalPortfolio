@@ -1,3 +1,4 @@
+import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "Electrical and electronics engineering student in South Australia focused on standards-informed power design, embedded systems, manufacturing experience, and evidence-based engineering.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "About", description: "Electrical and electronics engineering student in South Australia focused on standards-informed power design, embedded systems, manufacturing experience, and evidence-based engineering.", url: "/about" },
 };
 
 // Audit 2026-09-24, A2 (Nathan's call): the story runs as a dated timeline,

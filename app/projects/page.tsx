@@ -1,3 +1,4 @@
+import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import { ProjectJourneyLanes } from "@/components/ProjectJourneyLanes";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
   title: "Projects",
   description:
     "Engineering projects moving from theory towards proof, with verified power studies, active embedded and autonomy work, and honest evidence boundaries.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Projects", description: "Engineering projects moving from theory towards proof, with verified power studies, active embedded and autonomy work, and honest evidence boundaries.", url: "/projects" },
 };
 
 export default function ProjectsPage() {

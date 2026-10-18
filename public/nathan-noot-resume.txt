@@ -119,7 +119,6 @@ ESP32 Drone and 3D-Printed RC Car
   station.
 - Designed parametric PET-CF drone airframes intended for 5 m drop survival
   while optimising toward a 3:1 thrust-to-weight ratio.
-- Built a 3D-printed RWD RC car reaching about 30 km/h on asphalt.
 - Designed a PWM motor speed controller for a 1000 KV BLDC motor on a 3S LiPo
   using LM324 op-amps and BC547 transistors.
 - Manufactured PLA-CF, PETG, and TPU parts to about +/-0.1 mm by tuning the

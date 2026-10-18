@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WorkbenchEvidenceGallery } from "@/components/WorkbenchEvidenceGallery";
-import { sharedOpenGraph } from "@/lib/site";
+import { absoluteUrl, profile, sharedOpenGraph } from "@/lib/site";
+import { routeLastModified } from "@/lib/route-last-modified";
 import { getWorkbenchEntry, workbenchEntries } from "@/lib/workbench";
 
 type WorkbenchParams = { params: Promise<{ slug: string }> };
@@ -16,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: WorkbenchParams): Promise<Metadata> {
   const entry = getWorkbenchEntry((await params).slug);
-  return entry ? { title: entry.title, description: entry.summary, keywords: entry.tags, openGraph: { ...sharedOpenGraph, title: entry.title, description: entry.summary, type: "article", url: `/workbench/${entry.slug}`, images: [{ url: entry.image, alt: entry.imageAlt }] } } : {};
+  return entry ? { title: entry.title, description: entry.summary, keywords: entry.tags, openGraph: { ...sharedOpenGraph, title: entry.title, description: entry.summary, type: "article", url: `/workbench/${entry.slug}`, images: [{ url: entry.shareImage, width: 1200, height: 630, type: "image/webp", alt: entry.imageAlt }] } } : {};
 }
 
 export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
@@ -28,6 +29,13 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
     <>
     <SiteHeader />
     <main id="main-content" tabIndex={-1}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org", "@type": "CreativeWork",
+        name: entry.title, description: entry.summary,
+        url: absoluteUrl(`/workbench/${entry.slug}`),
+        creator: { "@type": "Person", name: profile.name },
+        dateModified: routeLastModified(`/workbench/${entry.slug}`).toISOString(),
+      }) }} />
       <article className="workbench-detail" data-workbench-entry={entry.slug} data-requires-source={source ? "true" : undefined}>
         <Link className="back-link" href="/workbench"><ArrowLeft size={18} /> Workbench</Link>
         <p className="eyebrow" data-build-type>{entry.buildType}</p>

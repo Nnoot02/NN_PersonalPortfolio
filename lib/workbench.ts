@@ -35,6 +35,9 @@ type WorkbenchEntryBase = {
   tags: string[];
   image: string;
   imageAlt: string;
+  previewImage: string;
+  previewSrcSet: string;
+  shareImage: string;
   evidence: WorkbenchEvidence[];
 };
 
@@ -66,6 +69,9 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     nextIteration: "Add TPU gaskets, finish the electronics enclosure, and run a repeatable airflow test.",
     tags: ["Inventor", "3D printing", "Bench test"],
     image: "/images/workbench/bench-fume-extractor/bench-fume-extractor.webp",
+    previewImage: "/images/thumbs/workbench-bench-fume-extractor-600.webp",
+    previewSrcSet: "/images/thumbs/workbench-bench-fume-extractor-600.webp 600w, /images/thumbs/workbench-bench-fume-extractor-1200.webp 1200w",
+    shareImage: "/images/share/workbench-bench-fume-extractor.webp",
     imageAlt: "Blue 3D-printed bench fume extractor with a square front grille on an electronics workbench",
     evidence: [
       {
@@ -95,6 +101,9 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     nextIteration: "Review tyre choice and overall build quality, then investigate gearbox meshing and noise.",
     tags: ["3D printing", "RC", "ESP32"],
     image: "/images/workbench/tarmo5/tarmo5.webp",
+    previewImage: "/images/thumbs/workbench-tarmo5-600.webp",
+    previewSrcSet: "/images/thumbs/workbench-tarmo5-600.webp 600w, /images/thumbs/workbench-tarmo5-1200.webp 1200w",
+    shareImage: "/images/share/workbench-tarmo5.webp",
     imageAlt: "Partly assembled 3D-printed TARMO5 RC car with visible wiring and a handheld transmitter",
     evidence: [
       {
@@ -124,6 +133,9 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     nextIteration: "Complete battery-powered autonomous operation and add phone-based manual control.",
     tags: ["Microcontrollers", "Assembly", "Programming"],
     image: "/images/workbench/sesame-robot/sesame-robot-pose.webp",
+    previewImage: "/images/thumbs/workbench-sesame-robot-600.webp",
+    previewSrcSet: "/images/thumbs/workbench-sesame-robot-600.webp 600w, /images/thumbs/workbench-sesame-robot-1200.webp 1200w",
+    shareImage: "/images/share/workbench-sesame-robot.webp",
     imageAlt: "Small assembled Sesame Robot posed with its legs and arm mechanisms visible",
     evidence: [
       {
@@ -153,6 +165,9 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     nextIteration: "Design a stiffer, more robust arm from scratch.",
     tags: ["Servos", "Joystick control", "Microcontrollers"],
     image: "/images/workbench/servo-mini-arm/servo-mini-arm.webp",
+    previewImage: "/images/thumbs/workbench-servo-mini-arm-600.webp",
+    previewSrcSet: "/images/thumbs/workbench-servo-mini-arm-600.webp 600w, /images/thumbs/workbench-servo-mini-arm-1200.webp 1200w",
+    shareImage: "/images/share/workbench-servo-mini-arm.webp",
     imageAlt: "Printed Servo Mini Arm connected to a breadboard-based joystick control circuit",
     evidence: [
       {

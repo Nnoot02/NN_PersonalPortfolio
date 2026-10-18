@@ -65,13 +65,6 @@
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],
-  "/projects/solar-manufacturing-dfma": [
-    "app/projects/[slug]/page.tsx",
-    "lib/projects.ts",
-    "lib/project-index.ts",
-    "components/CaseOpening.tsx",
-    "components/CaseSpec.tsx"
-  ],
   "/workbench/bench-fume-extractor": [
     "app/workbench/[slug]/page.tsx",
     "lib/workbench.ts",

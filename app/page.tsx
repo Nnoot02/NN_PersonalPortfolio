@@ -68,10 +68,10 @@ export default function HomePage() {
           </dl>
           <div className="hero-actions">
             <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
-              Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
+              Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} aria-hidden="true" />
             </a>
             <Link className="button button-secondary" href="/projects">
-              View projects <ArrowRight size={20} />
+              View projects <ArrowRight size={20} aria-hidden="true" />
             </Link>
           </div>
         </div>

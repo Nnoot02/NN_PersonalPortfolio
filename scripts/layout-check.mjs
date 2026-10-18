@@ -32,10 +32,6 @@ const ROUTES = FAST ? (process.env.LAYOUT_ROUTES?.split(",") ?? ["/"]) : [
   "/projects/solar-grid-connection-assessment",
   "/projects/lv-cabling-design-commercial-complex",
   "/projects/gps-denied-autonomous-uav",
-  // Published route, in the sitemap, and it carries the longest title word on
-  // the site ("Manufacturing"). It was outside this sweep, so the heading
-  // word-break defect went unmeasured there; added 2026-09-04.
-  "/projects/solar-manufacturing-dfma",
   "/workbench/bench-fume-extractor",
   // OAuth branding pages (2026-09-23): the Google Cloud project's Branding page
   // asks for a homepage URL and a privacy policy URL before the OAuth client can
@@ -327,14 +323,14 @@ async function main() {
           const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
             .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
             .filter((entry) => entry.size < 12);
-          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text")].map((node) => {
+          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-sld-hint")].map((node) => {
             const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
             return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
           });
           return { small, count: ratios.length, minRatio: Math.min(...ratios) };
         });
         if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
-        if (legendText.count !== 8 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values and the caption`);
+        if (legendText.count !== 9 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption and hint`);
 
         // Legend markers are line swatches, not boxes (audit U5): a hollow
         // square read as an unticked checkbox.

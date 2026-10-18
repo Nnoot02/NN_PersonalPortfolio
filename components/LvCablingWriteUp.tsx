@@ -164,7 +164,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
           and lighting. Nominal-current grading (125 A, then 40 to 50 A, then
           10 to 20 A) gives
           current discrimination; full selectivity is to be confirmed against
-          manufacturer time–current curves, a stated limitation of scope.
+          manufacturer time-current curves, a stated limitation of scope.
         </p>
       </div>
 

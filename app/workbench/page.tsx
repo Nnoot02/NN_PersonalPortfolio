@@ -1,3 +1,4 @@
+import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -7,6 +8,7 @@ import { workbenchEntries } from "@/lib/workbench";
 export const metadata: Metadata = {
   title: "Workbench",
   description: "Personal engineering bench builds, labelled with authorship, evidence, limitations, and next iterations.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Workbench", description: "Personal engineering bench builds, labelled with authorship, evidence, limitations, and next iterations.", url: "/workbench" },
 };
 
 export default function WorkbenchPage() {

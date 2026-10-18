@@ -1,3 +1,4 @@
+import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   title: "Fact sheet",
   description:
     "Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Fact sheet", description: "Plain-text profile for electrical-engineering student and internship opportunities in solar power systems and grid integration.", url: "/profile" },
 };
 
 const profileStructuredData = {
@@ -36,10 +38,10 @@ export default function ProfilePage() {
         <p>{profile.summary}</p>
         <div className="hero-actions">
           <Link className="button button-primary" href="/projects">
-            Review evidence <ArrowRight size={20} />
+            Review evidence <ArrowRight size={20} aria-hidden="true" />
           </Link>
           <a className="button button-secondary" href={profile.resumePath} target="_blank" rel="noopener">
-            Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} />
+            Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} aria-hidden="true" />
           </a>
         </div>
       </section>

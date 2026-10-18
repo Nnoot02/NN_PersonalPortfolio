@@ -90,7 +90,7 @@ export const projects: Project[] = [
     result:
       "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
-      "Complete. The assessment and its clause-level citations are published; coursework is university-generated and unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
+      "Complete. The assessment and its clause-level citations are published; the TAFE SA coursework is unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
   },
   {
     slug: "gps-denied-autonomous-uav",
@@ -120,25 +120,7 @@ export const projects: Project[] = [
       "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials. Three held-out trials fell below the 0.5 m centre-clearance requirement, so final clearance validation will continue in Phase 3/HITL following my advisor's review.",
     evidenceStatus: "Results cover simulation only; clearance, real VIO, Raspberry Pi 5 timing and flight performance still need validation.",
   },
-  {
-    slug: "solar-manufacturing-dfma",
-    title: "Solar Manufacturing & DFMA",
-    summary:
-      "Production experience read through design for manufacture, process reliability, and systems thinking.",
-    image: "/images/solar-manufacturing.webp",
-    imageAlt: "Photovoltaic module moving through a precision manufacturing line",
-    scope: "DFMA, process, manufacturing",
-    role: "Production and DFMA observer",
-    status: "Evidence pending",
-    tags: ["DFMA", "Process design", "Manufacturing"],
-    problem:
-      "Translate solar manufacturing work into public engineering evidence without disclosing employer-sensitive process details.",
-    approach:
-      "Describe manufacturing constraints, process reliability, quality thinking, operator experience, and DFMA lessons at a sanitised level.",
-    result:
-      "I will publish once the copy passes employer review. The useful outcome is a clear link between production work and engineering judgement.",
-    evidenceStatus: "Sanitised public details and defensible examples are pending.",
-  },
+
 ];
 
 // Featured projects for the Home and Profile pages, a maximum of three,
