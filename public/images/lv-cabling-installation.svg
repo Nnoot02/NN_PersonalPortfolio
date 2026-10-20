@@ -109,10 +109,7 @@
 <rect x="628.0" y="328.4" width="20" height="24" fill="#f3f0e9" stroke="#242321" stroke-width="2" data-hit="device"/>
 <line x1="638.0" y1="334.4" x2="643.0" y2="344.4" stroke="#242321" stroke-width="1.8"/>
 <circle cx="643.3" cy="337.6" r="3.4" fill="none" stroke="#9f3510" stroke-width="1.8"/>
-<text x="650.3" y="340.6" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="10" font-weight="700" fill="#9f3510">MEN</text>
-<text x="619.3" y="307.6" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#6d6962" letter-spacing="1">METERING</text>
 <line x1="599.1" y1="369.0" x2="656.3" y2="402.0" stroke="#c84b1a" stroke-width="1.6" stroke-dasharray="7 5" />
-<text x="627.7" y="403.5" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="700" fill="#c84b1a" text-anchor="middle">1000 mm clear</text>
 <line x1="634.4" y1="372.4" x2="515.3" y2="521.5" stroke="#242321" stroke-width="1.8" stroke-dasharray="9 6" data-hit="sup" />
 <line x1="515.3" y1="521.5" x2="514.3" y2="483.5" stroke="#242321" stroke-width="1.8" data-hit="sup" />
 <line x1="634.4" y1="372.4" x2="566.7" y2="551.2" stroke="#242321" stroke-width="1.8" stroke-dasharray="9 6" data-hit="hai" />
@@ -128,8 +125,6 @@
 <line x1="703.0" y1="337.2" x2="703.0" y2="337.2" stroke="#f3f0e9" stroke-width="0" />
 <line x1="514.3" y1="446.1" x2="514.3" y2="459.3" stroke="#242321" stroke-width="2" data-hit="sup" />
 <line x1="703.0" y1="337.2" x2="514.3" y2="446.1" stroke="#242321" stroke-width="2" data-hit="sup" />
-<rect x="501.0" y="449.2" width="26" height="12" fill="#f3f0e9" stroke="#242321" stroke-width="1.1"/>
-<text x="514.0" y="459.2" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="10" font-weight="700" fill="#242321" text-anchor="middle" letter-spacing="0.8">SUP</text>
 <polygon points="560.1,483.6 577.2,493.5 569.6,497.9 552.4,488.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="hai" />
 <polygon points="577.2,515.5 569.6,519.9 569.6,497.9 577.2,493.5" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="hai" />
 <polygon points="552.4,510.0 569.6,519.9 569.6,497.9 552.4,488.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="hai" />
@@ -139,8 +134,6 @@
 <line x1="754.4" y1="366.9" x2="754.4" y2="366.9" stroke="#f3f0e9" stroke-width="0" />
 <line x1="565.8" y1="475.8" x2="565.8" y2="489.0" stroke="#242321" stroke-width="2" data-hit="hai" />
 <line x1="754.4" y1="366.9" x2="565.8" y2="475.8" stroke="#242321" stroke-width="2" data-hit="hai" />
-<rect x="552.4" y="478.9" width="26" height="12" fill="#f3f0e9" stroke="#242321" stroke-width="1.1"/>
-<text x="565.4" y="488.9" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="10" font-weight="700" fill="#242321" text-anchor="middle" letter-spacing="0.8">HAI</text>
 <polygon points="617.2,516.6 634.4,526.5 626.8,530.9 609.6,521.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="but" />
 <polygon points="634.4,548.5 626.8,552.9 626.8,530.9 634.4,526.5" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="but" />
 <polygon points="609.6,543.0 626.8,552.9 626.8,530.9 609.6,521.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="but" />
@@ -150,8 +143,6 @@
 <line x1="811.6" y1="399.9" x2="811.6" y2="399.9" stroke="#f3f0e9" stroke-width="0" />
 <line x1="622.9" y1="508.8" x2="622.9" y2="522.0" stroke="#242321" stroke-width="2" data-hit="but" />
 <line x1="811.6" y1="399.9" x2="622.9" y2="508.8" stroke="#242321" stroke-width="2" data-hit="but" />
-<rect x="609.6" y="512.0" width="26" height="12" fill="#f3f0e9" stroke="#242321" stroke-width="1.1"/>
-<text x="622.6" y="522.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="10" font-weight="700" fill="#242321" text-anchor="middle" letter-spacing="0.8">BUT</text>
 <line x1="240.8" y1="214.1" x2="250.9" y2="213.8" stroke="#242321" stroke-width="2.6" data-hit="mains" />
 <line x1="250.9" y1="216.0" x2="271.4" y2="248.7" stroke="#242321" stroke-width="2.6" data-hit="mains" />
 <line x1="271.4" y1="249.1" x2="545.8" y2="407.5" stroke="#242321" stroke-width="2.6" stroke-dasharray="10 7" data-hit="mains" />
@@ -166,13 +157,8 @@
 <line x1="672.6" y1="336.3" x2="685.6" y2="336.3" stroke="#242321" stroke-width="1.8"/>
 <line x1="674.6" y1="340.3" x2="683.6" y2="340.3" stroke="#242321" stroke-width="1.8"/>
 <line x1="676.6" y1="344.3" x2="681.6" y2="344.3" stroke="#242321" stroke-width="1.8"/>
-<text x="691.1" y="332.3" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="400" fill="#6d6962">main earth electrode</text>
-<text x="691.1" y="346.3" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="400" fill="#9f3510">6 mm² main earth to bar</text>
+<text x="693.1" y="340.3" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="400" fill="#6d6962">main earth electrode</text>
 <line x1="631.5" y1="340.0" x2="675.3" y2="351.0" stroke="#242321" stroke-width="2" stroke-dasharray="2 5" data-hit="device" />
-<line x1="595.3" y1="305.9" x2="615.3" y2="317.4" stroke="#9f3510" stroke-width="2.6"/>
-<circle cx="615.3" cy="317.4" r="2.6" fill="#9f3510"/>
-<polygon points="615.3,317.4 606.3,313.4 606.3,321.4" fill="#9f3510"/>
-<text x="583.9" y="290.5" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="16" font-weight="700" fill="#9f3510" text-anchor="middle">8.0 kA</text>
 <line x1="223.8" y1="260.8" x2="502.0" y2="421.4" stroke="#6d6962" stroke-width="1.4"/>
 <line x1="223.8" y1="254.8" x2="223.8" y2="266.8" stroke="#6d6962" stroke-width="1.4"/>
 <line x1="223.8" y1="260.8" x2="223.8" y2="230.8" stroke="#6d6962" stroke-width="1" stroke-dasharray="3 4"/>
@@ -180,10 +166,10 @@
 <line x1="502.0" y1="421.4" x2="502.0" y2="391.4" stroke="#6d6962" stroke-width="1" stroke-dasharray="3 4"/>
 <rect x="333.9" y="347.1" width="58" height="21" fill="#f3f0e9"/>
 <text x="362.9" y="363.1" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="18" font-weight="700" fill="#6d6962" text-anchor="middle">15 m buried</text>
-<line x1="524.8" y1="399.4" x2="524.8" y2="420.3" stroke="#6d6962" stroke-width="1.2"/>
-<line x1="519.8" y1="399.4" x2="529.8" y2="399.4" stroke="#6d6962" stroke-width="1.2"/>
-<line x1="519.8" y1="420.3" x2="529.8" y2="420.3" stroke="#6d6962" stroke-width="1.2"/>
-<text x="534.8" y="413.9" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="400" fill="#6d6962">600 cover</text>
+<line x1="265.7" y1="249.8" x2="265.7" y2="270.7" stroke="#6d6962" stroke-width="1.2"/>
+<line x1="260.7" y1="249.8" x2="270.7" y2="249.8" stroke="#6d6962" stroke-width="1.2"/>
+<line x1="260.7" y1="270.7" x2="270.7" y2="270.7" stroke="#6d6962" stroke-width="1.2"/>
+<text x="275.7" y="264.2" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="400" fill="#6d6962">600 cover</text>
 <text x="60.0" y="66.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="23" font-weight="700" fill="#242321">500 kVA padmount substation</text>
 <text x="60.0" y="95.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">11 kV RMU &#183; 400 V 3-phase</text>
 <text x="60.0" y="120.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">PFC 15 kA at transformer</text>
@@ -198,9 +184,10 @@
 <text x="60.0" y="424.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">PFC 8.0 kA &#183; MEN at neutral bar</text>
 <text x="60.0" y="449.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">breaking capacity 10 kA</text>
 <text x="60.0" y="474.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">switchroom, not in a tenancy</text>
-<text x="60.0" y="499.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">communal finals + HWS at the MSB</text>
+<text x="60.0" y="499.0" font-family="Consolas,'Courier New',monospace" font-size="17" font-weight="400" fill="#9f3510">8.0 kA fault · 1000 mm clear in front</text>
+<text x="60.0" y="524.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">communal finals + HWS at the MSB</text>
 <polyline points="276.0,392.0 589.9,318.8 623.9,326.8" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="623.9" cy="326.8" r="2.6" fill="#6d6962" />
-<text x="60.0" y="524.0" font-family="Consolas,'Courier New',monospace" font-size="17" font-weight="400" fill="#9f3510">6 mm&#178; Cu earth core: supply to MSB bar</text>
+<text x="60.0" y="549.0" font-family="Consolas,'Courier New',monospace" font-size="17" font-weight="400" fill="#9f3510">6 mm&#178; Cu earth core: supply to MSB bar</text>
 <polyline points="812.0,464.0 554.3,461.9 514.3,465.9" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="3 3" /><circle cx="514.3" cy="465.9" r="2.6" fill="#6d6962" />
 <rect x="804" y="457" width="4" height="14" fill="#9f3510"/>
 <text x="822.0" y="470.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#242321">SUP-DB &#183; supermarket &#183; 40 A</text>
@@ -249,8 +236,8 @@
 <text x="1000.0" y="686.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="400" fill="#6d6962">5 HD conduits: A B C N E</text>
 <text x="1000.0" y="708.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="400" fill="#6d6962">ABC conduits in trefoil, + N + E</text>
 <text x="1000.0" y="730.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="400" fill="#6d6962">risers at kiosk + entry</text>
-<circle cx="506.7" cy="392.2" r="9" fill="#f3f0e9" stroke="#242321" stroke-width="1.4"/>
-<text x="506.7" y="396.2" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#242321" text-anchor="middle">A</text>
+<circle cx="388.6" cy="326.2" r="9" fill="#f3f0e9" stroke="#242321" stroke-width="1.4"/>
+<text x="388.6" y="330.2" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#242321" text-anchor="middle">A</text>
 <circle cx="718" cy="760" r="9" fill="#f3f0e9" stroke="#242321" stroke-width="1.4"/>
 <text x="718.0" y="764.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#242321" text-anchor="middle">A</text>
 <text x="60.0" y="762.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="16" font-weight="400" fill="#6d6962">Cutaway - roof removed &#183; arrangement indicative &#183; not to scale</text>
