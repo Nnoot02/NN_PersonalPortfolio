@@ -17,7 +17,7 @@ export default function ProjectsPage() {
     <SiteHeader />
     <main id="main-content" tabIndex={-1}>
       <section className="page-hero projects-hero">
-        <h1>Systems, taken from theory towards proof.</h1>
+        <h1>Projects</h1>
         <p>
           Completed power studies sit beside active embedded and autonomy work.
           Each project shows what I decided, what I produced, and where the evidence currently stops.
