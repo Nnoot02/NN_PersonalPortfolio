@@ -14,7 +14,7 @@ const sections: WriteUpSection[] = [
 ];
 
 const finalsSchedule = [
-  ["Lighting", "26", "5.0", "10", "1.5 mm²", "11.2", "1.87 %", "1.5 mm²"],
+  ["Lighting", "26", "5.0", "10", "1.5 mm²", "11.2", "1.66 %", "1.5 mm²"],
   ["Power (10 A GPO)", "24", "10", "20", "4 mm²", "21.4", "1.17 %", "2.5 mm²"],
   ["Power >10 A (15 A socket)", "15", "15", "20", "4 mm²", "21.4", "1.10 %", "2.5 mm²"],
   ["Hot water service", "18", "15.7", "20", "4 mm²", "21.4", "1.37 %", "2.5 mm²"],
@@ -146,7 +146,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
         </div>
         <p>
           All Iz ≥ In and every voltage drop is within budget; the worst-case total
-          path (mains + butcher submain + lighting final) sums to 3.2 % against the
+          path (mains + butcher submain + lighting final) sums to 3.0 % against the
           5 % limit.
         </p>
       </div>
