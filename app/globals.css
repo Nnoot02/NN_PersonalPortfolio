@@ -626,15 +626,23 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-lede { max-width: 760px; color: var(--muted); font-size: var(--text-case-lede); line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
 /* LV design views: the normative one-line diagram and an isometric installation
-   view of the same design, as two panels of one figure. Both SVGs are inline, so
-   hover paints a target's own linework through :has, the same language the hero
-   artifact uses. The hidden panel stays in the DOM: switching costs no layout. */
+   view of the same design, as two panels of one figure. The switch is a pair of
+   visually hidden radios, so the views work with no JavaScript at all and both
+   drawings appear in the HTML exactly once. Hover paint uses :has, the same
+   language the hero artifact uses. */
 .lv-views { background: var(--paper-deep); border: 1px solid var(--line); }
-.lv-views-tabs { display: flex; flex-wrap: wrap; gap: .1rem; border-bottom: 1px solid var(--line); }
-.lv-view-tab { min-height: 44px; padding: .55rem 1rem; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
+.lv-view-radio { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
+.lv-view-switch { display: flex; flex-wrap: wrap; gap: .1rem; border-bottom: 1px solid var(--line); }
+.lv-view-tab { align-items: center; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; display: inline-flex; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; min-height: 44px; padding: .55rem 1rem; text-transform: uppercase; }
 .lv-view-tab:hover { color: var(--ink); }
-.lv-view-tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
-.lv-view-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Two views, named here once: the radio drives both its own label and its panel. */
+#lv-view-one-line:checked ~ .lv-view-switch label[for="lv-view-one-line"],
+#lv-view-installation:checked ~ .lv-view-switch label[for="lv-view-installation"] { border-bottom-color: var(--accent); color: var(--ink); }
+#lv-view-one-line:focus-visible ~ .lv-view-switch label[for="lv-view-one-line"],
+#lv-view-installation:focus-visible ~ .lv-view-switch label[for="lv-view-installation"] { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
+.lv-view-panel { display: none; }
+#lv-view-one-line:checked ~ .lv-view-panel[data-view="one-line"],
+#lv-view-installation:checked ~ .lv-view-panel[data-view="installation"] { display: block; }
 .lv-view-stage svg { display: block; height: auto; width: 100%; }
 .lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
 .lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }

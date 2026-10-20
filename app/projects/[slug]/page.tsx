@@ -32,24 +32,45 @@ const shareImages: Record<string, { url: string; width: number; height: number }
 
 // The LV study carries two views of the same design: the one-line diagram it is
 // marked against, and an isometric installation view of what the drawing means
-// on site. Both are read at build time and inlined, so the toggle costs no
-// request and the page owns the styling of both.
+// on site. Both SVGs are read at build time and rendered by this server
+// component, so each is written into the HTML once; the client tab component
+// only toggles which panel is visible.
+const lvSldSvg = readFileSync(path.join(process.cwd(), "public/images/lv-cabling-sld.svg"), "utf8");
+const lvInstallSvg = readFileSync(path.join(process.cwd(), "public/images/lv-cabling-installation.svg"), "utf8");
+
 const lvDesignViews: DesignView[] = [
   {
     id: "one-line",
     label: "One-line",
-    svg: readFileSync(path.join(process.cwd(), "public/images/lv-cabling-sld.svg"), "utf8"),
     caption: "One-line diagram · AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025",
     fullHref: "/images/lv-cabling-sld.svg",
   },
   {
     id: "installation",
     label: "Installation",
-    svg: readFileSync(path.join(process.cwd(), "public/images/lv-cabling-installation.svg"), "utf8"),
     caption: "Isometric installation view · cutaway · dimensions indicative",
     fullHref: "/images/lv-cabling-installation.svg",
   },
 ];
+
+function LvViewPanel({ svg, caption, href }: { svg: string; caption: string; href: string }) {
+  return (
+    <>
+      <div className="lv-view-stage" dangerouslySetInnerHTML={{ __html: svg }} />
+      <p className="lv-view-meta">
+        <span>{caption}</span>
+        <a className="text-link" href={href} target="_blank" rel="noopener">
+          Open this view full size<span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </p>
+    </>
+  );
+}
+
+const lvDesignPanels = {
+  "one-line": <LvViewPanel svg={lvSldSvg} caption={lvDesignViews[0].caption} href={lvDesignViews[0].fullHref} />,
+  installation: <LvViewPanel svg={lvInstallSvg} caption={lvDesignViews[1].caption} href={lvDesignViews[1].fullHref} />,
+};
 
 // Write-up section links per case study (the ids live in the write-up
 // components; only case studies with anchored sections get links).
@@ -133,7 +154,7 @@ export default async function ProjectPage({ params }: ProjectParams) {
           </ul>
         )}
         {project.slug === "lv-cabling-design-commercial-complex" ? (
-          <LvDesignViews views={lvDesignViews} />
+          <LvDesignViews views={lvDesignViews} panels={lvDesignPanels} />
         ) : (
           <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
         )}

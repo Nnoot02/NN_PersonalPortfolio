@@ -40,7 +40,7 @@ export const projects: Project[] = [
     imageAlt: "One-line diagram of a 400 V three-tenancy installation from supply transformer to distribution boards",
     imageIsDiagram: true,
     // Nathan, 2026-09-24: the original SLD was drawn in Autodesk Inventor.
-    imageNote: "I drew the original diagram in Autodesk Inventor; this is a vector redraw of it for the web.",
+    imageNote: "I drew the original one-line diagram in Autodesk Inventor; this is a vector redraw of it for the web.",
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
     status: "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown",
