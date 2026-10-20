@@ -33,8 +33,7 @@ const shareImages: Record<string, { url: string; width: number; height: number }
 // The LV study carries two views of the same design: the one-line diagram it is
 // marked against, and an isometric installation view of what the drawing means
 // on site. Both SVGs are read at build time and rendered by this server
-// component, so each is written into the HTML once; the client tab component
-// only toggles which panel is visible.
+// component; two hidden radios toggle the panels in CSS.
 const lvSldSvg = readFileSync(path.join(process.cwd(), "public/images/lv-cabling-sld.svg"), "utf8");
 const lvInstallSvg = readFileSync(path.join(process.cwd(), "public/images/lv-cabling-installation.svg"), "utf8");
 

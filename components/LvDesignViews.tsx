@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
 
 // Two views of the same design: the normative one-line diagram and an isometric
-// installation view. The switch is a pair of visually hidden radios driving CSS
-// sibling selectors, so it works without JavaScript, costs no client bundle, and
-// each drawing is written into the HTML exactly once.
+// installation view. The switch is a radio group of visually hidden inputs, so
+// it works without JavaScript and needs no client bundle. Each drawing is
+// rendered once by the server; note that the App Router's route payload carries
+// a second, escaped copy of the same tree for hydration.
 
 export type DesignView = {
   id: string;
@@ -22,20 +23,17 @@ export function LvDesignViews({
 
   return (
     <div className="lv-views">
-      {views.map((view, index) => (
-        <input
-          key={view.id}
-          className="lv-view-radio"
-          type="radio"
-          name="lv-view"
-          id={`lv-view-${view.id}`}
-          defaultChecked={index === 0}
-        />
-      ))}
       <div className="lv-view-switch" role="radiogroup" aria-label="Drawing views">
-        {views.map((view) => (
-          <label key={view.id} className="lv-view-tab" htmlFor={`lv-view-${view.id}`}>
-            {view.label}
+        {views.map((view, index) => (
+          <label key={view.id} className="lv-view-tab">
+            <input
+              className="lv-view-radio"
+              type="radio"
+              name="lv-view"
+              id={`lv-view-${view.id}`}
+              defaultChecked={index === 0}
+            />
+            <span>{view.label}</span>
           </label>
         ))}
       </div>
