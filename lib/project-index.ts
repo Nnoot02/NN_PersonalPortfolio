@@ -12,7 +12,7 @@ export type ProjectIndexEntry = {
   project: Project;
   stateLabel: string;
   summary: string;
-  ctaLabel: "Read verified case study" | "See current work";
+  ctaLabel: "Read verified case study" | "See current work" | "Read the entry";
   miniature: {
     src: string;
     alt: string;
@@ -24,6 +24,7 @@ export const projectIndexSlugs = [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
+  "last-metre-eyes-viasat-entry",
 ] as const;
 
 type ProjectIndexSlug = (typeof projectIndexSlugs)[number];
@@ -73,6 +74,20 @@ const definitions = {
       { label: "Verification", detail: "Phase 3/HITL clearance validation", state: "future" },
     ],
   },
+  "last-metre-eyes-viasat-entry": {
+    stateLabel: "Competition entry · not selected for Phase 3",
+    summary: "GPS-denied search drone with a satellite relay, entered in Viasat Space for Good 2026; the satellite side stayed modelled.",
+    ctaLabel: "Read the entry",
+    miniature: {
+      src: "/images/project-index/viasat-entry-artifact.webp",
+      alt: "Viasat entry user journey card: relay node on at the site perimeter, drone into the structure, map out to incident command, entry decision made",
+    },
+    stages: [
+      { label: "Phase 1", detail: "Written concept advanced", state: "resolved" },
+      { label: "Phase 2", detail: "Video package submitted", state: "resolved" },
+      { label: "Measurement", detail: "Drone-to-relay link on a bench", state: "future" },
+    ],
+  },
 } satisfies ProjectIndexDefinitions;
 
 function requireUniqueProject(slug: ProjectIndexSlug): Project {
@@ -92,7 +107,7 @@ export const projectIndexEntries: readonly ProjectIndexEntry[] = projectIndexSlu
 });
 
 // Sub-discipline grouping for /projects. Order across all groups must stay
-// LV -> Solar -> UAV, which the contract asserts on the rendered DOM.
+// LV -> Solar -> UAV -> Viasat, which the contract asserts on the rendered DOM.
 export const projectIndexGroups = [
   {
     id: "power-systems",
@@ -102,7 +117,7 @@ export const projectIndexGroups = [
   {
     id: "embedded-hardware",
     heading: "Embedded & Hardware",
-    slugs: ["gps-denied-autonomous-uav"],
+    slugs: ["gps-denied-autonomous-uav", "last-metre-eyes-viasat-entry"],
   },
 ] as const satisfies readonly { id: string; heading: string; slugs: readonly ProjectIndexSlug[] }[];
 

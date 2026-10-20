@@ -120,7 +120,36 @@ export const projects: Project[] = [
       "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials. Three held-out trials fell below the 0.5 m centre-clearance requirement, so final clearance validation will continue in Phase 3/HITL following my advisor's review.",
     evidenceStatus: "Results cover simulation only; clearance, real VIO, Raspberry Pi 5 timing and flight performance still need validation.",
   },
-
+  {
+    // Unnumbered: "04" stays reserved while the DFMA study is unpublished.
+    slug: "last-metre-eyes-viasat-entry",
+    title: "Last-Metre Eyes: Viasat Space for Good 2026",
+    summary:
+      "My entry to the Viasat Space for Good Australia 2026 challenge: a GPS-denied search drone paired with a portable satellite relay for disaster response. It advanced from Phase 1, was submitted in full for Phase 2, and was not selected for Phase 3.",
+    image: "/images/viasat-entry/journey.webp",
+    imageAlt: "Card from the Phase 2 video showing the user journey: relay node switched on at the site perimeter, drone enters the structure, map reaches incident command, entry decision made",
+    imageIsDiagram: true,
+    imageNote: "One of the cards from my Phase 2 video. The rest of the set is below.",
+    scope: "Systems concept, satellite backhaul, evidence boundaries",
+    role: "Sole entrant: concept, written answers, video and cards",
+    status: "Competition entry · submitted, not selected for Phase 3",
+    tags: ["Systems engineering", "Satellite communications", "Disaster response"],
+    evidenceMarkers: ["Phase 1 advanced", "Phase 2 submitted", "A$1,084.84 BOM", "HaLow link modelled"],
+    spec: [
+      { label: "Phase 1", value: "Advanced", note: "written concept, nine answers, 5 September 2026" },
+      { label: "Phase 2", value: "Submitted", note: "2 min 47 s video package, 27 September 2026" },
+      { label: "Drone BOM", value: "A$1,084.84", note: "as submitted, against my capstone A$1,100 budget cap; forecast, prices not re-checked" },
+      { label: "Local link", value: "Modelled", note: "Wi-Fi HaLow candidate, not measured" },
+    ],
+    problem:
+      "Enter a satellite-for-good challenge with a concept I could defend in front of technical judges: a disaster-response system that uses satellite connectivity where it actually helps, built on hardware I was already building rather than hardware I could only describe.",
+    approach:
+      "I anchored the concept on my GPS-denied capstone, so the drone side is real work on my bench, and labelled everything else for what it was. The satellite link in the demo was a declared mock, the drone-to-relay radio was a named candidate with modelled range, and the impact metrics were targets, with every on-screen claim checked against a claims-to-evidence table before it went into the video.",
+    result:
+      "The written concept advanced from Phase 1 on 5 September 2026, and I submitted the Phase 2 video package complete and compliant on 27 September. The entry was not selected for Phase 3.",
+    evidenceStatus:
+      "Nothing in the satellite segment was measured. The bearer in the demo was a mock, the Wi-Fi HaLow range is modelled from published wall attenuation, and the metrics are targets, not results.",
+  },
 ];
 
 // Featured projects for the Home and Profile pages, a maximum of three,
