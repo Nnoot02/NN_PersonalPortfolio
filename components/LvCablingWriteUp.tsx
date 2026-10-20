@@ -13,6 +13,14 @@ const sections: WriteUpSection[] = [
   { id: "assumptions-and-limits", label: "Declared assumptions and limits" },
 ];
 
+const phaseDemand = [
+  ["Communal (at MSB)", "39.9", "24.3", "21.0", "39.9"],
+  ["Supermarket", "33.4", "39.1", "27.5", "39.1"],
+  ["Hairdresser", "13.9", "13.9", "24.5", "24.5"],
+  ["Butcher", "36.5", "41.2", "41.8", "41.8"],
+  ["Consumer mains (sum)", "123.6", "118.5", "114.7", "123.6"],
+];
+
 const finalsSchedule = [
   ["Lighting", "26", "5.0", "10", "1.5 mm²", "11.2", "1.66 %", "1.5 mm²"],
   ["Power (10 A GPO)", "24", "10", "20", "4 mm²", "21.4", "1.17 %", "2.5 mm²"],
@@ -60,9 +68,36 @@ export function LvCablingWriteUp() {
           classified once, allocated to a phase, and group-diversity rules applied
           per phase; three-phase loads add their per-phase current to all three
           phases. The heaviest phase sets the design current: <strong>123.6 A</strong> on
-          phase A, with 7.5 % phase imbalance. Per board: communal 39.9 A,
-          supermarket 39.1 A, hairdresser 24.5 A, butcher 41.8 A. The butcher is
-          simultaneously the heaviest-loaded and longest (15 m) submain.
+          phase A, against the 118.9 A mean of the three phases (a 7.5 % spread). The
+          butcher is simultaneously the heaviest-loaded and longest (15 m) submain.
+        </p>
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="Maximum demand per board and phase">
+          <table>
+            <caption className="sr-only">Maximum demand per board and phase, in amperes</caption>
+            <thead>
+              <tr>
+                <th scope="col">Board</th>
+                <th scope="col">Phase A</th>
+                <th scope="col">Phase B</th>
+                <th scope="col">Phase C</th>
+                <th scope="col">Heaviest</th>
+              </tr>
+            </thead>
+            <tbody>
+              {phaseDemand.map((row) => (
+                <tr key={row[0]}>
+                  <th scope="row">{row[0]}</th>
+                  {row.slice(1).map((cell, index) => (
+                    <td key={`${row[0]}-${index}`}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Totals are carried from the unrounded per-board calculations, so a column can
+          differ from the printed rows by up to 0.1 A.
         </p>
       </div>
 

@@ -763,6 +763,19 @@ check(footer.includes('href="mailto:nathannoott@gmail.com"'), "footer must offer
 // address inside it, and a mailto href contains the address. Pinned so the
 // omission reads as a decision rather than an oversight.
 check(!contactFooter.includes('href="mailto:'), "compact contact footer must not repeat the address as a mailto");
+// 2026-10-21 audit D3. The four published board currents are heaviest-phase
+// values; without the per-phase allocation a reader adds them to 145.3 A and
+// concludes the 123.6 A mains figure is wrong. Pin the derivation table, scoped
+// to its own block so a stray number elsewhere cannot satisfy it.
+{
+  const lv = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
+  const start = lv.indexOf('aria-label="Maximum demand per board and phase"');
+  const block = start === -1 ? "" : lv.slice(start, lv.indexOf("</table>", start) + 8);
+  check(block.length > 0, "lv: per-phase maximum-demand table must be published");
+  for (const cell of ["Phase A", "Phase B", "Phase C", "Consumer mains (sum)", "118.5", "114.7"]) {
+    check(block.includes(cell), `lv: demand table must carry ${cell}`);
+  }
+}
 for (const slug of caseStudySlugs) {
   const caseStudy = renderedMain(readExport(`/projects/${slug}.html`));
   check(/class="case-contact"/.test(caseStudy), `${slug}: case study must close with a contact line`);
