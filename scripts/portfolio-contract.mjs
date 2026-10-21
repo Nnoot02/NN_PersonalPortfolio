@@ -106,8 +106,8 @@ check(panelPlotEnd === rootPlotEnd, `reveal panel --plot-end must mirror the svg
 // bodies apart, so every approved string is pinned inside its own block. The
 // list mirrors components/FeaturedSldInteractive.tsx TARGETS -- keep in step.
 const APPROVED = [
-  ["supply", "500 kVA · 400 V 3-ph", "S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity."],
-  ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S / (√3 · U₀); I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
+  ["supply", "500 kVA · 400 V 3-ph", "Supply capacity S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity; 85.6 kVA on the heaviest phase (Ib 123.6 A)."],
+  ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S_demand / (√3 · U₀) with S_demand = 85.6 kVA; I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
   ["vd", "ΔV 0.74 % vs 1 % limit", "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit."],
   ["device", "125 A Type C · PFC 8.0 kA", "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1."],
   ["sup", "SUP-DB · 40 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
@@ -763,6 +763,19 @@ check(footer.includes('href="mailto:nathannoott@gmail.com"'), "footer must offer
 // address inside it, and a mailto href contains the address. Pinned so the
 // omission reads as a decision rather than an oversight.
 check(!contactFooter.includes('href="mailto:'), "compact contact footer must not repeat the address as a mailto");
+// 2026-10-21 audit D3. The four published board currents are heaviest-phase
+// values; without the per-phase allocation a reader adds them to 145.3 A and
+// concludes the 123.6 A mains figure is wrong. Pin the derivation table, scoped
+// to its own block so a stray number elsewhere cannot satisfy it.
+{
+  const lv = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
+  const start = lv.indexOf('aria-label="Maximum demand per board and phase"');
+  const block = start === -1 ? "" : lv.slice(start, lv.indexOf("</table>", start) + 8);
+  check(block.length > 0, "lv: per-phase maximum-demand table must be published");
+  for (const cell of ["Phase A", "Phase B", "Phase C", "Consumer mains (sum)", "118.5", "114.7"]) {
+    check(block.includes(cell), `lv: demand table must carry ${cell}`);
+  }
+}
 for (const slug of caseStudySlugs) {
   const caseStudy = renderedMain(readExport(`/projects/${slug}.html`));
   check(/class="case-contact"/.test(caseStudy), `${slug}: case study must close with a contact line`);

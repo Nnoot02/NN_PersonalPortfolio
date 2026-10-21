@@ -29,14 +29,14 @@ const TARGETS: Target[] = [
     id: "supply",
     name: "Supply",
     value: "500 kVA · 400 V 3-ph",
-    detail: "S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity.",
+    detail: "Supply capacity S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity; 85.6 kVA on the heaviest phase (Ib 123.6 A).",
     hit: { x: "11.7%", y: "7.5%", w: "13.3%", h: "14.0%" },
   },
   {
     id: "mains",
     name: "Consumer mains",
     value: "25 mm² X-90 Cu · Ib 123.6 A",
-    detail: "I_b = S / (√3 · U₀); I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3.",
+    detail: "I_b = S_demand / (√3 · U₀) with S_demand = 85.6 kVA; I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3.",
     hit: { x: "16.5%", y: "22.5%", w: "6.3%", h: "14.0%" },
   },
   {
