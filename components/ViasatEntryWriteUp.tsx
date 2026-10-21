@@ -76,8 +76,11 @@ export function ViasatEntryWriteUp() {
       </div>
       <div className="writeup-block">
         <h3>What I took from it</h3>
-        <p>Phase 2 was scored on an eight-criterion, 100-point rubric, and I do not know how the entry scored on any of it. The labels that kept the claims defensible, a mock bearer, a modelled link and target metrics, also left the satellite segment without a single measurement of its own, which is the gap I would close first if I entered again.</p>
-        <p>The drone side carries on as my capstone, so the next evidence for the navigation half of this concept will come from that build.</p>
+        <p>While I did not want to admit it, I was really down upon hearing the news of the Phase 2 results. By juggling school, work and this project, I knew one would diminish in its quality; however, I still really wanted to try as I found the whole project really fun. When I received the feedback, my mood lightened up as while the reviewers verified my concerns for my submission, they gave me some praise that I did not expect. In hindsight, I now see that too much time went into the drone build, and there were opportunities for me to re-record scenes to demonstrate a more confident delivery.</p>
+        <p>Overall, this has motivated me a lot to work harder on my UAV capstone project, and consider iterating upon it even after its planned completion in December. While I won&apos;t have the opportunity to have a Viasat representative to mentor me, I intend to work towards the capabilities I&apos;ve planned for this project. It&apos;ll definitely take a lot longer considering I&apos;m still a student, but something about this project motivates me intrinsically and I have a feeling I can actually pull it off.</p>
+        <p>After my TAFE capstone completion, I will work towards proving the complete system alongside some mock relays that I plan to develop myself. Furthermore, I will research into how I can make it more commercially viable, and establish further on what sets it apart from current solutions.</p>
+        <p>I still get really nervous while public speaking so I plan to expose myself to more challenges like VSFG 2027, and other events that will help me in that endeavour.</p>
+        <p>Thank you Viasat and HeroX for organising the whole challenge! I hope to participate again soon!</p>
       </div>
     </section>
   );
