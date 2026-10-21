@@ -522,7 +522,9 @@ check(!contact.includes("Flight evidence pending"), "contact must not add unsupp
 
 check(!projectsIndex.includes("Power · verification"), "projects hero must remove the old scope eyebrow");
 check(projectsIndex.includes("<h1>Projects</h1>"), "projects hero must use approved headline");
-check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
+// The evidence-boundary lede was removed at Nathan's direction (2026-10-21); the
+// negative pin keeps it from returning without a decision.
+check(!projectsIndex.includes("Each project shows what I decided"), "projects hero must not carry the removed evidence-boundary lede");
 check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
 
 const projectJourneys = projectsIndex.match(/<ol[^>]*data-project-journeys[^>]*>[\s\S]*?<\/ol><\/section>/)?.[0] ?? "";

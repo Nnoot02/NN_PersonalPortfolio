@@ -146,6 +146,11 @@ export default async function ProjectPage({ params }: ProjectParams) {
         <p className="case-contact">
           Questions about this design? <a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
         </p>
+        <p className="case-resume">
+          The résumé is the short version of this work:{" "}
+          <Link className="text-link" href="/resume">résumé overview</Link>, or the{" "}
+          <a className="text-link" href={profile.resumePath}>PDF</a>.
+        </p>
       </article>
     </main>
     <SiteFooter />
