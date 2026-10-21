@@ -116,7 +116,7 @@ Step 4  Correction        k = 1.04 (soil, T3.45) × 0.99 (depth, T3.46)
         Required tabulated CCC ≥ 125 / 1.03 = 121.4 A
 Step 5  16 mm² → 101 A (fail);  25 mm² → 132 A (pass)
         Iz = 132 × 1.03 = 136 A → Ib 123.6 ≤ In 125 ≤ Iz 136  OK
-Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 Ω/km
+Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)
         ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %  OK
 Step 7  PFC at MSB = 8.0 kA; breaking capacity 10 kA  OK
 SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
@@ -132,10 +132,11 @@ SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
         <p>
           V-75 single-insulated copper, one conduit, buried 1 m, soil 20 °C. Table
           3.8 routes this to Table 3.12, Column 17. Combined correction k = 1.05 × 0.95
-          = 1.00. The butcher submain governs.
+          = 0.9975, carried unrounded, so the required tabulated capacity is
+          50.13 A. The butcher submain governs.
         </p>
         <pre tabIndex={0} role="region" aria-label="Butcher submain selection chain, worked steps">{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
-Step 4  k = 1.00 → required CCC ≥ 50 A
+Step 4  k = 0.9975 requires CCC of at least 50.13 A
 Step 5  6 mm² → 45 A (fail); 10 mm² → 59 A (pass); Iz = 59 A
         Ib 41.8 ≤ In 50 ≤ Iz 59  OK
 Step 6  ΔV = √3 × 41.8 × 15 × 2.23 / 1000 = 2.42 V = 0.61 %  OK
@@ -206,7 +207,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
       <div className="writeup-block">
         <h3 id="fault-level">Fault level and earth-fault loop</h3>
         <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (√3 × 15 000) = 0.0154 Ω/phase
-Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω
+Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω  (copper at 75 °C)
 Z at MSB   = 0.0154 + 0.0133 = 0.0287 Ω
 PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
         <p>
@@ -214,7 +215,10 @@ PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
           current. Earth-fault-loop impedance was checked for the longest circuit of
           each conductor size against AS/NZS 3000:2018 Table 8.1 for Type C
           breakers; the worst-case loop (4 mm² general-power final, 24 m, on the
-          butcher submain) gives Zs ≈ 0.57 Ω against a limit of ≈ 1.15 Ω. The
+          butcher submain) gives Zs ≈ 0.57 Ω against a limit of ≈ 1.15 Ω. The two
+          resistance figures for the 25 mm² conductor differ because each check uses
+          a different conductor temperature: 0.927 Ω/km at 90 °C for voltage drop,
+          and 0.884 Ω/km at 75 °C for this fault calculation. The
           external loop impedance Ze = 0.0345 Ω is a declared assumption; the real
           figure comes from the network operator&apos;s connection-point fault data or
           an on-site loop-impedance measurement.
