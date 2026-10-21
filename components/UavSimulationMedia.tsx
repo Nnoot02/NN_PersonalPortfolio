@@ -37,9 +37,9 @@ export function UavFaultResponse() {
 }
 
 const baselinePlots = [
-  { stem: "baseline-box", poster: "/images/uav-simulation/baseline-box.png", animation: "/videos/uav-simulation/baseline-box.mp4", title: "Box", clearance: "0.61 m", alt: "Ten baseline truth tracks divert around the box; all reach the goal with at least 0.61 m centre clearance." },
-  { stem: "baseline-pillar", poster: "/images/uav-simulation/baseline-pillar.png", animation: "/videos/uav-simulation/baseline-pillar.mp4", title: "Pillar", clearance: "0.64 m", alt: "Ten baseline truth tracks pass around the pillar; all reach the goal with at least 0.64 m centre clearance." },
-  { stem: "baseline-wall", poster: "/images/uav-simulation/baseline-wall.png", animation: "/videos/uav-simulation/baseline-wall.mp4", title: "Wall", clearance: "0.57 m", alt: "Ten baseline truth tracks pass the end of the wall; all reach the goal with at least 0.57 m centre clearance." },
+  { stem: "baseline-box", poster: "/images/uav-simulation/baseline-box.webp", animation: "/videos/uav-simulation/baseline-box.mp4", title: "Box", clearance: "0.61 m", alt: "Ten baseline truth tracks divert around the box; all reach the goal with at least 0.61 m centre clearance." },
+  { stem: "baseline-pillar", poster: "/images/uav-simulation/baseline-pillar.webp", animation: "/videos/uav-simulation/baseline-pillar.mp4", title: "Pillar", clearance: "0.64 m", alt: "Ten baseline truth tracks pass around the pillar; all reach the goal with at least 0.64 m centre clearance." },
+  { stem: "baseline-wall", poster: "/images/uav-simulation/baseline-wall.webp", animation: "/videos/uav-simulation/baseline-wall.mp4", title: "Wall", clearance: "0.57 m", alt: "Ten baseline truth tracks pass the end of the wall; all reach the goal with at least 0.57 m centre clearance." },
 ];
 
 export function UavResultsGallery() {
@@ -62,7 +62,7 @@ export function UavResultsGallery() {
         </figure>
       ))}
       <figure className={`${styles.figure} ${styles.row}`}>
-        <video controls playsInline preload="none" poster="/images/uav-simulation/heldout-box-02.png" aria-label="Held-out box trial 02: arrival with a clearance requirement breach" aria-describedby="uav-heldout-caption">
+        <video controls playsInline preload="none" poster="/images/uav-simulation/heldout-box-02.webp" aria-label="Held-out box trial 02: arrival with a clearance requirement breach" aria-describedby="uav-heldout-caption">
           <source src="/videos/uav-simulation/heldout-box-02.mp4" type="video/mp4" />
           <a href="/videos/uav-simulation/heldout-box-02.mp4">Download held-out clearance animation</a>
         </video>
@@ -70,7 +70,7 @@ export function UavResultsGallery() {
           <h4>Held-out · arrived, clearance missed</h4>
           <p>Box trial 02 reached its goal, but passed only 0.41 m from the true obstacle footprint. It is one of three clearance misses across 30 held-out runs.</p>
           <p>The full footprint shown here is simulator ground truth, not the planner&apos;s observed occupancy map. Inflation protects observed cells, so the unseen depth of an obstacle can leave insufficient clearance around its corners.</p>
-          <a href="/images/uav-simulation/heldout-box-02.png">Open full-size held-out plot</a>
+          <a href="/images/uav-simulation/heldout-box-02.webp">Open full-size held-out plot</a>
         </figcaption>
       </figure>
       <figure className={`${styles.figure} ${styles.comparison}`}>

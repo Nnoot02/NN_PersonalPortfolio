@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (
