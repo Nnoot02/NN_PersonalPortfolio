@@ -521,7 +521,7 @@ check(!contact.includes("Let's discuss engineering work."), "contact must not re
 check(!contact.includes("Flight evidence pending"), "contact must not add unsupported flight evidence");
 
 check(!projectsIndex.includes("Power · verification"), "projects hero must remove the old scope eyebrow");
-check(projectsIndex.includes("Systems, taken from theory towards proof."), "projects hero must use approved headline");
+check(projectsIndex.includes("<h1>Projects</h1>"), "projects hero must use approved headline");
 check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
 check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
 
