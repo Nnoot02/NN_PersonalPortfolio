@@ -159,16 +159,17 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Final subcircuit schedule">
           <table>
+            <caption className="sr-only">Final subcircuit schedule: load type, run length, design current, protective device, cable and earth sizes, current-carrying capacity and voltage drop</caption>
             <thead>
               <tr>
-                <th>Load type</th>
-                <th>Run (m)</th>
-                <th>Ib (A)</th>
-                <th>In (A)</th>
-                <th>Cable</th>
-                <th>Iz (A)</th>
-                <th>ΔV</th>
-                <th>Earth</th>
+                <th scope="col">Load type</th>
+                <th scope="col">Run (m)</th>
+                <th scope="col">Ib (A)</th>
+                <th scope="col">In (A)</th>
+                <th scope="col">Cable</th>
+                <th scope="col">Iz (A)</th>
+                <th scope="col">ΔV</th>
+                <th scope="col">Earth</th>
               </tr>
             </thead>
             <tbody>

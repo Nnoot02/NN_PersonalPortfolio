@@ -47,11 +47,12 @@ export function PvConnectionWriteUp() {
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Plant capacity definitions">
           <table>
+            <caption className="sr-only">Plant capacity definitions: inverter AC nameplate, PV array DC capacity and approved export limit, with the basis for each</caption>
             <thead>
               <tr>
-                <th>Capacity</th>
-                <th>Value</th>
-                <th>Basis</th>
+                <th scope="col">Capacity</th>
+                <th scope="col">Value</th>
+                <th scope="col">Basis</th>
               </tr>
             </thead>
             <tbody>

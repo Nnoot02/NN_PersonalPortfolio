@@ -72,7 +72,7 @@ export function SiteHeader() {
             <span className="wordmark-mobile">NN<span className="wordmark-period">.</span></span>
           </>
         )}
-        <span className="sr-only">, portfolio home</span>
+        <span className="sr-only">{" "}portfolio home</span>
       </Link>
       <button
         ref={menuButtonRef}

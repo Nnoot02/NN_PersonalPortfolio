@@ -620,7 +620,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
-.back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; }
+.back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
 .back-link:hover { color: var(--accent-dark); }
 .case-status { display: inline-block; margin: -1.2rem 0 2rem; padding: .4rem .85rem; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: var(--text-case-lede); line-height: 1.7; margin: 0 0 3rem; }

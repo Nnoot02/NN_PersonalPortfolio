@@ -13,6 +13,7 @@ export function UavTestGatesWriteUp() {
         <p>The simulation connects ArduPilot SITL and Gazebo to ROS 2 and MAVROS, with a depth-based occupancy grid feeding the D* Lite planner. Both batches used 0.7 m planner inflation, a commanded speed of 0.5 m/s and a 3.0 m sensing range, with ten runs each against a box, pillar and wall.</p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Simulation batch comparison">
           <table className="uav-results-table">
+            <caption className="sr-only">Simulation results by batch: baseline and held-out geometry, with goal, clearance and path measures</caption>
             <thead>
               <tr>
                 <th scope="col">Measure</th>
