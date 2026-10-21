@@ -153,13 +153,15 @@ site-specific SA Power Networks study of:
         <p>
           The hosting-capacity conclusion is sharper here than in the general case.
           South Australia carries the highest share of rooftop solar in the country,
-          and AEMO has reported it as the first gigawatt-scale grid in the world to
-          reach zero operational demand, when distributed generation briefly exceeded
-          all local customer load. The midday condition this assessment treats as the
+          and AEMO describes it as the first gigawatt-scale power system in the world
+          to approach zero operational demand as distributed generation meets a
+          growing share of local load (Minimum operational demand thresholds in South
+          Australia, May 2020). The midday condition this assessment treats as the
           limiting case - high PV output against low local demand - is
           therefore not an edge case on many South Australian feeders; it is a
           recurring operating state. SA Power Networks already operates a solar
-          curtailment mechanism for minimum system demand events, which is the same
+          curtailment mechanism for minimum system demand events (AEMO, South
+          Australian Electricity Report 2021), which is the same
           constraint this assessment reaches from the connection side: what limits a
           new 1 MW plant is voltage rise, feeder hosting capacity and minimum-demand
           management where it connects, not the plant&apos;s nameplate.
@@ -186,16 +188,20 @@ site-specific SA Power Networks study of:
       <div className="writeup-block">
         <h3 id="standards-basis">Standards and regulatory basis</h3>
         <p>
-          Installation to AS/NZS 3000 (wiring, earthing, protection). Inverter energy
-          system installation to AS/NZS 4777.1; inverter performance (grid support,
-          anti-islanding, reactive power) to AS/NZS 4777.2. PV-array installation and
-          safety to AS/NZS 5033; battery systems to AS/NZS 5139; harmonic measurement
-          to AS/NZS 61000.4.7. SA Power Networks documents apply: TS132 (LV embedded
-          generation above 30 kVA), TS133 (HV embedded generation), TS134
-          (communications), the Service and Installation Rules, NICC270 (large
-          embedded-generation documentation) and NICC271 (BESS connection). The Office
-          of the Technical Regulator holds electrical safety and technical compliance
-          in South Australia.
+          Installation to AS/NZS 3000:2018 (wiring, earthing, protection). Inverter
+          energy system installation to AS/NZS 4777.1:2024; inverter performance (grid
+          support, anti-islanding, reactive power) to AS/NZS 4777.2:2020 with
+          Amendments 1:2021 and 2:2024. PV-array installation and safety to AS/NZS
+          5033:2021; battery systems to AS/NZS 5139:2019 with Amendment 1:2025;
+          harmonic measurement to AS/NZS 61000.4.7:2012.
+        </p>
+        <p>
+          SA Power Networks documents apply: TS132 (LV embedded generation above
+          30 kVA, revised 22 September 2025), TS133 (HV embedded generation, revised
+          2026), TS134 (communications), the Service and Installation Rules, NICC270
+          (large embedded-generation documentation) and NICC271 (BESS connection). The
+          Office of the Technical Regulator holds electrical safety and technical
+          compliance in South Australia.
         </p>
       </div>
 
