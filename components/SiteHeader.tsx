@@ -88,13 +88,14 @@ export function SiteHeader() {
       <nav id="primary-navigation" className={open ? "site-nav is-open" : "site-nav"} aria-label="Primary navigation">
         {links.map(([label, href]) => {
           const active = href === "/" ? pathname === href : pathname.startsWith(href);
+          const exact = pathname === href;
           return (
             <Link
               className={active ? "nav-link is-active" : "nav-link"}
               href={href}
               key={href}
               onClick={() => setOpen(false)}
-              aria-current={active ? "page" : undefined}
+              aria-current={active ? (exact ? "page" : "location") : undefined}
             >
               {label}
             </Link>
