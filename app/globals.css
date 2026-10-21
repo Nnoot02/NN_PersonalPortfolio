@@ -658,8 +658,14 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .lv-views:has([data-hit="sup"]:hover) .lv-view-stage [data-hit="sup"] .legend-detail,
 .lv-views:has([data-hit="hai"]:hover) .lv-view-stage [data-hit="hai"] .legend-detail,
 .lv-views:has([data-hit="but"]:hover) .lv-view-stage [data-hit="but"] .legend-detail { visibility: visible; }
+/* The blocks keep their headline at rest; the rest of each block arrives when
+   its object is hovered - the kiosk, the buried run, the switchboard. */
+.lv-view-stage .reveal { visibility: hidden; }
+.lv-views:has([data-hit="supply"]:hover) .lv-view-stage .reveal[data-hit="supply"],
+.lv-views:has([data-hit="mains"]:hover) .lv-view-stage .reveal[data-hit="mains"],
+.lv-views:has([data-hit="device"]:hover) .lv-view-stage .reveal[data-hit="device"] { visibility: visible; }
 @media (hover: none) {
-  .lv-view-stage .legend-detail { visibility: visible; }
+  .lv-view-stage .legend-detail, .lv-view-stage .reveal { visibility: visible; }
 }
 .lv-views:has([data-hit="supply"]:hover) .lv-view-stage [data-hit="supply"],
 .lv-views:has([data-hit="mains"]:hover) .lv-view-stage [data-hit="mains"],
@@ -1014,7 +1020,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 @media print {
   .site-header, .hero-actions, .row-action, .scroll-cue, .case-spec__strip { display: none !important; }
   /* hidden-on-hover detail must print: paper has no pointer */
-  .lv-view-stage .legend-detail { visibility: visible; }
+  .lv-view-stage .legend-detail, .lv-view-stage .reveal { visibility: visible; }
   .project-row, .workbench-preview { break-inside: avoid; }
   .featured, .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
   .site-footer { background: none; color: #000; min-height: 0; }
