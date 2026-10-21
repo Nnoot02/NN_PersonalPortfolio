@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="instTitle instDesc">
 <title id="instTitle">Commercial LV cabling design - installation view</title>
 <desc id="instDesc">Cutaway isometric view of the 400 V three-tenancy supply as it is built: a padmount kiosk holding the 500 kVA transformer at the site boundary, fifteen metres of buried consumer mains in five conduits with sand bedding and marker tape, rising into the building, and a switchroom holding the floor-standing main switchboard with a metre of clear space in front. Each tenancy has its own distribution board inside its own bay, fed from the switchboard by a buried submain. The installation main earth electrode sits beside the switchroom and connects to the switchboard earth bar. The prospective fault current at the main switchboard is 8.0 kA against a 10 kA device rating.</desc>
-<defs><pattern id="instGrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#e4dfd4" stroke-width="1"/></pattern><pattern id="instSand" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0V8" stroke="#c9c2b4" stroke-width="1.2"/></pattern></defs>
+<defs><pattern id="instGrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#eae5db" stroke-width="1"/></pattern><pattern id="instSand" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><path d="M0 0V8" stroke="#c9c2b4" stroke-width="1.2"/></pattern></defs>
 <rect width="1200" height="800" fill="#f3f0e9"/><rect width="1200" height="800" fill="url(#instGrid)"/>
 <g font-family="'Inter',Arial,Helvetica,sans-serif" fill="#242321">
 <polygon points="300.0,120.0 928.7,483.0 681.1,626.0 52.3,263.0" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="2" stroke-linejoin="round" />
@@ -119,6 +119,8 @@
 <polygon points="508.6,453.9 525.8,463.8 518.2,468.1 501.0,458.2" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="sup" />
 <polygon points="525.8,485.8 518.2,490.1 518.2,468.1 525.8,463.8" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="sup" />
 <polygon points="501.0,480.2 518.2,490.1 518.2,468.1 501.0,458.2" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="sup" />
+<circle cx="523.9" cy="454.9" r="8" fill="#f3f0e9" stroke="#9f3510" stroke-width="1.4"/>
+<text x="523.9" y="458.9" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#9f3510" text-anchor="middle">1</text>
 <rect x="501.1" y="462.2" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="sup"/>
 <rect x="506.0" y="465.1" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="sup"/>
 <rect x="511.0" y="467.9" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="sup"/>
@@ -128,6 +130,8 @@
 <polygon points="560.1,483.6 577.2,493.5 569.6,497.9 552.4,488.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="hai" />
 <polygon points="577.2,515.5 569.6,519.9 569.6,497.9 577.2,493.5" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="hai" />
 <polygon points="552.4,510.0 569.6,519.9 569.6,497.9 552.4,488.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="hai" />
+<circle cx="575.3" cy="484.6" r="8" fill="#f3f0e9" stroke="#9f3510" stroke-width="1.4"/>
+<text x="575.3" y="488.6" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#9f3510" text-anchor="middle">2</text>
 <rect x="552.5" y="491.9" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="hai"/>
 <rect x="557.4" y="494.8" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="hai"/>
 <rect x="562.4" y="497.6" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="hai"/>
@@ -137,6 +141,8 @@
 <polygon points="617.2,516.6 634.4,526.5 626.8,530.9 609.6,521.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="but" />
 <polygon points="634.4,548.5 626.8,552.9 626.8,530.9 634.4,526.5" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="but" />
 <polygon points="609.6,543.0 626.8,552.9 626.8,530.9 609.6,521.0" fill="#f3f0e9" stroke="#242321" stroke-width="3" stroke-linejoin="round" data-hit="but" />
+<circle cx="632.5" cy="517.6" r="8" fill="#f3f0e9" stroke="#9f3510" stroke-width="1.4"/>
+<text x="632.5" y="521.6" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#9f3510" text-anchor="middle">3</text>
 <rect x="609.7" y="524.9" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="but"/>
 <rect x="614.6" y="527.8" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="but"/>
 <rect x="619.6" y="530.6" width="6" height="11" fill="#f3f0e9" stroke="#242321" stroke-width="1.3" data-hit="but"/>
@@ -170,42 +176,53 @@
 <line x1="260.7" y1="249.8" x2="270.7" y2="249.8" stroke="#6d6962" stroke-width="1.2"/>
 <line x1="260.7" y1="270.7" x2="270.7" y2="270.7" stroke="#6d6962" stroke-width="1.2"/>
 <text x="275.7" y="264.2" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="400" fill="#6d6962">600 cover</text>
-<text x="60.0" y="66.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="23" font-weight="700" fill="#242321">500 kVA padmount substation</text>
-<text x="60.0" y="95.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">11 kV RMU &#183; 400 V 3-phase</text>
-<text x="60.0" y="120.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">PFC 15 kA at transformer</text>
-<polyline points="300.0,114.0 228.3,154.9 254.3,158.9" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="254.3" cy="158.9" r="2.6" fill="#6d6962" />
-<text x="470.0" y="44.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">Consumer mains - 15 m buried, separate conduits, trefoil</text>
-<text x="470.0" y="71.0" font-family="Consolas,'Courier New',monospace" font-size="21" font-weight="400" fill="#9f3510">4 &#215; 25 mm&#178; X-90 Cu + 6 mm&#178; E</text>
-<text x="470.0" y="98.0" font-family="Consolas,'Courier New',monospace" font-size="21" font-weight="400" fill="#9f3510">Ib 123.6 A</text>
-<text x="622.0" y="98.0" font-family="Consolas,'Courier New',monospace" font-size="21" font-weight="400" fill="#9f3510" data-hit="vd">&#916;V 0.74 %</text>
-<polyline points="560.0,120.0 395.1,305.0 399.1,329.0" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="399.1" cy="329.0" r="2.6" fill="#6d6962" />
-<text x="60.0" y="372.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="25" font-weight="700" fill="#242321">MSB</text>
-<text x="60.0" y="399.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">Main switch 125 A Type C</text>
-<text x="60.0" y="424.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">PFC 8.0 kA &#183; MEN at neutral bar</text>
-<text x="60.0" y="449.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">breaking capacity 10 kA</text>
-<text x="60.0" y="474.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">switchroom, not in a tenancy</text>
-<text x="60.0" y="499.0" font-family="Consolas,'Courier New',monospace" font-size="17" font-weight="400" fill="#9f3510">8.0 kA fault · 1000 mm clear in front</text>
-<text x="60.0" y="524.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">communal finals + HWS at the MSB</text>
-<polyline points="276.0,392.0 589.9,318.8 623.9,326.8" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="623.9" cy="326.8" r="2.6" fill="#6d6962" />
-<text x="60.0" y="549.0" font-family="Consolas,'Courier New',monospace" font-size="17" font-weight="400" fill="#9f3510">6 mm&#178; Cu earth core: supply to MSB bar</text>
+<text x="60.0" y="40.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#6d6962" letter-spacing="1.6">SUPPLY</text>
+<text x="60.0" y="70.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="23" font-weight="700" fill="#242321">500 kVA padmount substation</text>
+<text x="60.0" y="99.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">11 kV RMU &#183; 400 V 3-phase</text>
+<text x="60.0" y="124.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">PFC 15 kA at transformer</text>
+<polyline points="300.0,118.0 228.3,154.9 254.3,158.9" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="254.3" cy="158.9" r="2.6" fill="#6d6962" />
+<text x="470.0" y="40.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#6d6962" letter-spacing="1.6">CONSUMER MAINS</text>
+<text x="470.0" y="68.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="19" font-weight="400" fill="#6d6962">15 m buried, separate conduits, trefoil</text>
+<text x="470.0" y="95.0" font-family="Consolas,'Courier New',monospace" font-size="21" font-weight="400" fill="#9f3510">4 &#215; 25 mm&#178; X-90 Cu + 6 mm&#178; E</text>
+<text x="470.0" y="122.0" font-family="Consolas,'Courier New',monospace" font-size="21" font-weight="400" fill="#9f3510">Ib 123.6 A</text>
+<text x="622.0" y="122.0" font-family="Consolas,'Courier New',monospace" font-size="21" font-weight="400" fill="#9f3510" data-hit="vd">&#916;V 0.74 %</text>
+<polyline points="560.0,142.0 395.1,305.0 399.1,329.0" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="399.1" cy="329.0" r="2.6" fill="#6d6962" />
+<text x="852.0" y="150.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#6d6962" letter-spacing="1.6">SWITCHBOARD</text>
+<text x="852.0" y="180.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="25" font-weight="700" fill="#242321">MSB</text>
+<text x="852.0" y="207.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="18" font-weight="400" fill="#6d6962">Main switch 125 A Type C</text>
+<text x="852.0" y="231.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="18" font-weight="400" fill="#6d6962">PFC 8.0 kA &#183; MEN at neutral bar</text>
+<text x="852.0" y="255.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="18" font-weight="400" fill="#6d6962">breaking capacity 10 kA</text>
+<text x="852.0" y="279.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="16" font-weight="400" fill="#6d6962">switchroom, not in a tenancy</text>
+<text x="852.0" y="303.0" font-family="Consolas,'Courier New',monospace" font-size="16" font-weight="400" fill="#9f3510">8.0 kA fault &#183; 1000 mm clear</text>
+<text x="852.0" y="327.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="16" font-weight="400" fill="#6d6962">communal finals + HWS at the MSB</text>
+<text x="852.0" y="351.0" font-family="Consolas,'Courier New',monospace" font-size="16" font-weight="400" fill="#9f3510">6 mm&#178; Cu earth core: supply to MSB</text>
+<polyline points="846.0,196.0 742.0,300.0 623.9,326.8" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="4 4" /><circle cx="623.9" cy="326.8" r="2.6" fill="#6d6962" />
+<text x="60.0" y="356.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#6d6962" letter-spacing="1.6">TENANCIES</text>
 <g data-hit="sup">
-<polyline points="812.0,464.0 554.3,461.9 514.3,465.9" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="3 3" /><circle cx="514.3" cy="465.9" r="2.6" fill="#6d6962" />
-<rect x="804" y="457" width="4" height="14" fill="#9f3510"/>
-<text x="822.0" y="470.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="600" fill="#242321">SUP-DB</text>
-<text class="legend-detail" x="886" y="470" font-family="Inter,Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">&#183; supermarket &#183; 40 A</text>
+<circle cx="69" cy="384" r="8" fill="none" stroke="#9f3510" stroke-width="1.3"/>
+<text x="69.0" y="388.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#9f3510" text-anchor="middle">1</text>
+<text x="86.0" y="390.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="600" fill="#242321">SUP-DB</text>
+<text class="legend-detail" x="150" y="390" font-family="Inter,Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">&#183; supermarket &#183; 40 A</text>
 </g>
 <g data-hit="hai">
-<polyline points="812.0,514.0 605.8,491.6 565.8,495.6" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="3 3" /><circle cx="565.8" cy="495.6" r="2.6" fill="#6d6962" />
-<rect x="804" y="507" width="4" height="14" fill="#9f3510"/>
-<text x="822.0" y="520.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="600" fill="#242321">HAI-DB</text>
-<text class="legend-detail" x="886" y="520" font-family="Inter,Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">&#183; hairdresser &#183; 25 A</text>
+<circle cx="69" cy="418" r="8" fill="none" stroke="#9f3510" stroke-width="1.3"/>
+<text x="69.0" y="422.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#9f3510" text-anchor="middle">2</text>
+<text x="86.0" y="424.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="600" fill="#242321">HAI-DB</text>
+<text class="legend-detail" x="150" y="424" font-family="Inter,Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">&#183; hairdresser &#183; 25 A</text>
 </g>
 <g data-hit="but">
-<polyline points="812.0,564.0 662.9,524.6 622.9,528.6" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-dasharray="3 3" /><circle cx="622.9" cy="528.6" r="2.6" fill="#6d6962" />
-<rect x="804" y="557" width="4" height="14" fill="#9f3510"/>
-<text x="822.0" y="570.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="600" fill="#242321">BUT-DB</text>
-<text class="legend-detail" x="886" y="570" font-family="Inter,Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">&#183; butcher &#183; 50 A</text>
+<circle cx="69" cy="452" r="8" fill="none" stroke="#9f3510" stroke-width="1.3"/>
+<text x="69.0" y="456.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="11" font-weight="700" fill="#9f3510" text-anchor="middle">3</text>
+<text x="86.0" y="458.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="17" font-weight="600" fill="#242321">BUT-DB</text>
+<text class="legend-detail" x="150" y="458" font-family="Inter,Arial,Helvetica,sans-serif" font-size="17" font-weight="400" fill="#6d6962">&#183; butcher &#183; 50 A</text>
 </g>
+<text x="60.0" y="560.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="12" font-weight="700" fill="#6d6962" letter-spacing="1.6">LINE TYPES</text>
+<line x1="60" y1="583" x2="104" y2="583" stroke="#242321" stroke-width="2.2" stroke-dasharray="" />
+<text x="114.0" y="588.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="400" fill="#6d6962">above ground</text>
+<line x1="60" y1="609" x2="104" y2="609" stroke="#242321" stroke-width="2.2" stroke-dasharray="9 6" />
+<text x="114.0" y="614.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="400" fill="#6d6962">buried</text>
+<line x1="60" y1="635" x2="104" y2="635" stroke="#242321" stroke-width="2.2" stroke-dasharray="2 5" />
+<text x="114.0" y="640.0" font-family="'Inter',Arial,Helvetica,sans-serif" font-size="14" font-weight="400" fill="#6d6962">earth / protective</text>
 <rect x="60" y="700" width="44" height="7" fill="#242321" stroke="#242321" stroke-width="1.2"/>
 <rect x="104" y="700" width="44" height="7" fill="none" stroke="#242321" stroke-width="1.2"/>
 <rect x="148" y="700" width="44" height="7" fill="#242321" stroke="#242321" stroke-width="1.2"/>
