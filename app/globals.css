@@ -650,6 +650,17 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
 .lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }
 .lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease); }
+/* The drawing names each board at rest; its tenancy and rating arrive when that
+   board (or its callout) is hovered. Touch devices, which have no hover, see
+   everything. */
+.lv-view-stage .legend-detail { visibility: hidden; }
+.lv-view-stage [data-hit]:hover .legend-detail { visibility: visible; }
+.lv-views:has([data-hit="sup"]:hover) .lv-view-stage [data-hit="sup"] .legend-detail,
+.lv-views:has([data-hit="hai"]:hover) .lv-view-stage [data-hit="hai"] .legend-detail,
+.lv-views:has([data-hit="but"]:hover) .lv-view-stage [data-hit="but"] .legend-detail { visibility: visible; }
+@media (hover: none) {
+  .lv-view-stage .legend-detail { visibility: visible; }
+}
 .lv-views:has([data-hit="supply"]:hover) .lv-view-stage [data-hit="supply"],
 .lv-views:has([data-hit="mains"]:hover) .lv-view-stage [data-hit="mains"],
 .lv-views:has([data-hit="device"]:hover) .lv-view-stage [data-hit="device"],
