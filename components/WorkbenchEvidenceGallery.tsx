@@ -31,7 +31,14 @@ export function WorkbenchEvidenceGallery({ entry }: { entry: WorkbenchEntry }) {
         {entry.evidence.map((item) => (
           <figure key={item.image}>
             <button className="evidence-trigger" type="button" onClick={() => openEvidence(item)}>
-              <Image src={item.image} alt={item.alt} fill sizes="(max-width: 720px) 100vw, 50vw" />
+              {item.srcSet ? (
+                <picture>
+                  <source srcSet={item.srcSet} sizes="(max-width: 720px) 100vw, 50vw" />
+                  <Image src={item.image} alt={item.alt} fill sizes="(max-width: 720px) 100vw, 50vw" />
+                </picture>
+              ) : (
+                <Image src={item.image} alt={item.alt} fill sizes="(max-width: 720px) 100vw, 50vw" />
+              )}
               <span className="sr-only">View full size: {item.caption}</span>
             </button>
             <figcaption><span>{item.kind}</span>{item.caption}</figcaption>

@@ -1161,6 +1161,20 @@ for (const route of ["/index", "/projects", "/workbench", "/profile", "/about", 
   const footer = document.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
   check(/href="\/resume"/.test(footer), `${route}: footer must link the resume overview`);
 }
+// 2026-10-21 audit TECH-4. The export is unoptimized, so a photographic hero or
+// gallery without pre-generated widths ships its full-size file to every viewport.
+{
+  const uav = renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"));
+  check(uav.includes("gps-denied-uav-960.webp 960w") && uav.includes("gps-denied-uav.webp 1920w"), "uav: hero must offer the 960 and full-width candidates");
+  const gallery = {
+    tarmo5: "tarmo5-800.webp 800w",
+    "servo-mini-arm": "servo-mini-arm-800.webp 800w",
+    "bench-fume-extractor": "bench-fume-extractor-electronics-800.webp 800w",
+  };
+  for (const [slug, marker] of Object.entries(gallery)) {
+    check(readExport(`/workbench/${slug}.html`).includes(marker), `${slug}: evidence gallery must offer the 800px candidate`);
+  }
+}
 for (const slug of detailSlugs) {
   check(workbench.includes(`/images/thumbs/workbench-${slug}-600.webp 600w`) && workbench.includes(`/images/thumbs/workbench-${slug}-1200.webp 1200w`), `${slug}: list must offer both thumbnail sizes`);
   for (const width of [600, 1200]) {
