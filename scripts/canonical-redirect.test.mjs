@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import worker, { canonicalRedirectLocation, withHtmlEtag } from "../worker/index.mjs";
+import worker, { canonicalRedirectLocation } from "../worker/index.mjs";
 
 test("every non-canonical entry point redirects to the canonical URL", () => {
   assert.equal(canonicalRedirectLocation("http://nnoott.com/"), "https://nnoott.com/");
@@ -51,54 +51,4 @@ test("fetch hands every other request to the assets binding", async () => {
   const response = await worker.fetch(new Request("https://nnoott.com/projects"), env);
   assert.equal(await response.text(), "asset:/projects");
   assert.deepEqual(seen, ["/projects"]);
-});
-
-// 2026-10-21 audit TECH-6. HTML left the asset layer without an ETag, so a
-// repeat navigation re-downloaded the document despite must-revalidate.
-const htmlResponse = () => new Response("<!doctype html><title>x</title>", {
-  status: 200,
-  headers: { "Content-Type": "text/html", "Cache-Control": "public, max-age=0, must-revalidate" },
-});
-
-test("an HTML response gains a strong ETag", async () => {
-  const response = await withHtmlEtag(new Request("https://nnoott.com/"), htmlResponse());
-  const etag = response.headers.get("etag");
-  assert.match(etag ?? "", /^"[0-9a-f]{16}"$/);
-  assert.equal(await response.text(), "<!doctype html><title>x</title>");
-});
-
-test("a repeat request with that ETag is answered 304 and keeps the tag", async () => {
-  const first = await withHtmlEtag(new Request("https://nnoott.com/"), htmlResponse());
-  const etag = first.headers.get("etag");
-  const second = await withHtmlEtag(
-    new Request("https://nnoott.com/", { headers: { "If-None-Match": etag } }),
-    htmlResponse(),
-  );
-  assert.equal(second.status, 304);
-  assert.equal(second.headers.get("etag"), etag);
-  assert.equal(await second.text(), "");
-});
-
-test("a stale ETag still gets the document", async () => {
-  const response = await withHtmlEtag(
-    new Request("https://nnoott.com/", { headers: { "If-None-Match": '"0000000000000000"' } }),
-    htmlResponse(),
-  );
-  assert.equal(response.status, 200);
-  assert.equal(await response.text(), "<!doctype html><title>x</title>");
-});
-
-test("non-HTML responses pass through untouched", async () => {
-  const css = new Response("body{}", { headers: { "Content-Type": "text/css" } });
-  assert.equal(await withHtmlEtag(new Request("https://nnoott.com/a.css"), css), css);
-});
-
-// The asset layer's own ETag does not survive the platform's HTML handling, so
-// the worker tags the document from its own bytes even when one arrives.
-test("an HTML response carrying a platform ETag is re-tagged from its body", async () => {
-  const tagged = new Response("<!doctype html><title>x</title>", { headers: { "Content-Type": "text/html", ETag: '"0123456789abcdef0123456789abcdef"' } });
-  const response = await withHtmlEtag(new Request("https://nnoott.com/"), tagged);
-  const etag = response.headers.get("etag");
-  assert.notEqual(etag, '"0123456789abcdef0123456789abcdef"');
-  assert.match(etag ?? "", /^"[0-9a-f]{16}"$/);
 });

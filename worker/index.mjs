@@ -38,51 +38,6 @@ export function canonicalRedirectLocation(requestUrl) {
   return `${CANONICAL_ORIGIN}${path}${url.search}`;
 }
 
-/**
- * A weak-safe strong ETag for a response body: the first eight bytes of its
- * SHA-256, quoted. HTML documents come back from the asset layer without one,
- * so a repeat navigation re-downloads the whole document even though the
- * response is `must-revalidate`.
- *
- * @param {ArrayBuffer} body
- * @returns {Promise<string>}
- */
-export async function bodyEtag(body) {
-  const digest = await crypto.subtle.digest("SHA-256", body);
-  const hex = [...new Uint8Array(digest).slice(0, 8)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
-  return `"${hex}"`;
-}
-
-/**
- * Attach an ETag to an HTML response and honour `If-None-Match`, so a repeat
- * visit can be answered with 304 instead of the full document.
- *
- * Only GET responses are touched: a HEAD body is empty, and a non-HTML asset
- * already carries the platform's own ETag.
- *
- * @param {Request} request
- * @param {Response} response
- * @returns {Promise<Response>}
- */
-export async function withHtmlEtag(request, response) {
-  const type = response.headers.get("content-type") ?? "";
-  if (request.method !== "GET" || !type.startsWith("text/html")) {
-    return response;
-  }
-  const body = await response.clone().arrayBuffer();
-  const etag = await bodyEtag(body);
-  const ifNoneMatch = request.headers.get("If-None-Match") ?? "";
-  if (ifNoneMatch.split(",").map((value) => value.trim()).includes(etag)) {
-    return new Response(null, {
-      status: 304,
-      headers: { ETag: etag, "Cache-Control": response.headers.get("Cache-Control") ?? "public, max-age=0, must-revalidate" },
-    });
-  }
-  const headers = new Headers(response.headers);
-  headers.set("ETag", etag);
-  return new Response(body, { status: response.status, statusText: response.statusText, headers });
-}
-
 export default {
   /**
    * @param {Request} request
@@ -101,6 +56,6 @@ export default {
       });
     }
 
-    return withHtmlEtag(request, await env.ASSETS.fetch(request));
+    return env.ASSETS.fetch(request);
   },
 };
