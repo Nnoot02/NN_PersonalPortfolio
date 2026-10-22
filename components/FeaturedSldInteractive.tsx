@@ -42,14 +42,14 @@ const TARGETS: Target[] = [
   {
     id: "vd",
     name: "Voltage drop",
-    value: "ΔV 0.74 % vs 1 % limit",
+    value: "ΔV 0.74 % vs 1 % brief limit",
     detail: "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit.",
     hit: { x: "35.5%", y: "33.0%", w: "12.5%", h: "5.5%" },
   },
   {
     id: "device",
     name: "Main switchboard",
-    value: "125 A Type C · PFC 8.0 kA",
+    value: "125 A Type C · 8.0 kA fault",
     detail: "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1.",
     hit: { x: "16.5%", y: "36.5%", w: "6.3%", h: "10.0%" },
   },

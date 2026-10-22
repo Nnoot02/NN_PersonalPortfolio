@@ -108,8 +108,8 @@ check(panelPlotEnd === rootPlotEnd, `reveal panel --plot-end must mirror the svg
 const APPROVED = [
   ["supply", "500 kVA · 400 V 3-ph", "Supply capacity S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity; 85.6 kVA on the heaviest phase (Ib 123.6 A)."],
   ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S_demand / (√3 · U₀) with S_demand = 85.6 kVA; I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
-  ["vd", "ΔV 0.74 % vs 1 % limit", "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit."],
-  ["device", "125 A Type C · PFC 8.0 kA", "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1."],
+  ["vd", "ΔV 0.74 % vs 1 % brief limit", "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit."],
+  ["device", "125 A Type C · 8.0 kA fault", "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1."],
   ["sup", "SUP-DB · 40 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
   ["hai", "HAI-DB · 25 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
   ["but", "BUT-DB · 50 A · 10 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
@@ -912,8 +912,8 @@ for (const asset of projectIndexAssets) {
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const lvSvgHash = sha256(readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").replace(/\r\n/g, "\n"));
 const lvMiniHash = sha256(readFileSync(new URL("../public/images/project-index/lv-cabling-artifact.webp", import.meta.url)));
-check(lvSvgHash === "9f846dcde86319e87af77a421eb6e9b0a3a653c316c8d27a586753821561d002", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
-check(lvMiniHash === "95274afec42f5e0615fd04b5d434759348b9986c730103ce3f00ae945e671665", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
+check(lvSvgHash === "d2d0d596d94f01782ae16b7879121de4ae8216a62fd3c61eb1e241b318553d4d", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
+check(lvMiniHash === "f277c585bab71ba3cc78a897594a0aa5d948bde5ea7d97927acd23368057028a", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
 check(!projectsIndex.includes(".superpowers") && !projectsIndex.includes("generated_images"), "projects page must not reference disposable generated assets");
 check(!existsSync(new URL("../public/images/project-index/esp32-drone-process.webp", import.meta.url)), "obsolete ESP32 project-index miniature must be removed");
 check(!existsSync(new URL("../public/images/esp32-drone.webp", import.meta.url)), "obsolete ESP32 project image must be removed");
