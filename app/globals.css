@@ -46,6 +46,17 @@
   --motion-standard: 180ms;
   --motion-slow: 200ms;
   --motion-ease: cubic-bezier(.2, 0, 0, 1);
+  /* Entrance and plot schedule. Same values the literals carried, named so
+     the scale is visible and can be retuned in one place. */
+  --motion-entrance: 500ms;
+  --motion-mask: 700ms;
+  --motion-callout: 300ms;
+  --motion-plot: 380ms;
+  --motion-stagger: 60ms;
+  --motion-ping-step: 260ms;
+  --motion-plot-lead: 140ms;
+  --motion-plot-tail: 320ms;
+  --motion-ease-entrance: cubic-bezier(.22, .61, .36, 1);
 
   /* Type scale -- the values DESIGN.md declares per role (F2, 2026-10-18 audit).
      Roles not listed here have no CSS consumer yet. */
@@ -139,16 +150,16 @@ button { font: inherit; }
 @keyframes hero-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes hero-mask { from { clip-path: inset(0 0 108% 0); transform: translateY(6px); } to { clip-path: inset(0 0 -12% 0); transform: none; } }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-copy > * { animation: hero-rise 500ms cubic-bezier(.22,.61,.36,1) both; }
-  .hero-copy > :nth-child(1) { animation-delay: 60ms; }
-  .hero-copy > :nth-child(2) { animation-delay: 120ms; }
-  .hero-copy > :nth-child(3) { animation-delay: 180ms; }
-  .hero-copy > :nth-child(4) { animation-delay: 240ms; }
-  .hero-copy > :nth-child(5) { animation-delay: 300ms; }
-  .hero-copy > :nth-child(6) { animation-delay: 360ms; }
-  .hero-copy > :nth-child(7) { animation-delay: 420ms; }
-  .hero-name > span { display: inline-block; animation: hero-mask 700ms cubic-bezier(.22,.61,.36,1) both; }
-  .hero-name > span + span { animation-delay: 90ms; }
+  .hero-copy > * { animation: hero-rise var(--motion-entrance) var(--motion-ease-entrance) both; }
+  .hero-copy > :nth-child(1) { animation-delay: var(--motion-stagger); }
+  .hero-copy > :nth-child(2) { animation-delay: calc(var(--motion-stagger) * 2); }
+  .hero-copy > :nth-child(3) { animation-delay: calc(var(--motion-stagger) * 3); }
+  .hero-copy > :nth-child(4) { animation-delay: calc(var(--motion-stagger) * 4); }
+  .hero-copy > :nth-child(5) { animation-delay: calc(var(--motion-stagger) * 5); }
+  .hero-copy > :nth-child(6) { animation-delay: calc(var(--motion-stagger) * 6); }
+  .hero-copy > :nth-child(7) { animation-delay: calc(var(--motion-stagger) * 7); }
+  .hero-name > span { display: inline-block; animation: hero-mask var(--motion-mask) var(--motion-ease-entrance) both; }
+  .hero-name > span + span { animation-delay: calc(var(--motion-stagger) * 1.5); }
 }
 .hero-role { text-wrap: balance; color: var(--accent); font: 600 var(--text-hero-role)/1.1 var(--display); text-transform: uppercase; letter-spacing: .08em; margin: 0; }
 .accent-rule { display: block; flex: 0 0 auto; width: 34px; height: 3px; background: var(--accent); margin: 0; }
@@ -289,13 +300,13 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
     .hero-sld-stage { width: min(100%, calc((100cqh - 44px) * 1.5)); }
   }
 }@media (prefers-reduced-motion: no-preference) {
-  .hero-sld-row { animation: callout-ping 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * 260ms); }
+  .hero-sld-row { animation: callout-ping var(--motion-callout) var(--motion-ease-entrance) both; animation-delay: calc(var(--plot-end) + var(--ping-i) * var(--motion-ping-step)); }
 }
 /* The plot: stroke-dashoffset is the locked exception (Global Constraints). */
 @keyframes plot { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-sld svg [pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; animation: plot 380ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(140ms + (var(--plot-i) - 1) * var(--plot-step)); }
-  .hero-sld svg text { animation: hero-rise 300ms cubic-bezier(.22,.61,.36,1) both; animation-delay: calc(var(--plot-end) - 320ms); }
+  .hero-sld svg [pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; animation: plot var(--motion-plot) var(--motion-ease-entrance) both; animation-delay: calc(var(--motion-plot-lead) + (var(--plot-i) - 1) * var(--plot-step)); }
+  .hero-sld svg text { animation: hero-rise var(--motion-callout) var(--motion-ease-entrance) both; animation-delay: calc(var(--plot-end) - var(--motion-plot-tail)); }
 }
 /* Site screening audit 2026-09-16, F4: the artifact names itself and its
    destination without hover; the caption sits IN FLOW below the diagram (it
@@ -331,7 +342,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
    to auto so the stacked order follows the DOM: title first. */
 .project-image { grid-column: 1; grid-row: 1; min-height: 230px; background: var(--paper-deep); }
 .project-copy { grid-column: 2; grid-row: 1; display: grid; gap: 1.4rem; }
-.project-copy .project-title { font: 600 var(--text-project-title)/.95 var(--display); text-transform: uppercase; margin: 0 0 .8rem; }
+.project-copy .project-title { font: 600 var(--text-project-title)/.95 var(--display); text-transform: uppercase; margin: 0 0 .8rem; text-wrap: balance; }
 .project-link::after { content: ""; position: absolute; inset: 0; }
 .project-outcome { max-width: 58ch; color: var(--muted); line-height: 1.65; margin: 0; }
 .project-meta { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; }
@@ -381,7 +392,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .workbench-preview-image img, .workbench-evidence figure img { object-fit: cover; filter: sepia(.08); }
 .workbench-preview-copy { align-content: start; display: grid; gap: .85rem; }
 .workbench-preview-copy h2, .workbench-preview-copy h3 { font: 600 clamp(2rem, 3vw, 3rem)/.95 var(--display); margin: 0; text-transform: uppercase; }
-.workbench-preview-copy > p { color: var(--muted); line-height: 1.6; margin: 0; }
+.workbench-preview-copy > p { color: var(--muted); line-height: 1.6; margin: 0; max-width: 62ch; }
 .workbench-preview-copy .eyebrow { color: var(--accent-dark); }
 .workbench-source-credit { font-size: var(--text-code); }
 .workbench-preview-link::after { content: ""; inset: 0; position: absolute; }
@@ -515,7 +526,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .project-journey-link:hover .project-journey-image img, .project-journey-link:focus-visible .project-journey-image img { transform: scale(1.015); }
 .project-journey-copy { align-content: start; display: grid; gap: .3rem; min-width: 0; }
 .project-journey-state { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .12em; text-transform: uppercase; }
-.project-journey-title { font: 600 clamp(1.25rem, 1.7vw, 1.75rem)/.95 var(--display); margin: 0; text-transform: uppercase; }
+.project-journey-title { font: 600 clamp(1.25rem, 1.7vw, 1.75rem)/.95 var(--display); margin: 0; text-transform: uppercase; text-wrap: balance; }
 .project-journey-summary { color: var(--muted); font-size: var(--text-eyebrow); line-height: 1.4; margin: .45rem 0 0; }
 .project-journey-action { align-items: center; color: var(--accent-dark); display: inline-flex; font: 600 var(--text-tag)/1.2 var(--display); gap: .35rem; letter-spacing: .08em; margin-top: .2rem; text-transform: uppercase; }
 .project-journey-action svg { transition: transform var(--motion-standard) var(--motion-ease); }
@@ -620,7 +631,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
-.back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; }
+.back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
 .back-link:hover { color: var(--accent-dark); }
 .case-status { display: inline-block; margin: -1.2rem 0 2rem; padding: .4rem .85rem; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: var(--text-case-lede); line-height: 1.7; margin: 0 0 3rem; }
@@ -631,6 +642,10 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* Closes every case study with one direct contact vector, so a reviewer who
    read to the end does not have to navigate to /contact to ask about it. */
 .case-contact { border-top: 1px solid var(--line); color: var(--muted); margin: 4rem 0 0; padding-top: 1.6rem; }
+.case-resume { color: var(--muted); margin: 1.2rem 0 0; max-width: 62ch; }
+.resume-onward { color: var(--muted); margin: 1.6rem 0 0; max-width: 62ch; }
+.workbench-next { border-top: 1px solid var(--line); color: var(--muted); margin: 3rem 0 0; padding-top: 1.4rem; max-width: 62ch; }
+
 /* F8 (audit 2026-09-16, go 2026-09-18): the named next study shares the
    closing block with the contact line -- one border, two lines. */
 .case-next { border-top: 1px solid var(--line); color: var(--muted); margin: 4rem 0 0; padding-top: 1.6rem; }
@@ -653,8 +668,9 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    area, the equal negative margin keeps the 19px box and the 26px row pitch. */
 .case-opening-links .text-link { padding-block: .2rem; margin-block: -.2rem; }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
-.profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 var(--text-section-heading-sm)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
-.profile-summary p, .profile-grid li, .disclosure-panel p, .disclosure-panel li, .case-sections p { color: var(--muted); line-height: 1.7; }
+.profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 var(--text-section-heading-sm)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; text-wrap: balance; }
+.about-timeline h3 { text-wrap: balance; }
+.profile-summary p, .profile-grid li, .disclosure-panel p, .disclosure-panel li, .case-sections p { color: var(--muted); line-height: 1.7; max-width: 62ch; }
 .profile-facts { display: grid; grid-template-columns: 1fr 1fr; margin: 0; border-top: 1px solid var(--line); }
 .profile-facts div { padding: 1.4rem 1rem 1.4rem 0; border-bottom: 1px solid var(--line); }
 .profile-facts dt { font: 600 var(--text-tag)/1.2 var(--display); text-transform: uppercase; letter-spacing: .13em; margin-bottom: .5rem; }

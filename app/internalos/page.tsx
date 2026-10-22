@@ -5,6 +5,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: "InternalOS",
+  // Reachable only through the Google OAuth consent review and the privacy
+  // policy; not part of the published portfolio surface.
+  robots: { index: false, follow: true },
   description:
     "InternalOS is a private, single-user automation system that runs locally and reads Google Calendar and Gmail with read-only access. This page describes the integration.",
 };

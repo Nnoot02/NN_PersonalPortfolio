@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
@@ -43,6 +44,11 @@ export default function ResumePage() {
           <ul className="resume-contents">
             {pdfContents.map((item) => <li key={item}>{item}</li>)}
           </ul>
+          <p className="resume-onward">
+            The work behind this résumé is published in full: the{" "}
+            <Link className="text-link" href="/projects">case studies</Link> carry the calculations, and the{" "}
+            <Link className="text-link" href="/workbench">workbench</Link> carries the builds.
+          </p>
         </div>
         <dl className="profile-facts">
           <div>
@@ -55,7 +61,7 @@ export default function ResumePage() {
           </div>
           <div>
             <dt>Contact</dt>
-            <dd>{profile.contactEmail}</dd>
+            <dd><a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a></dd>
           </div>
           <div>
             <dt>Text copy</dt>

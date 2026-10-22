@@ -57,7 +57,7 @@ export const projects: Project[] = [
     approach:
       "Calculated per-phase maximum demand by the AS/NZS 3000 Clause 2.2.2(a) method, then ran one auditable nine-step selection chain per cable covering current capacity, de-rating, voltage drop, fault level, and earth-fault-loop impedance, with every assumption logged for verification against the controlling standard.",
     result:
-      "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit passed the AS/NZS 3000 Table 8.1 earth-fault-loop limits.",
+      "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit was checked against the AS/NZS 3000 Table 8.1 earth-fault-loop limits, with the governing loop at 0.57 Ω against a 1.15 Ω limit.",
     evidenceStatus:
       "Complete. The nine-step selection chain and the per-subcircuit results table are published; standards table data is cited by table number rather than reproduced (Standards Australia copyright).",
   },
