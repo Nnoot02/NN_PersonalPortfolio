@@ -116,7 +116,18 @@ export default async function ProjectPage({ params }: ProjectParams) {
             {(project.evidenceMarkers ?? project.tags).map((marker) => <li key={marker}>{marker}</li>)}
           </ul>
         )}
-        <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
+        <div className="case-image">
+          {/* The export is unoptimized, so next/image emits no srcset. The
+              photographic heroes carry pre-generated widths instead. */}
+          {project.heroSrcSet ? (
+            <picture>
+              <source srcSet={project.heroSrcSet} sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 1240px)" />
+              <Image src={project.image} alt={project.imageAlt} fill priority sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 1240px)" />
+            </picture>
+          ) : (
+            <Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" />
+          )}
+        </div>
         {project.imageNote && !project.imageIsDiagram ? (
           <p className="case-image-note case-image-provenance">{project.imageNote}</p>
         ) : null}
