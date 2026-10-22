@@ -188,7 +188,7 @@ check(profile.includes('content="Plain-text profile for electrical-engineering s
 
 // C2: one name for the fact sheet, one spelling for résumé (Nathan's yes,
 // 2026-09-03). Routes and file names stay ASCII; only the visible words move.
-check(profile.includes("<title>Fact sheet | Nathan No-ot - Solar Power Systems</title>"), "profile must be titled Fact sheet");
+check(profile.includes("<title>Fact sheet | Nathan No-ot - Engineering Portfolio</title>"), "profile must be titled Fact sheet");
 check(!profile.includes("Recruiter &amp; AI Brief"), "profile must not retain the Recruiter & AI Brief title");
 check(!resume.includes("Download resume"), "resume page must use the accented résumé spelling on its download button");
 check(!profile.includes("Download resume"), "profile page must use the accented résumé spelling on its download button");
@@ -1071,7 +1071,7 @@ for (const path of exportedPages) {
 
 // Case-study and workbench cards must be complete (site_name, locale) and
 // must not advertise the site title on Twitter/X when the page has its own.
-const siteDefaultTitle = "Nathan No-ot | Solar Power Systems Portfolio";
+const siteDefaultTitle = "Nathan No-ot | Engineering Portfolio";
 function twitterTag(document, name) {
   return document.match(new RegExp(`name="twitter:${name}" content="([^"]*)"`))?.[1] ?? "";
 }

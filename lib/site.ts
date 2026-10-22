@@ -101,7 +101,7 @@ export function projectStructuredData(project: Project) {
 // instead of copying the literals: two copies drift and nothing catches it.
 // Only `type` differs between the root layout and the homepage.
 export const sharedOpenGraph = {
-  title: "Nathan No-ot | Solar Power Systems Portfolio",
+  title: "Nathan No-ot | Engineering Portfolio",
   description: profile.summary,
   url: "./",
   siteName: "Nathan No-ot",
