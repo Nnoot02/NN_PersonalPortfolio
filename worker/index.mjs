@@ -66,7 +66,7 @@ export async function bodyEtag(body) {
  */
 export async function withHtmlEtag(request, response) {
   const type = response.headers.get("content-type") ?? "";
-  if (request.method !== "GET" || !type.startsWith("text/html") || response.headers.has("etag")) {
+  if (request.method !== "GET" || !type.startsWith("text/html")) {
     return response;
   }
   const body = await response.clone().arrayBuffer();
