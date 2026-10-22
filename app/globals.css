@@ -842,6 +842,19 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
      no letterbox. Desktop (520px) is set in the wide-screen rule above. */
   .hero-image { min-height: 320px; }
   .hero-artifact { min-height: 320px; }
+  /* 2026-10-21 audit UIUX-V01. The drawing is a fixed 1200x800 viewBox, so at
+     phone widths its own labels render at 5 to 8px. They are removed here and
+     the labelled rows below the drawing carry every value, which is the only
+     legible presentation available at this scale. */
+  /* visibility, not opacity: the nodes also carry the hero-rise animation, whose
+     fill mode lands them at opacity 1 and would beat a plain opacity rule. */
+  .hero-sld svg text { visibility: hidden; }
+  /* UIUX-V04. The diagram frame is capped so the hero ends sooner; the artwork
+     keeps its aspect ratio and centres in the shorter box. */
+  /* UIUX-V04 note: heroic spacing cannot buy the fold here. Measured at 390x844
+     the hero is 1117px: copy 565, drawing 260, full-size link 44, labelled rows
+     189, caption 57. Reaching 844 means removing one of those blocks, which is a
+     content decision, not a spacing one. */
   .hero-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
   .hero-actions .button { font-size: var(--text-tag); letter-spacing: .03em; padding: .65rem .5rem; gap: .4rem; }
   .hero-sld-row { min-height: 44px; }
