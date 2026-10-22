@@ -534,18 +534,20 @@ const expectedProjectJourneySlugs = [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
+  "last-metre-eyes-viasat-entry",
 ];
-check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV");
+check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV, Viasat");
 for (const slug of expectedProjectJourneySlugs) {
   check(projectJourneys.includes('href="/projects/' + slug + '"'), slug + " journey lane must target its detail route");
 }
 const projectJourneyAnchors = [...projectJourneys.matchAll(/<a\b[^>]*data-project-journey-link[^>]*>[\s\S]*?<\/a>/g)];
-check(projectJourneyAnchors.length === 3, "projects journeys must contain exactly three destination links");
-check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 9, "projects journeys must expose exactly nine stage states");
+check(projectJourneyAnchors.length === 4, "projects journeys must contain exactly four destination links");
+check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 12, "projects journeys must expose exactly twelve stage states");
 const expectedProjectJourneyStages = new Map([
   ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
   ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
   ["gps-denied-autonomous-uav", ["Simulation:resolved:Baseline and held-out trials", "Current frontier:current:Hardware and software integration", "Verification:future:Phase 3/HITL clearance validation"]],
+  ["last-metre-eyes-viasat-entry", ["Phase 1:resolved:Written concept advanced", "Phase 2:resolved:Video package submitted", "Measurement:future:Drone-to-relay link on a bench"]],
 ]);
 for (const [slug, expectedStages] of expectedProjectJourneyStages) {
   const lane = projectJourneys.match(new RegExp('(<li[^>]*data-project-slug="' + slug + '"[\\s\\S]*?)(?=<li[^>]*data-project-slug=|<\\/ol>)'))?.[1] ?? "";
@@ -558,6 +560,7 @@ const projectSpecificAltTerms = new Map([
   ["lv-cabling-design-commercial-complex", "lv cabling"],
   ["solar-grid-connection-assessment", "solar grid-connection"],
   ["gps-denied-autonomous-uav", "uav"],
+  ["last-metre-eyes-viasat-entry", "viasat"],
 ]);
 const projectMiniatureAlts = [];
 for (const [slug, requiredTerm] of projectSpecificAltTerms) {
@@ -635,6 +638,12 @@ const caseOpenings = [
     role: "Systems planning and verification",
     outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
     firstWriteUpId: null,
+  },
+  {
+    slug: "last-metre-eyes-viasat-entry",
+    role: "Sole entrant: concept, written answers, video and cards",
+    outcome: "The entry was not selected for Phase 3.",
+    firstWriteUpId: 'id="two-segments"',
   },
 ];
 for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
@@ -741,6 +750,23 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
 }
 // The compact UAV results write-up stays unindexed.
 check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the compact UAV results write-up must stay unindexed");
+
+// Viasat entry page (Nathan, 2026-10-20): the Phase 2 cards only, with the
+// full video held back; the Faculty Verification Letter is never published;
+// the BOM is quoted as submitted with its capstone-cap caveat; the local link
+// stays labelled as modelled.
+const viasatEntry = renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"));
+const viasatEntryText = normalizeTextEntities(viasatEntry);
+for (const card of ["journey", "map-first", "local-link", "envelope", "bom", "metrics"]) {
+  check(viasatEntry.includes(`/images/viasat-entry/${card}.webp`), `Viasat entry must show the ${card} card`);
+  check(publicFileSize(`/images/viasat-entry/${card}.webp`) < 160 * 1024, `Viasat ${card} card must stay under 160 KB`);
+}
+check(!/<video\b/.test(viasatEntry) && !/\.(mp4|webm)\b/.test(viasatEntry) && !viasatEntry.includes("LastMetreEyes_Phase2"), "Viasat entry must not embed or link the Phase 2 video");
+check(!/verification letter|NO-OT\.pdf/i.test(viasatEntry), "Viasat entry must not publish the Faculty Verification Letter");
+check(!viasatEntry.includes("\u2014"), "Viasat entry public copy must contain no U+2014 character");
+check(viasatEntryText.includes("as I submitted it on 27 September 2026, against my capstone's A$1,100 budget cap"), "Viasat entry must quote the BOM as submitted, against the capstone cap");
+check(viasatEntryText.includes("I have not re-checked it since"), "Viasat entry must say the BOM prices were not re-checked");
+check(viasatEntryText.includes("It is not a measurement of this system"), "Viasat entry must keep the local-link range labelled as modelled");
 // Site screening audit 2026-09-13, findings 4 and 5 (dispositioned 2026-09-16):
 // the grid summary argues each conclusion against the standards rather than
 // deciding against them, and the two published case-study pages carry no

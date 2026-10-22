@@ -67,6 +67,15 @@
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],
+  "/projects/last-metre-eyes-viasat-entry": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/ViasatEntryWriteUp.tsx",
+    "components/ViasatEntryWriteUp.module.css",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
   "/workbench/bench-fume-extractor": [
     "app/workbench/[slug]/page.tsx",
     "lib/workbench.ts",
