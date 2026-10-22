@@ -88,11 +88,17 @@ test("a stale ETag still gets the document", async () => {
   assert.equal(await response.text(), "<!doctype html><title>x</title>");
 });
 
-test("non-HTML responses and existing ETags pass through untouched", async () => {
+test("non-HTML responses pass through untouched", async () => {
   const css = new Response("body{}", { headers: { "Content-Type": "text/css" } });
   assert.equal(await withHtmlEtag(new Request("https://nnoott.com/a.css"), css), css);
+});
 
-  const tagged = new Response("<!doctype html>", { headers: { "Content-Type": "text/html", ETag: '"platform"' } });
+// The asset layer's own ETag does not survive the platform's HTML handling, so
+// the worker tags the document from its own bytes even when one arrives.
+test("an HTML response carrying a platform ETag is re-tagged from its body", async () => {
+  const tagged = new Response("<!doctype html><title>x</title>", { headers: { "Content-Type": "text/html", ETag: '"0123456789abcdef0123456789abcdef"' } });
   const response = await withHtmlEtag(new Request("https://nnoott.com/"), tagged);
-  assert.equal(response.headers.get("etag"), '"platform"');
+  const etag = response.headers.get("etag");
+  assert.notEqual(etag, '"0123456789abcdef0123456789abcdef"');
+  assert.match(etag ?? "", /^"[0-9a-f]{16}"$/);
 });
