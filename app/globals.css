@@ -643,6 +643,16 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .lv-views:has(#lv-view-installation:checked) .lv-view-panel[data-view="one-line"] { display: none; }
 .lv-views:has(#lv-view-installation:checked) .lv-view-panel[data-view="installation"] { display: block; }
 .lv-view-stage svg { display: block; height: auto; width: 100%; }
+/* A readable detail surface complements the overview at every screen width. */
+.lv-install-detail { display: none; }
+@media screen {
+  .lv-install-detail { display: block; border-top: 1px solid var(--line); padding: .75rem; }
+  .lv-install-detail summary { cursor: pointer; min-height: 44px; display: list-item; font-weight: 600; }
+  .lv-install-detail p { font-size: 1rem; margin: 0 0 .75rem; }
+  .lv-install-pan { overflow: auto; max-height: 70vh; border: 1px solid var(--line); }
+  .lv-install-pan:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .lv-install-pan img { display: block; width: 1440px; min-width: 1440px; max-width: none; height: 960px; }
+}
 @media (forced-colors: active) {
   .lv-view-tab:has(.lv-view-radio:checked) { border-bottom-color: Highlight; color: Highlight; }
   .lv-view-tab:has(.lv-view-radio:not(:checked)) { border-bottom-color: Canvas; }
@@ -650,23 +660,6 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
 .lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }
 .lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease); }
-/* The drawing names each board at rest; its tenancy and rating arrive when that
-   board (or its callout) is hovered. Touch devices, which have no hover, see
-   everything. */
-.lv-view-stage .legend-detail { visibility: hidden; }
-.lv-view-stage [data-hit]:hover .legend-detail { visibility: visible; }
-.lv-views:has([data-hit="sup"]:hover) .lv-view-stage [data-hit="sup"] .legend-detail,
-.lv-views:has([data-hit="hai"]:hover) .lv-view-stage [data-hit="hai"] .legend-detail,
-.lv-views:has([data-hit="but"]:hover) .lv-view-stage [data-hit="but"] .legend-detail { visibility: visible; }
-/* The blocks keep their headline at rest; the rest of each block arrives when
-   its object is hovered - the kiosk, the buried run, the switchboard. */
-.lv-view-stage .reveal { visibility: hidden; }
-.lv-views:has([data-hit="supply"]:hover) .lv-view-stage .reveal[data-hit="supply"],
-.lv-views:has([data-hit="mains"]:hover) .lv-view-stage .reveal[data-hit="mains"],
-.lv-views:has([data-hit="device"]:hover) .lv-view-stage .reveal[data-hit="device"] { visibility: visible; }
-@media (hover: none) {
-  .lv-view-stage .legend-detail, .lv-view-stage .reveal { visibility: visible; }
-}
 .lv-views:has([data-hit="supply"]:hover) .lv-view-stage [data-hit="supply"],
 .lv-views:has([data-hit="mains"]:hover) .lv-view-stage [data-hit="mains"],
 .lv-views:has([data-hit="device"]:hover) .lv-view-stage [data-hit="device"],
@@ -1019,8 +1012,6 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 
 @media print {
   .site-header, .hero-actions, .row-action, .scroll-cue, .case-spec__strip { display: none !important; }
-  /* hidden-on-hover detail must print: paper has no pointer */
-  .lv-view-stage .legend-detail, .lv-view-stage .reveal { visibility: visible; }
   .project-row, .workbench-preview { break-inside: avoid; }
   .featured, .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
   .site-footer { background: none; color: #000; min-height: 0; }

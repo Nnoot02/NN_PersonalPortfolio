@@ -40,6 +40,15 @@ export function LvDesignViews({
       {views.map((view) => (
         <div key={view.id} className="lv-view-panel" data-view={view.id} id={`lv-view-panel-${view.id}`}>
           {panels[view.id]}
+          {view.id === "installation" && (
+            <details className="lv-install-detail">
+              <summary>Read installation detail</summary>
+              <p>Scroll across and down to read the full-size drawing.</p>
+              <div className="lv-install-pan" role="region" aria-label="Full-size installation drawing" tabIndex={0}>
+                <img src={view.fullHref} width={1440} height={960} alt="Installation cutaway with buried routes, board locations and enlarged trench section A." />
+              </div>
+            </details>
+          )}
         </div>
       ))}
     </div>

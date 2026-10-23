@@ -13,12 +13,13 @@
     "check": "tsc --noEmit",
     "check:repo": "node scripts/repo-hygiene.mjs",
     "test:repo": "node --test \"scripts/*.test.mjs\"",
+    "test:installation": "node scripts/installation-check.cjs",
     "test:contract": "node scripts/portfolio-contract.mjs",
     "test:layout": "node scripts/layout-check.mjs && node scripts/ui-ux-motion-check.mjs",
     "probe:redirects": "node scripts/canonical-host-probe.mjs",
     "probe:anchors": "node scripts/markup-anchor-probe.mjs",
     "probe:bands": "node scripts/section-band-map.mjs",
-    "verify": "pnpm check && pnpm test:repo && pnpm check:repo && pnpm build && pnpm test:contract && pnpm test:layout"
+    "verify": "pnpm check && pnpm test:repo && pnpm check:repo && pnpm build && pnpm test:contract && pnpm test:installation && pnpm test:layout"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "5.2.8",
