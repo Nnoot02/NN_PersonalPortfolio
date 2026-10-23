@@ -116,7 +116,7 @@ Step 4  Correction        k = 1.04 (soil, T3.45) × 0.99 (depth, T3.46)
         Required tabulated CCC ≥ 125 / 1.03 = 121.4 A
 Step 5  16 mm² → 101 A (fail);  25 mm² → 132 A (pass)
         Iz = 132 × 1.03 = 136 A → Ib 123.6 ≤ In 125 ≤ Iz 136  OK
-Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)
+Step 6  Voltage drop (brief limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)
         ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %  OK
 Step 7  PFC at MSB = 8.0 kA; breaking capacity 10 kA  OK
 SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>

@@ -666,8 +666,8 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
 // completion language. The old "Verified / sanitised write-up" vocabulary and
 // the "What still needs proof" heading must not return.
 for (const [slug, expectedStatus] of [
-  ["lv-cabling-design-commercial-complex", "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown"],
-  ["solar-grid-connection-assessment", "Coursework assessment - every TS132/TS133 and AS/NZS 4777.2 check shown"],
+  ["lv-cabling-design-commercial-complex", "Coursework design - worked checks to AS/NZS 3000 and 3008.1.1"],
+  ["solar-grid-connection-assessment", "Coursework assessment - argued against TS132/TS133 and AS/NZS 4777.2"],
 ]) {
   const doc = renderedMain(readExport(`/projects/${slug}.html`));
   check(doc.includes(expectedStatus), `${slug}: status must name the verification basis plainly`);
@@ -677,6 +677,8 @@ for (const [slug, expectedStatus] of [
   check(!doc.includes("Evidence verified"), `${slug}: the old "Evidence verified" status must not return`);
   check(!doc.includes("Sanitised public write-up complete"), `${slug}: the old publication-workflow sentence must not return`);
   check(!doc.includes("What still needs proof"), `${slug}: the old proof heading must not return`);
+  // Projects audit 2026-10-23 (copy overclaims): "check shown" claimed every check.
+  check(!doc.includes("check shown"), `${slug}: status must not claim every check is shown`);
 }
 
 // Site screening audit 2026-09-16, F8 (Nathan's go 2026-09-18): each completed
@@ -706,6 +708,30 @@ check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.inc
 // names the authoring tool and says the page carries a redraw.
 const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");
 check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inventor; this is a vector redraw of it for the web."), "LV diagram note must name Autodesk Inventor as the authoring tool");
+
+// Projects audit 2026-10-23 (copy overclaims): the case studies and the index
+// must say what was actually checked, and call the work coursework.
+{
+  const lvOpening = normalizeTextEntities(lvCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "");
+  check(lvOpening.includes("the longest final subcircuit of each conductor size"), "lv: opening block must say only the longest final subcircuit of each conductor size was checked");
+  check(!lvOpening.includes("every final subcircuit was checked"), "lv: opening block must not claim every final subcircuit was checked");
+  check(normalizeTextEntities(lvCaseStudy).includes("Step 6  Voltage drop (brief limit 1 % = 4.0 V)"), "lv: consumer-mains worked check must cite the brief limit for voltage drop");
+  const solarCaseStudy = normalizeTextEntities(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")));
+  const solarOpening = solarCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "";
+  check(solarOpening.includes("named as inputs to the network study, not computed"), "solar: opening block must say voltage rise, fault level and grading are inputs, not computed");
+  const comparisonStart = solarCaseStudy.indexOf('<pre tabindex="0" role="region" aria-label="LV versus HV connection comparison">');
+  const comparison = comparisonStart === -1 ? "" : solarCaseStudy.slice(comparisonStart, solarCaseStudy.indexOf("</pre>", comparisonStart));
+  check(comparison.includes("(currents at unity power factor)"), "solar: LV versus HV comparison must state unity power factor");
+  check(comparison.includes("~52 A at 11 kV, ~17 A at 33 kV"), "solar: LV versus HV comparison must carry the HV currents");
+  for (const phrase of ["Coursework case study", "Coursework assessment", "Read the case study", "27/30 cleared the 0.5 m requirement"]) {
+    check(projectJourneys.includes(phrase), `projects journeys must carry "${phrase}"`);
+  }
+  for (const phrase of ["Verified case study", "Verified assessment", "Read verified case study"]) {
+    check(!projectJourneys.includes(phrase), `projects journeys must not carry "${phrase}"`);
+  }
+  const projectsDescription = readExport("/projects.html").match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "";
+  check(projectsDescription.startsWith("Two coursework power studies to AS/NZS standards"), "/projects meta description must call the power studies coursework");
+}
 
 // Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
 // be a named region so the stop announces what it is (WCAG 4.1.2).
@@ -819,7 +845,7 @@ const caseSpecs = {
   "lv-cabling-design-commercial-complex": [
     ["Voltage system", "400 V 3-phase", "230 V line-to-neutral"],
     ["Design current", "123.6 A", "on the heaviest phase (A)"],
-    ["Voltage drop", "0.74 %", "consumer mains, against the 1 % limit"],
+    ["Voltage drop", "0.74 %", "consumer mains, against the 1 % limit set by the brief"],
     ["Standards", "AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025", null],
   ],
   "solar-grid-connection-assessment": [
