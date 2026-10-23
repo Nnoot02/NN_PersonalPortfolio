@@ -13,8 +13,16 @@ const sections: WriteUpSection[] = [
   { id: "assumptions-and-limits", label: "Declared assumptions and limits" },
 ];
 
+const phaseDemand = [
+  ["Communal (at MSB)", "39.9", "24.3", "21.0", "39.9"],
+  ["Supermarket", "33.4", "39.1", "27.5", "39.1"],
+  ["Hairdresser", "13.9", "13.9", "24.5", "24.5"],
+  ["Butcher", "36.5", "41.2", "41.8", "41.8"],
+  ["Consumer mains (sum)", "123.6", "118.5", "114.7", "123.6"],
+];
+
 const finalsSchedule = [
-  ["Lighting", "26", "5.0", "10", "1.5 mm²", "11.2", "1.87 %", "1.5 mm²"],
+  ["Lighting", "26", "5.0", "10", "1.5 mm²", "11.2", "1.66 %", "1.5 mm²"],
   ["Power (10 A GPO)", "24", "10", "20", "4 mm²", "21.4", "1.17 %", "2.5 mm²"],
   ["Power >10 A (15 A socket)", "15", "15", "20", "4 mm²", "21.4", "1.10 %", "2.5 mm²"],
   ["Hot water service", "18", "15.7", "20", "4 mm²", "21.4", "1.37 %", "2.5 mm²"],
@@ -60,9 +68,36 @@ export function LvCablingWriteUp() {
           classified once, allocated to a phase, and group-diversity rules applied
           per phase; three-phase loads add their per-phase current to all three
           phases. The heaviest phase sets the design current: <strong>123.6 A</strong> on
-          phase A, with 7.5 % phase imbalance. Per board: communal 39.9 A,
-          supermarket 39.1 A, hairdresser 24.5 A, butcher 41.8 A. The butcher is
-          simultaneously the heaviest-loaded and longest (15 m) submain.
+          phase A, against the 118.9 A mean of the three phases (a 7.5 % spread). The
+          butcher is simultaneously the heaviest-loaded and longest (15 m) submain.
+        </p>
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="Maximum demand per board and phase">
+          <table>
+            <caption className="sr-only">Maximum demand per board and phase, in amperes</caption>
+            <thead>
+              <tr>
+                <th scope="col">Board</th>
+                <th scope="col">Phase A</th>
+                <th scope="col">Phase B</th>
+                <th scope="col">Phase C</th>
+                <th scope="col">Heaviest</th>
+              </tr>
+            </thead>
+            <tbody>
+              {phaseDemand.map((row) => (
+                <tr key={row[0]}>
+                  <th scope="row">{row[0]}</th>
+                  {row.slice(1).map((cell, index) => (
+                    <td key={`${row[0]}-${index}`}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Totals are carried from the unrounded per-board calculations, so a column can
+          differ from the printed rows by up to 0.1 A.
         </p>
       </div>
 
@@ -81,7 +116,7 @@ Step 4  Correction        k = 1.04 (soil, T3.45) × 0.99 (depth, T3.46)
         Required tabulated CCC ≥ 125 / 1.03 = 121.4 A
 Step 5  16 mm² → 101 A (fail);  25 mm² → 132 A (pass)
         Iz = 132 × 1.03 = 136 A → Ib 123.6 ≤ In 125 ≤ Iz 136  OK
-Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 Ω/km
+Step 6  Voltage drop (limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)
         ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %  OK
 Step 7  PFC at MSB = 8.0 kA; breaking capacity 10 kA  OK
 SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
@@ -97,10 +132,11 @@ SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
         <p>
           V-75 single-insulated copper, one conduit, buried 1 m, soil 20 °C. Table
           3.8 routes this to Table 3.12, Column 17. Combined correction k = 1.05 × 0.95
-          = 1.00. The butcher submain governs.
+          = 0.9975, carried unrounded, so the required tabulated capacity is
+          50.13 A. The butcher submain governs.
         </p>
         <pre tabIndex={0} role="region" aria-label="Butcher submain selection chain, worked steps">{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
-Step 4  k = 1.00 → required CCC ≥ 50 A
+Step 4  k = 0.9975 requires CCC of at least 50.13 A
 Step 5  6 mm² → 45 A (fail); 10 mm² → 59 A (pass); Iz = 59 A
         Ib 41.8 ≤ In 50 ≤ Iz 59  OK
 Step 6  ΔV = √3 × 41.8 × 15 × 2.23 / 1000 = 2.42 V = 0.61 %  OK
@@ -123,16 +159,17 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Final subcircuit schedule">
           <table>
+            <caption className="sr-only">Final subcircuit schedule: load type, run length, design current, protective device, cable and earth sizes, current-carrying capacity and voltage drop</caption>
             <thead>
               <tr>
-                <th>Load type</th>
-                <th>Run (m)</th>
-                <th>Ib (A)</th>
-                <th>In (A)</th>
-                <th>Cable</th>
-                <th>Iz (A)</th>
-                <th>ΔV</th>
-                <th>Earth</th>
+                <th scope="col">Load type</th>
+                <th scope="col">Run (m)</th>
+                <th scope="col">Ib (A)</th>
+                <th scope="col">In (A)</th>
+                <th scope="col">Cable</th>
+                <th scope="col">Iz (A)</th>
+                <th scope="col">ΔV</th>
+                <th scope="col">Earth</th>
               </tr>
             </thead>
             <tbody>
@@ -146,7 +183,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
         </div>
         <p>
           All Iz ≥ In and every voltage drop is within budget; the worst-case total
-          path (mains + butcher submain + lighting final) sums to 3.2 % against the
+          path (mains + butcher submain + lighting final) sums to 3.0 % against the
           5 % limit.
         </p>
       </div>
@@ -171,7 +208,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
       <div className="writeup-block">
         <h3 id="fault-level">Fault level and earth-fault loop</h3>
         <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (√3 × 15 000) = 0.0154 Ω/phase
-Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω
+Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω  (copper at 75 °C)
 Z at MSB   = 0.0154 + 0.0133 = 0.0287 Ω
 PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
         <p>
@@ -179,7 +216,10 @@ PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
           current. Earth-fault-loop impedance was checked for the longest circuit of
           each conductor size against AS/NZS 3000:2018 Table 8.1 for Type C
           breakers; the worst-case loop (4 mm² general-power final, 24 m, on the
-          butcher submain) gives Zs ≈ 0.57 Ω against a limit of ≈ 1.15 Ω. The
+          butcher submain) gives Zs ≈ 0.57 Ω against a limit of ≈ 1.15 Ω. The two
+          resistance figures for the 25 mm² conductor differ because each check uses
+          a different conductor temperature: 0.927 Ω/km at 90 °C for voltage drop,
+          and 0.884 Ω/km at 75 °C for this fault calculation. The
           external loop impedance Ze = 0.0345 Ω is a declared assumption; the real
           figure comes from the network operator&apos;s connection-point fault data or
           an on-site loop-impedance measurement.

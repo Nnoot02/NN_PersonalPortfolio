@@ -106,10 +106,10 @@ check(panelPlotEnd === rootPlotEnd, `reveal panel --plot-end must mirror the svg
 // bodies apart, so every approved string is pinned inside its own block. The
 // list mirrors components/FeaturedSldInteractive.tsx TARGETS -- keep in step.
 const APPROVED = [
-  ["supply", "500 kVA · 400 V 3-ph", "S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity."],
-  ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S / (√3 · U₀); I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
-  ["vd", "ΔV 0.74 % vs 1 % limit", "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit."],
-  ["device", "125 A Type C · PFC 8.0 kA", "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1."],
+  ["supply", "500 kVA · 400 V 3-ph", "Supply capacity S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity; 85.6 kVA on the heaviest phase (Ib 123.6 A)."],
+  ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S_demand / (√3 · U₀) with S_demand = 85.6 kVA; I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
+  ["vd", "ΔV 0.74 % vs 1 % brief limit", "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit."],
+  ["device", "125 A Type C · 8.0 kA fault", "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1."],
   ["sup", "SUP-DB · 40 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
   ["hai", "HAI-DB · 25 A · 6 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
   ["but", "BUT-DB · 50 A · 10 mm² V-75", "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %."],
@@ -188,7 +188,7 @@ check(profile.includes('content="Plain-text profile for electrical-engineering s
 
 // C2: one name for the fact sheet, one spelling for résumé (Nathan's yes,
 // 2026-09-03). Routes and file names stay ASCII; only the visible words move.
-check(profile.includes("<title>Fact sheet | Nathan No-ot - Solar Power Systems</title>"), "profile must be titled Fact sheet");
+check(profile.includes("<title>Fact sheet | Nathan No-ot - Engineering Portfolio</title>"), "profile must be titled Fact sheet");
 check(!profile.includes("Recruiter &amp; AI Brief"), "profile must not retain the Recruiter & AI Brief title");
 check(!resume.includes("Download resume"), "resume page must use the accented résumé spelling on its download button");
 check(!profile.includes("Download resume"), "profile page must use the accented résumé spelling on its download button");
@@ -521,8 +521,10 @@ check(!contact.includes("Let's discuss engineering work."), "contact must not re
 check(!contact.includes("Flight evidence pending"), "contact must not add unsupported flight evidence");
 
 check(!projectsIndex.includes("Power · verification"), "projects hero must remove the old scope eyebrow");
-check(projectsIndex.includes("Systems, taken from theory towards proof."), "projects hero must use approved headline");
-check(projectsIndex.includes("Each project shows what I decided, what I produced, and where the evidence currently stops."), "projects hero must use approved evidence-boundary copy");
+check(projectsIndex.includes("<h1>Projects</h1>"), "projects hero must use approved headline");
+// The evidence-boundary lede was removed at Nathan's direction (2026-10-21); the
+// negative pin keeps it from returning without a decision.
+check(!projectsIndex.includes("Each project shows what I decided"), "projects hero must not carry the removed evidence-boundary lede");
 check(!projectsIndex.includes("—"), "projects public copy must contain no em dash");
 
 const projectJourneys = projectsIndex.match(/<ol[^>]*data-project-journeys[^>]*>[\s\S]*?<\/ol><\/section>/)?.[0] ?? "";
@@ -532,18 +534,20 @@ const expectedProjectJourneySlugs = [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
+  "last-metre-eyes-viasat-entry",
 ];
-check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV");
+check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV, Viasat");
 for (const slug of expectedProjectJourneySlugs) {
   check(projectJourneys.includes('href="/projects/' + slug + '"'), slug + " journey lane must target its detail route");
 }
 const projectJourneyAnchors = [...projectJourneys.matchAll(/<a\b[^>]*data-project-journey-link[^>]*>[\s\S]*?<\/a>/g)];
-check(projectJourneyAnchors.length === 3, "projects journeys must contain exactly three destination links");
-check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 9, "projects journeys must expose exactly nine stage states");
+check(projectJourneyAnchors.length === 4, "projects journeys must contain exactly four destination links");
+check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 12, "projects journeys must expose exactly twelve stage states");
 const expectedProjectJourneyStages = new Map([
   ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
   ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
   ["gps-denied-autonomous-uav", ["Simulation:resolved:Baseline and held-out trials", "Current frontier:current:Hardware and software integration", "Verification:future:Phase 3/HITL clearance validation"]],
+  ["last-metre-eyes-viasat-entry", ["Phase 1:resolved:Written concept advanced", "Phase 2:resolved:Video package submitted", "Measurement:future:Drone-to-relay link on a bench"]],
 ]);
 for (const [slug, expectedStages] of expectedProjectJourneyStages) {
   const lane = projectJourneys.match(new RegExp('(<li[^>]*data-project-slug="' + slug + '"[\\s\\S]*?)(?=<li[^>]*data-project-slug=|<\\/ol>)'))?.[1] ?? "";
@@ -556,6 +560,7 @@ const projectSpecificAltTerms = new Map([
   ["lv-cabling-design-commercial-complex", "lv cabling"],
   ["solar-grid-connection-assessment", "solar grid-connection"],
   ["gps-denied-autonomous-uav", "uav"],
+  ["last-metre-eyes-viasat-entry", "viasat"],
 ]);
 const projectMiniatureAlts = [];
 for (const [slug, requiredTerm] of projectSpecificAltTerms) {
@@ -633,6 +638,12 @@ const caseOpenings = [
     role: "Systems planning and verification",
     outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
     firstWriteUpId: null,
+  },
+  {
+    slug: "last-metre-eyes-viasat-entry",
+    role: "Sole entrant: concept, written answers, video and cards",
+    outcome: "The entry was not selected for Phase 3.",
+    firstWriteUpId: 'id="two-segments"',
   },
 ];
 for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
@@ -739,6 +750,23 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
 }
 // The compact UAV results write-up stays unindexed.
 check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the compact UAV results write-up must stay unindexed");
+
+// Viasat entry page (Nathan, 2026-10-20): the Phase 2 cards only, with the
+// full video held back; the Faculty Verification Letter is never published;
+// the BOM is quoted as submitted with its capstone-cap caveat; the local link
+// stays labelled as modelled.
+const viasatEntry = renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"));
+const viasatEntryText = normalizeTextEntities(viasatEntry);
+for (const card of ["journey", "map-first", "local-link", "envelope", "bom", "metrics"]) {
+  check(viasatEntry.includes(`/images/viasat-entry/${card}.webp`), `Viasat entry must show the ${card} card`);
+  check(publicFileSize(`/images/viasat-entry/${card}.webp`) < 160 * 1024, `Viasat ${card} card must stay under 160 KB`);
+}
+check(!/<video\b/.test(viasatEntry) && !/\.(mp4|webm)\b/.test(viasatEntry) && !viasatEntry.includes("LastMetreEyes_Phase2"), "Viasat entry must not embed or link the Phase 2 video");
+check(!/verification letter|NO-OT\.pdf/i.test(viasatEntry), "Viasat entry must not publish the Faculty Verification Letter");
+check(!viasatEntry.includes("\u2014"), "Viasat entry public copy must contain no U+2014 character");
+check(viasatEntryText.includes("as I submitted it on 27 September 2026, against my capstone's A$1,100 budget cap"), "Viasat entry must quote the BOM as submitted, against the capstone cap");
+check(viasatEntryText.includes("I have not re-checked it since"), "Viasat entry must say the BOM prices were not re-checked");
+check(viasatEntryText.includes("It is not a measurement of this system"), "Viasat entry must keep the local-link range labelled as modelled");
 // Site screening audit 2026-09-13, findings 4 and 5 (dispositioned 2026-09-16):
 // the grid summary argues each conclusion against the standards rather than
 // deciding against them, and the two published case-study pages carry no
@@ -763,6 +791,19 @@ check(footer.includes('href="mailto:nathannoott@gmail.com"'), "footer must offer
 // address inside it, and a mailto href contains the address. Pinned so the
 // omission reads as a decision rather than an oversight.
 check(!contactFooter.includes('href="mailto:'), "compact contact footer must not repeat the address as a mailto");
+// 2026-10-21 audit D3. The four published board currents are heaviest-phase
+// values; without the per-phase allocation a reader adds them to 145.3 A and
+// concludes the 123.6 A mains figure is wrong. Pin the derivation table, scoped
+// to its own block so a stray number elsewhere cannot satisfy it.
+{
+  const lv = renderedMain(readExport("/projects/lv-cabling-design-commercial-complex.html"));
+  const start = lv.indexOf('aria-label="Maximum demand per board and phase"');
+  const block = start === -1 ? "" : lv.slice(start, lv.indexOf("</table>", start) + 8);
+  check(block.length > 0, "lv: per-phase maximum-demand table must be published");
+  for (const cell of ["Phase A", "Phase B", "Phase C", "Consumer mains (sum)", "118.5", "114.7"]) {
+    check(block.includes(cell), `lv: demand table must carry ${cell}`);
+  }
+}
 for (const slug of caseStudySlugs) {
   const caseStudy = renderedMain(readExport(`/projects/${slug}.html`));
   check(/class="case-contact"/.test(caseStudy), `${slug}: case study must close with a contact line`);
@@ -871,8 +912,8 @@ for (const asset of projectIndexAssets) {
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const lvSvgHash = sha256(readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").replace(/\r\n/g, "\n"));
 const lvMiniHash = sha256(readFileSync(new URL("../public/images/project-index/lv-cabling-artifact.webp", import.meta.url)));
-check(lvSvgHash === "9f846dcde86319e87af77a421eb6e9b0a3a653c316c8d27a586753821561d002", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
-check(lvMiniHash === "95274afec42f5e0615fd04b5d434759348b9986c730103ce3f00ae945e671665", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
+check(lvSvgHash === "d2d0d596d94f01782ae16b7879121de4ae8216a62fd3c61eb1e241b318553d4d", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
+check(lvMiniHash === "f277c585bab71ba3cc78a897594a0aa5d948bde5ea7d97927acd23368057028a", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
 check(!projectsIndex.includes(".superpowers") && !projectsIndex.includes("generated_images"), "projects page must not reference disposable generated assets");
 check(!existsSync(new URL("../public/images/project-index/esp32-drone-process.webp", import.meta.url)), "obsolete ESP32 project-index miniature must be removed");
 check(!existsSync(new URL("../public/images/esp32-drone.webp", import.meta.url)), "obsolete ESP32 project image must be removed");
@@ -1056,7 +1097,7 @@ for (const path of exportedPages) {
 
 // Case-study and workbench cards must be complete (site_name, locale) and
 // must not advertise the site title on Twitter/X when the page has its own.
-const siteDefaultTitle = "Nathan No-ot | Solar Power Systems Portfolio";
+const siteDefaultTitle = "Nathan No-ot | Engineering Portfolio";
 function twitterTag(document, name) {
   return document.match(new RegExp(`name="twitter:${name}" content="([^"]*)"`))?.[1] ?? "";
 }
@@ -1119,6 +1160,20 @@ for (const route of ["/index", "/projects", "/workbench", "/profile", "/about", 
   const document = readExport(`${route}.html`);
   const footer = document.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
   check(/href="\/resume"/.test(footer), `${route}: footer must link the resume overview`);
+}
+// 2026-10-21 audit TECH-4. The export is unoptimized, so a photographic hero or
+// gallery without pre-generated widths ships its full-size file to every viewport.
+{
+  const uav = renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"));
+  check(uav.includes("gps-denied-uav-960.webp 960w") && uav.includes("gps-denied-uav.webp 1920w"), "uav: hero must offer the 960 and full-width candidates");
+  const gallery = {
+    tarmo5: "tarmo5-800.webp 800w",
+    "servo-mini-arm": "servo-mini-arm-800.webp 800w",
+    "bench-fume-extractor": "bench-fume-extractor-electronics-800.webp 800w",
+  };
+  for (const [slug, marker] of Object.entries(gallery)) {
+    check(readExport(`/workbench/${slug}.html`).includes(marker), `${slug}: evidence gallery must offer the 800px candidate`);
+  }
 }
 for (const slug of detailSlugs) {
   check(workbench.includes(`/images/thumbs/workbench-${slug}-600.webp 600w`) && workbench.includes(`/images/thumbs/workbench-${slug}-1200.webp 1200w`), `${slug}: list must offer both thumbnail sizes`);

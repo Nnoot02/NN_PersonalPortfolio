@@ -37,6 +37,7 @@ export default function HomePage() {
     <>
     <SiteHeader />
     <main id="main-content" tabIndex={-1}>
+      <div className="home-hero-shell">
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Electrical engineering student · Adelaide</p>
@@ -104,6 +105,7 @@ export default function HomePage() {
           ))}
         </ol>
       </section>
+      </div>
 
       <HomepageEpilogue uavProject={uavProject} workbenchEntry={workbenchEntry} />
     </main>

@@ -24,6 +24,8 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
   const entry = getWorkbenchEntry((await params).slug);
   if (!entry) notFound();
   const source = "source" in entry ? entry.source : undefined;
+  const entryIndex = workbenchEntries.findIndex((item) => item.slug === entry.slug);
+  const nextEntry = workbenchEntries[(entryIndex + 1) % workbenchEntries.length];
 
   return (
     <>
@@ -51,6 +53,11 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
           <div><dt>Next iteration</dt><dd>{entry.nextIteration}</dd></div>
         </dl>
         <WorkbenchEvidenceGallery entry={entry} />
+        <p className="workbench-next">
+          Next at the bench:{" "}
+          <Link className="text-link" href={`/workbench/${nextEntry.slug}`}>{nextEntry.title}</Link>.{" "}
+          <Link className="text-link" href="/workbench">All builds</Link>
+        </p>
       </article>
     </main>
     <SiteFooter />

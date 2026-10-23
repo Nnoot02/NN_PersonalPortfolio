@@ -13,6 +13,7 @@ import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
+import { ViasatEntryWriteUp } from "@/components/ViasatEntryWriteUp";
 import { projectStudyNext } from "@/lib/project-index";
 import { projects } from "@/lib/projects";
 import { profile, projectStructuredData, sharedOpenGraph } from "@/lib/site";
@@ -22,12 +23,14 @@ const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
   "solar-grid-connection-assessment": PvConnectionWriteUp,
   "gps-denied-autonomous-uav": UavTestGatesWriteUp,
+  "last-metre-eyes-viasat-entry": ViasatEntryWriteUp,
 };
 
 const shareImages: Record<string, { url: string; width: number; height: number }> = {
   "lv-cabling-design-commercial-complex": { url: "/images/project-index/lv-cabling-artifact.webp", width: 1280, height: 720 },
   "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
   "gps-denied-autonomous-uav": { url: "/images/gps-denied-uav.webp", width: 1920, height: 1080 },
+  "last-metre-eyes-viasat-entry": { url: "/images/viasat-entry/journey.webp", width: 1920, height: 1080 },
 };
 
 // The LV study carries two views of the same design: the one-line diagram it is
@@ -83,6 +86,11 @@ const openingLinks: Record<string, Array<{ label: string; href: string }>> = {
     { label: "Three capacities", href: "#three-capacities" },
     { label: "Connection voltage", href: "#connection-voltage" },
     { label: "Hosting capacity", href: "#hosting-capacity" },
+  ],
+  "last-metre-eyes-viasat-entry": [
+    { label: "Two segments", href: "#two-segments" },
+    { label: "The local link", href: "#local-link" },
+    { label: "Impact metrics", href: "#metrics" },
   ],
 };
 
@@ -155,7 +163,18 @@ export default async function ProjectPage({ params }: ProjectParams) {
         {project.slug === "lv-cabling-design-commercial-complex" ? (
           <LvDesignViews views={lvDesignViews} panels={lvDesignPanels} />
         ) : (
-          <div className="case-image"><Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" /></div>
+          <div className="case-image">
+            {/* The export is unoptimized, so next/image emits no srcset. The
+                photographic heroes carry pre-generated widths instead. */}
+            {project.heroSrcSet ? (
+              <picture>
+                <source srcSet={project.heroSrcSet} sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 1240px)" />
+                <Image src={project.image} alt={project.imageAlt} fill priority sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 1240px)" />
+              </picture>
+            ) : (
+              <Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" />
+            )}
+          </div>
         )}
         {project.imageNote && !project.imageIsDiagram ? (
           <p className="case-image-note case-image-provenance">{project.imageNote}</p>
@@ -193,6 +212,11 @@ export default async function ProjectPage({ params }: ProjectParams) {
         ) : null}
         <p className="case-contact">
           Questions about this design? <a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a>
+        </p>
+        <p className="case-resume">
+          The résumé is the short version of this work:{" "}
+          <Link className="text-link" href="/resume">résumé overview</Link>, or the{" "}
+          <a className="text-link" href={profile.resumePath}>PDF</a>.
         </p>
       </article>
     </main>

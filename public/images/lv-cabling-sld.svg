@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-labelledby="sldTitle sldDesc" style="--plot-n:46;--plot-step:19.57ms;--plot-end:1421ms">
   <title id="sldTitle">Commercial LV cabling design - one-line diagram</title>
-  <desc id="sldDesc">Redrawn one-line diagram of a 400 V three-tenancy commercial complex: a 500 kVA transformer feeds the main switchboard through 25 mm squared X-90 copper consumer mains, and the switchboard supplies a communal finals group and the supermarket, hairdresser and butcher distribution boards. The consumer mains carry a design current of 123.6 A at 0.74 per cent voltage drop against the 1 per cent limit, and the 125 A Type C main switch is rated for the 8.0 kA prospective fault current.</desc>
+  <desc id="sldDesc">Redrawn one-line diagram of a 400 V three-tenancy commercial complex: a 500 kVA transformer feeds the main switchboard through 25 mm squared X-90 copper consumer mains, and the switchboard supplies a communal finals group and the supermarket, hairdresser and butcher distribution boards. The consumer mains carry a design current of 123.6 A at 0.74 per cent voltage drop against the 1 per cent limit set by the project brief, and the 125 A Type C main switch clears the 8.0 kA prospective fault current within its 10 kA breaking capacity.</desc>
 
   <!-- Vector redraw of the published figure. Palette is inlined from :root in
        app/globals.css: an SVG loaded through <img> cannot inherit custom properties. -->
@@ -73,7 +73,7 @@
     <!-- Main switch annotation -->
     <g font-size="19" fill="#6d6962">
       <text x="127" y="488">Main switch</text>
-      <text x="127" y="512">125 A Type C · PFC 8.0 kA</text>
+      <text x="127" y="512">125 A Type C · 8.0 kA fault</text>
       <text x="127" y="536">MEN at neutral bar</text>
     </g>
 

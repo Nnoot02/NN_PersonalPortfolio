@@ -12,8 +12,8 @@ import { bingSiteVerification, cloudflareBeaconToken, googleSiteVerification } f
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Nathan No-ot | Solar Power Systems Portfolio",
-    template: "%s | Nathan No-ot - Solar Power Systems",
+    default: "Nathan No-ot | Engineering Portfolio",
+    template: "%s | Nathan No-ot - Engineering Portfolio",
   },
   description: profile.summary,
   keywords: [

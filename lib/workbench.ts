@@ -10,6 +10,8 @@ export type EvidenceKind = "Photo" | "CAD" | "Sketch" | "Build note" | "Parts li
 export type WorkbenchEvidence = {
   kind: EvidenceKind;
   image: string;
+  /** Pre-generated widths for the gallery; the export is unoptimized. */
+  srcSet?: string;
   alt: string;
   caption: string;
 };
@@ -83,6 +85,7 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
       {
         kind: "Photo",
         image: "/images/workbench/bench-fume-extractor/bench-fume-extractor-electronics.webp",
+        srcSet: "/images/workbench/bench-fume-extractor/bench-fume-extractor-electronics-800.webp 800w, /images/workbench/bench-fume-extractor/bench-fume-extractor-electronics.webp 1200w",
         alt: "Open black electronics enclosure beside the extractor, showing a Pico board, wiring, and power components",
         caption: "Electronics enclosure work still in progress.",
       },
@@ -109,6 +112,7 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
       {
         kind: "Photo",
         image: "/images/workbench/tarmo5/tarmo5.webp",
+        srcSet: "/images/workbench/tarmo5/tarmo5-800.webp 800w, /images/workbench/tarmo5/tarmo5.webp 1600w",
         alt: "Side view of the TARMO5 RC car during assembly with transmitter and wiring visible",
         caption: "Current TARMO5 assembly and control hardware.",
       },
@@ -173,6 +177,7 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
       {
         kind: "Photo",
         image: "/images/workbench/servo-mini-arm/servo-mini-arm.webp",
+        srcSet: "/images/workbench/servo-mini-arm/servo-mini-arm-800.webp 800w, /images/workbench/servo-mini-arm/servo-mini-arm.webp 1200w",
         alt: "Servo Mini Arm on a floor beside its breadboard joystick-control circuit",
         caption: "Current build evidence; a cleaner documentation photo is planned.",
       },
