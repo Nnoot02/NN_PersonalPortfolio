@@ -636,6 +636,51 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-status { display: inline-block; margin: -1.2rem 0 2rem; padding: .4rem .85rem; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-lede { max-width: 760px; color: var(--muted); font-size: var(--text-case-lede); line-height: 1.7; margin: 0 0 3rem; }
 .case-image { width: 100%; min-height: min(62vw, 760px); background: var(--paper-deep); }
+/* LV design views: the normative one-line diagram and an isometric installation
+   view of the same design, as two panels of one figure. The switch is a radio
+   group of visually hidden inputs, so the views work with no JavaScript; the
+   panels are server-rendered and the checked radio picks one through :has().
+   Hover paint uses the same language as the hero artifact. */
+.lv-views { background: var(--paper-deep); border: 1px solid var(--line); }
+.lv-view-radio { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
+.lv-view-switch { display: flex; flex-wrap: wrap; gap: .1rem; border-bottom: 1px solid var(--line); }
+.lv-view-tab { align-items: center; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; display: inline-flex; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; min-height: 44px; padding: .55rem 1rem; text-transform: uppercase; }
+.lv-view-tab:hover { color: var(--ink); }
+.lv-view-tab:has(.lv-view-radio:checked) { border-bottom-color: var(--accent); color: var(--ink); }
+.lv-view-tab:has(.lv-view-radio:focus-visible) { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
+/* The one-line view is the default and stays visible where :has() is unsupported. */
+.lv-view-panel { display: none; }
+.lv-view-panel[data-view="one-line"] { display: block; }
+.lv-views:has(#lv-view-installation:checked) .lv-view-panel[data-view="one-line"] { display: none; }
+.lv-views:has(#lv-view-installation:checked) .lv-view-panel[data-view="installation"] { display: block; }
+.lv-view-stage svg { display: block; height: auto; width: 100%; }
+/* A readable detail surface complements the overview at every screen width. */
+.lv-install-detail { display: none; }
+@media screen {
+  .lv-install-detail { display: block; border-top: 1px solid var(--line); padding: .75rem; }
+  .lv-install-detail summary { cursor: pointer; min-height: 44px; display: list-item; font-weight: 600; }
+  .lv-install-detail p { font-size: 1rem; margin: 0 0 .75rem; }
+  .lv-install-pan { overflow: auto; max-height: 70vh; border: 1px solid var(--line); }
+  .lv-install-pan:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+  .lv-install-pan img { display: block; width: 1440px; min-width: 1440px; max-width: none; height: 960px; }
+}
+@media (forced-colors: active) {
+  .lv-view-tab:has(.lv-view-radio:checked) { border-bottom-color: Highlight; color: Highlight; }
+  .lv-view-tab:has(.lv-view-radio:not(:checked)) { border-bottom-color: Canvas; }
+}
+.lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
+.lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }
+.lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease); }
+.lv-views:has([data-hit="supply"]:hover) .lv-view-stage [data-hit="supply"],
+.lv-views:has([data-hit="mains"]:hover) .lv-view-stage [data-hit="mains"],
+.lv-views:has([data-hit="device"]:hover) .lv-view-stage [data-hit="device"],
+.lv-views:has([data-hit="sup"]:hover) .lv-view-stage [data-hit="sup"],
+.lv-views:has([data-hit="hai"]:hover) .lv-view-stage [data-hit="hai"],
+.lv-views:has([data-hit="but"]:hover) .lv-view-stage [data-hit="but"] { stroke: var(--accent); }
+.lv-views:has([data-hit="vd"]:hover) .lv-view-stage [data-hit="vd"] { fill: var(--accent); }
+@media (prefers-reduced-motion: reduce) {
+  .lv-view-stage [data-hit] { transition: none; }
+}
 .case-image-note { margin: .9rem 0 0; font-size: var(--text-code); }
 .case-image-provenance { color: var(--muted); display: block; line-height: 1.55; }
 .case-image-note .text-link, .profile-facts .text-link, .case-contact .text-link { align-items: center; display: inline-flex; max-width: 100%; min-height: 44px; overflow-wrap: anywhere; }

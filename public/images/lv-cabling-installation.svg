@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="instTitle instDesc"><title id="instTitle">Commercial LV cabling design: installation cutaway</title><desc id="instDesc">Indicative isometric arrangement, not an as-built survey. A padmount kiosk feeds a main switchboard through a fifteen metre buried conduit run. A cutaway slab reveals three separate buried submains and risers to boards in the supermarket, hairdresser and butcher tenancies. Communal circuits are beside the MSB. A shaded working area and a local main earth electrode show installation relationships. An enlarged trench section shows backfill, marker tape, sand surround, bedding and the conduit grouping; layer thicknesses are indicative. Electrical ratings are in the one-line view.</desc><rect width="1200" height="800" fill="#f3f0e9"/>
+<text x="46" y="42" font-family="Arial,sans-serif" font-size="14" fill="#9f3510" font-weight="700">INSTALLATION / CUTAWAY</text>
+<text x="46" y="78" font-family="Arial,sans-serif" font-size="30" fill="#242321" font-weight="700">From site supply to each tenancy</text>
+<text x="46" y="107" font-family="Arial,sans-serif" font-size="16" fill="#6d6962" font-weight="400">Site supply, buried routes and switchboard access</text>
+<polygon points="572.9,333.0 915.9,531.0 782.5,608.0 439.6,410.0" fill="#e8e3d9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="439.6,413.3 782.5,611.3 782.5,641.0 439.6,443.0" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="439.6,413.3 782.5,611.3 782.5,641.0 439.6,443.0" fill="url(#instSoil)" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="915.9,534.3 782.5,611.3 782.5,641.0 915.9,564.0" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="915.9,534.3 782.5,611.3 782.5,641.0 915.9,564.0" fill="url(#instSoil)" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="439.6,410.0 782.5,608.0 782.5,611.3 439.6,413.3" fill="#e8e3d9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="915.9,531.0 782.5,608.0 782.5,611.3 915.9,534.3" fill="#e8e3d9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="572.9,333.0 915.9,531.0 915.9,482.6 572.9,284.6" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="687.3,399.0 563.4,470.5 563.4,456.2 687.3,384.7" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="763.5,443.0 639.6,514.5 639.6,500.2 763.5,428.7" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="839.7,487.0 715.8,558.5 715.8,544.2 839.7,472.7" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="230.0,201.0 525.3,371.5 496.7,388.0 201.4,217.5" fill="#e8e3d9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="201.4,217.5 496.7,388.0 496.7,405.6 201.4,235.1" fill="#ded7ca" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polyline points="226.2,217.5 521.5,388.0" fill="none" stroke="#9f3510" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="222.0,219.9 517.3,390.4" fill="none" stroke="#9f3510" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="224.1,214.5 519.4,385.0" fill="none" stroke="#9f3510" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="214.8,224.1 510.1,394.6" fill="none" stroke="#6d6962" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="207.5,228.3 502.8,398.8" fill="none" stroke="#6d6962" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polygon points="230.0,150.4 289.1,184.5 243.3,210.9 184.3,176.8" fill="#e8e3d9" stroke="#d1cbc0" stroke-width="1.4" stroke-linejoin="round"/>
+<polygon points="230.0,117.4 277.6,144.9 243.3,164.7 195.7,137.2" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="277.6,184.5 243.3,204.3 243.3,164.7 277.6,144.9" fill="#e8e3d9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="195.7,176.8 243.3,204.3 243.3,164.7 195.7,137.2" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polyline points="219.3,187.4 219.3,154.4" fill="none" stroke="#242321" stroke-width="1" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="215.3,173.2 215.3,166.6" fill="none" stroke="#242321" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="223.0,177.6 223.0,171.0" fill="none" stroke="#242321" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="199.1,171.5 210.6,178.1" fill="none" stroke="#6d6962" stroke-width="0.8" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="199.1,168.7 210.6,175.3" fill="none" stroke="#6d6962" stroke-width="0.8" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="199.1,165.8 210.6,172.4" fill="none" stroke="#6d6962" stroke-width="0.8" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="227.1,191.6 226.2,217.5" fill="none" stroke="#9f3510" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="228.7,192.5 222.0,219.9" fill="none" stroke="#9f3510" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="230.2,193.4 224.1,214.5" fill="none" stroke="#9f3510" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="231.7,194.3 214.8,224.1" fill="none" stroke="#6d6962" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="233.2,195.2 207.5,228.3" fill="none" stroke="#6d6962" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray=""/>
+<polygon points="563.4,355.7 630.1,394.2 597.7,412.9 531.0,374.4" fill="#e5d5c7" stroke="#9f3510" stroke-width="1" stroke-linejoin="round"/>
+<polygon points="585.3,299.5 642.5,332.5 627.2,341.2 570.1,308.2" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="642.5,380.9 627.2,389.6 627.2,341.2 642.5,332.5" fill="#e8e3d9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="570.1,356.6 627.2,389.6 627.2,341.2 570.1,308.2" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polyline points="589.0,364.5 589.0,322.7" fill="none" stroke="#242321" stroke-width="1" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="608.0,375.5 608.0,333.7" fill="none" stroke="#242321" stroke-width="1" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="584.9,347.0 584.9,341.5" fill="none" stroke="#242321" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="604.0,358.0 604.0,352.5" fill="none" stroke="#242321" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="623.1,369.0 623.1,363.5" fill="none" stroke="#242321" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="521.5,388.0 535.8,396.2 581.5,369.9 581.5,355.6" fill="none" stroke="#9f3510" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="581.5,355.6 581.5,351.2" fill="none" stroke="#9f3510" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="517.3,390.4 533.9,400.0 583.8,371.2 583.8,356.9" fill="none" stroke="#9f3510" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="583.8,356.9 583.8,352.5" fill="none" stroke="#9f3510" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="519.4,385.0 538.3,395.9 586.1,368.3 586.1,358.2" fill="none" stroke="#9f3510" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="586.1,358.2 586.1,353.8" fill="none" stroke="#9f3510" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="510.1,394.6 531.2,406.8 588.4,373.8 588.4,359.5" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="588.4,359.5 588.4,355.1" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="502.8,398.8 526.3,412.3 590.7,375.1 590.7,360.8" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="590.7,360.8 590.7,356.4" fill="none" stroke="#6d6962" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray=""/>
+<g data-route="SUP">
+<polyline points="609.1,367.1 609.1,371.5" fill="none" stroke="#9f3510" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="609.1,371.5 609.1,393.5 527.2,440.8 628.2,499.1 716.8,447.9 716.8,425.9" fill="none" stroke="#9f3510" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="716.8,425.9 716.8,399.6" fill="none" stroke="#9f3510" stroke-width="2" stroke-linejoin="round" stroke-dasharray=""/>
+</g>
+<polygon points="717.7,371.5 733.0,380.3 724.4,385.2 709.2,376.5" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="733.0,399.0 724.4,404.0 724.4,385.2 733.0,380.3" fill="#e8e3d9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="709.2,395.2 724.4,404.0 724.4,385.2 709.2,376.5" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<path d="M724.4,385.2 h12" stroke="#6d6962" stroke-width="1"/>
+<text x="740" y="389" font-family="Arial,sans-serif" font-size="12" fill="#9f3510" font-weight="700">SUP-DB</text>
+<g data-route="HAI">
+<polyline points="614.9,370.4 614.9,374.8" fill="none" stroke="#9f3510" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="614.9,374.8 614.9,396.8 527.2,447.4 698.7,546.4 793.0,491.9 793.0,469.9" fill="none" stroke="#9f3510" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="793.0,469.9 793.0,443.6" fill="none" stroke="#9f3510" stroke-width="2" stroke-linejoin="round" stroke-dasharray=""/>
+</g>
+<polygon points="794.0,415.5 809.2,424.3 800.6,429.2 785.4,420.5" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="809.2,443.0 800.6,448.0 800.6,429.2 809.2,424.3" fill="#e8e3d9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="785.4,439.2 800.6,448.0 800.6,429.2 785.4,420.5" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<path d="M800.6,429.2 h12" stroke="#6d6962" stroke-width="1"/>
+<text x="817" y="433" font-family="Arial,sans-serif" font-size="12" fill="#9f3510" font-weight="700">HAI-DB</text>
+<g data-route="BUT">
+<polyline points="620.6,373.7 620.6,378.1" fill="none" stroke="#9f3510" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray=""/>
+<polyline points="620.6,378.1 620.6,400.1 527.2,454.0 769.2,593.7 869.2,536.0 869.2,514.0" fill="none" stroke="#9f3510" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="6 5"/>
+<polyline points="869.2,514.0 869.2,487.6" fill="none" stroke="#9f3510" stroke-width="2" stroke-linejoin="round" stroke-dasharray=""/>
+</g>
+<polygon points="870.2,459.5 885.4,468.3 876.8,473.2 861.6,464.5" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="885.4,487.0 876.8,492.0 876.8,473.2 885.4,468.3" fill="#e8e3d9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="861.6,483.2 876.8,492.0 876.8,473.2 861.6,464.5" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<path d="M876.8,473.2 h12" stroke="#6d6962" stroke-width="1"/>
+<text x="893" y="477" font-family="Arial,sans-serif" font-size="12" fill="#9f3510" font-weight="700">BUT-DB</text>
+<polygon points="658.7,338.5 671.1,345.6 662.5,350.6 650.1,343.4" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="671.1,367.6 662.5,372.6 662.5,350.6 671.1,345.6" fill="#e8e3d9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<polygon points="650.1,365.4 662.5,372.6 662.5,350.6 650.1,343.4" fill="#f3f0e9" stroke="#242321" stroke-width="1.7" stroke-linejoin="round"/>
+<path d="M662.5,350.6 h12" stroke="#6d6962" stroke-width="1"/>
+<text x="678" y="355" font-family="Arial,sans-serif" font-size="12" fill="#9f3510" font-weight="700">COM</text>
+<text x="582" y="470" font-family="Arial,sans-serif" font-size="12" fill="#6d6962" font-weight="700">SUPERMARKET</text>
+<text x="659" y="514" font-family="Arial,sans-serif" font-size="12" fill="#6d6962" font-weight="700">HAIRDRESSER</text>
+<text x="735" y="558" font-family="Arial,sans-serif" font-size="12" fill="#6d6962" font-weight="700">BUTCHER</text>
+<text x="986" y="580" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">Floor slab</text>
+<path d="M976,588 H820.6 V587.5" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="820.6" cy="587.5" r="3" fill="#9f3510"/>
+<text x="986" y="624" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">Soil</text>
+<path d="M976,632 H820.6 V608.0" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="820.6" cy="608.0" r="3" fill="#9f3510"/>
+<polygon points="551.0,323.6 562.5,330.2 551.0,336.9 539.6,330.2" fill="#e8e3d9" stroke="#242321" stroke-width="1" stroke-linejoin="round"/>
+<polyline points="551.0,330.2 551.0,361.1" fill="none" stroke="#6d6962" stroke-width="1.8" stroke-linejoin="round" stroke-dasharray="2 3"/>
+<polyline points="551.0,336.9 579.6,353.4 583.4,344.6" fill="none" stroke="#6d6962" stroke-width="1.5" stroke-linejoin="round" stroke-dasharray="2 4"/>
+<text x="442" y="227" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">Main earth electrode</text>
+<path d="M442,238 H551.0 V330.2" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="551.0" cy="330.2" r="3" fill="#9f3510"/>
+<text x="312" y="164" font-family="Arial,sans-serif" font-size="14" fill="#9f3510" font-weight="700">01  SITE SUPPLY</text>
+<path d="M312,177 H260.5 V163.6" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="260.5" cy="163.6" r="3" fill="#9f3510"/>
+<text x="650" y="164" font-family="Arial,sans-serif" font-size="14" fill="#9f3510" font-weight="700">02  SWITCHROOM / MSB</text>
+<path d="M650,177 H597.7 V325.3" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="597.7" cy="325.3" r="3" fill="#9f3510"/>
+<text x="870" y="258" font-family="Arial,sans-serif" font-size="14" fill="#9f3510" font-weight="700">03  TENANCY BOARDS</text>
+<text x="870" y="282" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">One board inside each bay</text>
+<path d="M870,295 H862.5 V472.7" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="862.5" cy="472.7" r="3" fill="#9f3510"/>
+<text x="46" y="373" font-family="Arial,sans-serif" font-size="18" fill="#242321" font-weight="700">15 m buried consumer mains</text>
+<text x="46" y="398" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">600 mm burial in the design calculations.</text>
+<path d="M280,410 H363.4 V313.2" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="363.4" cy="313.2" r="3" fill="#9f3510"/>
+<text x="46" y="482" font-family="Arial,sans-serif" font-size="18" fill="#242321" font-weight="700">MSB working area</text>
+<text x="46" y="507" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">Keep the space in front of the board clear.</text>
+<path d="M340,520 H574.9 V386.2" fill="none" stroke="#6d6962" stroke-width="1"/><circle cx="574.9" cy="386.2" r="3" fill="#9f3510"/>
+<defs><pattern id="instSand" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0,7 L7,0" stroke="#d1cbc0" stroke-width="1"/></pattern><pattern id="instSoil" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".8" fill="#d1cbc0"/><circle cx="9" cy="10" r=".7" fill="#d1cbc0"/></pattern></defs>
+<rect x="46" y="548" width="452" height="210" fill="#f3f0e9" stroke="#d1cbc0" stroke-width="1"/>
+<text x="60" y="573" font-family="Arial,sans-serif" font-size="13" fill="#9f3510" font-weight="700">A / TRENCH SECTION</text>
+<text x="317" y="573" font-family="Arial,sans-serif" font-size="12" fill="#6d6962" font-weight="400">Indicative build-up</text>
+<rect x="90" y="600" width="160" height="146" fill="#e8e3d9"/>
+<rect x="90" y="600" width="160" height="78" fill="url(#instSoil)"/>
+<rect x="90" y="678" width="160" height="68" fill="#f3f0e9"/>
+<rect x="90" y="678" width="160" height="68" fill="url(#instSand)"/>
+<path d="M60,600 H480 M90,600 V746 H250 V600" fill="none" stroke="#242321" stroke-width="1.4"/>
+<path d="M94,638 H246" stroke="#9f3510" stroke-width="2.2" stroke-dasharray="8 4"/>
+<path d="M90,736 H250" stroke="#d1cbc0" stroke-width="1"/>
+<circle cx="124" cy="724" r="10" fill="#f3f0e9" stroke="#242321" stroke-width="1.3"/>
+<text x="120.3" y="727.5" font-family="Arial,sans-serif" font-size="10" fill="#242321" font-weight="700">A</text>
+<circle cx="144" cy="724" r="10" fill="#f3f0e9" stroke="#242321" stroke-width="1.3"/>
+<text x="140.3" y="727.5" font-family="Arial,sans-serif" font-size="10" fill="#242321" font-weight="700">B</text>
+<circle cx="134" cy="706.68" r="10" fill="#f3f0e9" stroke="#242321" stroke-width="1.3"/>
+<text x="130.3" y="710.18" font-family="Arial,sans-serif" font-size="10" fill="#242321" font-weight="700">C</text>
+<circle cx="186" cy="724" r="10" fill="#f3f0e9" stroke="#242321" stroke-width="1.3"/>
+<text x="182.3" y="727.5" font-family="Arial,sans-serif" font-size="10" fill="#242321" font-weight="700">N</text>
+<circle cx="222" cy="724" r="10" fill="#f3f0e9" stroke="#242321" stroke-width="1.3"/>
+<text x="218.3" y="727.5" font-family="Arial,sans-serif" font-size="10" fill="#242321" font-weight="700">E</text>
+<path d="M236,618 H262 V616 H274" fill="none" stroke="#6d6962" stroke-width=".9"/>
+<text x="282" y="620" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">Backfill</text>
+<path d="M239,638 H262 V638 H274" fill="none" stroke="#6d6962" stroke-width=".9"/>
+<text x="282" y="642" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">Marker tape</text>
+<path d="M239,684 H262 V683 H274" fill="none" stroke="#6d6962" stroke-width=".9"/>
+<text x="282" y="687" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">Sand surround</text>
+<path d="M239,741 H262 V743 H274" fill="none" stroke="#6d6962" stroke-width=".9"/>
+<text x="282" y="747" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">Bedding</text>
+<text x="282" y="718" font-family="Arial,sans-serif" font-size="13" fill="#6d6962" font-weight="400">ABC trefoil + N + E</text>
+<polyline points="292.9,285.7 306.2,284.6" fill="none" stroke="#6d6962" stroke-width="1" stroke-linejoin="round" stroke-dasharray=""/>
+<circle cx="292.9" cy="285.7" r="9" fill="#f3f0e9" stroke="#9f3510" stroke-width="1.3"/>
+<text x="289" y="290" font-family="Arial,sans-serif" font-size="11" fill="#9f3510" font-weight="700">A</text>
+<path d="M550,654 H1154" stroke="#d1cbc0"/>
+<text x="580" y="684" font-family="Arial,sans-serif" font-size="13" fill="#9f3510" font-weight="700">BENEATH THE SLAB</text>
+<text x="580" y="712" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">Three separate buried submains</text>
+<text x="580" y="736" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">Each rises into its own tenancy board</text>
+<text x="934" y="684" font-family="Arial,sans-serif" font-size="13" fill="#9f3510" font-weight="700">ROUTE KEY</text>
+<path d="M934,705 H969" stroke="#9f3510" stroke-width="1.8" stroke-dasharray=""/>
+<text x="982" y="709" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">visible / cutaway</text>
+<path d="M934,732 H969" stroke="#9f3510" stroke-width="1.8" stroke-dasharray="6 5"/>
+<text x="982" y="736" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">buried / hidden</text>
+<text x="46" y="782" font-family="Arial,sans-serif" font-size="14" fill="#6d6962" font-weight="400">Indicative arrangement, not to scale. Roof and front walls removed; partitions cut low.</text>
+</svg>

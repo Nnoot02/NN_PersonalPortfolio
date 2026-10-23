@@ -705,7 +705,7 @@ check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.inc
 // Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
 // names the authoring tool and says the page carries a redraw.
 const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");
-check(lvImageNote.includes("I drew the original diagram in Autodesk Inventor; this is a vector redraw of it for the web."), "LV diagram note must name Autodesk Inventor as the authoring tool");
+check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inventor; this is a vector redraw of it for the web."), "LV diagram note must name Autodesk Inventor as the authoring tool");
 
 // Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
 // be a named region so the stop announces what it is (WCAG 4.1.2).
