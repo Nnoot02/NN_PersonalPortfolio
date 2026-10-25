@@ -179,7 +179,9 @@ button { font: inherit; }
 .button-secondary:active { background: var(--ink); color: var(--white); }
 a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .menu-button:active, .hero-sld-row:active, .hero-sld-detail-close:active { background: var(--line); color: var(--ink); }
-.button:disabled { opacity: .5; cursor: default; transform: none; }
+/* [aria-disabled] too: the copy button uses it so focus survives a copy. */
+.button:disabled, .button[aria-disabled="true"], .button[aria-disabled="true"]:hover { opacity: .5; cursor: default; transform: none; }
+.button-secondary[aria-disabled="true"]:hover { background: transparent; color: inherit; }
 .button-primary { background: var(--accent); border-color: var(--accent); color: var(--white); }
 .button-primary:hover, .button-primary:focus-visible { background: var(--accent-dark); }
 .button-secondary { background: transparent; }
@@ -823,7 +825,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .writeup-index a:hover, .writeup-index a:focus-visible { color: var(--ink); }
 .writeup-heading h2 { font: 600 var(--text-section-heading-sm)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 /* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
-.writeup p { color: var(--muted); line-height: 1.65; max-width: 62ch; }
+.writeup p:not(.eyebrow) { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
 .uav-clearance-figure { margin: 1.5rem 0; }
 .uav-clearance-plot { display: block; width: 100%; min-width: 860px; height: auto; }
@@ -895,7 +897,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* Audit 2026-10-25: at 760-959px the 170px context track left the portal
    copy 50px wide ("WORKB/ENCH" at 768). Context becomes one row above the
    two portals, which keep their 118px photos. */
-@media (min-width: 760px) and (max-width: 959px) {
+@media (width > 759px) and (width < 960px) {
   .homepage-epilogue { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .homepage-epilogue-context { align-items: center; display: flex; gap: 1rem; grid-column: 1 / -1; justify-content: space-between; padding: .5rem 0; }
   .homepage-portal { border-top: 1px solid var(--line); }
@@ -1040,14 +1042,17 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .project-link, .project-journey-title { transition: color var(--motion-quick) var(--motion-ease); }
 /* Audit 2026-10-25: these changed colour/border on hover with no base-rule
    transition, so hover snapped in and out. Same quick colour fade as nav.
-   Diagram linework ([data-hit]) stays instant on purpose: it is scanned
-   fast, and a fade leaves two components lit (layout-check exclusivity). */
+   The hero diagram linework (.hero-sld [data-hit]) stays instant on
+   purpose: it is scanned fast, and a fade leaves two components lit
+   (layout-check exclusivity). */
 .hero-sld-row, .back-link, .lv-view-tab, .writeup-index a, .evidence-dialog-close, .workbench-attribution a, .technical-snapshot-links a { transition: color var(--motion-quick) var(--motion-ease); }
 .hero-sld-detail-close { transition: color var(--motion-quick) var(--motion-ease), border-color var(--motion-quick) var(--motion-ease); }
 /* Press feedback where the global a:active underline is cancelled or absent.
    The portal is a block link, so the global underline hit every text child. */
-.writeup-index a:active, .lv-view-tab:active, .back-link:active { color: var(--accent-dark); }
-.homepage-portal:active { background: var(--paper-deep); text-decoration: none; }
+.writeup-index a:active, .lv-view-tab:active, .lv-view-tab:has(.lv-view-radio:checked):active, .back-link:active { color: var(--accent-dark); }
+/* No paper-deep fill: muted summary text drops to 4.27:1 on it. */
+.homepage-portal:active, .project-journey-link:active { text-decoration: none; }
+.homepage-portal:active .homepage-portal-title { color: var(--accent-dark); }
 .project-journey-link:active .project-journey-title, .evidence-dialog-close:active { color: var(--accent-dark); }
 .project-row:hover .project-link, .project-row:focus-within .project-link,
 .project-journey-link:hover .project-journey-title, .project-journey-link:focus-visible .project-journey-title { color: var(--accent-dark); }
