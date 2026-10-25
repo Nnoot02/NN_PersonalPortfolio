@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # The npm ecosystem reads pnpm-lock.yaml and opens PRs against it.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Australia/Sydney"
+    # Version updates wait two weeks after release so a broken publish is
+    # caught by someone else first. Security updates ignore this and open
+    # as soon as an advisory lands.
+    cooldown:
+      default-days: 14
+    # One PR a week for the routine bumps; a major stays its own PR so its
+    # breaking changes get read on their own.
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "fix(deps)"
+      prefix-development: "chore(deps)"
