@@ -45,7 +45,7 @@ export function LvDesignViews({
               <summary>Read installation detail</summary>
               <p>Scroll across and down to read the full-size drawing.</p>
               <div className="lv-install-pan" role="region" aria-label="Full-size installation drawing" tabIndex={0}>
-                <img src={view.fullHref} width={1440} height={960} alt="Installation cutaway with buried routes, board locations and enlarged trench section A." />
+                <img src={view.fullHref} width={1440} height={960} loading="lazy" alt="Installation cutaway with buried routes, board locations and enlarged trench section A." />
               </div>
             </details>
           )}

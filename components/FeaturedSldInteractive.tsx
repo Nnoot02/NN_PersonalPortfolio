@@ -154,6 +154,9 @@ export function FeaturedSldInteractive({ svg, plotEnd, stageAction }: { svg: str
                 aria-pressed={active === t.id}
                 aria-label={`${t.name}: ${t.value}`}
                 style={{ "--x": t.hit.x, "--y": t.hit.y, "--w": t.hit.w, "--h": t.hit.h, "--ping-i": i } as CSSProperties}
+                // a click must not focus a node inside aria-hidden (Chrome blocks
+                // that and warns); the click itself still toggles
+                onMouseDown={(event) => event.preventDefault()}
                 onClick={() => toggle(t.id)}
               />
             ))}
