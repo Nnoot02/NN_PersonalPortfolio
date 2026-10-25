@@ -895,25 +895,16 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
      the full width; its 1200x800 one-line diagram renders 260px tall and the
      caption row adds ~57px, so 320px keeps the diagram at natural size with
      no letterbox. Desktop (520px) is set in the wide-screen rule above. */
-  /* 2026-10-21 audit UIUX-V04, option 1. On phones the diagram leaves the hero
-     and follows the first evidence band: the hero then ends at 566px and the
-     first project sits inside the first screen instead of 1.4 screens down.
-     Order is set on the shell; the hero's own box is dissolved with
-     display:contents so its two children can be ordered around the band. */
+  /* 2026-10-25: the one-line diagram is dropped on phones. At this width its
+     1200x800 labels render at 5 to 8px and were hidden (UIUX-V01), leaving
+     blank boxes; the case study carries the full drawing. The hero's box is
+     dissolved with display:contents so the first evidence band follows the
+     copy directly. */
   .home-hero-shell { display: flex; flex-direction: column; }
   .home-hero-shell > .hero { display: contents; }
   .home-hero-shell .hero-copy { order: 1; }
   .home-hero-shell .featured { order: 2; }
-  .home-hero-shell .hero-image { order: 3; border-top: 1px solid var(--line); padding: 2rem 1.25rem 3rem; }
-  .hero-image { min-height: 320px; }
-  .hero-artifact { min-height: 320px; }
-  /* 2026-10-21 audit UIUX-V01. The drawing is a fixed 1200x800 viewBox, so at
-     phone widths its own labels render at 5 to 8px. They are removed here and
-     the labelled rows below the drawing carry every value, which is the only
-     legible presentation available at this scale. */
-  /* visibility, not opacity: the nodes also carry the hero-rise animation, whose
-     fill mode lands them at opacity 1 and would beat a plain opacity rule. */
-  .hero-sld svg text { visibility: hidden; }
+  .home-hero-shell .hero-image { display: none; }
   /* UIUX-V04. The diagram frame is capped so the hero ends sooner; the artwork
      keeps its aspect ratio and centres in the shorter box. */
   /* UIUX-V04 note: heroic spacing cannot buy the fold here. Measured at 390x844
@@ -922,9 +913,6 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
      content decision, not a spacing one. */
   .hero-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
   .hero-actions .button { font-size: var(--text-tag); letter-spacing: .03em; padding: .65rem .5rem; gap: .4rem; }
-  .hero-sld-row { min-height: 44px; }
-  .hero-sld-detail-close { width: 44px; height: 44px; }
-  .hero-sld-detail { padding-right: 58px; }
   .button { width: 100%; }
   .featured { padding: 5rem 1.25rem; }
   .project-row { grid-template-columns: 1fr; gap: 1.25rem; padding: 1.5rem 0 2rem; }

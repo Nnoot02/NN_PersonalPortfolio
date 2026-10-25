@@ -227,26 +227,36 @@ async function main() {
         });
         if (!footerAdjacent) failures.push(`/ @ ${width}x${height}: footer does not immediately follow epilogue`);
 
-        // Site screening audit 2026-09-16, F4: the hero artifact must identify
-        // itself and its action without hover (the sr-only span is gone).
-        const heroArtifactCaption = await page.evaluate(() => {
-          const caption = document.querySelector(".hero-artifact-caption");
-          const action = document.querySelector(".hero-artifact-action");
-          if (!caption || !action) return null;
-          const style = getComputedStyle(caption);
-          const box = caption.getBoundingClientRect();
-          const actionBox = action.getBoundingClientRect();
-          return {
-            visible: style.visibility !== "hidden" && style.display !== "none" && Number(style.opacity) > 0.9,
-            width: Math.round(box.width),
-            height: Math.round(box.height),
-            actionHeight: Math.round(actionBox.height),
-          };
-        });
-        if (!heroArtifactCaption) {
-          failures.push(`/ @ ${width}x${height}: hero artifact caption missing`);
-        } else if (!heroArtifactCaption.visible || heroArtifactCaption.height < 18 || heroArtifactCaption.width < 120 || heroArtifactCaption.actionHeight < 12) {
-          failures.push(`/ @ ${width}x${height}: hero artifact caption is not visibly rendered (${JSON.stringify(heroArtifactCaption)})`);
+        // 2026-10-25: the diagram figure is dropped on phones (globals.css,
+        // max-width 720px), so its checks run only where it shows.
+        const heroFigureShown = width > 720;
+        if (!heroFigureShown) {
+          const figureDisplay = await page.locator(".hero-image").evaluate((node) => getComputedStyle(node).display);
+          if (figureDisplay !== "none") failures.push(`/ @ ${width}x${height}: hero diagram must be hidden on phones (display ${figureDisplay})`);
+        }
+
+        if (heroFigureShown) {
+          // Site screening audit 2026-09-16, F4: the hero artifact must identify
+          // itself and its action without hover (the sr-only span is gone).
+          const heroArtifactCaption = await page.evaluate(() => {
+            const caption = document.querySelector(".hero-artifact-caption");
+            const action = document.querySelector(".hero-artifact-action");
+            if (!caption || !action) return null;
+            const style = getComputedStyle(caption);
+            const box = caption.getBoundingClientRect();
+            const actionBox = action.getBoundingClientRect();
+            return {
+              visible: style.visibility !== "hidden" && style.display !== "none" && Number(style.opacity) > 0.9,
+              width: Math.round(box.width),
+              height: Math.round(box.height),
+              actionHeight: Math.round(actionBox.height),
+            };
+          });
+          if (!heroArtifactCaption) {
+            failures.push(`/ @ ${width}x${height}: hero artifact caption missing`);
+          } else if (!heroArtifactCaption.visible || heroArtifactCaption.height < 18 || heroArtifactCaption.width < 120 || heroArtifactCaption.actionHeight < 12) {
+            failures.push(`/ @ ${width}x${height}: hero artifact caption is not visibly rendered (${JSON.stringify(heroArtifactCaption)})`);
+          }
         }
 
         const expectedImageSize = width < 760 ? 92 : 118;
@@ -303,109 +313,113 @@ async function main() {
         const heroRoleSize = await page.locator(".hero-role").evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
         if (heroRoleSize < 24) failures.push(`/ @ ${width}x${height}: .hero-role is ${heroRoleSize}px, below the 24px large-text floor its accent colour needs`);
 
-        // Legend and detail text are functional: DESIGN.md's 12px floor, and
-        // the value colour must clear 4.5:1 on the painted panel (--muted
-        // measured 4.26:1 on --paper-deep, audit U1). The detail close button
-        // sits on the same panel at 11px/700, so its resting colour is pinned
-        // here too (dembrandt re-measured the pair at 4.27:1, 2026-10-18 F1).
-        const legendText = await page.evaluate(() => {
-          const lum = (rgb) => {
-            const [r, g, b] = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map((v) => {
-              const c = Number(v) / 255;
-              return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+        if (heroFigureShown) {
+          // Legend and detail text are functional: DESIGN.md's 12px floor, and
+          // the value colour must clear 4.5:1 on the painted panel (--muted
+          // measured 4.26:1 on --paper-deep, audit U1). The detail close button
+          // sits on the same panel at 11px/700, so its resting colour is pinned
+          // here too (dembrandt re-measured the pair at 4.27:1, 2026-10-18 F1).
+          const legendText = await page.evaluate(() => {
+            const lum = (rgb) => {
+              const [r, g, b] = rgb.match(/\d+(\.\d+)?/g).slice(0, 3).map((v) => {
+                const c = Number(v) / 255;
+                return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+              });
+              return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            };
+            const painted = (node) => {
+              for (let el = node; el; el = el.parentElement) {
+                const bg = getComputedStyle(el).backgroundColor;
+                if (bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") return bg;
+              }
+              return getComputedStyle(document.body).backgroundColor;
+            };
+            const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
+              .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
+              .filter((entry) => entry.size < 12);
+            const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-artifact-full-size, .hero-sld-detail-close")].map((node) => {
+              const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
+              return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
             });
-            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-          };
-          const painted = (node) => {
-            for (let el = node; el; el = el.parentElement) {
-              const bg = getComputedStyle(el).backgroundColor;
-              if (bg !== "rgba(0, 0, 0, 0)" && bg !== "transparent") return bg;
-            }
-            return getComputedStyle(document.body).backgroundColor;
-          };
-          const small = [...document.querySelectorAll(".hero-sld-row, .hero-sld-detail-title, .hero-sld-detail-body")]
-            .map((node) => ({ cls: node.className, size: parseFloat(getComputedStyle(node).fontSize) }))
-            .filter((entry) => entry.size < 12);
-          const ratios = [...document.querySelectorAll(".hero-sld-row-value, .hero-artifact-caption-text, .hero-artifact-full-size, .hero-sld-detail-close")].map((node) => {
-            const [a, b] = [lum(getComputedStyle(node).color), lum(painted(node))];
-            return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+            return { small, count: ratios.length, minRatio: Math.min(...ratios) };
           });
-          return { small, count: ratios.length, minRatio: Math.min(...ratios) };
-        });
-        if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
-        if (legendText.count !== 16 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption, the full-size link and the 7 detail close buttons`);
+          if (legendText.small.length) failures.push(`/ @ ${width}x${height}: hero legend/detail text below the 12px floor: ${JSON.stringify(legendText.small.slice(0, 3))}`);
+          if (legendText.count !== 16 || legendText.minRatio < 4.5) failures.push(`/ @ ${width}x${height}: hero legend value contrast ${legendText.minRatio.toFixed(2)}:1 over ${legendText.count} values, needs 4.5:1 on all 7 values, the caption, the full-size link and the 7 detail close buttons`);
 
-        // Legend markers are line swatches, not boxes (audit U5): a hollow
-        // square read as an unticked checkbox.
-        const marker = await page.locator(".hero-sld-row-name").first().evaluate((node) => {
-          const style = getComputedStyle(node, "::before");
-          return { w: parseFloat(style.width), h: parseFloat(style.height), border: style.borderTopStyle };
-        });
-        if (!(marker.w >= 4 * marker.h) || marker.border !== "none") failures.push(`/ @ ${width}x${height}: legend marker must be a line swatch, got ${JSON.stringify(marker)}`);
-
-        // A value that wraps hangs under its name, not under the swatch.
-        const hanging = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-row")].map((row) => {
-          const name = row.querySelector(".hero-sld-row-name");
-          const value = row.querySelector(".hero-sld-row-value").getBoundingClientRect();
-          const range = document.createRange();
-          range.selectNodeContents(name);
-          const text = range.getClientRects()[0];
-          // names-only rows (2026-10-18): the value is visually hidden with JS on
-          return { target: row.dataset.target, hidden: value.width <= 1, wrapped: value.top > text.top + 2, drift: Math.round(value.left - text.left) };
-        }).filter((row) => !row.hidden && row.wrapped && Math.abs(row.drift) > 1));
-        if (hanging.length) failures.push(`/ @ ${width}x${height}: wrapped legend values must hang under the name ${JSON.stringify(hanging)}`);
-
-        // Hits are pointer-only (audit U4): the rows are the one keyboard path,
-        // so the figure holds the 7 row stops plus the full-size link on the
-        // stage (2026-10-18), not 14 targets.
-        const heroStops = await page.evaluate(() => {
-          const figure = document.querySelector(".hero-artifact-figure");
-          const stops = [...figure.querySelectorAll("button, a[href], [tabindex]")].filter((el) => el.tabIndex >= 0 && getComputedStyle(el).visibility !== "hidden" && !el.closest(".hero-sld-detail"));
-          return { stops: stops.length, rows: stops.filter((el) => el.matches(".hero-sld-row")).length, link: stops.filter((el) => el.matches("a.hero-artifact-full-size")).length, hitsHidden: figure.querySelector(".hero-sld-hits")?.getAttribute("aria-hidden") === "true" };
-        });
-        if (heroStops.stops !== 8 || heroStops.rows !== 7 || heroStops.link !== 1 || !heroStops.hitsHidden) failures.push(`/ @ ${width}x${height}: hero figure must hold exactly the 7 row tab stops and the full-size link, with the hits aria-hidden (${JSON.stringify(heroStops)})`);
-
-        // Hero room pass 2026-10-18: the full-size link sits in the drawing's
-        // clear corner. It must cover no drawing text or tagged linework, no
-        // live hit area, and never reach into the panel; side by side, the
-        // drawing keeps at least 60% of the figure height (it had 43%).
-        const room = await page.evaluate(() => {
-          const R = (el) => el.getBoundingClientRect();
-          const meets = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
-          const link = R(document.querySelector(".hero-artifact-full-size"));
-          const figure = R(document.querySelector(".hero-artifact-figure"));
-          const stage = R(document.querySelector(".hero-sld-stage"));
-          const panel = R(document.querySelector(".hero-sld-panel"));
-          const covered = [...document.querySelectorAll(".hero-sld svg text, .hero-sld svg [data-hit]")].filter((el) => meets(R(el), link)).map((el) => (el.textContent || el.getAttribute("data-hit")).slice(0, 24));
-          const hits = [...document.querySelectorAll(".hero-sld-hit")].filter((el) => getComputedStyle(el).visibility !== "hidden" && meets(R(el), link)).map((el) => el.dataset.target);
-          return { covered, hits, h: Math.round(link.height), intoPanel: link.bottom > panel.top + 1, inside: link.left >= figure.left - 1 && link.right <= figure.right + 1, share: stage.height / figure.height, figureW: figure.width };
-        });
-        if (room.covered.length || room.hits.length || room.intoPanel || !room.inside || room.h < 44) failures.push(`/ @ ${width}x${height}: full-size link must sit clear of the drawing's text, linework and hits, inside the figure and above the panel, at 44px (${JSON.stringify(room)})`);
-        if (width > 960 && room.figureW >= 560.5 && room.share < 0.6) failures.push(`/ @ ${width}x${height}: the drawing must keep at least 60% of the figure height side by side (got ${Math.round(room.share * 100)}%)`);
-
-        // Stacked hero (<=960, audit U2): the drawing takes the figure's full
-        // width at 3:2; it measured 185x123 at 390 when the legend squeezed it.
-        if (width <= 960) {
-          const stacked = await page.evaluate(() => {
-            const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
-            const svg = document.querySelector(".hero-sld svg").getBoundingClientRect();
-            return { figureW: figure.width, svgW: svg.width, svgH: svg.height };
+          // Legend markers are line swatches, not boxes (audit U5): a hollow
+          // square read as an unticked checkbox.
+          const marker = await page.locator(".hero-sld-row-name").first().evaluate((node) => {
+            const style = getComputedStyle(node, "::before");
+            return { w: parseFloat(style.width), h: parseFloat(style.height), border: style.borderTopStyle };
           });
-          if (stacked.svgW < stacked.figureW - 1 || Math.abs(stacked.svgH * 1.5 - stacked.svgW) > 2) failures.push(`/ @ ${width}x${height}: stacked hero drawing is ${Math.round(stacked.svgW)}x${Math.round(stacked.svgH)} in a ${Math.round(stacked.figureW)}px figure, expected full width at 3:2`);
+          if (!(marker.w >= 4 * marker.h) || marker.border !== "none") failures.push(`/ @ ${width}x${height}: legend marker must be a line swatch, got ${JSON.stringify(marker)}`);
+
+          // A value that wraps hangs under its name, not under the swatch.
+          const hanging = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-row")].map((row) => {
+            const name = row.querySelector(".hero-sld-row-name");
+            const value = row.querySelector(".hero-sld-row-value").getBoundingClientRect();
+            const range = document.createRange();
+            range.selectNodeContents(name);
+            const text = range.getClientRects()[0];
+            // names-only rows (2026-10-18): the value is visually hidden with JS on
+            return { target: row.dataset.target, hidden: value.width <= 1, wrapped: value.top > text.top + 2, drift: Math.round(value.left - text.left) };
+          }).filter((row) => !row.hidden && row.wrapped && Math.abs(row.drift) > 1));
+          if (hanging.length) failures.push(`/ @ ${width}x${height}: wrapped legend values must hang under the name ${JSON.stringify(hanging)}`);
+
+          // Hits are pointer-only (audit U4): the rows are the one keyboard path,
+          // so the figure holds the 7 row stops plus the full-size link on the
+          // stage (2026-10-18), not 14 targets.
+          const heroStops = await page.evaluate(() => {
+            const figure = document.querySelector(".hero-artifact-figure");
+            const stops = [...figure.querySelectorAll("button, a[href], [tabindex]")].filter((el) => el.tabIndex >= 0 && getComputedStyle(el).visibility !== "hidden" && !el.closest(".hero-sld-detail"));
+            return { stops: stops.length, rows: stops.filter((el) => el.matches(".hero-sld-row")).length, link: stops.filter((el) => el.matches("a.hero-artifact-full-size")).length, hitsHidden: figure.querySelector(".hero-sld-hits")?.getAttribute("aria-hidden") === "true" };
+          });
+          if (heroStops.stops !== 8 || heroStops.rows !== 7 || heroStops.link !== 1 || !heroStops.hitsHidden) failures.push(`/ @ ${width}x${height}: hero figure must hold exactly the 7 row tab stops and the full-size link, with the hits aria-hidden (${JSON.stringify(heroStops)})`);
+
+          // Hero room pass 2026-10-18: the full-size link sits in the drawing's
+          // clear corner. It must cover no drawing text or tagged linework, no
+          // live hit area, and never reach into the panel; side by side, the
+          // drawing keeps at least 60% of the figure height (it had 43%).
+          const room = await page.evaluate(() => {
+            const R = (el) => el.getBoundingClientRect();
+            const meets = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+            const link = R(document.querySelector(".hero-artifact-full-size"));
+            const figure = R(document.querySelector(".hero-artifact-figure"));
+            const stage = R(document.querySelector(".hero-sld-stage"));
+            const panel = R(document.querySelector(".hero-sld-panel"));
+            const covered = [...document.querySelectorAll(".hero-sld svg text, .hero-sld svg [data-hit]")].filter((el) => meets(R(el), link)).map((el) => (el.textContent || el.getAttribute("data-hit")).slice(0, 24));
+            const hits = [...document.querySelectorAll(".hero-sld-hit")].filter((el) => getComputedStyle(el).visibility !== "hidden" && meets(R(el), link)).map((el) => el.dataset.target);
+            return { covered, hits, h: Math.round(link.height), intoPanel: link.bottom > panel.top + 1, inside: link.left >= figure.left - 1 && link.right <= figure.right + 1, share: stage.height / figure.height, figureW: figure.width };
+          });
+          if (room.covered.length || room.hits.length || room.intoPanel || !room.inside || room.h < 44) failures.push(`/ @ ${width}x${height}: full-size link must sit clear of the drawing's text, linework and hits, inside the figure and above the panel, at 44px (${JSON.stringify(room)})`);
+          if (width > 960 && room.figureW >= 560.5 && room.share < 0.6) failures.push(`/ @ ${width}x${height}: the drawing must keep at least 60% of the figure height side by side (got ${Math.round(room.share * 100)}%)`);
+
+          // Stacked hero (<=960, audit U2): the drawing takes the figure's full
+          // width at 3:2; it measured 185x123 at 390 when the legend squeezed it.
+          if (width <= 960) {
+            const stacked = await page.evaluate(() => {
+              const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
+              const svg = document.querySelector(".hero-sld svg").getBoundingClientRect();
+              return { figureW: figure.width, svgW: svg.width, svgH: svg.height };
+            });
+            if (stacked.svgW < stacked.figureW - 1 || Math.abs(stacked.svgH * 1.5 - stacked.svgW) > 2) failures.push(`/ @ ${width}x${height}: stacked hero drawing is ${Math.round(stacked.svgW)}x${Math.round(stacked.svgH)} in a ${Math.round(stacked.figureW)}px figure, expected full width at 3:2`);
+          }
         }
 
         // the figure is click-to-reveal now; the case-study link lives on the caption row
         const heroLink = page.locator("a.hero-artifact-caption");
         if ((await heroLink.count()) !== 1) failures.push(`/ @ ${width}x${height}: hero caption link count is not 1`);
         else {
-          await heroLink.focus();
-          const heroFocus = await heroLink.evaluate((node) => {
-            const style = getComputedStyle(node);
-            const rect = node.getBoundingClientRect();
-            return { outlineStyle: style.outlineStyle, outlineWidth: parseFloat(style.outlineWidth), width: rect.width, height: rect.height };
-          });
-          if (heroFocus.outlineStyle === "none" || heroFocus.outlineWidth < 2) failures.push(`/ @ ${width}x${height}: hero link lacks non-colour focus outline`);
-          if (heroFocus.width < 44 || heroFocus.height < 44) failures.push(`/ @ ${width}x${height}: hero link misses 44px touch target`);
+          if (heroFigureShown) {
+            await heroLink.focus();
+            const heroFocus = await heroLink.evaluate((node) => {
+              const style = getComputedStyle(node);
+              const rect = node.getBoundingClientRect();
+              return { outlineStyle: style.outlineStyle, outlineWidth: parseFloat(style.outlineWidth), width: rect.width, height: rect.height };
+            });
+            if (heroFocus.outlineStyle === "none" || heroFocus.outlineWidth < 2) failures.push(`/ @ ${width}x${height}: hero link lacks non-colour focus outline`);
+            if (heroFocus.width < 44 || heroFocus.height < 44) failures.push(`/ @ ${width}x${height}: hero link misses 44px touch target`);
+          }
 
         // Hero entrance (design direction 2026-09-19): exact schedule, then the
         // static layout. Animations are selected PER TARGET so the SVG text
@@ -458,383 +472,385 @@ async function main() {
           failures.push(`/ @ ${width}x${height}: hero name spans must settle fully revealed (${JSON.stringify(settled.spans)})`);
         }
 
-        // Hero plot (design direction 2026-09-19): the index set first, then
-        // delays derived from that set, then the window the root declares, then
-        // the drawn end state and the dash pattern the draw-in depends on.
-        const PLOT_N = 46, PLOT_WINDOW = 900, PLOT_OFFSET = 140, PLOT_DRAW = 380;
-        const EXPECTED_STEP = Math.round((PLOT_WINDOW / PLOT_N) * 100) / 100; // 19.15
-        const EXPECTED_END = Math.ceil(PLOT_OFFSET + PLOT_N * EXPECTED_STEP + PLOT_DRAW); // 1421
-        const plot = await page.evaluate(() => {
-          const root = document.querySelector(".hero-sld svg");
-          const stepMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-step"));
-          const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
-          const strokes = [...root.querySelectorAll("[pathLength]")].map((el) => {
-            const i = Number(getComputedStyle(el).getPropertyValue("--plot-i"));
-            const a = el.getAnimations().find((x) => x.animationName === "plot");
-            const c = a?.effect.getComputedTiming();
-            return { i, delay: c ? c.delay : null, end: c ? Number(c.endTime) : null };
+        if (heroFigureShown) {
+          // Hero plot (design direction 2026-09-19): the index set first, then
+          // delays derived from that set, then the window the root declares, then
+          // the drawn end state and the dash pattern the draw-in depends on.
+          const PLOT_N = 46, PLOT_WINDOW = 900, PLOT_OFFSET = 140, PLOT_DRAW = 380;
+          const EXPECTED_STEP = Math.round((PLOT_WINDOW / PLOT_N) * 100) / 100; // 19.15
+          const EXPECTED_END = Math.ceil(PLOT_OFFSET + PLOT_N * EXPECTED_STEP + PLOT_DRAW); // 1421
+          const plot = await page.evaluate(() => {
+            const root = document.querySelector(".hero-sld svg");
+            const stepMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-step"));
+            const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
+            const strokes = [...root.querySelectorAll("[pathLength]")].map((el) => {
+              const i = Number(getComputedStyle(el).getPropertyValue("--plot-i"));
+              const a = el.getAnimations().find((x) => x.animationName === "plot");
+              const c = a?.effect.getComputedTiming();
+              return { i, delay: c ? c.delay : null, end: c ? Number(c.endTime) : null };
+            });
+            return { stepMs, endMs, strokes };
           });
-          return { stepMs, endMs, strokes };
-        });
-        const indices = plot.strokes.map((s) => s.i).sort((a, b) => a - b);
-        const expectedIdx = Array.from({ length: PLOT_N }, (_, k) => k + 1);
-        if (JSON.stringify(indices) !== JSON.stringify(expectedIdx)) {
-          failures.push(`/ @ ${width}x${height}: plot indices must be exactly 1..${PLOT_N} (got ${indices.length} values)`);
-        }
-        if (Math.abs(plot.stepMs - EXPECTED_STEP) > 1 || Math.abs(plot.endMs - EXPECTED_END) > 1) {
-          failures.push(`/ @ ${width}x${height}: plot schedule must equal the locked window (step ${EXPECTED_STEP}, end ${EXPECTED_END}): ${JSON.stringify({ step: plot.stepMs, end: plot.endMs })}`);
-        }
-        const drifted = plot.strokes.filter((s) => s.delay === null || Math.abs(s.delay - (PLOT_OFFSET + (s.i - 1) * EXPECTED_STEP)) > 1);
-        if (drifted.length) failures.push(`/ @ ${width}x${height}: plot schedule drifted: ${JSON.stringify(drifted.slice(0, 3))}`);
-        if (Math.max(...plot.strokes.map((s) => s.end ?? 0)) > plot.endMs) {
-          failures.push(`/ @ ${width}x${height}: plot must finish before --plot-end`);
-        }
-        await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld svg [pathLength]")]
-          .every((el) => el.getAnimations().every((a) => a.playState === "finished" || a.playState === "idle")), null, { timeout: 8000 });
-        const drawn = await page.evaluate(() => {
-          const strokes = [...document.querySelectorAll(".hero-sld svg [pathLength]")];
-          return { count: strokes.length, offsets: [...new Set(strokes.map((s) => getComputedStyle(s).strokeDashoffset))] };
-        });
-        if (drawn.count !== PLOT_N || drawn.offsets.join() !== "0px") {
-          failures.push(`/ @ ${width}x${height}: plot must finish fully drawn, got ${JSON.stringify(drawn)}`);
-        }
-        const dashes = await page.evaluate(() => [...new Set([...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => getComputedStyle(s).strokeDasharray))]);
-        if (dashes.length !== 1 || dashes[0] !== "1px") {
-          failures.push(`/ @ ${width}x${height}: every plotted stroke must carry the dash pattern the draw-in depends on (got ${JSON.stringify(dashes)})`);
-        }
-        // Paused mid-flight oracle on its own page so the frozen state cannot
-        // leak. The frozen 700 ms frame must show finished, in-flight and
-        // waiting strokes: a from-offset near 0 would show none waiting.
-        const midPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-        await midPage.goto(`${base}/`, { waitUntil: "load" });
-        const mid = await midPage.evaluate(() => {
-          document.getAnimations().forEach((a) => { a.pause(); a.currentTime = 700; });
-          const offsets = [...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => parseFloat(getComputedStyle(s).strokeDashoffset));
-          const hiddenCopy = [...document.querySelectorAll(".hero-copy > *")].filter((c) => parseFloat(getComputedStyle(c).opacity) < 1).length;
-          return {
-            finished: offsets.filter((o) => o <= 0.02).length,
-            active: offsets.filter((o) => o > 0.02 && o < 0.98).length,
-            waiting: offsets.filter((o) => o >= 0.98).length,
-            hiddenCopy,
-          };
-        });
-        await midPage.close();
-        if (mid.finished < 1 || mid.active < 1 || mid.waiting < 1) {
-          failures.push(`/ @ ${width}x${height}: the frozen 700 ms frame must show finished, in-flight and waiting strokes: ${JSON.stringify(mid)}`);
-        }
-        if (mid.hiddenCopy < 1) failures.push(`/ @ ${width}x${height}: frozen mid-flight frame must show pre-entrance copy, got ${JSON.stringify(mid)}`);
-
-        // Hover/click reveal (re-cut 2026-09-20, R1 fold): hovering a component
-        // paints its linework; clicking opens its detail in the panel. Measure
-        // only after the row pings settle (a mid-ping frame carries 0.86 scale).
-        await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld-row, .hero-sld-hit")]
-          .every((el) => el.getAnimations().every((a) => a.playState === "finished" || a.playState === "idle")), null, { timeout: 8000 });
-        const TARGET_IDS = ["supply", "mains", "vd", "device", "sup", "hai", "but"];
-        const revealGeo = await page.evaluate((ids) => {
-          const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
-          const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
-          const panel = document.querySelector(".hero-sld-panel").getBoundingClientRect();
-          const root = document.querySelector(".hero-sld svg");
-          const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
-          const boxOf = (nodes) => {
-            const xs = [];
-            const ys = [];
-            for (const node of nodes) {
-              const b = node.getBBox();
-              const m = node.getScreenCTM();
-              for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) {
-                const p = new DOMPoint(x, y).matrixTransform(m);
-                xs.push(p.x);
-                ys.push(p.y);
-              }
-            }
-            return xs.length ? { l: Math.min(...xs), r: Math.max(...xs), t: Math.min(...ys), b: Math.max(...ys) } : null;
-          };
-          const rows = [...document.querySelectorAll(".hero-sld-row")].map((el, i) => {
-            const r = el.getBoundingClientRect();
-            const a = el.getAnimations().find((x) => x.animationName === "callout-ping");
-            return { target: el.getAttribute("data-target"), w: Math.round(r.width), h: Math.round(r.height), inside: r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1, delay: a?.effect.getComputedTiming().delay ?? null, expected: endMs + i * 260, box: { l: r.left, r: r.right, t: r.top, b: r.bottom } };
+          const indices = plot.strokes.map((s) => s.i).sort((a, b) => a - b);
+          const expectedIdx = Array.from({ length: PLOT_N }, (_, k) => k + 1);
+          if (JSON.stringify(indices) !== JSON.stringify(expectedIdx)) {
+            failures.push(`/ @ ${width}x${height}: plot indices must be exactly 1..${PLOT_N} (got ${indices.length} values)`);
+          }
+          if (Math.abs(plot.stepMs - EXPECTED_STEP) > 1 || Math.abs(plot.endMs - EXPECTED_END) > 1) {
+            failures.push(`/ @ ${width}x${height}: plot schedule must equal the locked window (step ${EXPECTED_STEP}, end ${EXPECTED_END}): ${JSON.stringify({ step: plot.stepMs, end: plot.endMs })}`);
+          }
+          const drifted = plot.strokes.filter((s) => s.delay === null || Math.abs(s.delay - (PLOT_OFFSET + (s.i - 1) * EXPECTED_STEP)) > 1);
+          if (drifted.length) failures.push(`/ @ ${width}x${height}: plot schedule drifted: ${JSON.stringify(drifted.slice(0, 3))}`);
+          if (Math.max(...plot.strokes.map((s) => s.end ?? 0)) > plot.endMs) {
+            failures.push(`/ @ ${width}x${height}: plot must finish before --plot-end`);
+          }
+          await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld svg [pathLength]")]
+            .every((el) => el.getAnimations().every((a) => a.playState === "finished" || a.playState === "idle")), null, { timeout: 8000 });
+          const drawn = await page.evaluate(() => {
+            const strokes = [...document.querySelectorAll(".hero-sld svg [pathLength]")];
+            return { count: strokes.length, offsets: [...new Set(strokes.map((s) => getComputedStyle(s).strokeDashoffset))] };
           });
-          const hits = [...document.querySelectorAll(".hero-sld-hit")].map((el) => {
-            const r = el.getBoundingClientRect();
-            const id = el.getAttribute("data-target");
-            const own = boxOf([...document.querySelectorAll(`.hero-sld svg [data-hit="${id}"]`)]);
-            const others = ids.filter((x) => x !== id).map((x) => boxOf([...document.querySelectorAll(`.hero-sld svg [data-hit="${x}"]`)]));
+          if (drawn.count !== PLOT_N || drawn.offsets.join() !== "0px") {
+            failures.push(`/ @ ${width}x${height}: plot must finish fully drawn, got ${JSON.stringify(drawn)}`);
+          }
+          const dashes = await page.evaluate(() => [...new Set([...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => getComputedStyle(s).strokeDasharray))]);
+          if (dashes.length !== 1 || dashes[0] !== "1px") {
+            failures.push(`/ @ ${width}x${height}: every plotted stroke must carry the dash pattern the draw-in depends on (got ${JSON.stringify(dashes)})`);
+          }
+          // Paused mid-flight oracle on its own page so the frozen state cannot
+          // leak. The frozen 700 ms frame must show finished, in-flight and
+          // waiting strokes: a from-offset near 0 would show none waiting.
+          const midPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+          await midPage.goto(`${base}/`, { waitUntil: "load" });
+          const mid = await midPage.evaluate(() => {
+            document.getAnimations().forEach((a) => { a.pause(); a.currentTime = 700; });
+            const offsets = [...document.querySelectorAll(".hero-sld svg [pathLength]")].map((s) => parseFloat(getComputedStyle(s).strokeDashoffset));
+            const hiddenCopy = [...document.querySelectorAll(".hero-copy > *")].filter((c) => parseFloat(getComputedStyle(c).opacity) < 1).length;
             return {
-              target: id,
-              w: Math.round(r.width),
-              h: Math.round(r.height),
-              inside: r.left >= stage.left - 1 && r.right <= stage.right + 1 && r.top >= stage.top - 1 && r.bottom <= stage.bottom + 1,
-              interactive: getComputedStyle(el).pointerEvents !== "none",
-              box: { l: r.left, r: r.right, t: r.top, b: r.bottom },
-              own,
-              others,
+              finished: offsets.filter((o) => o <= 0.02).length,
+              active: offsets.filter((o) => o > 0.02 && o < 0.98).length,
+              waiting: offsets.filter((o) => o >= 0.98).length,
+              hiddenCopy,
             };
           });
-          const rowsStyle = getComputedStyle(document.querySelector(".hero-sld-rows"));
-          const columns = `${rowsStyle.display} ${rowsStyle.flexWrap}`;
-        // the interaction boundary must be one threshold, no gap: read it back
-        // from the shipped CSSOM rather than trusting the source text
-        const cqText = [...document.styleSheets].flatMap((sheet) => {
-          try {
-            return [...sheet.cssRules].map((rule) => rule.cssText);
-          } catch {
-            return [];
+          await midPage.close();
+          if (mid.finished < 1 || mid.active < 1 || mid.waiting < 1) {
+            failures.push(`/ @ ${width}x${height}: the frozen 700 ms frame must show finished, in-flight and waiting strokes: ${JSON.stringify(mid)}`);
           }
-        }).filter((text) => text.includes("@container") && text.includes("figure")).join("\n");
-          const figStyle = getComputedStyle(document.querySelector(".hero-artifact-figure"));
-          const figureContentW = document.querySelector(".hero-artifact-figure").clientWidth
-            - parseFloat(figStyle.paddingLeft) - parseFloat(figStyle.paddingRight);
-          return {
-            rows,
-            hits,
-            columns,
-            cqText,
-            figureContentW,
-            figure: { t: figure.top, b: figure.bottom },
-            panel: { t: panel.top, b: panel.bottom, h: Math.round(panel.height) },
-            stageW: Math.round(stage.width),
-            panelW: Math.round(panel.width),
-          };
-        }, TARGET_IDS);
-        const inter = (a, b) => Math.max(0, Math.min(a.r, b.r) - Math.max(a.l, b.l)) * Math.max(0, Math.min(a.b, b.b) - Math.max(a.t, b.t));
-        if (revealGeo.rows.length !== 7 || revealGeo.rows.map((r) => r.target).join() !== TARGET_IDS.join()) {
-          failures.push(`/ @ ${width}x${height}: seven reveal rows in order expected (got ${revealGeo.rows.map((r) => r.target).join()})`);
-        }
-        if (revealGeo.rows.some((r) => !r.inside || r.w === 0 || r.h === 0)) {
-          failures.push(`/ @ ${width}x${height}: reveal rows must sit inside the figure (${JSON.stringify(revealGeo.rows.map((r) => [r.w, r.h, r.inside]))})`);
-        }
-        // the rows are the pointer path below 561, so they carry the 24px floor everywhere
-        if (revealGeo.rows.some((r) => r.h < 24 || r.w < 24)) {
-          failures.push(`/ @ ${width}x${height}: reveal rows must be at least 24px (${JSON.stringify(revealGeo.rows.map((r) => [r.w, r.h]))})`);
-        }
-        if (revealGeo.rows.some((r) => r.delay === null || Math.abs(r.delay - r.expected) > 1)) {
-          failures.push(`/ @ ${width}x${height}: reveal rows must ping after the plot (${JSON.stringify(revealGeo.rows.map((r) => r.delay))})`);
-        }
-        const cqPositive = (revealGeo.cqText.match(/\(min-width: 560\.5px\)/g) ?? []).length;
-        const cqNegated = (revealGeo.cqText.match(/not \(min-width: 560\.5px\)/g) ?? []).length;
-        if (cqPositive < 2 || cqNegated < 1 || /560px|561px/.test(revealGeo.cqText)) {
-          failures.push(`/ @ ${width}x${height}: the interaction boundary must be one threshold with no gap (positive ${cqPositive}, negated ${cqNegated})`);
-        }
-        // names-only rows (2026-10-18) wrap as one list at every width
-        if (revealGeo.columns !== "flex wrap") {
-          failures.push(`/ @ ${width}x${height}: reveal rows must wrap as one flex list (got ${revealGeo.columns})`);
-        }
-        for (let a = 0; a < revealGeo.rows.length; a += 1) {
-          for (let b = a + 1; b < revealGeo.rows.length; b += 1) {
-            const A = revealGeo.rows[a].box, B = revealGeo.rows[b].box;
-            if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: reveal rows ${a} and ${b} overlap`);
-          }
-        }
-        if (revealGeo.hits.length !== 7 || revealGeo.hits.some((h) => !h.inside)) {
-          failures.push(`/ @ ${width}x${height}: seven hit areas inside the stage expected (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.w, h.h, h.inside, h.interactive]))})`);
-        }
-        // below 561 the drawing is 300x200: a 24px floor would make neighbouring
-        // targets overlap, so the hits go inert and the labelled rows take over
-        // the container query resolves against the figure's content box
-        const hitsInteractive = revealGeo.figureContentW >= 560.5;
-        if (revealGeo.hits.some((h) => h.interactive !== hitsInteractive)) {
-          failures.push(`/ @ ${width}x${height}: hits must be ${hitsInteractive ? "interactive" : "inert"} at a ${Math.round(revealGeo.figureContentW)}px figure (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.interactive]))})`);
-        }
-        if (!hitsInteractive) {
-          const narrowHits = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-hit")].map((el) => getComputedStyle(el).visibility));
-          if (narrowHits.some((v) => v !== "hidden")) {
-            failures.push(`/ @ ${width}x${height}: below the 560.5px boundary the hits must be invisible too (tab order), got ${JSON.stringify(narrowHits)}`);
-          }
-        }
-        if (hitsInteractive) {
-          if (revealGeo.hits.some((h) => h.w < 24 || h.h < 24)) {
-            failures.push(`/ @ ${width}x${height}: interactive hit areas must be at least 24px (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.w, h.h]))})`);
-          }
-          for (let a = 0; a < revealGeo.hits.length; a += 1) {
-            for (let b = a + 1; b < revealGeo.hits.length; b += 1) {
-              const A = revealGeo.hits[a].box, B = revealGeo.hits[b].box;
-              if (inter(A, B) > 0) failures.push(`/ @ ${width}x${height}: hit areas ${revealGeo.hits[a].target} and ${revealGeo.hits[b].target} overlap (${Math.round(inter(A, B))}px2)`);
-            }
-          }
-          // a hit rect must name the component it sits on: its centre must lie in
-          // its own leaves' box (or within 6px) and be no further from its own
-          // box than from any other target's. A swapped rect pair fails both.
-          const centreDist = (box, h) => {
-            const cx = (h.box.l + h.box.r) / 2;
-            const cy = (h.box.t + h.box.b) / 2;
-            return Math.hypot(Math.max(box.l - cx, 0, cx - box.r), Math.max(box.t - cy, 0, cy - box.b));
-          };
-          for (const h of revealGeo.hits) {
-            if (!h.own) {
-              failures.push(`/ @ ${width}x${height}: hit ${h.target} has no leaves carrying its data-hit`);
-              continue;
-            }
-            const ownDist = centreDist(h.own, h);
-            if (ownDist > 6) failures.push(`/ @ ${width}x${height}: hit ${h.target} centre sits ${Math.round(ownDist)}px off its own linework`);
-            h.others.forEach((o, i) => {
-              if (!o) return;
-              const otherDist = centreDist(o, h);
-              if (ownDist > otherDist + 2) {
-                failures.push(`/ @ ${width}x${height}: hit ${h.target} sits closer to another target's linework (${Math.round(otherDist)}px vs ${Math.round(ownDist)}px, ${TARGET_IDS.filter((x) => x !== h.target)[i]})`);
+          if (mid.hiddenCopy < 1) failures.push(`/ @ ${width}x${height}: frozen mid-flight frame must show pre-entrance copy, got ${JSON.stringify(mid)}`);
+
+          // Hover/click reveal (re-cut 2026-09-20, R1 fold): hovering a component
+          // paints its linework; clicking opens its detail in the panel. Measure
+          // only after the row pings settle (a mid-ping frame carries 0.86 scale).
+          await page.waitForFunction(() => [...document.querySelectorAll(".hero-sld-row, .hero-sld-hit")]
+            .every((el) => el.getAnimations().every((a) => a.playState === "finished" || a.playState === "idle")), null, { timeout: 8000 });
+          const TARGET_IDS = ["supply", "mains", "vd", "device", "sup", "hai", "but"];
+          const revealGeo = await page.evaluate((ids) => {
+            const stage = document.querySelector(".hero-sld-stage").getBoundingClientRect();
+            const figure = document.querySelector(".hero-artifact-figure").getBoundingClientRect();
+            const panel = document.querySelector(".hero-sld-panel").getBoundingClientRect();
+            const root = document.querySelector(".hero-sld svg");
+            const endMs = parseFloat(getComputedStyle(root).getPropertyValue("--plot-end"));
+            const boxOf = (nodes) => {
+              const xs = [];
+              const ys = [];
+              for (const node of nodes) {
+                const b = node.getBBox();
+                const m = node.getScreenCTM();
+                for (const [x, y] of [[b.x, b.y], [b.x + b.width, b.y], [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]) {
+                  const p = new DOMPoint(x, y).matrixTransform(m);
+                  xs.push(p.x);
+                  ys.push(p.y);
+                }
               }
+              return xs.length ? { l: Math.min(...xs), r: Math.max(...xs), t: Math.min(...ys), b: Math.max(...ys) } : null;
+            };
+            const rows = [...document.querySelectorAll(".hero-sld-row")].map((el, i) => {
+              const r = el.getBoundingClientRect();
+              const a = el.getAnimations().find((x) => x.animationName === "callout-ping");
+              return { target: el.getAttribute("data-target"), w: Math.round(r.width), h: Math.round(r.height), inside: r.left >= figure.left - 1 && r.right <= figure.right + 1 && r.top >= figure.top - 1 && r.bottom <= figure.bottom + 1, delay: a?.effect.getComputedTiming().delay ?? null, expected: endMs + i * 260, box: { l: r.left, r: r.right, t: r.top, b: r.bottom } };
             });
+            const hits = [...document.querySelectorAll(".hero-sld-hit")].map((el) => {
+              const r = el.getBoundingClientRect();
+              const id = el.getAttribute("data-target");
+              const own = boxOf([...document.querySelectorAll(`.hero-sld svg [data-hit="${id}"]`)]);
+              const others = ids.filter((x) => x !== id).map((x) => boxOf([...document.querySelectorAll(`.hero-sld svg [data-hit="${x}"]`)]));
+              return {
+                target: id,
+                w: Math.round(r.width),
+                h: Math.round(r.height),
+                inside: r.left >= stage.left - 1 && r.right <= stage.right + 1 && r.top >= stage.top - 1 && r.bottom <= stage.bottom + 1,
+                interactive: getComputedStyle(el).pointerEvents !== "none",
+                box: { l: r.left, r: r.right, t: r.top, b: r.bottom },
+                own,
+                others,
+              };
+            });
+            const rowsStyle = getComputedStyle(document.querySelector(".hero-sld-rows"));
+            const columns = `${rowsStyle.display} ${rowsStyle.flexWrap}`;
+          // the interaction boundary must be one threshold, no gap: read it back
+          // from the shipped CSSOM rather than trusting the source text
+          const cqText = [...document.styleSheets].flatMap((sheet) => {
+            try {
+              return [...sheet.cssRules].map((rule) => rule.cssText);
+            } catch {
+              return [];
+            }
+          }).filter((text) => text.includes("@container") && text.includes("figure")).join("\n");
+            const figStyle = getComputedStyle(document.querySelector(".hero-artifact-figure"));
+            const figureContentW = document.querySelector(".hero-artifact-figure").clientWidth
+              - parseFloat(figStyle.paddingLeft) - parseFloat(figStyle.paddingRight);
+            return {
+              rows,
+              hits,
+              columns,
+              cqText,
+              figureContentW,
+              figure: { t: figure.top, b: figure.bottom },
+              panel: { t: panel.top, b: panel.bottom, h: Math.round(panel.height) },
+              stageW: Math.round(stage.width),
+              panelW: Math.round(panel.width),
+            };
+          }, TARGET_IDS);
+          const inter = (a, b) => Math.max(0, Math.min(a.r, b.r) - Math.max(a.l, b.l)) * Math.max(0, Math.min(a.b, b.b) - Math.max(a.t, b.t));
+          if (revealGeo.rows.length !== 7 || revealGeo.rows.map((r) => r.target).join() !== TARGET_IDS.join()) {
+            failures.push(`/ @ ${width}x${height}: seven reveal rows in order expected (got ${revealGeo.rows.map((r) => r.target).join()})`);
           }
-        }
-        if (hitsInteractive) {
-          // hover paints the component's own linework (differential: every one
-          // of its elements must change) and nothing else on the drawing may
-          // change -- the control is the full complement of leaves
-        // every painted thing: tagged leaves, every label (tagged or not), the
-        // untagged background rect and the pattern geometry in <defs> -- a rule
-        // matching bare svg text/path/rect must not slip the complement control
-        // (R2 finding 1, R3 finding 1)
-        const readLeaves = () => page.evaluate(() => [...document.querySelectorAll(".hero-sld svg [pathLength], .hero-sld svg text:not([pathLength]), .hero-sld svg rect:not([pathLength]), .hero-sld svg path:not([pathLength])")].map((el) => ({
-            hit: el.getAttribute("data-hit"),
-            s: getComputedStyle(el).stroke,
-            f: getComputedStyle(el).fill,
-            w: getComputedStyle(el).strokeWidth,
-            g: getComputedStyle(el).fontWeight,
-            d: getComputedStyle(el).textDecorationLine,
-            o: getComputedStyle(el).opacity,
-          })));
-          for (const t of TARGET_IDS) {
-            await page.mouse.move(0, 0);
-            await page.waitForTimeout(40);
-            const beforePaint = await readLeaves();
-            await page.hover(`.hero-sld-hit[data-target="${t}"]`);
-            await page.waitForTimeout(40);
-            const afterPaint = await readLeaves();
-            const ownChanged = beforePaint.every((b, i) => b.hit !== t || b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g || b.d !== afterPaint[i].d || b.o !== afterPaint[i].o);
-            const ownCount = beforePaint.filter((b) => b.hit === t).length;
-            if (ownCount === 0) failures.push(`/ @ ${width}x${height}: hovering ${t} found no elements carrying its data-hit`);
-            if (!ownChanged) failures.push(`/ @ ${width}x${height}: hovering ${t} must paint every one of its elements`);
-            const leaked = beforePaint.filter((b, i) => b.hit !== t && (b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g || b.d !== afterPaint[i].d || b.o !== afterPaint[i].o));
-            if (leaked.length) failures.push(`/ @ ${width}x${height}: hovering ${t} must not paint other components (${leaked.length} leaf/leaves changed, e.g. ${leaked[0].hit})`);
-            if (t !== "vd") {
-              const ownWidths = afterPaint.filter((b) => b.hit === t).map((b) => b.w);
-              if (ownWidths.some((w) => parseFloat(w) < 3)) failures.push(`/ @ ${width}x${height}: hovering ${t} must not thin its linework (${ownWidths.join()})`);
+          if (revealGeo.rows.some((r) => !r.inside || r.w === 0 || r.h === 0)) {
+            failures.push(`/ @ ${width}x${height}: reveal rows must sit inside the figure (${JSON.stringify(revealGeo.rows.map((r) => [r.w, r.h, r.inside]))})`);
+          }
+          // the rows are the pointer path below 561, so they carry the 24px floor everywhere
+          if (revealGeo.rows.some((r) => r.h < 24 || r.w < 24)) {
+            failures.push(`/ @ ${width}x${height}: reveal rows must be at least 24px (${JSON.stringify(revealGeo.rows.map((r) => [r.w, r.h]))})`);
+          }
+          if (revealGeo.rows.some((r) => r.delay === null || Math.abs(r.delay - r.expected) > 1)) {
+            failures.push(`/ @ ${width}x${height}: reveal rows must ping after the plot (${JSON.stringify(revealGeo.rows.map((r) => r.delay))})`);
+          }
+          const cqPositive = (revealGeo.cqText.match(/\(min-width: 560\.5px\)/g) ?? []).length;
+          const cqNegated = (revealGeo.cqText.match(/not \(min-width: 560\.5px\)/g) ?? []).length;
+          if (cqPositive < 2 || cqNegated < 1 || /560px|561px/.test(revealGeo.cqText)) {
+            failures.push(`/ @ ${width}x${height}: the interaction boundary must be one threshold with no gap (positive ${cqPositive}, negated ${cqNegated})`);
+          }
+          // names-only rows (2026-10-18) wrap as one list at every width
+          if (revealGeo.columns !== "flex wrap") {
+            failures.push(`/ @ ${width}x${height}: reveal rows must wrap as one flex list (got ${revealGeo.columns})`);
+          }
+          for (let a = 0; a < revealGeo.rows.length; a += 1) {
+            for (let b = a + 1; b < revealGeo.rows.length; b += 1) {
+              const A = revealGeo.rows[a].box, B = revealGeo.rows[b].box;
+              if (A.l < B.r && B.l < A.r && A.t < B.b && B.t < A.b) failures.push(`/ @ ${width}x${height}: reveal rows ${a} and ${b} overlap`);
             }
           }
-          // the voltage-drop target is a text label: painting must not drop it
-          // below 4.5:1 (it ships at 6.2:1 on paper), so the cue is weight + rule
-          await page.hover('.hero-sld-hit[data-target="vd"]');
-          const vdPaint = await page.evaluate(() => {
-            const el = document.querySelector('.hero-sld svg [data-hit="vd"]');
-            const cs = getComputedStyle(el);
-            return { fill: cs.fill, weight: Number(cs.fontWeight), decoration: cs.textDecorationLine };
-          });
-          if (vdPaint.fill !== "rgb(159, 53, 16)" || vdPaint.weight < 700 || !vdPaint.decoration.includes("underline")) {
-            failures.push(`/ @ ${width}x${height}: the painted voltage-drop label must stay legible (accent-dark, 700, underlined): ${JSON.stringify(vdPaint)}`);
+          if (revealGeo.hits.length !== 7 || revealGeo.hits.some((h) => !h.inside)) {
+            failures.push(`/ @ ${width}x${height}: seven hit areas inside the stage expected (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.w, h.h, h.inside, h.interactive]))})`);
           }
-          await page.mouse.move(0, 0);
-        }
-        // click reveal (sticky), second activation returns, Escape returns, the
-        // close button returns; keyboard goes through the rows. The legend must
-        // never blank on the way back (R1 F1) and the drawing must never re-plot.
-        const heightOf = () => page.evaluate(() => Math.round(document.querySelector(".hero-artifact-figure").getBoundingClientRect().height));
-        const plotState = () => page.evaluate(() => {
-          const leaves = [...document.querySelectorAll(".hero-sld svg [pathLength]")];
-          const offsets = leaves.map((el) => parseFloat(getComputedStyle(el).strokeDashoffset));
-          return { max: Math.max(...offsets), running: document.getAnimations().filter((a) => a.animationName === "plot" && a.playState === "running").length };
-        });
-        const legendState = () => page.evaluate(() => {
-          const rows = [...document.querySelectorAll(".hero-sld-row")];
-          return {
-            visibility: getComputedStyle(document.querySelector(".hero-sld-rows")).visibility,
-            minOpacity: Math.min(...rows.map((el) => Number(getComputedStyle(el).opacity))),
-            pings: document.getAnimations().filter((a) => a.animationName === "callout-ping" && a.playState === "running").length,
+          // below 561 the drawing is 300x200: a 24px floor would make neighbouring
+          // targets overlap, so the hits go inert and the labelled rows take over
+          // the container query resolves against the figure's content box
+          const hitsInteractive = revealGeo.figureContentW >= 560.5;
+          if (revealGeo.hits.some((h) => h.interactive !== hitsInteractive)) {
+            failures.push(`/ @ ${width}x${height}: hits must be ${hitsInteractive ? "interactive" : "inert"} at a ${Math.round(revealGeo.figureContentW)}px figure (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.interactive]))})`);
+          }
+          if (!hitsInteractive) {
+            const narrowHits = await page.evaluate(() => [...document.querySelectorAll(".hero-sld-hit")].map((el) => getComputedStyle(el).visibility));
+            if (narrowHits.some((v) => v !== "hidden")) {
+              failures.push(`/ @ ${width}x${height}: below the 560.5px boundary the hits must be invisible too (tab order), got ${JSON.stringify(narrowHits)}`);
+            }
+          }
+          if (hitsInteractive) {
+            if (revealGeo.hits.some((h) => h.w < 24 || h.h < 24)) {
+              failures.push(`/ @ ${width}x${height}: interactive hit areas must be at least 24px (${JSON.stringify(revealGeo.hits.map((h) => [h.target, h.w, h.h]))})`);
+            }
+            for (let a = 0; a < revealGeo.hits.length; a += 1) {
+              for (let b = a + 1; b < revealGeo.hits.length; b += 1) {
+                const A = revealGeo.hits[a].box, B = revealGeo.hits[b].box;
+                if (inter(A, B) > 0) failures.push(`/ @ ${width}x${height}: hit areas ${revealGeo.hits[a].target} and ${revealGeo.hits[b].target} overlap (${Math.round(inter(A, B))}px2)`);
+              }
+            }
+            // a hit rect must name the component it sits on: its centre must lie in
+            // its own leaves' box (or within 6px) and be no further from its own
+            // box than from any other target's. A swapped rect pair fails both.
+            const centreDist = (box, h) => {
+              const cx = (h.box.l + h.box.r) / 2;
+              const cy = (h.box.t + h.box.b) / 2;
+              return Math.hypot(Math.max(box.l - cx, 0, cx - box.r), Math.max(box.t - cy, 0, cy - box.b));
+            };
+            for (const h of revealGeo.hits) {
+              if (!h.own) {
+                failures.push(`/ @ ${width}x${height}: hit ${h.target} has no leaves carrying its data-hit`);
+                continue;
+              }
+              const ownDist = centreDist(h.own, h);
+              if (ownDist > 6) failures.push(`/ @ ${width}x${height}: hit ${h.target} centre sits ${Math.round(ownDist)}px off its own linework`);
+              h.others.forEach((o, i) => {
+                if (!o) return;
+                const otherDist = centreDist(o, h);
+                if (ownDist > otherDist + 2) {
+                  failures.push(`/ @ ${width}x${height}: hit ${h.target} sits closer to another target's linework (${Math.round(otherDist)}px vs ${Math.round(ownDist)}px, ${TARGET_IDS.filter((x) => x !== h.target)[i]})`);
+                }
+              });
+            }
+          }
+          if (hitsInteractive) {
+            // hover paints the component's own linework (differential: every one
+            // of its elements must change) and nothing else on the drawing may
+            // change -- the control is the full complement of leaves
+          // every painted thing: tagged leaves, every label (tagged or not), the
+          // untagged background rect and the pattern geometry in <defs> -- a rule
+          // matching bare svg text/path/rect must not slip the complement control
+          // (R2 finding 1, R3 finding 1)
+          const readLeaves = () => page.evaluate(() => [...document.querySelectorAll(".hero-sld svg [pathLength], .hero-sld svg text:not([pathLength]), .hero-sld svg rect:not([pathLength]), .hero-sld svg path:not([pathLength])")].map((el) => ({
+              hit: el.getAttribute("data-hit"),
+              s: getComputedStyle(el).stroke,
+              f: getComputedStyle(el).fill,
+              w: getComputedStyle(el).strokeWidth,
+              g: getComputedStyle(el).fontWeight,
+              d: getComputedStyle(el).textDecorationLine,
+              o: getComputedStyle(el).opacity,
+            })));
+            for (const t of TARGET_IDS) {
+              await page.mouse.move(0, 0);
+              await page.waitForTimeout(40);
+              const beforePaint = await readLeaves();
+              await page.hover(`.hero-sld-hit[data-target="${t}"]`);
+              await page.waitForTimeout(40);
+              const afterPaint = await readLeaves();
+              const ownChanged = beforePaint.every((b, i) => b.hit !== t || b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g || b.d !== afterPaint[i].d || b.o !== afterPaint[i].o);
+              const ownCount = beforePaint.filter((b) => b.hit === t).length;
+              if (ownCount === 0) failures.push(`/ @ ${width}x${height}: hovering ${t} found no elements carrying its data-hit`);
+              if (!ownChanged) failures.push(`/ @ ${width}x${height}: hovering ${t} must paint every one of its elements`);
+              const leaked = beforePaint.filter((b, i) => b.hit !== t && (b.s !== afterPaint[i].s || b.f !== afterPaint[i].f || b.w !== afterPaint[i].w || b.g !== afterPaint[i].g || b.d !== afterPaint[i].d || b.o !== afterPaint[i].o));
+              if (leaked.length) failures.push(`/ @ ${width}x${height}: hovering ${t} must not paint other components (${leaked.length} leaf/leaves changed, e.g. ${leaked[0].hit})`);
+              if (t !== "vd") {
+                const ownWidths = afterPaint.filter((b) => b.hit === t).map((b) => b.w);
+                if (ownWidths.some((w) => parseFloat(w) < 3)) failures.push(`/ @ ${width}x${height}: hovering ${t} must not thin its linework (${ownWidths.join()})`);
+              }
+            }
+            // the voltage-drop target is a text label: painting must not drop it
+            // below 4.5:1 (it ships at 6.2:1 on paper), so the cue is weight + rule
+            await page.hover('.hero-sld-hit[data-target="vd"]');
+            const vdPaint = await page.evaluate(() => {
+              const el = document.querySelector('.hero-sld svg [data-hit="vd"]');
+              const cs = getComputedStyle(el);
+              return { fill: cs.fill, weight: Number(cs.fontWeight), decoration: cs.textDecorationLine };
+            });
+            if (vdPaint.fill !== "rgb(159, 53, 16)" || vdPaint.weight < 700 || !vdPaint.decoration.includes("underline")) {
+              failures.push(`/ @ ${width}x${height}: the painted voltage-drop label must stay legible (accent-dark, 700, underlined): ${JSON.stringify(vdPaint)}`);
+            }
+            await page.mouse.move(0, 0);
+          }
+          // click reveal (sticky), second activation returns, Escape returns, the
+          // close button returns; keyboard goes through the rows. The legend must
+          // never blank on the way back (R1 F1) and the drawing must never re-plot.
+          const heightOf = () => page.evaluate(() => Math.round(document.querySelector(".hero-artifact-figure").getBoundingClientRect().height));
+          const plotState = () => page.evaluate(() => {
+            const leaves = [...document.querySelectorAll(".hero-sld svg [pathLength]")];
+            const offsets = leaves.map((el) => parseFloat(getComputedStyle(el).strokeDashoffset));
+            return { max: Math.max(...offsets), running: document.getAnimations().filter((a) => a.animationName === "plot" && a.playState === "running").length };
+          });
+          const legendState = () => page.evaluate(() => {
+            const rows = [...document.querySelectorAll(".hero-sld-row")];
+            return {
+              visibility: getComputedStyle(document.querySelector(".hero-sld-rows")).visibility,
+              minOpacity: Math.min(...rows.map((el) => Number(getComputedStyle(el).opacity))),
+              pings: document.getAnimations().filter((a) => a.animationName === "callout-ping" && a.playState === "running").length,
+            };
+          });
+          const waitActive = (value) => page.waitForFunction((v) => document.querySelector(".hero-artifact-figure").getAttribute("data-active") === v, value, { timeout: 4000 });
+          const beforeH = await heightOf();
+          if (width === 1440) {
+            const paintOf = (id) => page.evaluate((sel) => [...document.querySelectorAll(`.hero-sld svg [data-hit="${sel}"]`)].map((el) => getComputedStyle(el).stroke + "|" + getComputedStyle(el).fill + "|" + getComputedStyle(el).strokeWidth), id);
+            const mainsBefore = await paintOf("mains");
+            await page.click('.hero-sld-hit[data-target="mains"]');
+            await page.mouse.move(0, 0);
+            await waitActive("mains");
+            const mainsAfter = await paintOf("mains");
+            if (mainsBefore.join() === mainsAfter.join()) {
+              failures.push(`/ @ ${width}x${height}: an open detail must paint its component (active state)`);
+            }
+            const openH = await heightOf();
+            if (Math.abs(openH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: the figure must not resize when a detail opens (${beforeH} -> ${openH})`);
+            const openPlot = await plotState();
+            if (openPlot.max > 0.02 || openPlot.running !== 0) failures.push(`/ @ ${width}x${height}: opening a detail must not replay the plot (${JSON.stringify(openPlot)})`);
+            const openRows = await legendState();
+            if (openRows.visibility !== "visible") failures.push(`/ @ ${width}x${height}: the legend must remain available with an open detail (${JSON.stringify(openRows)})`);
+            await page.click('.hero-sld-hit[data-target="mains"]');
+            await waitActive(null);
+            const closed = await legendState();
+            if (closed.visibility !== "visible" || closed.minOpacity < 1 || closed.pings !== 0) {
+              failures.push(`/ @ ${width}x${height}: returning to the legend must not blank it (${JSON.stringify(closed)})`);
+            }
+            const closedPlot = await plotState();
+            if (closedPlot.max > 0.02 || closedPlot.running !== 0) failures.push(`/ @ ${width}x${height}: closing a detail must not replay the plot (${JSON.stringify(closedPlot)})`);
+          }
+          const openFromRow = async (id) => {
+            await page.focus(`.hero-sld-row[data-target="${id}"]`);
+            await page.keyboard.press("Enter");
+            await waitActive(id);
+            return page.evaluate(() => {
+              const el = document.activeElement;
+              return { cls: el?.className ?? "", target: el?.getAttribute?.("data-target") ?? null, tabindex: el?.getAttribute?.("tabindex") ?? null };
+            });
           };
-        });
-        const waitActive = (value) => page.waitForFunction((v) => document.querySelector(".hero-artifact-figure").getAttribute("data-active") === v, value, { timeout: 4000 });
-        const beforeH = await heightOf();
-        if (width === 1440) {
-          const paintOf = (id) => page.evaluate((sel) => [...document.querySelectorAll(`.hero-sld svg [data-hit="${sel}"]`)].map((el) => getComputedStyle(el).stroke + "|" + getComputedStyle(el).fill + "|" + getComputedStyle(el).strokeWidth), id);
-          const mainsBefore = await paintOf("mains");
-          await page.click('.hero-sld-hit[data-target="mains"]');
-          await page.mouse.move(0, 0);
-          await waitActive("mains");
-          const mainsAfter = await paintOf("mains");
-          if (mainsBefore.join() === mainsAfter.join()) {
-            failures.push(`/ @ ${width}x${height}: an open detail must paint its component (active state)`);
-          }
-          const openH = await heightOf();
-          if (Math.abs(openH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: the figure must not resize when a detail opens (${beforeH} -> ${openH})`);
-          const openPlot = await plotState();
-          if (openPlot.max > 0.02 || openPlot.running !== 0) failures.push(`/ @ ${width}x${height}: opening a detail must not replay the plot (${JSON.stringify(openPlot)})`);
-          const openRows = await legendState();
-          if (openRows.visibility !== "visible") failures.push(`/ @ ${width}x${height}: the legend must remain available with an open detail (${JSON.stringify(openRows)})`);
-          await page.click('.hero-sld-hit[data-target="mains"]');
-          await waitActive(null);
-          const closed = await legendState();
-          if (closed.visibility !== "visible" || closed.minOpacity < 1 || closed.pings !== 0) {
-            failures.push(`/ @ ${width}x${height}: returning to the legend must not blank it (${JSON.stringify(closed)})`);
-          }
-          const closedPlot = await plotState();
-          if (closedPlot.max > 0.02 || closedPlot.running !== 0) failures.push(`/ @ ${width}x${height}: closing a detail must not replay the plot (${JSON.stringify(closedPlot)})`);
-        }
-        const openFromRow = async (id) => {
-          await page.focus(`.hero-sld-row[data-target="${id}"]`);
-          await page.keyboard.press("Enter");
-          await waitActive(id);
-          return page.evaluate(() => {
-            const el = document.activeElement;
-            return { cls: el?.className ?? "", target: el?.getAttribute?.("data-target") ?? null, tabindex: el?.getAttribute?.("tabindex") ?? null };
+          // Compact by default (Nathan, 2026-10-18): the detail area is collapsed
+          // until a row opens. Side by side the hero row fixes the figure height;
+          // stacked, the figure grows by exactly the panel's growth and the
+          // drawing itself never changes.
+          const panelOf = () => page.evaluate(() => {
+            const p = document.querySelector(".hero-sld-panel").getBoundingClientRect();
+            const s = document.querySelector(".hero-sld-stage").getBoundingClientRect();
+            return { panel: Math.round(p.height), stage: `${Math.round(s.width)}x${Math.round(s.height)}` };
           });
-        };
-        // Compact by default (Nathan, 2026-10-18): the detail area is collapsed
-        // until a row opens. Side by side the hero row fixes the figure height;
-        // stacked, the figure grows by exactly the panel's growth and the
-        // drawing itself never changes.
-        const panelOf = () => page.evaluate(() => {
-          const p = document.querySelector(".hero-sld-panel").getBoundingClientRect();
-          const s = document.querySelector(".hero-sld-stage").getBoundingClientRect();
-          return { panel: Math.round(p.height), stage: `${Math.round(s.width)}x${Math.round(s.height)}` };
-        });
-        await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
-        const closedPanel = await panelOf();
-        const rowFocus = await openFromRow("sup");
-        await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
-        const rowOpenH = await heightOf();
-        const openPanel = await panelOf();
-        if (openPanel.panel <= closedPanel.panel + 20) failures.push(`/ @ ${width}x${height}: opening a row must expand the panel (${closedPanel.panel} -> ${openPanel.panel})`);
-        if (width > 960 && Math.abs(rowOpenH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: side by side, the row path must not resize the figure (${beforeH} -> ${rowOpenH})`);
-        if (width <= 960) {
-          const grew = rowOpenH - beforeH;
-          if (Math.abs(grew - (openPanel.panel - closedPanel.panel)) > 1) failures.push(`/ @ ${width}x${height}: stacked, the figure must grow by the panel's growth (${grew} vs ${openPanel.panel - closedPanel.panel})`);
-          if (openPanel.stage !== closedPanel.stage) failures.push(`/ @ ${width}x${height}: stacked, opening must not resize the drawing (${closedPanel.stage} -> ${openPanel.stage})`);
-        }
-        if (rowFocus.cls !== "hero-sld-detail" || rowFocus.target !== "sup" || rowFocus.tabindex !== "-1") {
-          failures.push(`/ @ ${width}x${height}: opening from a row must move focus into the detail (${JSON.stringify(rowFocus)})`);
-        }
-        const rowPlot = await plotState();
-        if (rowPlot.max > 0.02 || rowPlot.running !== 0) failures.push(`/ @ ${width}x${height}: the row path must not replay the plot (${JSON.stringify(rowPlot)})`);
-        const closeBox = await page.evaluate(() => {
-          const el = document.querySelector('.hero-sld-detail[data-target="sup"] .hero-sld-detail-close');
-          if (!el) return null;
-          const r = el.getBoundingClientRect();
-          return { w: Math.round(r.width), h: Math.round(r.height), visible: r.width > 0 && r.height > 0 };
-        });
-        if (!closeBox || !closeBox.visible || closeBox.w < 24 || closeBox.h < 24) {
-          failures.push(`/ @ ${width}x${height}: the open detail must carry a >=24px close button (${JSON.stringify(closeBox)})`);
-        }
-        await page.keyboard.press("Escape");
-        await waitActive(null);
-        const escaped = await page.evaluate(() => ({ cls: document.activeElement?.className ?? "", target: document.activeElement?.getAttribute?.("data-target") ?? null }));
-        if (escaped.cls !== "hero-sld-row" || escaped.target !== "sup") {
-          failures.push(`/ @ ${width}x${height}: Escape must hand focus back to the row that opened the detail (${JSON.stringify(escaped)})`);
-        }
-        const escLegend = await legendState();
-        if (escLegend.visibility !== "visible" || escLegend.minOpacity < 1 || escLegend.pings !== 0) {
-          failures.push(`/ @ ${width}x${height}: Escape must return to a settled legend (${JSON.stringify(escLegend)})`);
-        }
-        // the close button is the touch way back (no Escape on a phone)
-        const butFocus = await openFromRow("but");
-        if (butFocus.cls !== "hero-sld-detail") failures.push(`/ @ ${width}x${height}: the row path must open the detail (${JSON.stringify(butFocus)})`);
-        await page.click('.hero-sld-detail[data-target="but"] .hero-sld-detail-close');
-        await waitActive(null);
-        const closedByButton = await page.evaluate(() => ({ cls: document.activeElement?.className ?? "", target: document.activeElement?.getAttribute?.("data-target") ?? null }));
-        const btnLegend = await legendState();
-        if (closedByButton.cls !== "hero-sld-row" || closedByButton.target !== "but") {
-          failures.push(`/ @ ${width}x${height}: the close button must hand focus back to its row (${JSON.stringify(closedByButton)})`);
-        }
-        if (btnLegend.visibility !== "visible" || btnLegend.minOpacity < 1) {
-          failures.push(`/ @ ${width}x${height}: the close button must return to the legend (${JSON.stringify(btnLegend)})`);
+          await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
+          const closedPanel = await panelOf();
+          const rowFocus = await openFromRow("sup");
+          await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== "running"), null, { timeout: 4000 });
+          const rowOpenH = await heightOf();
+          const openPanel = await panelOf();
+          if (openPanel.panel <= closedPanel.panel + 20) failures.push(`/ @ ${width}x${height}: opening a row must expand the panel (${closedPanel.panel} -> ${openPanel.panel})`);
+          if (width > 960 && Math.abs(rowOpenH - beforeH) > 1) failures.push(`/ @ ${width}x${height}: side by side, the row path must not resize the figure (${beforeH} -> ${rowOpenH})`);
+          if (width <= 960) {
+            const grew = rowOpenH - beforeH;
+            if (Math.abs(grew - (openPanel.panel - closedPanel.panel)) > 1) failures.push(`/ @ ${width}x${height}: stacked, the figure must grow by the panel's growth (${grew} vs ${openPanel.panel - closedPanel.panel})`);
+            if (openPanel.stage !== closedPanel.stage) failures.push(`/ @ ${width}x${height}: stacked, opening must not resize the drawing (${closedPanel.stage} -> ${openPanel.stage})`);
+          }
+          if (rowFocus.cls !== "hero-sld-detail" || rowFocus.target !== "sup" || rowFocus.tabindex !== "-1") {
+            failures.push(`/ @ ${width}x${height}: opening from a row must move focus into the detail (${JSON.stringify(rowFocus)})`);
+          }
+          const rowPlot = await plotState();
+          if (rowPlot.max > 0.02 || rowPlot.running !== 0) failures.push(`/ @ ${width}x${height}: the row path must not replay the plot (${JSON.stringify(rowPlot)})`);
+          const closeBox = await page.evaluate(() => {
+            const el = document.querySelector('.hero-sld-detail[data-target="sup"] .hero-sld-detail-close');
+            if (!el) return null;
+            const r = el.getBoundingClientRect();
+            return { w: Math.round(r.width), h: Math.round(r.height), visible: r.width > 0 && r.height > 0 };
+          });
+          if (!closeBox || !closeBox.visible || closeBox.w < 24 || closeBox.h < 24) {
+            failures.push(`/ @ ${width}x${height}: the open detail must carry a >=24px close button (${JSON.stringify(closeBox)})`);
+          }
+          await page.keyboard.press("Escape");
+          await waitActive(null);
+          const escaped = await page.evaluate(() => ({ cls: document.activeElement?.className ?? "", target: document.activeElement?.getAttribute?.("data-target") ?? null }));
+          if (escaped.cls !== "hero-sld-row" || escaped.target !== "sup") {
+            failures.push(`/ @ ${width}x${height}: Escape must hand focus back to the row that opened the detail (${JSON.stringify(escaped)})`);
+          }
+          const escLegend = await legendState();
+          if (escLegend.visibility !== "visible" || escLegend.minOpacity < 1 || escLegend.pings !== 0) {
+            failures.push(`/ @ ${width}x${height}: Escape must return to a settled legend (${JSON.stringify(escLegend)})`);
+          }
+          // the close button is the touch way back (no Escape on a phone)
+          const butFocus = await openFromRow("but");
+          if (butFocus.cls !== "hero-sld-detail") failures.push(`/ @ ${width}x${height}: the row path must open the detail (${JSON.stringify(butFocus)})`);
+          await page.click('.hero-sld-detail[data-target="but"] .hero-sld-detail-close');
+          await waitActive(null);
+          const closedByButton = await page.evaluate(() => ({ cls: document.activeElement?.className ?? "", target: document.activeElement?.getAttribute?.("data-target") ?? null }));
+          const btnLegend = await legendState();
+          if (closedByButton.cls !== "hero-sld-row" || closedByButton.target !== "but") {
+            failures.push(`/ @ ${width}x${height}: the close button must hand focus back to its row (${JSON.stringify(closedByButton)})`);
+          }
+          if (btnLegend.visibility !== "visible" || btnLegend.minOpacity < 1) {
+            failures.push(`/ @ ${width}x${height}: the close button must return to the legend (${JSON.stringify(btnLegend)})`);
+          }
         }
         }
       }

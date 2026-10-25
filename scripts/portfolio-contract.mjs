@@ -1030,6 +1030,11 @@ check(publicHeaders !== null && exportedHeaders === publicHeaders.toString("utf8
 check(/^\/_next\/static\/\*\r?\n  Cache-Control: public, max-age=31536000, immutable/m.test(exportedHeaders), "_headers must mark hashed _next/static assets immutable");
 check(/^\/\*\r?\n(?:  [^\n]*\n)*?  Strict-Transport-Security: max-age=31536000/m.test(exportedHeaders), "_headers must set HSTS on every path");
 check(exportedHeaders.includes("  X-Content-Type-Options: nosniff"), "_headers must set nosniff");
+const csp = exportedHeaders.match(/^  Content-Security-Policy: (.*)$/m)?.[1] ?? "";
+for (const directive of ["default-src 'self'", "script-src 'self'", "connect-src 'self'", "object-src 'none'", "base-uri 'self'", "frame-ancestors 'none'"]) {
+  check(csp.split("; ").some((part) => part.startsWith(directive)), `_headers CSP must keep ${directive}`);
+}
+check(/Strict-Transport-Security: max-age=31536000; includeSubDomains/.test(exportedHeaders), "_headers HSTS must cover subdomains");
 check(!workbench.includes("ESP32 Drone Reproduction"), "Workbench must not publish ESP32 before owned evidence exists");
 check(!sitemap.includes("/projects/esp32-drone"), "sitemap must not include the retired ESP32 project route");
 check(!sitemap.includes("/workbench/esp32-drone-reproduction"), "sitemap must not publish the gated ESP32 Workbench route");

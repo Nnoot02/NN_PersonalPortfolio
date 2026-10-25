@@ -70,6 +70,22 @@ The probe checks the four entry points, one subpath, the HSTS/nosniff headers
 `public/_headers` declares, and one hashed asset (which catches a stale local
 `out/`).
 
+## Security headers
+
+`public/_headers` sets the CSP, HSTS and cross-origin headers for every path;
+`pnpm test:contract` fails if the critical CSP directives or subdomain HSTS go
+missing. The CSP allows only the Cloudflare Web Analytics beacon off-site and no
+off-site images -- widen `img-src`/`connect-src` there if that ever changes.
+
+HSTS carries `includeSubDomains`, so for a year after a browser visits
+`nnoott.com` it refuses plain HTTP and certificate errors on every
+`*.nnoott.com` host (`gym.`, `hydrometer.`). Keep each subdomain on a proxied
+Cloudflare record or tunnel, never point one at a LAN IP over HTTP (use the IP
+directly), and avoid second-level names like `a.gym.nnoott.com`, which the
+Universal SSL certificate does not cover. The `preload` token is inert until the
+domain is submitted at hstspreload.org; submit only after the header has run
+cleanly for a few weeks, because removal takes months.
+
 ## Search verification and analytics
 
 `lib/seo-verification.ts` is the single place for the three public values that

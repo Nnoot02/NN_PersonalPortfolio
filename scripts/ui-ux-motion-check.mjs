@@ -30,7 +30,7 @@ const focusAt = async (page, selector) => { try { await page.waitForFunction(s =
 
 try {
   for (const reducedMotion of legendMutant ? ["reduce"] : ["no-preference", "reduce"]) {
-    for (const width of legendMutant ? [390] : [320, 390, 768, 1440]) {
+    for (const width of legendMutant ? [768] : [320, 390, 768, 1440]) {
       console.log(`Checking ${width}px / ${reducedMotion}`);
       const context = await browser.newContext({ viewport: { width, height: 844 }, reducedMotion });
       const page = await context.newPage();
@@ -47,65 +47,73 @@ try {
       // Hero room pass 2026-10-18: no hint line; rows are names only and the
       // value stays in each row's accessible name, visually hidden.
       assert.equal(await page.locator(".hero-sld-hint").count(), 0, "retired hint line must not return");
-      assert.ok(await page.locator(".hero-sld-row-value").first().evaluate(e => e.getBoundingClientRect().width) <= 1, "legend values must be visually hidden with JS on");
-      assert.equal(await page.getByRole("button", { name: "Supply 500 kVA · 400 V 3-ph", exact: true }).count(), 1, "legend row must keep its value in its accessible name");
+      if (width > 720) {
+        assert.ok(await page.locator(".hero-sld-row-value").first().evaluate(e => e.getBoundingClientRect().width) <= 1, "legend values must be visually hidden with JS on");
+        assert.equal(await page.getByRole("button", { name: "Supply 500 kVA · 400 V 3-ph", exact: true }).count(), 1, "legend row must keep its value in its accessible name");
+      }
       const actions = page.locator(".hero-actions");
       assert.equal(await actions.getByRole("link", { name: "View projects", exact: true }).getAttribute("href"), "/projects");
       if (width === 390) {
         const bottom = await actions.evaluate(e => e.getBoundingClientRect().bottom);
         assert.ok(bottom <= 844, `390px: hero actions below first viewport (${bottom})`);
       }
-      const fullSize = page.getByRole("link", { name: "Open the full-size diagram", exact: false });
-      assert.equal(await fullSize.getAttribute("href"), "/images/lv-cabling-sld.svg");
-      assert.ok((await fullSize.boundingBox()).height >= 44);
-      const rows = page.locator(".hero-sld-row");
-      assert.equal(await rows.count(), 7);
-      for (const row of await rows.all()) {
-        const control = await row.getAttribute("aria-controls");
-        assert.ok(await page.locator(`[id="${control}"]`).count() === 1, `disclosure target must be unique: ${control}`);
-        assert.equal(await row.getAttribute("aria-expanded"), "false");
-        assert.equal(await row.getAttribute("aria-pressed"), null, "disclosure must not also announce a toggle state");
-        assert.ok((await row.boundingBox()).height >= 44, "legend row misses 44px target");
-      }
-      const originalHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
-      for (const dismissal of ["Escape", "button", "Escape"]) {
-        const row = page.locator('.hero-sld-row[data-target="supply"]');
-        await row.focus();
-        await page.keyboard.press("Enter");
-        await focusAt(page, '.hero-sld-detail[data-target="supply"]');
-        assert.equal(await row.getAttribute("aria-expanded"), "true");
-        assert.equal(await page.locator(".hero-sld-rows").isVisible(), true, "legend must remain selectable with detail open");
-        await page.locator('.hero-sld-row[data-target="vd"]').click();
-        assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').isVisible(), true, "switch directly between details");
-        assert.equal(await page.locator('.hero-sld-detail[data-target="supply"]').evaluate(e => getComputedStyle(e).animationName), "none", "unselected detail must stop its reveal");
-        assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
-        await row.click();
-        const detail = page.locator('.hero-sld-detail[data-target="supply"]');
-        assert.equal(await detail.evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
-        await settle(page);
-        const openHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
-        // compact by default (2026-10-18): stacked, the hero box expands to show
-        // the detail; side by side the hero row holds the figure height
-        if (width > 960) assert.ok(Math.abs(originalHeight - openHeight) <= 1, `side-by-side detail changed figure height: ${originalHeight} -> ${openHeight}`);
-        else assert.ok(openHeight > originalHeight + 20, `stacked detail must expand the hero box: ${originalHeight} -> ${openHeight}`);
-        assert.equal(await page.locator('.hero-sld-row[data-target="supply"] .hero-sld-row-disclosure').evaluate(e => getComputedStyle(e).transform), "matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0)", "open row's + must turn into a close mark");
-        if (dismissal === "Escape") await page.keyboard.press("Escape");
-        else {
-          const close = page.getByRole("button", { name: "Close the detail", exact: true });
-          const box = await close.boundingBox();
-          assert.ok(box.width >= 44 && box.height >= 44, "detail close misses 44px target");
-          await close.click();
+      // 2026-10-25: the diagram figure is dropped on phones (globals.css,
+      // max-width 720px); its legend and detail run only where it shows.
+      if (width > 720) {
+        const fullSize = page.getByRole("link", { name: "Open the full-size diagram", exact: false });
+        assert.equal(await fullSize.getAttribute("href"), "/images/lv-cabling-sld.svg");
+        assert.ok((await fullSize.boundingBox()).height >= 44);
+        const rows = page.locator(".hero-sld-row");
+        assert.equal(await rows.count(), 7);
+        for (const row of await rows.all()) {
+          const control = await row.getAttribute("aria-controls");
+          assert.ok(await page.locator(`[id="${control}"]`).count() === 1, `disclosure target must be unique: ${control}`);
+          assert.equal(await row.getAttribute("aria-expanded"), "false");
+          assert.equal(await row.getAttribute("aria-pressed"), null, "disclosure must not also announce a toggle state");
+          assert.ok((await row.boundingBox()).height >= 44, "legend row misses 44px target");
         }
-        await focusAt(page, '.hero-sld-row[data-target="supply"]');
-        assert.equal(await row.getAttribute("aria-expanded"), "false");
-        await settle(page);
-        const closedHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
-        assert.ok(Math.abs(originalHeight - closedHeight) <= 1, `closing must return the hero to its compact height: ${originalHeight} -> ${closedHeight}`);
-      }
-      if (width >= 768) {
-        await page.locator('.hero-sld-hit[data-target="mains"]').click();
-        await page.getByRole("button", { name: "Close the detail", exact: true }).click();
-        await focusAt(page, '.hero-sld-row[data-target="mains"]');
+        const originalHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
+        for (const dismissal of ["Escape", "button", "Escape"]) {
+          const row = page.locator('.hero-sld-row[data-target="supply"]');
+          await row.focus();
+          await page.keyboard.press("Enter");
+          await focusAt(page, '.hero-sld-detail[data-target="supply"]');
+          assert.equal(await row.getAttribute("aria-expanded"), "true");
+          assert.equal(await page.locator(".hero-sld-rows").isVisible(), true, "legend must remain selectable with detail open");
+          await page.locator('.hero-sld-row[data-target="vd"]').click();
+          assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').isVisible(), true, "switch directly between details");
+          assert.equal(await page.locator('.hero-sld-detail[data-target="supply"]').evaluate(e => getComputedStyle(e).animationName), "none", "unselected detail must stop its reveal");
+          assert.equal(await page.locator('.hero-sld-detail[data-target="vd"]').evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
+          await row.click();
+          const detail = page.locator('.hero-sld-detail[data-target="supply"]');
+          assert.equal(await detail.evaluate(e => getComputedStyle(e).animationName), reducedMotion === "reduce" ? "none" : "detail-reveal");
+          await settle(page);
+          const openHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
+          // compact by default (2026-10-18): stacked, the hero box expands to show
+          // the detail; side by side the hero row holds the figure height
+          if (width > 960) assert.ok(Math.abs(originalHeight - openHeight) <= 1, `side-by-side detail changed figure height: ${originalHeight} -> ${openHeight}`);
+          else assert.ok(openHeight > originalHeight + 20, `stacked detail must expand the hero box: ${originalHeight} -> ${openHeight}`);
+          assert.equal(await page.locator('.hero-sld-row[data-target="supply"] .hero-sld-row-disclosure').evaluate(e => getComputedStyle(e).transform), "matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0)", "open row's + must turn into a close mark");
+          if (dismissal === "Escape") await page.keyboard.press("Escape");
+          else {
+            const close = page.getByRole("button", { name: "Close the detail", exact: true });
+            const box = await close.boundingBox();
+            assert.ok(box.width >= 44 && box.height >= 44, "detail close misses 44px target");
+            await close.click();
+          }
+          await focusAt(page, '.hero-sld-row[data-target="supply"]');
+          assert.equal(await row.getAttribute("aria-expanded"), "false");
+          await settle(page);
+          const closedHeight = await page.locator(".hero-artifact-figure").evaluate(e => e.getBoundingClientRect().height);
+          assert.ok(Math.abs(originalHeight - closedHeight) <= 1, `closing must return the hero to its compact height: ${originalHeight} -> ${closedHeight}`);
+        }
+        if (width >= 768) {
+          await page.locator('.hero-sld-hit[data-target="mains"]').click();
+          await page.getByRole("button", { name: "Close the detail", exact: true }).click();
+          await focusAt(page, '.hero-sld-row[data-target="mains"]');
+        }
+      } else {
+        assert.equal(await page.locator(".hero-image").evaluate(e => getComputedStyle(e).display), "none", "hero diagram must be hidden on phones");
       }
       if (width <= 720) {
         const menu = page.getByRole("button", { name: "Open navigation", exact: true });
@@ -185,6 +193,8 @@ try {
   const noJS = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false, reducedMotion: "reduce" });
   await noJS.goto(base, { waitUntil: "networkidle" });
   assert.equal(await noJS.getByRole("link", { name: "View projects", exact: true }).isVisible(), true);
+  assert.equal(await noJS.locator(".hero-image").evaluate(e => getComputedStyle(e).display), "none", "no-JS phone page must drop the diagram too");
+  await noJS.setViewportSize({ width: 768, height: 1024 });
   assert.equal(await noJS.locator(".hero-sld-row").count(), 7);
   // there is no detail without JS, so the names-only rows must show their values
   assert.ok(await noJS.locator(".hero-sld-row-value").first().evaluate(e => e.getBoundingClientRect().width) > 1, "no-JS legend must show its values");
