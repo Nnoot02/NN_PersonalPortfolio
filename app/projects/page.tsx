@@ -7,8 +7,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Engineering projects moving from theory towards proof, with verified power studies, active embedded and autonomy work, and honest evidence boundaries.",
-  openGraph: { ...sharedOpenGraph, type: "website", title: "Projects", description: "Engineering projects moving from theory towards proof, with verified power studies, active embedded and autonomy work, and honest evidence boundaries.", url: "/projects" },
+    "Two coursework power studies to AS/NZS standards, a GPS-denied UAV capstone in simulation and a satellite-for-good competition entry, each with its evidence boundary stated.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Projects", description: "Two coursework power studies to AS/NZS standards, a GPS-denied UAV capstone in simulation and a satellite-for-good competition entry, each with its evidence boundary stated.", url: "/projects" },
 };
 
 export default function ProjectsPage() {

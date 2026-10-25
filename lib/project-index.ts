@@ -12,7 +12,7 @@ export type ProjectIndexEntry = {
   project: Project;
   stateLabel: string;
   summary: string;
-  ctaLabel: "Read verified case study" | "See current work" | "Read the entry";
+  ctaLabel: "Read the case study" | "See current work" | "Read the entry";
   miniature: {
     src: string;
     alt: string;
@@ -33,9 +33,9 @@ type ProjectIndexDefinitions = { [Slug in ProjectIndexSlug]: ProjectIndexDefinit
 
 const definitions = {
   "lv-cabling-design-commercial-complex": {
-    stateLabel: "Verified case study",
+    stateLabel: "Coursework case study",
     summary: "Standards-traceable 400 V design for a three-tenancy commercial complex.",
-    ctaLabel: "Read verified case study",
+    ctaLabel: "Read the case study",
     miniature: {
       src: "/images/project-index/lv-cabling-artifact.webp",
       alt: "One-line diagram of the LV cabling design: a 400 V three-tenancy commercial complex from the supply transformer through the main switchboard to the three distribution boards",
@@ -47,9 +47,9 @@ const definitions = {
     ],
   },
   "solar-grid-connection-assessment": {
-    stateLabel: "Verified assessment",
+    stateLabel: "Coursework assessment",
     summary: "Connection voltage, compliance, protection, and storage assessed against network and inverter requirements.",
-    ctaLabel: "Read verified case study",
+    ctaLabel: "Read the case study",
     miniature: {
       src: "/images/project-index/solar-grid-connection-artifact.webp",
       alt: "Single-line concept of the solar grid-connection assessment: the 1 MW plant at the point of common coupling to the distribution network, with the LV and HV options that were assessed",
@@ -62,7 +62,7 @@ const definitions = {
   },
   "gps-denied-autonomous-uav": {
     stateLabel: "Active capstone · Phase 0 simulation reviewed",
-    summary: "30/30 held-out goals reached in simulation; three clearance misses remain for Phase 3/HITL.",
+    summary: "30/30 held-out goals reached in simulation and 27/30 cleared the 0.5 m requirement; the three misses go to Phase 3 hardware-in-the-loop (HITL) testing.",
     ctaLabel: "See current work",
     miniature: {
       src: "/images/project-index/gps-denied-uav-artifact.webp",

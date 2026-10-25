@@ -161,7 +161,10 @@ try {
     }
   }
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
-  for (const [slug, ceiling] of [["lv-cabling-design-commercial-complex", 1900], ["solar-grid-connection-assessment", 2400], ["gps-denied-autonomous-uav", 2000]]) {
+  for (const [slug, ceiling] of [// LV: 1900 -> 2150 when the one-line diagram took its 720px sideways-pan
+  // floor on phones (Nathan's call): the stage is ~220px taller than the
+  // shrunk drawing it replaced (measured 1840 -> 2118).
+  ["lv-cabling-design-commercial-complex", 2150], ["solar-grid-connection-assessment", 2400], ["gps-denied-autonomous-uav", 2000]]) {
     await page.goto(`${base}/projects/${slug}`, { waitUntil: "networkidle" });
     assert.equal(await page.locator(".case-meta").count(), 0);
     const headings = await page.locator(".case-sections h2").allTextContents();

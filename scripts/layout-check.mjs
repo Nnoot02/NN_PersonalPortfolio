@@ -2296,6 +2296,62 @@ async function main() {
     if (ping.overlaps.length) failures.push(`reveal rows must not overlap in the frozen mid-ping frame: ${JSON.stringify(ping.overlaps)}`);
   }
 
+  // LV one-line diagram on phones (Nathan's call, variant B): the drawing keeps
+  // a 720px floor and pans sideways inside its own named stage instead of
+  // shrinking to illegibility; at desktop the hint is gone and the drawing fits.
+  for (const [width, height] of [[320, 700], [390, 844], [1440, 900]]) {
+    const lvPage = await browser.newPage({ viewport: { width, height } });
+    const response = await lvPage.goto(`${base}/projects/lv-cabling-design-commercial-complex`, { waitUntil: "networkidle" });
+    checks += 1;
+    if (!response || !response.ok()) {
+      failures.push(`/projects/lv-cabling-design-commercial-complex @ ${width}x${height}: HTTP ${response ? response.status() : "no response"} (one-line scroll probe)`);
+      await lvPage.close();
+      continue;
+    }
+    await lvPage.evaluate(() => document.fonts.ready);
+    const lv = await lvPage.evaluate(() => {
+      const stage = document.querySelector('.lv-view-panel[data-view="one-line"] .lv-view-stage');
+      const svg = stage?.querySelector("svg");
+      const hint = document.querySelector(".lv-scroll-hint");
+      if (!stage || !svg || !hint) return null;
+      const svgW = svg.getBoundingClientRect().width;
+      const scale = svgW / (svg.viewBox.baseVal.width || 1200);
+      let smallest = Infinity;
+      for (const t of svg.querySelectorAll("text")) {
+        if (!t.textContent.trim()) continue;
+        smallest = Math.min(smallest, parseFloat(getComputedStyle(t).fontSize) * scale);
+      }
+      return {
+        svgW,
+        scrollWidth: stage.scrollWidth,
+        clientWidth: stage.clientWidth,
+        overflowX: getComputedStyle(stage).overflowX,
+        smallest,
+        hintDisplay: getComputedStyle(hint).display,
+        region: stage.getAttribute("role") === "region" && !!stage.getAttribute("aria-label") && stage.tabIndex === 0,
+        docOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        installFloor: parseFloat(getComputedStyle(document.querySelector('.lv-view-panel[data-view="installation"] .lv-view-stage svg')).minWidth) || 0,
+      };
+    });
+    const label = `/projects/lv-cabling-design-commercial-complex @ ${width}x${height}`;
+    if (!lv) {
+      failures.push(`${label}: one-line stage, svg or scroll hint missing`);
+    } else if (width <= 760) {
+      if (lv.svgW < 719.5) failures.push(`${label}: one-line svg renders ${Math.round(lv.svgW)}px wide, expected >= 720px`);
+      if (!(lv.scrollWidth > lv.clientWidth)) failures.push(`${label}: one-line stage must scroll sideways (scrollWidth ${lv.scrollWidth} vs clientWidth ${lv.clientWidth})`);
+      if (lv.docOverflow > 0) failures.push(`${label}: page overflows horizontally by ${lv.docOverflow}px with the one-line stage in play`);
+      if (!(lv.smallest >= 9)) failures.push(`${label}: smallest one-line label is ${lv.smallest.toFixed(1)}px, expected >= 9px`);
+      if (lv.hintDisplay === "none") failures.push(`${label}: the sideways-scroll hint must show where the stage scrolls`);
+      if (!lv.region) failures.push(`${label}: scrollable one-line stage must be a named, focusable region`);
+      if (lv.installFloor !== 0) failures.push(`${label}: the installation svg must not take the one-line 720px floor`);
+    } else {
+      if (lv.hintDisplay !== "none") failures.push(`${label}: the scroll hint must be display:none on desktop (got ${lv.hintDisplay})`);
+      if (lv.scrollWidth > lv.clientWidth + 1) failures.push(`${label}: one-line stage must not scroll on desktop (scrollWidth ${lv.scrollWidth} vs clientWidth ${lv.clientWidth})`);
+      if (lv.svgW > lv.clientWidth + 1) failures.push(`${label}: one-line svg ${Math.round(lv.svgW)}px must fit its ${lv.clientWidth}px stage`);
+    }
+    await lvPage.close();
+  }
+
   await browser.close();
   server.close();
 

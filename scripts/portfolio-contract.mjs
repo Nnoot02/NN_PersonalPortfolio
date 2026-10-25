@@ -635,7 +635,7 @@ const caseOpenings = [
   },
   {
     slug: "gps-denied-autonomous-uav",
-    role: "Systems planning and verification",
+    role: "Sole developer: planning, simulation and verification, now building the aircraft",
     outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
     firstWriteUpId: null,
   },
@@ -666,8 +666,8 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
 // completion language. The old "Verified / sanitised write-up" vocabulary and
 // the "What still needs proof" heading must not return.
 for (const [slug, expectedStatus] of [
-  ["lv-cabling-design-commercial-complex", "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown"],
-  ["solar-grid-connection-assessment", "Coursework assessment - every TS132/TS133 and AS/NZS 4777.2 check shown"],
+  ["lv-cabling-design-commercial-complex", "Coursework design - worked checks to AS/NZS 3000 and 3008.1.1"],
+  ["solar-grid-connection-assessment", "Coursework assessment - argued against TS132/TS133 and AS/NZS 4777.2"],
 ]) {
   const doc = renderedMain(readExport(`/projects/${slug}.html`));
   check(doc.includes(expectedStatus), `${slug}: status must name the verification basis plainly`);
@@ -677,6 +677,8 @@ for (const [slug, expectedStatus] of [
   check(!doc.includes("Evidence verified"), `${slug}: the old "Evidence verified" status must not return`);
   check(!doc.includes("Sanitised public write-up complete"), `${slug}: the old publication-workflow sentence must not return`);
   check(!doc.includes("What still needs proof"), `${slug}: the old proof heading must not return`);
+  // Projects audit 2026-10-23 (copy overclaims): "check shown" claimed every check.
+  check(!doc.includes("check shown"), `${slug}: status must not claim every check is shown`);
 }
 
 // Site screening audit 2026-09-16, F8 (Nathan's go 2026-09-18): each completed
@@ -702,10 +704,58 @@ const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commerc
 const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";
 check(fullSizeDiagramLink.length > 0, "LV case study must link the full-size one-line diagram");
 check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.includes("noopener"), "full-size diagram link must open in a new tab with noopener");
+// The one-line stage pans sideways on phones (variant B): it is a named,
+// focusable region, the hint sits between the stage and the meta row, and the
+// single full-size link stays.
+const oneLinePanel = lvCaseStudy.match(/<div[^>]*data-view="one-line"[\s\S]*?<p class="lv-view-meta">[\s\S]*?<\/p>/)?.[0] ?? "";
+const oneLineStageTag = oneLinePanel.match(/<div[^>]*class="lv-view-stage"[^>]*>/)?.[0] ?? "";
+check(oneLineStageTag.includes('role="region"') && oneLineStageTag.includes('aria-label="One-line diagram, scrolls sideways"') && oneLineStageTag.includes('tabindex="0"'), "one-line stage must be a named, focusable region");
+const oneLineHintAt = oneLinePanel.indexOf('<p class="lv-scroll-hint">Scroll sideways to see the full drawing</p>');
+check(oneLineHintAt > oneLinePanel.indexOf('class="lv-view-stage"') && oneLineHintAt > oneLinePanel.indexOf("</svg>") && oneLineHintAt < oneLinePanel.indexOf('class="lv-view-meta"'), "one-line panel must carry the scroll hint after the stage and before the meta row");
+check((oneLinePanel.match(/href="\/images\/lv-cabling-sld\.svg"/g) ?? []).length === 1, "one-line panel must keep exactly one full-size link");
+check(!/<div[^>]*data-view="installation"[\s\S]*?lv-scroll-hint/.test(lvCaseStudy.replace(/[\s\S]*?(?=<div[^>]*data-view="installation")/, "")), "installation panel must not carry the one-line scroll hint");
 // Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
 // names the authoring tool and says the page carries a redraw.
 const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");
 check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inventor; this is a vector redraw of it for the web."), "LV diagram note must name Autodesk Inventor as the authoring tool");
+
+// Projects audit 2026-10-23 (copy overclaims): the case studies and the index
+// must say what was actually checked, and call the work coursework.
+{
+  const lvOpening = normalizeTextEntities(lvCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "");
+  check(lvOpening.includes("the longest final subcircuit of each conductor size"), "lv: opening block must say only the longest final subcircuit of each conductor size was checked");
+  check(!lvOpening.includes("every final subcircuit was checked"), "lv: opening block must not claim every final subcircuit was checked");
+  check(normalizeTextEntities(lvCaseStudy).includes("Step 6  Voltage drop (brief limit 1 % = 4.0 V)"), "lv: consumer-mains worked check must cite the brief limit for voltage drop");
+  const solarCaseStudy = normalizeTextEntities(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")));
+  const solarOpening = solarCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "";
+  check(solarOpening.includes("named as inputs to the network study, not computed"), "solar: opening block must say voltage rise, fault level and grading are inputs, not computed");
+  // Nathan, 2026-10-25: no network data was available, and the plant is one inverter.
+  check(solarOpening.includes("No network data was available"), "solar: opening block must say no network data was available");
+  const uavWriteUp = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")));
+  const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
+  check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
+  // Nathan, 2026-10-25: K = 143 read from AS/NZS 3008.1.1:2017 Table 52; the
+  // edition is named because the rest of the page cites the 2025 edition.
+  check(normalizeTextEntities(lvCaseStudy).includes("K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)"), "lv: Step 7 must carry the fault-withstand K and its 2017 source");
+  check(normalizeTextEntities(lvCaseStudy).includes("Table 52 was not re-checked against the 2025 edition"), "lv: page must say Table 52 was not re-checked against the 2025 edition");
+  // Nathan approved the trimmed reflection, 2026-10-25: lesson and plan, not mood.
+  const viasatReflection = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"))).match(/<h3>What I took from it<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(viasatReflection.includes("I should have re-recorded scenes to show a more confident delivery"), "viasat: reflection must keep the delivery lesson");
+  check(!viasatReflection.includes("really down") && !viasatReflection.includes("!"), "viasat: reflection must not return to mood copy or exclamation marks");
+  const comparisonStart = solarCaseStudy.indexOf('<pre tabindex="0" role="region" aria-label="LV versus HV connection comparison">');
+  const comparison = comparisonStart === -1 ? "" : solarCaseStudy.slice(comparisonStart, solarCaseStudy.indexOf("</pre>", comparisonStart));
+  check(comparison.includes("(currents at unity power factor)"), "solar: LV versus HV comparison must state unity power factor");
+  check(comparison.includes("~52 A at 11 kV, ~17 A at 33 kV"), "solar: LV versus HV comparison must carry the HV currents");
+  for (const phrase of ["Coursework case study", "Coursework assessment", "Read the case study", "27/30 cleared the 0.5 m requirement"]) {
+    check(projectJourneys.includes(phrase), `projects journeys must carry "${phrase}"`);
+  }
+  for (const phrase of ["Verified case study", "Verified assessment", "Read verified case study"]) {
+    check(!projectJourneys.includes(phrase), `projects journeys must not carry "${phrase}"`);
+  }
+  const projectsDescription = readExport("/projects.html").match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "";
+  check(projectsDescription.startsWith("Two coursework power studies to AS/NZS standards"), "/projects meta description must call the power studies coursework");
+}
 
 // Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
 // be a named region so the stop announces what it is (WCAG 4.1.2).
@@ -819,11 +869,11 @@ const caseSpecs = {
   "lv-cabling-design-commercial-complex": [
     ["Voltage system", "400 V 3-phase", "230 V line-to-neutral"],
     ["Design current", "123.6 A", "on the heaviest phase (A)"],
-    ["Voltage drop", "0.74 %", "consumer mains, against the 1 % limit"],
+    ["Voltage drop", "0.74 %", "consumer mains, against the 1 % limit set by the brief"],
     ["Standards", "AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025", null],
   ],
   "solar-grid-connection-assessment": [
-    ["Inverter AC nameplate", "1.0 MW", "the rated AC output assumed for the assessment"],
+    ["Inverter AC nameplate", "1.0 MW", "one inverter, the rated AC output assumed for the assessment"],
     ["PV array DC capacity", "≈1.2 MWp", "installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio"],
     ["Approved export limit", "≤1.0 MW", "possibly below the inverter rating; set by SA Power Networks after the connection study"],
     ["Connection voltage", "LV (TS132) or HV (TS133)", "decided by a site-specific network study, not by capacity"],
@@ -905,15 +955,34 @@ for (const asset of projectIndexAssets) {
   check(projectsIndex.includes(asset), `projects atlas must render ${asset}`);
   check(publicFileSize(asset) <= 160 * 1024, `${asset} must not exceed 160 KB`);
 }
-// The LV mini is a render of lv-cabling-sld.svg (1:1 at left 40 / top 27 on a
-// 1280x720 #e8e3d9 canvas, headless Chrome). It went stale once already: the
+// The LV mini is a vector render of lv-cabling-sld.svg cropped to the
+// transformer-to-boards run (1.5x, window x100 y58 in SVG units, 1280x720,
+// scripts/build-lv-index-thumb.mjs) so its labels stay legible at index size.
+// It went stale once already: the
 // SVG lost its em dashes and accent rule while the mini kept them. Any SVG
 // edit must re-render the mini and update both hashes together.
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const lvSvgHash = sha256(readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").replace(/\r\n/g, "\n"));
 const lvMiniHash = sha256(readFileSync(new URL("../public/images/project-index/lv-cabling-artifact.webp", import.meta.url)));
 check(lvSvgHash === "d2d0d596d94f01782ae16b7879121de4ae8216a62fd3c61eb1e241b318553d4d", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
-check(lvMiniHash === "f277c585bab71ba3cc78a897594a0aa5d948bde5ea7d97927acd23368057028a", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
+check(lvMiniHash === "8f1541bdaba1b7871ec4e7c523cc2d99a45bdbbdf7704220145011bc8b04d028", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
+// The solar rasters (1536w hero, 800w thumb, 1280x720 index crop) are renders of
+// solar-grid-connection.svg (scripts/build-solar-images.mjs). The SVG is the
+// only editable source: any edit must re-render all three and update all four
+// hashes together. The SVG text is also house copy: no U+2014, and the network
+// study note must keep its "not the 1 MW figure" conclusion.
+const solarSvgText = readFileSync(new URL("../public/images/solar-grid-connection.svg", import.meta.url), "utf8");
+check(!solarSvgText.includes("\u2014"), "solar-grid-connection.svg must contain no U+2014 character");
+check(solarSvgText.includes("not the 1 MW figure"), 'solar-grid-connection.svg must keep the "not the 1 MW figure" note');
+const solarSvgHash = sha256(solarSvgText.replace(/\r\n/g, "\n"));
+check(solarSvgHash === "e39227073fbb6f7e5e7ad3591918a05beb9d02881ea98650cb3c95616cb891d8", "solar-grid-connection.svg changed: run scripts/build-solar-images.mjs to re-render the hero, 800w thumb and index thumb, then update all four solar hashes");
+for (const [file, hash] of [
+  ["solar-grid-connection.webp", "1df0586a7c2f50d9a37497f17e1c9b6f64de2b2c28c77ae396a09dab714a7351"],
+  ["thumbs/solar-grid-connection-800.webp", "0139fcc564a757327db6be22965a0f933e1fbde04fb613061b8489b2cd5c8a44"],
+  ["project-index/solar-grid-connection-artifact.webp", "0dc926c8cea204413b939697d5c0b4281e7e88d18926f049671255cbcbe65472"],
+]) {
+  check(sha256(readFileSync(new URL(`../public/images/${file}`, import.meta.url))) === hash, `${file} changed without the pinned SVG render: re-render it with scripts/build-solar-images.mjs from solar-grid-connection.svg and update the solar hashes`);
+}
 check(!projectsIndex.includes(".superpowers") && !projectsIndex.includes("generated_images"), "projects page must not reference disposable generated assets");
 check(!existsSync(new URL("../public/images/project-index/esp32-drone-process.webp", import.meta.url)), "obsolete ESP32 project-index miniature must be removed");
 check(!existsSync(new URL("../public/images/esp32-drone.webp", import.meta.url)), "obsolete ESP32 project image must be removed");
