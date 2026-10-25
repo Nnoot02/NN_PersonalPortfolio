@@ -24,6 +24,7 @@ export function CopyEmailButton({ email }: { email: string }) {
   useEffect(() => () => window.clearTimeout(resetTimer.current), []);
 
   async function copyEmail() {
+    if (state === "copying") return;
     window.clearTimeout(resetTimer.current);
     setState("copying");
     try {
@@ -37,7 +38,8 @@ export function CopyEmailButton({ email }: { email: string }) {
 
   return (
     <>
-      <button className="button button-secondary copy-email-button" data-copy-state={state} type="button" onClick={copyEmail} disabled={state === "copying"}>
+      {/* aria-disabled, not disabled: disabling the focused button drops keyboard focus to <body>. */}
+      <button className="button button-secondary copy-email-button" data-copy-state={state} type="button" onClick={copyEmail} aria-disabled={state === "copying"}>
         {state === "copied" ? <Check size={20} weight="bold" /> : <Copy size={20} />}
         <span className="copy-email-label">{LABELS[state]}</span>
       </button>

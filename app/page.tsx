@@ -109,7 +109,7 @@ export default function HomePage() {
 
       <HomepageEpilogue uavProject={uavProject} workbenchEntry={workbenchEntry} />
     </main>
-    <SiteFooter />
+    <SiteFooter droneStop />
     </>
   );
 }

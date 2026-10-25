@@ -48,32 +48,32 @@ typography:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
     fontSize: "clamp(4.6rem, 9vw, 9rem)"
     fontWeight: 600
-    lineHeight: 0.82
+    lineHeight: 1.1
     letterSpacing: "-0.02em"
     textTransform: uppercase
   section-heading:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
     fontSize: "clamp(2.4rem, 4vw, 4rem)"
     fontWeight: 600
-    lineHeight: 0.95
+    lineHeight: 1.1
     textTransform: uppercase
   section-heading-sm:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
     fontSize: "clamp(2rem, 3.2vw, 3.2rem)"
     fontWeight: 600
-    lineHeight: 0.95
+    lineHeight: 1.1
     textTransform: uppercase
   project-title:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
     fontSize: "clamp(2rem, 3.5vw, 3.2rem)"
     fontWeight: 600
-    lineHeight: 0.95
+    lineHeight: 1.1
     textTransform: uppercase
   writeup-block-heading:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
     fontSize: "clamp(1.4rem, 2.2vw, 1.9rem)"
     fontWeight: 600
-    lineHeight: 1
+    lineHeight: 1.1
     textTransform: uppercase
   footer-title:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
@@ -379,9 +379,9 @@ display roles; Barlow Condensed is never set as body copy.
 | Role | Family | Size | Weight | Line height | Tracking | Notes |
 |---|---|---|---|---|---|---|
 | Home hero h1 | Barlow Condensed | clamp(2.75rem, 6vw, 5.5rem) | 700 | 0.86 | -0.025em | Uppercase. Two-line lock (`.hero-name` wraps the given/family spans). |
-| Page/case h1 | Barlow Condensed | clamp(4.6rem, 9vw, 9rem) | 600 | 0.82 | -0.02em | Uppercase. **Never breaks inside a word** (`overflow-wrap: normal`, `word-break: normal`, `hyphens: none`), so below 720px the size is set by the longest word in the title, not by taste: case studies take `clamp(3rem, 15vw, 6rem)` because "MANUFACTURING" renders 303px at 54px against a 280px column at 320px. Measure in a browser before changing it; a canvas estimate ran 13% low. |
-| Section heading h2 | Barlow Condensed | clamp(2.4rem, 4vw, 4rem) | 600 | 0.95 | — | Uppercase. |
-| Project title | Barlow Condensed | clamp(2rem, 3.5vw, 3.2rem) | 600 | 0.95 | — | Uppercase. |
+| Page/case h1 | Barlow Condensed | clamp(4.6rem, 9vw, 9rem) | 600 | 1.1 | -0.02em | Uppercase. **Never breaks inside a word** (`overflow-wrap: normal`, `word-break: normal`, `hyphens: none`), so below 720px the size is set by the longest word in the title, not by taste: case studies take `clamp(3rem, 15vw, 6rem)` because "MANUFACTURING" renders 303px at 54px against a 280px column at 320px. Measure in a browser before changing it; a canvas estimate ran 13% low. |
+| Section heading h2 | Barlow Condensed | clamp(2.4rem, 4vw, 4rem) | 600 | 1.1 | — | Uppercase. |
+| Project title | Barlow Condensed | clamp(2rem, 3.5vw, 3.2rem) | 600 | 1.1 | — | Uppercase. |
 | Footer title | Barlow Condensed | clamp(2rem, 4vw, 3.8rem) | 600 | 1.1 | — | Uppercase; **wraps to 2 lines, so lh ≥ 1.1** (never 1.0). |
 | Hero role | Barlow Condensed | clamp(1.5rem, 2.2vw, 2rem) | 600 | 1 | 0.08em | Uppercase, accent-colored. **The 1.5rem floor is the contrast rule, not taste:** 2.2vw stays under 24px until 1091px, so a lower floor puts 4.12:1 accent below large-text size on every phone and tablet. |
 | Eyebrow | Barlow Condensed | 0.78rem | 600 | 1.2 | 0.18em | Uppercase, **accent-dark**. Must carry information. |
@@ -402,7 +402,11 @@ stay literal until a role is declared for them.
 
 - **Display line-height runs tight on purpose.** Single-line display may go as
   low as 0.76. Any display that *wraps* must sit at ≥ 1.1 (the footer title is
-  the reference case). Never ship a wrapping headline at lh 1.0.
+  the reference case). Never ship a wrapping headline at lh 1.0. Settled
+  2026-10-25 (Nathan): this rule beats the old per-role .82/.95/1.0 values,
+  so every heading role that can wrap now sets 1.1. The one exception is
+  the home `.hero-name` lockup (0.86), which wraps between whole words in
+  separate spans and carries no accents.
 - **Body line-height stays open**, 1.55–1.7, for readability at the warm
   contrast levels.
 - **Body measure is capped at ~62ch** (`{layout.body-measure-max}`). Section
@@ -520,7 +524,8 @@ sections are retired.
 
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
-118px authentic square photos and a minimum desktop height of 142px. Below
+118px authentic square photos and a minimum desktop height of 142px. From
+760px to 959px the context sits as one row above the two portals. Below
 760px it stacks in DOM order with 92px photos. Footer follows immediately.
 
 Long case-study write-ups (LV and PV, eight sections each) open with a
@@ -618,6 +623,14 @@ Plain-text résumé, Fact sheet) sit on the row below as underlined
 `{colors.footer-warm}` text. Every footer link keeps a ≥ 46px target, and
 both groups `flex-wrap` rather than clip on narrow screens. The compact
 variant keeps a single row of boxes.
+
+On the **homepage only**, the footer title's full stop is a landing pad
+(`FooterDroneStop`, Nathan's pick 2026-10-25): the first time the footer is
+fully in view, a small white drone silhouette flies in, collapses into the
+"." and the glyph fades in under it. It plays once per page view, never on
+other routes, and never for reduced-motion or no-JS readers, who see a plain
+full stop. Footer link boxes transition border/colour over `--motion-quick`
+and shift 1px on press.
 
 ## Do's and Don'ts
 
@@ -760,8 +773,8 @@ so they keep natural width and wrap to a new row rather than clipping.
 ### Motion
 
 Motion reinforces interaction and state. The existing hero rise/name reveal,
-one-line plot, legend pings, and About photo marker remain the expressive
-sequences. Project links add restrained colour/arrow emphasis; diagram details
+one-line plot, legend pings, About photo marker, and the homepage footer
+drone landing remain the expressive sequences. Project links add restrained colour/arrow emphasis; diagram details
 enter over 180 ms with a 4 px shift; mobile navigation uses the same timing;
 email-copy success fades a check over 120 ms; the native evidence dialog fades
 its backdrop/image over 200 ms. Small effects use
