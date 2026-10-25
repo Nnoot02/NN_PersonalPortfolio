@@ -87,6 +87,16 @@
     <text x="1180" y="930" font-size="18" fill="#6d6962" text-anchor="middle">(optional)</text>
     <text x="1180" y="974" font-size="19" fill="#6d6962" text-anchor="middle">AS/NZS 5139 · NICC271</text>
 
+    <!-- Junction dots: every feeder joint on the two buses -->
+    <g fill="#242321">
+      <circle cx="620" cy="160" r="6"/>
+      <circle cx="900" cy="160" r="6"/>
+      <circle cx="620" cy="620" r="6"/>
+      <circle cx="760" cy="620" r="6"/>
+      <circle cx="900" cy="620" r="6"/>
+      <circle cx="1180" cy="620" r="6"/>
+    </g>
+
     <!-- Title block -->
     <rect x="64" y="894" width="560" height="112" fill="none" stroke="#242321" stroke-width="3"/>
     <text x="88" y="932" font-size="17" font-weight="700" letter-spacing="0.3">1 MW SOLAR GRID-CONNECTION ASSESSMENT</text>
