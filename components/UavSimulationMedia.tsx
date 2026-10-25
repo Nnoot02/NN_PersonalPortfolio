@@ -3,7 +3,7 @@ import styles from "./UavSimulationMedia.module.css";
 export function UavFaultResponse() {
   return (
     <div className="writeup-block" data-uav-fault-response>
-      <h3>Depth loss: failure and recovery</h3>
+      <h3 id="depth-loss">Depth loss: failure and recovery</h3>
       <p>Cutting the depth stream exposed a failure in the old planner: it continued into an obstacle without fresh perception. With the watchdog added, the aircraft held position until depth returned, then replanned and resumed the flight.</p>
       <div className={styles.pair}>
         <figure className={styles.figure}>
@@ -45,7 +45,7 @@ const baselinePlots = [
 export function UavResultsGallery() {
   return (
     <div className="writeup-block" data-uav-results-gallery>
-      <h3>Results gallery</h3>
+      <h3 id="results-gallery">Results gallery</h3>
       <p>The baseline tracks, a held-out clearance miss and the delayed-depth comparison show different parts of the investigation. Animations run at four times simulation speed, aligned at each run&apos;s first horizontal movement. Playback starts only when selected.</p>
       {baselinePlots.map(({ stem, poster, animation, title, clearance, alt }) => (
         <figure className={`${styles.figure} ${styles.row}`} key={stem}>

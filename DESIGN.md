@@ -528,7 +528,7 @@ context track plus exactly two single-link portals (UAV, then Workbench), using
 760px to 959px the context sits as one row above the two portals. Below
 760px it stacks in DOM order with 92px photos. Footer follows immediately.
 
-Long case-study write-ups (LV and PV, eight sections each) open with a
+Long case-study write-ups (LV and PV, eight sections each; UAV, six) open with a
 **`writeup-index`**: a non-sticky contents list inside `writeup-heading`, drawn
 as hairline-divided rows with `{typography.meta-label}` labels and an
 accent-dark `decimal-leading-zero` counter. It is **not** sticky and **not** a
@@ -539,8 +539,9 @@ is a shareable URL fragment, and `h3` takes `scroll-margin-top` as a calc over
 the pinned spec strip where one can appear, rather than a single hard-coded
 value. The strip is not an exception to the no-second-bar rule: it is a
 non-interactive data readout, desktop-only (>=1100px), and adds nothing on
-phones. The three-section UAV write-up is deliberately
-unindexed.
+phones. The UAV write-up was left unindexed while it had three sections; at
+six sections (and the longest page on the site) it carries the same index
+since 2026-10-25.
 
 **`case-spec`** — The case-study spec sheet, in the chip row's position on the
 three published case studies (LV, PV, UAV): a hairline-ruled table with a 1px

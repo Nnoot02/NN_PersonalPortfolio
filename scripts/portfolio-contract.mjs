@@ -736,7 +736,7 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   // Nathan, 2026-10-25: no network data was available, and the plant is one inverter.
   check(solarOpening.includes("No network data was available"), "solar: opening block must say no network data was available");
   const uavWriteUp = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")));
-  const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
+  const simulationStops = uavWriteUp.match(/<h3[^>]*>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
   check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
   // Nathan, 2026-10-25: ArduPilot does the control and EKF3 the estimation, so
@@ -797,6 +797,9 @@ const writeUpIndexes = {
 for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
   const index = writeUp.match(/<nav[^>]*class="writeup-index"[\s\S]*?<\/nav>/)?.[0] ?? "";
+  // Indexed 2026-10-25 (Nathan): it grew from three sections to six and became
+  // the longest page on the site, so the old "stays unindexed" rule retired.
+  "gps-denied-autonomous-uav": ["trials-measured", "depth-loss", "results-gallery", "held-out-testing", "simulation-limits", "next-gates"],
   check(index !== "", `${slug}: write-up must carry a section index`);
   check(/aria-label="[^"]+"/.test(index), `${slug}: write-up index must be a named landmark`);
   for (const id of ids) {
@@ -805,8 +808,6 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   }
   check((writeUp.match(/<h3\b/g) ?? []).length === ids.length, `${slug}: index must cover every section`);
 }
-// The compact UAV results write-up stays unindexed.
-check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the compact UAV results write-up must stay unindexed");
 
 // Viasat entry page (Nathan, 2026-10-20): the Phase 2 cards only, with the
 // full video held back; the Faculty Verification Letter is never published;
