@@ -878,7 +878,7 @@ async function main() {
         const hero = await page.evaluate(() => {
           const section = document.querySelector(".page-hero--about");
           const box = (el) => { const r = el?.getBoundingClientRect(); return r ? { left: Math.round(r.left), right: Math.round(r.right), top: Math.round(r.top), bottom: Math.round(r.bottom) } : null; };
-          const copy = [".eyebrow", "h1", ":scope > p"].map((selector) => section?.querySelector(selector));
+          const copy = [".eyebrow", "h1", ":scope > p:last-of-type"].map((selector) => section?.querySelector(selector));
           const img = /** @type {HTMLImageElement | null} */ (section?.querySelector("[data-about-photo] img") ?? null);
           return {
             lefts: copy.map((el) => box(el)?.left ?? null),

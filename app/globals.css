@@ -336,7 +336,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .featured { padding: clamp(5rem, 8vw, 8rem) 6vw; }
 .featured.compact { padding-top: 1rem; }
 .section-heading { max-width: 720px; margin-bottom: 3.5rem; }
-.section-heading h2, .content-grid h2 { font: 600 var(--text-section-heading)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
+.section-heading h2, .content-grid h2 { font: 600 var(--text-section-heading)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 .section-heading > p:last-child { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .project-list { border-top: 1px solid var(--line); list-style: none; margin: 0; padding: 0; }
 .project-row { display: grid; grid-template-columns: minmax(260px, 34%) minmax(0, 1fr); gap: clamp(1rem, 2.5vw, 2.5rem); align-items: center; padding: 1.6rem 0; position: relative; border-bottom: 1px solid var(--line); }
@@ -346,7 +346,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
    to auto so the stacked order follows the DOM: title first. */
 .project-image { grid-column: 1; grid-row: 1; min-height: 230px; background: var(--paper-deep); }
 .project-copy { grid-column: 2; grid-row: 1; display: grid; gap: 1.4rem; }
-.project-copy .project-title { font: 600 var(--text-project-title)/.95 var(--display); text-transform: uppercase; margin: 0 0 .8rem; text-wrap: balance; }
+.project-copy .project-title { font: 600 var(--text-project-title)/1.1 var(--display); text-transform: uppercase; margin: 0 0 .8rem; text-wrap: balance; }
 .project-link::after { content: ""; position: absolute; inset: 0; }
 .project-outcome { max-width: 58ch; color: var(--muted); line-height: 1.65; margin: 0; }
 .project-meta { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; }
@@ -373,7 +373,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .homepage-portal:hover .homepage-portal-image img, .homepage-portal:focus-visible .homepage-portal-image img { transform: scale(1.025); }
 .homepage-portal-copy { display: grid; gap: .3rem; min-width: 0; }
 .homepage-portal-status { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
-.homepage-portal-title { font: 600 clamp(1.35rem, 2vw, 2rem)/1 var(--display); margin: 0; text-transform: uppercase; }
+.homepage-portal-title { font: 600 clamp(1.35rem, 2vw, 2rem)/1.1 var(--display); margin: 0; text-transform: uppercase; }
 .homepage-portal-summary { color: var(--muted); font-size: var(--text-code); line-height: 1.5; margin: 0; }
 .homepage-portal-arrow { color: var(--accent-dark); transition: transform var(--motion-standard) var(--motion-ease); }
 .homepage-portal:hover .homepage-portal-arrow, .homepage-portal:focus-visible .homepage-portal-arrow { transform: translateX(3px); }
@@ -395,7 +395,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .evidence-trigger img { transition: transform var(--motion-standard) var(--motion-ease), filter var(--motion-standard) var(--motion-ease); }
 .workbench-preview-image img, .workbench-evidence figure img { object-fit: cover; filter: sepia(.08); }
 .workbench-preview-copy { align-content: start; display: grid; gap: .85rem; }
-.workbench-preview-copy h2, .workbench-preview-copy h3 { font: 600 clamp(2rem, 3vw, 3rem)/.95 var(--display); margin: 0; text-transform: uppercase; }
+.workbench-preview-copy h2, .workbench-preview-copy h3 { font: 600 clamp(2rem, 3vw, 3rem)/1.1 var(--display); margin: 0; text-transform: uppercase; }
 .workbench-preview-copy > p { color: var(--muted); line-height: 1.6; margin: 0; max-width: 62ch; }
 .workbench-preview-copy .eyebrow { color: var(--accent-dark); }
 .workbench-source-credit { font-size: var(--text-code); }
@@ -403,7 +403,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .workbench-preview-link:focus-visible { outline: none; }
 .workbench-collection-link { align-items: center; display: inline-flex; gap: .4rem; margin-top: 2rem; min-height: 44px; }
 .workbench-detail { padding: 4rem 6vw 7rem; }
-.workbench-detail h1 { text-wrap: balance; font: 600 var(--text-page-hero-display)/.82 var(--display); letter-spacing: -.02em; margin: 0 0 2rem; max-width: 100%; hyphens: none; text-transform: uppercase; word-break: normal; }
+.workbench-detail h1 { text-wrap: balance; font: 600 var(--text-page-hero-display)/1.1 var(--display); letter-spacing: -.02em; margin: 0 0 2rem; max-width: 100%; hyphens: none; text-transform: uppercase; word-break: normal; }
 .workbench-attribution { border-left: 1px solid var(--accent); margin: 3rem 0; max-width: 780px; padding: .2rem 0 .2rem 1.4rem; }
 .workbench-attribution p { color: var(--muted); line-height: 1.65; margin: .5rem 0; }
 .workbench-attribution a { align-items: center; color: var(--accent-dark); display: inline-flex; font-weight: 600; gap: .35rem; text-decoration: underline; text-underline-offset: .18em; }
@@ -428,7 +428,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .principles > div { padding: 2.4rem 2.5rem 2.6rem 0; }
 .principles > div + div { border-left: 1px solid var(--line); padding-left: 2.5rem; }
 .principles span { color: var(--accent); font: 600 var(--text-principle-marker)/1 var(--display); }
-.principles h3 { font: 600 var(--text-principle-title)/1 var(--display); text-transform: uppercase; letter-spacing: .05em; margin: .9rem 0 .55rem; }
+.principles h3 { font: 600 var(--text-principle-title)/1.1 var(--display); text-transform: uppercase; letter-spacing: .05em; margin: .9rem 0 .55rem; }
 .principles p { color: var(--muted); line-height: 1.6; font-size: var(--text-principle-body); margin: 0; }
 
 .site-footer :focus-visible { outline-color: var(--footer-warm); }
@@ -492,7 +492,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
    word-break/anywhere would), so without it the track outgrows the viewport
    no matter how the text wraps. */
 h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow-wrap: break-word; }
-.page-hero h1, .case-study h1 { font: 600 var(--text-page-hero-display)/.82 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; max-width: 100%; hyphens: none; text-wrap: balance; word-break: normal; }
+.page-hero h1, .case-study h1 { font: 600 var(--text-page-hero-display)/1.1 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin: 0 0 2rem; max-width: 100%; hyphens: none; text-wrap: balance; word-break: normal; }
 .page-hero--about h1 { font-size: clamp(4rem, 6.5vw, 6.5rem); margin-bottom: 0; text-wrap: balance; }
 .page-hero--about > p:last-of-type { margin: 0 0 .4rem; }
 .about-hero-photo { margin: .8rem 0 0; max-width: 640px; min-width: 0; }
@@ -552,7 +552,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .project-journey-link:hover .project-journey-image img, .project-journey-link:focus-visible .project-journey-image img { transform: scale(1.015); }
 .project-journey-copy { align-content: start; display: grid; gap: .3rem; min-width: 0; }
 .project-journey-state { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .12em; text-transform: uppercase; }
-.project-journey-title { font: 600 clamp(1.25rem, 1.7vw, 1.75rem)/.95 var(--display); margin: 0; text-transform: uppercase; text-wrap: balance; }
+.project-journey-title { font: 600 clamp(1.25rem, 1.7vw, 1.75rem)/1.1 var(--display); margin: 0; text-transform: uppercase; text-wrap: balance; }
 .project-journey-summary { color: var(--muted); font-size: var(--text-eyebrow); line-height: 1.4; margin: .45rem 0 0; }
 .project-journey-action { align-items: center; color: var(--accent-dark); display: inline-flex; font: 600 var(--text-tag)/1.2 var(--display); gap: .35rem; letter-spacing: .08em; margin-top: .2rem; text-transform: uppercase; }
 .project-journey-action svg { transition: transform var(--motion-standard) var(--motion-ease); }
@@ -615,7 +615,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .content-grid > div > p:last-child { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .about-story { padding: clamp(2.75rem, 4vw, 3.5rem) 6vw; }
 .about-story-intro { align-items: start; display: grid; gap: clamp(2.5rem, 4vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
-.about-story-intro h2 { font: 600 var(--text-section-heading)/.95 var(--display); text-transform: uppercase; margin: 0; }
+.about-story-intro h2 { font: 600 var(--text-section-heading)/1.1 var(--display); text-transform: uppercase; margin: 0; }
 .about-story-intro > p { color: var(--muted); font-size: var(--text-prose); line-height: 1.65; margin: 0; max-width: 62ch; }
 .about-timeline { border-top: 1px solid var(--line); list-style: none; margin: clamp(2rem, 3vw, 3rem) 0 0; padding: 0; }
 .about-timeline li { align-items: start; border-bottom: 1px solid var(--line); display: grid; gap: .6rem clamp(2.5rem, 4vw, 4rem); grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: clamp(1.25rem, 2vw, 1.75rem) 0; }
@@ -625,7 +625,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .about-bench { margin-top: 1.5rem; }
 .about-tools { padding: clamp(2.75rem, 4vw, 3.5rem) 6vw; }
 .tools-heading-row { align-items: flex-end; display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; }
-.tools-heading-row h2 { font: 600 var(--text-section-heading)/.95 var(--display); margin: 0; text-transform: uppercase; }
+.tools-heading-row h2 { font: 600 var(--text-section-heading)/1.1 var(--display); margin: 0; text-transform: uppercase; }
 .tools-evidence-legend { display: flex; flex-wrap: wrap; gap: .55rem 1rem; }
 .tools-evidence-key { align-items: center; color: var(--muted); display: inline-flex; font-size: .76rem; gap: .4rem; }
 .tools-evidence-key::before { border-top: 2px solid var(--line); content: ""; display: inline-block; width: 22px; }
@@ -750,7 +750,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    area, the equal negative margin keeps the 19px box and the 26px row pitch. */
 .case-opening-links .text-link { padding-block: .2rem; margin-block: -.2rem; }
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
-.profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 var(--text-section-heading-sm)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; text-wrap: balance; }
+.profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 var(--text-section-heading-sm)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; text-wrap: balance; }
 .about-timeline h3 { text-wrap: balance; }
 /* :not(.eyebrow): at 0,1,1 these beat .eyebrow and turned eyebrows muted (audit 2026-10-25). */
 .profile-summary p:not(.eyebrow), .profile-grid li, .disclosure-panel p:not(.eyebrow), .disclosure-panel li, .case-sections p:not(.eyebrow) { color: var(--muted); line-height: 1.7; max-width: 62ch; }
@@ -823,7 +823,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .writeup-index a { align-items: baseline; color: var(--muted); display: flex; font: 600 var(--text-tag)/1.3 var(--display); gap: .6rem; letter-spacing: .13em; min-height: 44px; padding: .5rem 1rem .5rem 0; text-decoration: none; text-transform: uppercase; }
 .writeup-index a::before { color: var(--accent-dark); content: counter(writeup-index, decimal-leading-zero); }
 .writeup-index a:hover, .writeup-index a:focus-visible { color: var(--ink); }
-.writeup-heading h2 { font: 600 var(--text-section-heading-sm)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
+.writeup-heading h2 { font: 600 var(--text-section-heading-sm)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
 /* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
 .writeup p:not(.eyebrow) { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
@@ -843,7 +843,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    one can appear, on a fragment jump: without it a link to #fault-level parks
    the heading underneath the chrome. --header-h is 76px, 68px under 720px;
    --strip-h is 0 anywhere the strip cannot pin and 44px where it can. */
-.writeup-block h3 { font: 600 var(--text-writeup-block-heading)/1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
+.writeup-block h3 { font: 600 var(--text-writeup-block-heading)/1.1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
 .writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: var(--text-code); line-height: 1.65; color: var(--ink); }
 /* Two background layers give the right-edge scroll hint with no JavaScript.
    The paper cover is attached `local` so it travels with the content and lands
