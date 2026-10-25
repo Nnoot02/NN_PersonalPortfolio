@@ -654,6 +654,16 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .lv-views:has(#lv-view-installation:checked) .lv-view-panel[data-view="one-line"] { display: none; }
 .lv-views:has(#lv-view-installation:checked) .lv-view-panel[data-view="installation"] { display: block; }
 .lv-view-stage svg { display: block; height: auto; width: 100%; }
+/* Phones: the one-line drawing keeps a 720px floor and pans sideways inside
+   its stage (labels stay >= 9px) instead of shrinking to illegibility. The
+   hint is shown only where the stage can actually scroll. */
+.lv-scroll-hint { border-top: 1px solid var(--line); color: var(--muted); font: 600 var(--text-tag)/1.35 var(--display); letter-spacing: .12em; margin: 0; padding: .4rem .9rem; text-transform: uppercase; }
+@media (max-width: 760px) {
+  .lv-view-panel[data-view="one-line"] .lv-view-stage { -webkit-overflow-scrolling: touch; overflow-x: auto; overflow-y: hidden; }
+  .lv-view-panel[data-view="one-line"] .lv-view-stage svg { min-width: 720px; }
+  .lv-view-panel[data-view="one-line"] .lv-view-stage:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: -2px; }
+}
+@media (min-width: 761px) { .lv-scroll-hint { display: none; } }
 /* A readable detail surface complements the overview at every screen width. */
 .lv-install-detail { display: none; }
 @media screen {

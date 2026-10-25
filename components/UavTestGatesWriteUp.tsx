@@ -62,7 +62,7 @@ export function UavTestGatesWriteUp() {
       </div>
       <div className="writeup-block">
         <h3>Where simulation stops</h3>
-        <p>The simulator's estimator did not respond to the injected vision and IMU errors, so these GPS-disabled trials do not validate real visual-inertial odometry, estimator drift or sensor-source transitions.</p>
+        <p>The simulator's estimator, ArduPilot's EKF3, did not respond to the injected vision and IMU errors, so these GPS-disabled trials do not validate real visual-inertial odometry, estimator drift or sensor-source transitions. On the aircraft I am building, EKF3 will take its position from an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor, and that sensor set still needs hardware evidence.</p>
         <p>The latency figures cover the first obstacle detection to publication of an avoidance path on the simulation laptop, excluding real camera, stereo and USB delays. In the baseline batch, 12 of 62 blocking events exceeded 1.0 s, so the first-detection result does not establish a deadline for every event. Raspberry Pi 5 timing and real flight still need validation.</p>
       </div>
       <div className="writeup-block">

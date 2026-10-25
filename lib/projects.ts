@@ -45,13 +45,13 @@ export const projects: Project[] = [
     imageNote: "I drew the original one-line diagram in Autodesk Inventor; this is a vector redraw of it for the web.",
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
-    status: "Coursework design - every AS/NZS 3000 and 3008.1.1 check shown",
+    status: "Coursework design - worked checks to AS/NZS 3000 and 3008.1.1",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
     evidenceMarkers: ["400 V 3-ph", "123.6 A design current", "0.74 % voltage drop", "AS/NZS 3008.1.1"],
     spec: [
       { label: "Voltage system", value: "400 V 3-phase", note: "230 V line-to-neutral" },
       { label: "Design current", value: "123.6 A", note: "on the heaviest phase (A)" },
-      { label: "Voltage drop", value: "0.74 %", note: "consumer mains, against the 1 % limit" },
+      { label: "Voltage drop", value: "0.74 %", note: "consumer mains, against the 1 % limit set by the brief" },
       { label: "Standards", value: "AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025" },
     ],
     problem:
@@ -59,7 +59,7 @@ export const projects: Project[] = [
     approach:
       "Calculated per-phase maximum demand by the AS/NZS 3000 Clause 2.2.2(a) method, then ran one auditable nine-step selection chain per cable covering current capacity, de-rating, voltage drop, fault level, and earth-fault-loop impedance, with every assumption logged for verification against the controlling standard.",
     result:
-      "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; every final subcircuit was checked against the AS/NZS 3000 Table 8.1 earth-fault-loop limits, with the governing loop at 0.57 Ω against a 1.15 Ω limit.",
+      "123.6 A design current met by 25 mm² X-90 copper consumer mains at 0.74 % voltage drop; 8.0 kA prospective fault current at the main switchboard confirmed 10 kA-rated Type C protection; the longest final subcircuit of each conductor size was checked against the AS/NZS 3000 Table 8.1 earth-fault-loop limits, with the governing loop at 0.57 Ω against a 1.15 Ω limit.",
     evidenceStatus:
       "Complete. The nine-step selection chain and the per-subcircuit results table are published; standards table data is cited by table number rather than reproduced (Standards Australia copyright).",
   },
@@ -76,11 +76,11 @@ export const projects: Project[] = [
     imageIsDiagram: true,
     scope: "Power systems, grid connection, compliance",
     role: "Sole author (coursework technical assessment)",
-    status: "Coursework assessment - every TS132/TS133 and AS/NZS 4777.2 check shown",
+    status: "Coursework assessment - argued against TS132/TS133 and AS/NZS 4777.2",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
     evidenceMarkers: ["1 MW AC", "SAPN TS132/TS133", "AS/NZS 4777.2", "PCC voltage rise"],
     spec: [
-      { label: "Inverter AC nameplate", value: "1.0 MW", note: "the rated AC output assumed for the assessment" },
+      { label: "Inverter AC nameplate", value: "1.0 MW", note: "one inverter, the rated AC output assumed for the assessment" },
       { label: "PV array DC capacity", value: "≈1.2 MWp", note: "installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio" },
       { label: "Approved export limit", value: "≤1.0 MW", note: "possibly below the inverter rating; set by SA Power Networks after the connection study" },
       { label: "Connection voltage", value: "LV (TS132) or HV (TS133)", note: "decided by a site-specific network study, not by capacity" },
@@ -93,7 +93,7 @@ export const projects: Project[] = [
     result:
       "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
-      "Complete. The assessment and its clause-level citations are published; the TAFE SA coursework is unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
+      "Complete. No network data was available, so voltage rise, fault level and protection grading are named as inputs to the network study, not computed. The assessment and its clause-level citations are published; the TAFE SA coursework is unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
   },
   {
     slug: "gps-denied-autonomous-uav",
@@ -107,7 +107,7 @@ export const projects: Project[] = [
     imageAlt: "Red-and-white quadcopter bench mock-up with electronics and landing gear on a workshop bench",
     imageNote: "Bench mock-up, shown at 00:04 in my assembly footage. The results below are from simulation.",
     scope: "Autonomy, controls, estimation",
-    role: "Systems planning and verification",
+    role: "Sole developer: planning, simulation and verification, now building the aircraft",
     status: "Active capstone · Phase 0 simulation reviewed",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
     evidenceMarkers: ["Baseline 30/30", "Held-out 30/30", "Clearance 27/30", "Phase 3 / HITL"],

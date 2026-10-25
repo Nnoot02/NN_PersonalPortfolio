@@ -55,10 +55,18 @@ const lvDesignViews: DesignView[] = [
   },
 ];
 
-function LvViewPanel({ svg, caption, href }: { svg: string; caption: string; href: string }) {
+function LvViewPanel({ svg, caption, href, scrolls = false }: { svg: string; caption: string; href: string; scrolls?: boolean }) {
   return (
     <>
-      <div className="lv-view-stage" dangerouslySetInnerHTML={{ __html: svg }} />
+      {/* The one-line drawing keeps a 720px floor on phones and pans sideways
+          inside the stage; the stage is a named, focusable region so keyboard
+          readers can pan it. */}
+      <div
+        className="lv-view-stage"
+        {...(scrolls ? { tabIndex: 0, role: "region", "aria-label": "One-line diagram, scrolls sideways" } : {})}
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+      {scrolls && <p className="lv-scroll-hint">Scroll sideways to see the full drawing</p>}
       <p className="lv-view-meta">
         <span>{caption}</span>
         <a className="text-link" href={href} target="_blank" rel="noopener">
@@ -70,7 +78,7 @@ function LvViewPanel({ svg, caption, href }: { svg: string; caption: string; hre
 }
 
 const lvDesignPanels = {
-  "one-line": <LvViewPanel svg={lvSldSvg} caption={lvDesignViews[0].caption} href={lvDesignViews[0].fullHref} />,
+  "one-line": <LvViewPanel svg={lvSldSvg} caption={lvDesignViews[0].caption} href={lvDesignViews[0].fullHref} scrolls />,
   installation: <LvViewPanel svg={lvInstallSvg} caption={lvDesignViews[1].caption} href={lvDesignViews[1].fullHref} />,
 };
 
