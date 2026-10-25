@@ -119,11 +119,20 @@ Step 5  16 mm² → 101 A (fail);  25 mm² → 132 A (pass)
 Step 6  Voltage drop (brief limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)
         ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %  OK
 Step 7  PFC at MSB = 8.0 kA; breaking capacity 10 kA  OK
+        Fault withstand: X-90 limits 90 °C normal, 250 °C short-circuit
+          (AS/NZS 3000:2018 Table 3.2)
+        K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)
+        K²S² = 143² × 25² = 12.8 × 10⁶ A²s → t ≤ 0.20 s at 8.0 kA
+        8.0 kA = 64 × In, above the Type C instantaneous band
+          (5 to 10 × In)  OK
 SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
         <p>
           A single-conduit arrangement (Column 17) would instead require 35 mm²;
           that is not the arrangement specified. The result is
-          current-carrying-capacity driven, not voltage-drop driven.
+          current-carrying-capacity driven, not voltage-drop driven. The Step 7
+          fault-withstand line was worked for this write-up; K is read from the 2017
+          edition of AS/NZS 3008.1.1, and Table 52 was not re-checked against the
+          2025 edition.
         </p>
       </div>
 

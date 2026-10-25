@@ -735,6 +735,10 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
   check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
+  // Nathan, 2026-10-25: K = 143 read from AS/NZS 3008.1.1:2017 Table 52; the
+  // edition is named because the rest of the page cites the 2025 edition.
+  check(normalizeTextEntities(lvCaseStudy).includes("K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)"), "lv: Step 7 must carry the fault-withstand K and its 2017 source");
+  check(normalizeTextEntities(lvCaseStudy).includes("Table 52 was not re-checked against the 2025 edition"), "lv: page must say Table 52 was not re-checked against the 2025 edition");
   // Nathan approved the trimmed reflection, 2026-10-25: lesson and plan, not mood.
   const viasatReflection = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"))).match(/<h3>What I took from it<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(viasatReflection.includes("I should have re-recorded scenes to show a more confident delivery"), "viasat: reflection must keep the delivery lesson");
