@@ -735,6 +735,9 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
   check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
+  // Nathan, 2026-10-25: ArduPilot does the control and EKF3 the estimation, so
+  // the scope names only what this work did.
+  check(uavWriteUp.includes("Autonomy, perception, verification"), "uav: scope must read Autonomy, perception, verification");
   // Nathan, 2026-10-25: K = 143 read from AS/NZS 3008.1.1:2017 Table 52; the
   // edition is named because the rest of the page cites the 2025 edition.
   check(normalizeTextEntities(lvCaseStudy).includes("K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)"), "lv: Step 7 must carry the fault-withstand K and its 2017 source");
@@ -807,6 +810,9 @@ check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).incl
 // stays labelled as modelled.
 const viasatEntry = renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"));
 const viasatEntryText = normalizeTextEntities(viasatEntry);
+// Nathan, 2026-10-25: real VIO is unvalidated (UAV page), so the drone is
+// designed to navigate without GPS, not shown doing it.
+check(viasatEntryText.includes("which is designed to navigate without GPS") && !viasatEntryText.includes("which navigates without GPS"), "Viasat entry must not claim the drone already navigates without GPS");
 for (const card of ["journey", "map-first", "local-link", "envelope", "bom", "metrics"]) {
   check(viasatEntry.includes(`/images/viasat-entry/${card}.webp`), `Viasat entry must show the ${card} card`);
   check(publicFileSize(`/images/viasat-entry/${card}.webp`) < 160 * 1024, `Viasat ${card} card must stay under 160 KB`);
@@ -975,11 +981,11 @@ const solarSvgText = readFileSync(new URL("../public/images/solar-grid-connectio
 check(!solarSvgText.includes("\u2014"), "solar-grid-connection.svg must contain no U+2014 character");
 check(solarSvgText.includes("not the 1 MW figure"), 'solar-grid-connection.svg must keep the "not the 1 MW figure" note');
 const solarSvgHash = sha256(solarSvgText.replace(/\r\n/g, "\n"));
-check(solarSvgHash === "e39227073fbb6f7e5e7ad3591918a05beb9d02881ea98650cb3c95616cb891d8", "solar-grid-connection.svg changed: run scripts/build-solar-images.mjs to re-render the hero, 800w thumb and index thumb, then update all four solar hashes");
+check(solarSvgHash === "a315dc577bd570ede624000e72eccd7a4f157f33d0848376c954f4588f4468de", "solar-grid-connection.svg changed: run scripts/build-solar-images.mjs to re-render the hero, 800w thumb and index thumb, then update all four solar hashes");
 for (const [file, hash] of [
-  ["solar-grid-connection.webp", "1df0586a7c2f50d9a37497f17e1c9b6f64de2b2c28c77ae396a09dab714a7351"],
-  ["thumbs/solar-grid-connection-800.webp", "0139fcc564a757327db6be22965a0f933e1fbde04fb613061b8489b2cd5c8a44"],
-  ["project-index/solar-grid-connection-artifact.webp", "0dc926c8cea204413b939697d5c0b4281e7e88d18926f049671255cbcbe65472"],
+  ["solar-grid-connection.webp", "8785790ea8a7de821126469205e142797c0517e0997625ba9c8b98c4f4f83c9a"],
+  ["thumbs/solar-grid-connection-800.webp", "88ef7eeab595748b91f2acae6b6c6ed3053764e27555f4c90634f110b2439f13"],
+  ["project-index/solar-grid-connection-artifact.webp", "51570e7cda15f2cb3506d9629743532694b2eca4250d3f1db551942d8b80696b"],
 ]) {
   check(sha256(readFileSync(new URL(`../public/images/${file}`, import.meta.url))) === hash, `${file} changed without the pinned SVG render: re-render it with scripts/build-solar-images.mjs from solar-grid-connection.svg and update the solar hashes`);
 }
