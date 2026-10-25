@@ -705,7 +705,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* --ink, not --muted: muted on paper-deep is 4.27:1 at 12px (audit 2026-10-25). */
 .lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--ink); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
 .lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }
-.lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease); }
+.lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease), fill var(--motion-standard) var(--motion-ease); }
 .lv-views:has([data-hit="supply"]:hover) .lv-view-stage [data-hit="supply"],
 .lv-views:has([data-hit="mains"]:hover) .lv-view-stage [data-hit="mains"],
 .lv-views:has([data-hit="device"]:hover) .lv-view-stage [data-hit="device"],
@@ -1038,6 +1038,17 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .copy-email-label { min-width: 9.5em; text-align: center; }
 .nav-link { transition: color var(--motion-quick) var(--motion-ease), border-color var(--motion-quick) var(--motion-ease); }
 .project-link, .project-journey-title { transition: color var(--motion-quick) var(--motion-ease); }
+/* Audit 2026-10-25: these changed colour/border on hover with no base-rule
+   transition, so hover snapped in and out. Same quick colour fade as nav.
+   Diagram linework ([data-hit]) stays instant on purpose: it is scanned
+   fast, and a fade leaves two components lit (layout-check exclusivity). */
+.hero-sld-row, .back-link, .lv-view-tab, .writeup-index a, .evidence-dialog-close, .workbench-attribution a, .technical-snapshot-links a { transition: color var(--motion-quick) var(--motion-ease); }
+.hero-sld-detail-close { transition: color var(--motion-quick) var(--motion-ease), border-color var(--motion-quick) var(--motion-ease); }
+/* Press feedback where the global a:active underline is cancelled or absent.
+   The portal is a block link, so the global underline hit every text child. */
+.writeup-index a:active, .lv-view-tab:active, .back-link:active { color: var(--accent-dark); }
+.homepage-portal:active { background: var(--paper-deep); text-decoration: none; }
+.project-journey-link:active .project-journey-title, .evidence-dialog-close:active { color: var(--accent-dark); }
 .project-row:hover .project-link, .project-row:focus-within .project-link,
 .project-journey-link:hover .project-journey-title, .project-journey-link:focus-visible .project-journey-title { color: var(--accent-dark); }
 @keyframes detail-reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
