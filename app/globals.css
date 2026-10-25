@@ -326,7 +326,9 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
   letter-spacing: .12em; text-transform: uppercase; min-height: 44px; }
 .hero-artifact-caption-text { color: var(--ink); }
 .hero-artifact-action { color: var(--accent-dark); text-decoration: underline; text-underline-offset: .25em; }
-.hero-artifact:hover .hero-artifact-action, .hero-artifact:focus-visible .hero-artifact-action { color: var(--accent); }
+/* Audit 2026-10-25: hover used to switch to --accent, 3.67:1 at 12px on
+   paper-deep. Hover thickens the underline instead; colour stays AA. */
+.hero-artifact:hover .hero-artifact-action { text-decoration-thickness: 2px; }
 .project-row:hover .project-image img, .project-row:focus-within .project-image img { transform: scale(1.025); }
 
 .featured { padding: clamp(5rem, 8vw, 8rem) 6vw; }
@@ -679,7 +681,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* Phones: the one-line drawing keeps a 720px floor and pans sideways inside
    its stage (labels stay >= 9px) instead of shrinking to illegibility. The
    hint is shown only where the stage can actually scroll. */
-.lv-scroll-hint { border-top: 1px solid var(--line); color: var(--muted); font: 600 var(--text-tag)/1.35 var(--display); letter-spacing: .12em; margin: 0; padding: .4rem .9rem; text-transform: uppercase; }
+.lv-scroll-hint { border-top: 1px solid var(--line); color: var(--ink); font: 600 var(--text-tag)/1.35 var(--display); letter-spacing: .12em; margin: 0; padding: .4rem .9rem; text-transform: uppercase; }
 @media (max-width: 760px) {
   .lv-view-panel[data-view="one-line"] .lv-view-stage { -webkit-overflow-scrolling: touch; overflow-x: auto; overflow-y: hidden; }
   .lv-view-panel[data-view="one-line"] .lv-view-stage svg { min-width: 720px; }
@@ -700,7 +702,8 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .lv-view-tab:has(.lv-view-radio:checked) { border-bottom-color: Highlight; color: Highlight; }
   .lv-view-tab:has(.lv-view-radio:not(:checked)) { border-bottom-color: Canvas; }
 }
-.lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--muted); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
+/* --ink, not --muted: muted on paper-deep is 4.27:1 at 12px (audit 2026-10-25). */
+.lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--ink); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
 .lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }
 .lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease); }
 .lv-views:has([data-hit="supply"]:hover) .lv-view-stage [data-hit="supply"],
@@ -747,7 +750,8 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .profile-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); gap: 4rem; padding: 6rem 6vw; border-bottom: 1px solid var(--line); }
 .profile-summary h2, .profile-grid h2, .disclosure-panel h2, .case-sections h2 { font: 600 var(--text-section-heading-sm)/.95 var(--display); text-transform: uppercase; margin: 0 0 1rem; text-wrap: balance; }
 .about-timeline h3 { text-wrap: balance; }
-.profile-summary p, .profile-grid li, .disclosure-panel p, .disclosure-panel li, .case-sections p { color: var(--muted); line-height: 1.7; max-width: 62ch; }
+/* :not(.eyebrow): at 0,1,1 these beat .eyebrow and turned eyebrows muted (audit 2026-10-25). */
+.profile-summary p:not(.eyebrow), .profile-grid li, .disclosure-panel p:not(.eyebrow), .disclosure-panel li, .case-sections p:not(.eyebrow) { color: var(--muted); line-height: 1.7; max-width: 62ch; }
 .profile-facts { display: grid; grid-template-columns: 1fr 1fr; margin: 0; border-top: 1px solid var(--line); }
 .profile-facts div { padding: 1.4rem 1rem 1.4rem 0; border-bottom: 1px solid var(--line); }
 .profile-facts dt { font: 600 var(--text-tag)/1.2 var(--display); text-transform: uppercase; letter-spacing: .13em; margin-bottom: .5rem; }
@@ -871,7 +875,8 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    for eight numeric columns). Wrapping the label costs row height; starving the
    numbers costs the comparison the table exists for. */
 @media (max-width: 480px) {
-  .writeup tbody th { max-width: 7.5rem; overflow-wrap: anywhere; white-space: normal; }
+  /* break-word, not anywhere: anywhere lowers min-content and split "Communa/l". */
+  .writeup tbody th { max-width: 7.5rem; overflow-wrap: break-word; white-space: normal; }
 }
 
 @media (max-width: 960px) {
@@ -885,6 +890,16 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
      min-content width, so at 200% root text the track outgrows the viewport
      (measured 400px against 390px) instead of wrapping. */
   .profile-summary, .profile-grid, .case-sections { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Audit 2026-10-25: at 760-959px the 170px context track left the portal
+   copy 50px wide ("WORKB/ENCH" at 768). Context becomes one row above the
+   two portals, which keep their 118px photos. */
+@media (min-width: 760px) and (max-width: 959px) {
+  .homepage-epilogue { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .homepage-epilogue-context { align-items: center; display: flex; gap: 1rem; grid-column: 1 / -1; justify-content: space-between; padding: .5rem 0; }
+  .homepage-portal { border-top: 1px solid var(--line); }
+  .homepage-epilogue-context + .homepage-portal { border-left: 0; padding-left: 0; }
 }
 
 @media (max-width: 759px) {

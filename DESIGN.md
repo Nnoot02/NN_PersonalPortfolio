@@ -520,7 +520,8 @@ sections are retired.
 
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
-118px authentic square photos and a minimum desktop height of 142px. Below
+118px authentic square photos and a minimum desktop height of 142px. From
+760px to 959px the context sits as one row above the two portals. Below
 760px it stacks in DOM order with 92px photos. Footer follows immediately.
 
 Long case-study write-ups (LV and PV, eight sections each) open with a
