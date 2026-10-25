@@ -735,6 +735,9 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
   check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
+  // Nathan, 2026-10-25: ArduPilot does the control and EKF3 the estimation, so
+  // the scope names only what this work did.
+  check(uavWriteUp.includes("Autonomy, perception, verification"), "uav: scope must read Autonomy, perception, verification");
   // Nathan, 2026-10-25: K = 143 read from AS/NZS 3008.1.1:2017 Table 52; the
   // edition is named because the rest of the page cites the 2025 edition.
   check(normalizeTextEntities(lvCaseStudy).includes("K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)"), "lv: Step 7 must carry the fault-withstand K and its 2017 source");
@@ -807,6 +810,9 @@ check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).incl
 // stays labelled as modelled.
 const viasatEntry = renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"));
 const viasatEntryText = normalizeTextEntities(viasatEntry);
+// Nathan, 2026-10-25: real VIO is unvalidated (UAV page), so the drone is
+// designed to navigate without GPS, not shown doing it.
+check(viasatEntryText.includes("which is designed to navigate without GPS") && !viasatEntryText.includes("which navigates without GPS"), "Viasat entry must not claim the drone already navigates without GPS");
 for (const card of ["journey", "map-first", "local-link", "envelope", "bom", "metrics"]) {
   check(viasatEntry.includes(`/images/viasat-entry/${card}.webp`), `Viasat entry must show the ${card} card`);
   check(publicFileSize(`/images/viasat-entry/${card}.webp`) < 160 * 1024, `Viasat ${card} card must stay under 160 KB`);
