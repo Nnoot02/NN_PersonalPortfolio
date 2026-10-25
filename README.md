@@ -11,6 +11,9 @@ assets on Cloudflare Workers.
 
 ## Develop
 
+Node 22.23.4+, 24.22.1+ or 26.12.1+ (the Brotli decoder fix, CVE-2026-111497);
+`package.json` `engines` warns on anything older.
+
 ```powershell
 pnpm install
 pnpm dev
