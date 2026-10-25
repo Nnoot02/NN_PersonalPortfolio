@@ -941,15 +941,17 @@ for (const asset of projectIndexAssets) {
   check(projectsIndex.includes(asset), `projects atlas must render ${asset}`);
   check(publicFileSize(asset) <= 160 * 1024, `${asset} must not exceed 160 KB`);
 }
-// The LV mini is a render of lv-cabling-sld.svg (1:1 at left 40 / top 27 on a
-// 1280x720 #e8e3d9 canvas, headless Chrome). It went stale once already: the
+// The LV mini is a vector render of lv-cabling-sld.svg cropped to the
+// transformer-to-boards run (1.5x, window x100 y58 in SVG units, 1280x720,
+// scripts/build-lv-index-thumb.mjs) so its labels stay legible at index size.
+// It went stale once already: the
 // SVG lost its em dashes and accent rule while the mini kept them. Any SVG
 // edit must re-render the mini and update both hashes together.
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const lvSvgHash = sha256(readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").replace(/\r\n/g, "\n"));
 const lvMiniHash = sha256(readFileSync(new URL("../public/images/project-index/lv-cabling-artifact.webp", import.meta.url)));
 check(lvSvgHash === "d2d0d596d94f01782ae16b7879121de4ae8216a62fd3c61eb1e241b318553d4d", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
-check(lvMiniHash === "f277c585bab71ba3cc78a897594a0aa5d948bde5ea7d97927acd23368057028a", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
+check(lvMiniHash === "8f1541bdaba1b7871ec4e7c523cc2d99a45bdbbdf7704220145011bc8b04d028", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
 check(!projectsIndex.includes(".superpowers") && !projectsIndex.includes("generated_images"), "projects page must not reference disposable generated assets");
 check(!existsSync(new URL("../public/images/project-index/esp32-drone-process.webp", import.meta.url)), "obsolete ESP32 project-index miniature must be removed");
 check(!existsSync(new URL("../public/images/esp32-drone.webp", import.meta.url)), "obsolete ESP32 project image must be removed");
