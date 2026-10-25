@@ -725,6 +725,10 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
   check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
+  // Nathan approved the trimmed reflection, 2026-10-25: lesson and plan, not mood.
+  const viasatReflection = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"))).match(/<h3>What I took from it<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(viasatReflection.includes("I should have re-recorded scenes to show a more confident delivery"), "viasat: reflection must keep the delivery lesson");
+  check(!viasatReflection.includes("really down") && !viasatReflection.includes("!"), "viasat: reflection must not return to mood copy or exclamation marks");
   const comparisonStart = solarCaseStudy.indexOf('<pre tabindex="0" role="region" aria-label="LV versus HV connection comparison">');
   const comparison = comparisonStart === -1 ? "" : solarCaseStudy.slice(comparisonStart, solarCaseStudy.indexOf("</pre>", comparisonStart));
   check(comparison.includes("(currents at unity power factor)"), "solar: LV versus HV comparison must state unity power factor");
