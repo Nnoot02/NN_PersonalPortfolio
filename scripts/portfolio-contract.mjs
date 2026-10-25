@@ -966,6 +966,23 @@ const lvSvgHash = sha256(readFileSync(new URL("../public/images/lv-cabling-sld.s
 const lvMiniHash = sha256(readFileSync(new URL("../public/images/project-index/lv-cabling-artifact.webp", import.meta.url)));
 check(lvSvgHash === "d2d0d596d94f01782ae16b7879121de4ae8216a62fd3c61eb1e241b318553d4d", "lv-cabling-sld.svg changed: re-render project-index/lv-cabling-artifact.webp from it and update both hashes");
 check(lvMiniHash === "8f1541bdaba1b7871ec4e7c523cc2d99a45bdbbdf7704220145011bc8b04d028", "lv-cabling-artifact.webp changed without the pinned SVG render: re-render it from lv-cabling-sld.svg and update both hashes");
+// The solar rasters (1536w hero, 800w thumb, 1280x720 index crop) are renders of
+// solar-grid-connection.svg (scripts/build-solar-images.mjs). The SVG is the
+// only editable source: any edit must re-render all three and update all four
+// hashes together. The SVG text is also house copy: no U+2014, and the network
+// study note must keep its "not the 1 MW figure" conclusion.
+const solarSvgText = readFileSync(new URL("../public/images/solar-grid-connection.svg", import.meta.url), "utf8");
+check(!solarSvgText.includes("\u2014"), "solar-grid-connection.svg must contain no U+2014 character");
+check(solarSvgText.includes("not the 1 MW figure"), 'solar-grid-connection.svg must keep the "not the 1 MW figure" note');
+const solarSvgHash = sha256(solarSvgText.replace(/\r\n/g, "\n"));
+check(solarSvgHash === "e39227073fbb6f7e5e7ad3591918a05beb9d02881ea98650cb3c95616cb891d8", "solar-grid-connection.svg changed: run scripts/build-solar-images.mjs to re-render the hero, 800w thumb and index thumb, then update all four solar hashes");
+for (const [file, hash] of [
+  ["solar-grid-connection.webp", "1df0586a7c2f50d9a37497f17e1c9b6f64de2b2c28c77ae396a09dab714a7351"],
+  ["thumbs/solar-grid-connection-800.webp", "0139fcc564a757327db6be22965a0f933e1fbde04fb613061b8489b2cd5c8a44"],
+  ["project-index/solar-grid-connection-artifact.webp", "0dc926c8cea204413b939697d5c0b4281e7e88d18926f049671255cbcbe65472"],
+]) {
+  check(sha256(readFileSync(new URL(`../public/images/${file}`, import.meta.url))) === hash, `${file} changed without the pinned SVG render: re-render it with scripts/build-solar-images.mjs from solar-grid-connection.svg and update the solar hashes`);
+}
 check(!projectsIndex.includes(".superpowers") && !projectsIndex.includes("generated_images"), "projects page must not reference disposable generated assets");
 check(!existsSync(new URL("../public/images/project-index/esp32-drone-process.webp", import.meta.url)), "obsolete ESP32 project-index miniature must be removed");
 check(!existsSync(new URL("../public/images/esp32-drone.webp", import.meta.url)), "obsolete ESP32 project image must be removed");
