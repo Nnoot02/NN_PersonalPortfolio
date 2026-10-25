@@ -435,7 +435,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .footer-summary, .footer-location { margin: .75rem 0 0; max-width: 54ch; line-height: 1.65; }
 .footer-location { color: var(--footer-warm); }
 .footer-links { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; max-width: 100%; }
-.footer-links a, .footer-links button { color: var(--white); background: transparent; border: 1px solid var(--footer-line); min-width: 46px; min-height: 46px; display: grid; place-items: center; text-align: center; cursor: pointer; }
+.footer-links a, .footer-links button { color: var(--white); background: transparent; border: 1px solid var(--footer-line); min-width: 46px; min-height: 46px; display: grid; place-items: center; text-align: center; cursor: pointer; transition: border-color var(--motion-quick) var(--motion-ease), color var(--motion-quick) var(--motion-ease), transform var(--motion-quick) var(--motion-ease); }
 .footer-links a { gap: .45rem; grid-auto-flow: column; padding: 0 1rem; white-space: normal; }
 .footer-links a:hover, .footer-links button:hover { border-color: var(--footer-warm); color: var(--footer-warm); }
 /* Audit 2026-09-24, S4: grouped footer. Boxed contact actions on one row,
@@ -446,6 +446,28 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
 .footer-site { column-gap: 1.5rem; }
 .footer-links .footer-site a { border: 0; color: var(--footer-warm); min-width: 0; padding: 0; text-decoration: underline; text-underline-offset: .18em; }
 .footer-links .footer-site a:hover, .footer-links .footer-site a[aria-current] { color: var(--white); }
+.footer-links a:active, .footer-links button:active { transform: translateY(1px); }
+/* Homepage footer full stop (option B, 2026-10-25). The drone flies in over
+   --motion-mask, collapses into the dot, and the real glyph fades in under
+   it. Transform/opacity only; JS arms it under no-preference motion, so the
+   glyph is never hidden for no-JS or reduced-motion readers. The wide skid
+   stance puts the left foot on the dot so the body clears the K. */
+.footer-stop { display: inline-block; position: relative; }
+/* The flight starts up to 1.4em right of the dot: at 320px that pushed the
+   page 44px wide mid-flight. clip, not hidden, so no scroll container. */
+.site-footer:has(.footer-stop) { overflow-x: clip; }
+.footer-drone { bottom: .33em; color: var(--white); height: .45em; left: -.02em; opacity: 0; overflow: visible; pointer-events: none; position: absolute; width: .9em; }
+.footer-drone-prop { transform-box: fill-box; transform-origin: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .footer-stop[data-footer-drone="armed"] .footer-stop-glyph { color: transparent; }
+  .footer-stop[data-footer-drone="landing"] .footer-stop-glyph { animation: footer-dot-in var(--motion-quick) var(--motion-ease) calc(var(--motion-mask) + 100ms) both; }
+  .footer-stop[data-footer-drone="landing"] .footer-drone { animation: footer-drone-fly var(--motion-mask) var(--motion-ease) both, footer-drone-collapse var(--motion-slow) cubic-bezier(.4, 0, .2, 1) var(--motion-mask) forwards; transform-origin: 14% 100%; }
+  .footer-stop[data-footer-drone="landing"] .footer-drone-prop { animation: footer-drone-prop calc(var(--motion-mask) / 10) linear 10 alternate; }
+}
+@keyframes footer-drone-fly { 0% { opacity: 0; transform: translate(1.4em, -1.5em) rotate(-10deg); } 18% { opacity: 1; } 75% { transform: translate(.05em, -.12em) rotate(-2deg); } 100% { opacity: 1; transform: none; } }
+@keyframes footer-drone-collapse { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(.14, .3); } }
+@keyframes footer-drone-prop { from { transform: scaleX(1); } to { transform: scaleX(.25); } }
+@keyframes footer-dot-in { from { color: transparent; } to { color: var(--white); } }
 
 .page-hero { padding: clamp(4rem, 7vw, 6.5rem) 6vw clamp(2.5rem, 4vw, 3.5rem); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 /* Audit 2026-09-24, A3 + A6: left-aligned like every other hero (it was the
@@ -1051,6 +1073,8 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .featured, .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
   .site-footer { background: none; color: #000; min-height: 0; }
   .site-footer a { color: #000; }
+  .footer-drone { display: none; }
+  .footer-stop-glyph { animation: none !important; color: inherit !important; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72rem; color: #555; }
   .project-journey-list { display: block; }
   .project-journey-list > li { break-inside: avoid; margin-bottom: 1rem; }

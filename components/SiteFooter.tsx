@@ -1,8 +1,9 @@
+import { FooterDroneStop } from "@/components/FooterDroneStop";
 import { FooterNavLink } from "@/components/FooterNavLink";
 import { EnvelopeSimple, GithubLogo, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import { profile } from "@/lib/site";
 
-export function SiteFooter({ variant = "default" }: { variant?: "default" | "compact" }) {
+export function SiteFooter({ variant = "default", droneStop = false }: { variant?: "default" | "compact"; droneStop?: boolean }) {
   if (variant === "compact") {
     return (
       <footer className="site-footer site-footer--compact" data-footer-variant="compact">
@@ -25,7 +26,7 @@ export function SiteFooter({ variant = "default" }: { variant?: "default" | "com
     <footer className="site-footer" data-footer-variant="default">
       <div>
         <p className="footer-kicker">Available for South Australian internships.</p>
-        <p className="footer-title">Ask me about my work.</p>
+        <p className="footer-title">Ask me about my work{droneStop ? <FooterDroneStop /> : "."}</p>
         <p className="footer-summary">Nathan No-ot · Electrical engineering student</p>
         <p className="footer-location">Adelaide, South Australia</p>
       </div>

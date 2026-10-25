@@ -619,6 +619,14 @@ Plain-text résumé, Fact sheet) sit on the row below as underlined
 both groups `flex-wrap` rather than clip on narrow screens. The compact
 variant keeps a single row of boxes.
 
+On the **homepage only**, the footer title's full stop is a landing pad
+(`FooterDroneStop`, Nathan's pick 2026-10-25): the first time the footer is
+fully in view, a small white drone silhouette flies in, collapses into the
+"." and the glyph fades in under it. It plays once per page view, never on
+other routes, and never for reduced-motion or no-JS readers, who see a plain
+full stop. Footer link boxes transition border/colour over `--motion-quick`
+and shift 1px on press.
+
 ## Do's and Don'ts
 
 ### Do
@@ -760,8 +768,8 @@ so they keep natural width and wrap to a new row rather than clipping.
 ### Motion
 
 Motion reinforces interaction and state. The existing hero rise/name reveal,
-one-line plot, legend pings, and About photo marker remain the expressive
-sequences. Project links add restrained colour/arrow emphasis; diagram details
+one-line plot, legend pings, About photo marker, and the homepage footer
+drone landing remain the expressive sequences. Project links add restrained colour/arrow emphasis; diagram details
 enter over 180 ms with a 4 px shift; mobile navigation uses the same timing;
 email-copy success fades a check over 120 ms; the native evidence dialog fades
 its backdrop/image over 200 ms. Small effects use

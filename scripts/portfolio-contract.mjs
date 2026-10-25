@@ -303,7 +303,11 @@ check(heroIndex >= 0 && heroIndex < ledgerIndex && ledgerIndex < epilogueIndex &
 check(/data-homepage-epilogue[\s\S]*?<\/section>\s*<\/main>\s*<footer\b/.test(homeDoc), "footer must immediately follow homepage main");
 check(!navMatch || !navMatch[0].includes('href="/workbench"'), "Workbench must not enter primary navigation");
 const footer = homeDoc.match(/<footer[\s\S]*?<\/footer>/)?.[0] ?? "";
-check(footer.includes("Ask me about my work."), "footer must use approved ask-about-my-work lead");
+// Text, not markup: the homepage wraps the full stop for the drone landing.
+const footerText = footer.replace(/<[^>]+>/g, "");
+check(footerText.includes("Ask me about my work."), "footer must use approved ask-about-my-work lead");
+check(/data-footer-drone="idle"[\s\S]*?aria-hidden="true"/.test(footer), "homepage footer drone must render idle and stay hidden from assistive tech");
+check(!aboutDoc.includes("data-footer-drone"), "footer drone must stay on the homepage only");
 check(footer.includes("Available for South Australian internships."), "footer must use approved internship availability support");
 for (const destination of ["/contact", "/projects", "/workbench", "/profile"]) {
   check(footer.includes(`href="${destination}"`), `footer must link ${destination}`);
