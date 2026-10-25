@@ -704,6 +704,16 @@ const lvCaseStudy = renderedMain(readExport("/projects/lv-cabling-design-commerc
 const fullSizeDiagramLink = lvCaseStudy.match(/<a\b[^>]*href="\/images\/lv-cabling-sld\.svg"[^>]*>/)?.[0] ?? "";
 check(fullSizeDiagramLink.length > 0, "LV case study must link the full-size one-line diagram");
 check(fullSizeDiagramLink.includes('target="_blank"') && fullSizeDiagramLink.includes("noopener"), "full-size diagram link must open in a new tab with noopener");
+// The one-line stage pans sideways on phones (variant B): it is a named,
+// focusable region, the hint sits between the stage and the meta row, and the
+// single full-size link stays.
+const oneLinePanel = lvCaseStudy.match(/<div[^>]*data-view="one-line"[\s\S]*?<p class="lv-view-meta">[\s\S]*?<\/p>/)?.[0] ?? "";
+const oneLineStageTag = oneLinePanel.match(/<div[^>]*class="lv-view-stage"[^>]*>/)?.[0] ?? "";
+check(oneLineStageTag.includes('role="region"') && oneLineStageTag.includes('aria-label="One-line diagram, scrolls sideways"') && oneLineStageTag.includes('tabindex="0"'), "one-line stage must be a named, focusable region");
+const oneLineHintAt = oneLinePanel.indexOf('<p class="lv-scroll-hint">Scroll sideways to see the full drawing</p>');
+check(oneLineHintAt > oneLinePanel.indexOf('class="lv-view-stage"') && oneLineHintAt > oneLinePanel.indexOf("</svg>") && oneLineHintAt < oneLinePanel.indexOf('class="lv-view-meta"'), "one-line panel must carry the scroll hint after the stage and before the meta row");
+check((oneLinePanel.match(/href="\/images\/lv-cabling-sld\.svg"/g) ?? []).length === 1, "one-line panel must keep exactly one full-size link");
+check(!/<div[^>]*data-view="installation"[\s\S]*?lv-scroll-hint/.test(lvCaseStudy.replace(/[\s\S]*?(?=<div[^>]*data-view="installation")/, "")), "installation panel must not carry the one-line scroll hint");
 // Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
 // names the authoring tool and says the page carries a redraw.
 const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");
