@@ -15,6 +15,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The main ruleset requires a check named exactly "verify" from GitHub
+  # Actions. Renaming this job, or giving it a name: key, leaves every PR
+  # stuck on "Expected"; update the ruleset in the same change.
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 30
