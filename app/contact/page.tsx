@@ -1,6 +1,6 @@
 import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
-import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
+import { EnvelopeSimple, FilePdf } from "@phosphor-icons/react/dist/ssr";
 import { CopyEmailButton } from "@/components/CopyEmailButton";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -35,6 +35,10 @@ export default function ContactPage() {
                   </span>
                 </a>
                 <CopyEmailButton email={profile.contactEmail} />
+                <a className="button button-secondary" data-contact-resume href={profile.resumePath} target="_blank" rel="noopener">
+                  <FilePdf size={20} aria-hidden="true" />
+                  <span>Résumé</span><span className="sr-only"> (PDF, opens in a new tab)</span>
+                </a>
               </div>
             </div>
           </div>
@@ -53,8 +57,8 @@ export default function ContactPage() {
             <div className="technical-snapshot-group technical-snapshot-group--verified" data-snapshot-group="verified-power">
               <p className="technical-snapshot-label">VERIFIED POWER</p>
               <div className="technical-snapshot-links">
-                <Link data-contact-verified-link href="/projects/lv-cabling-design-commercial-complex">400 V commercial LV design ↗</Link>
-                <Link data-contact-verified-link href="/projects/solar-grid-connection-assessment">1 MW grid assessment ↗</Link>
+                <Link data-contact-verified-link href="/projects/lv-cabling-design-commercial-complex">400 V commercial LV design →</Link>
+                <Link data-contact-verified-link href="/projects/solar-grid-connection-assessment">1 MW grid assessment →</Link>
               </div>
             </div>
             <div className="technical-snapshot-group" data-snapshot-group="current-build">
