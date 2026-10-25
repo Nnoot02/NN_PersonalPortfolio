@@ -26,6 +26,7 @@ const writeUps: Record<string, React.ComponentType> = {
   "last-metre-eyes-viasat-entry": ViasatEntryWriteUp,
 };
 
+// Also sizes the case hero box, so width/height must stay the image's own.
 const shareImages: Record<string, { url: string; width: number; height: number }> = {
   "lv-cabling-design-commercial-complex": { url: "/images/project-index/lv-cabling-artifact.webp", width: 1280, height: 720 },
   "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
@@ -171,8 +172,9 @@ export default async function ProjectPage({ params }: ProjectParams) {
         {project.slug === "lv-cabling-design-commercial-complex" ? (
           <LvDesignViews views={lvDesignViews} panels={lvDesignPanels} />
         ) : (
-          <div className="case-image">
-            {/* The export is unoptimized, so next/image emits no srcset. The
+          <div className="case-image" style={{ aspectRatio: `${shareImages[project.slug].width} / ${shareImages[project.slug].height}` }}>
+            {/* The box takes the image's own ratio, so cover never crops it.
+                The export is unoptimized, so next/image emits no srcset. The
                 photographic heroes carry pre-generated widths instead. */}
             {project.heroSrcSet ? (
               <picture>

@@ -1146,6 +1146,18 @@ async function main() {
         if (opening.specTop !== null && opening.bottom !== null && opening.specTop < opening.bottom) {
           failures.push(`${route} @ ${width}x${height}: spec table starts at ${opening.specTop}px, inside the opening card (bottom ${opening.bottom}px)`);
         }
+        // The hero box takes the image's own ratio: under object-fit: cover a
+        // fixed-height box cut the solar diagram's edges and the Viasat card's
+        // text on phones (2026-10-25).
+        const crop = await page.evaluate(() => {
+          const img = document.querySelector(".case-image img");
+          if (!img || !img.naturalWidth) return null;
+          const box = img.getBoundingClientRect();
+          const natural = img.naturalWidth / img.naturalHeight;
+          const shown = box.width / box.height;
+          return Math.round(100 * (1 - Math.min(natural, shown) / Math.max(natural, shown)));
+        });
+        if (crop !== null && crop > 1) failures.push(`${route} @ ${width}x${height}: case image cropped by ${crop}%`);
       }
 
       // Audit 2026-09-24, S4: the default footer shows one treatment per
@@ -1964,6 +1976,9 @@ async function main() {
       const expectOn = width >= 1100;
       if (expectOn) {
         await stripPage.waitForFunction(() => document.querySelector(".case-spec__strip")?.classList.contains("is-on"), null, { timeout: 2000 }).catch(() => {});
+        // is-on starts a 180ms slide-in; measuring mid-transform read the strip
+        // 2-6px high (2026-10-25).
+        await stripPage.evaluate(() => Promise.all(document.querySelector(".case-spec__strip")?.getAnimations().map((a) => a.finished) ?? []));
       }
       const stripState = await stripPage.evaluate(() => {
         const strip = document.querySelector(".case-spec__strip");
