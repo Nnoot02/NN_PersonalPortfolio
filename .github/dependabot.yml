@@ -23,3 +23,19 @@ updates:
     commit-message:
       prefix: "fix(deps)"
       prefix-development: "chore(deps)"
+
+  # Keeps the commit-pinned actions in .github/workflows current.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Australia/Sydney"
+    cooldown:
+      default-days: 14
+    groups:
+      actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "ci"
