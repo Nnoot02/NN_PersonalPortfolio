@@ -635,7 +635,7 @@ const caseOpenings = [
   },
   {
     slug: "gps-denied-autonomous-uav",
-    role: "Systems planning and verification",
+    role: "Sole developer: planning, simulation and verification, now building the aircraft",
     outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
     firstWriteUpId: null,
   },
@@ -719,6 +719,12 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   const solarCaseStudy = normalizeTextEntities(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")));
   const solarOpening = solarCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "";
   check(solarOpening.includes("named as inputs to the network study, not computed"), "solar: opening block must say voltage rise, fault level and grading are inputs, not computed");
+  // Nathan, 2026-10-25: no network data was available, and the plant is one inverter.
+  check(solarOpening.includes("No network data was available"), "solar: opening block must say no network data was available");
+  const uavWriteUp = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")));
+  const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
+  check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
   const comparisonStart = solarCaseStudy.indexOf('<pre tabindex="0" role="region" aria-label="LV versus HV connection comparison">');
   const comparison = comparisonStart === -1 ? "" : solarCaseStudy.slice(comparisonStart, solarCaseStudy.indexOf("</pre>", comparisonStart));
   check(comparison.includes("(currents at unity power factor)"), "solar: LV versus HV comparison must state unity power factor");
@@ -849,7 +855,7 @@ const caseSpecs = {
     ["Standards", "AS/NZS 3000:2018 · AS/NZS 3008.1.1:2025", null],
   ],
   "solar-grid-connection-assessment": [
-    ["Inverter AC nameplate", "1.0 MW", "the rated AC output assumed for the assessment"],
+    ["Inverter AC nameplate", "1.0 MW", "one inverter, the rated AC output assumed for the assessment"],
     ["PV array DC capacity", "≈1.2 MWp", "installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio"],
     ["Approved export limit", "≤1.0 MW", "possibly below the inverter rating; set by SA Power Networks after the connection study"],
     ["Connection voltage", "LV (TS132) or HV (TS133)", "decided by a site-specific network study, not by capacity"],

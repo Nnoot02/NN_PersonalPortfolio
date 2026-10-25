@@ -80,7 +80,7 @@ export const projects: Project[] = [
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
     evidenceMarkers: ["1 MW AC", "SAPN TS132/TS133", "AS/NZS 4777.2", "PCC voltage rise"],
     spec: [
-      { label: "Inverter AC nameplate", value: "1.0 MW", note: "the rated AC output assumed for the assessment" },
+      { label: "Inverter AC nameplate", value: "1.0 MW", note: "one inverter, the rated AC output assumed for the assessment" },
       { label: "PV array DC capacity", value: "≈1.2 MWp", note: "installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio" },
       { label: "Approved export limit", value: "≤1.0 MW", note: "possibly below the inverter rating; set by SA Power Networks after the connection study" },
       { label: "Connection voltage", value: "LV (TS132) or HV (TS133)", note: "decided by a site-specific network study, not by capacity" },
@@ -93,7 +93,7 @@ export const projects: Project[] = [
     result:
       "A 1 MW AC plant (roughly a 1.2 MWp array at a ~1.2 inverter loading ratio) can connect at LV under TS132 where feeder hosting capacity allows, but an HV connection under TS133 (11 kV or 33 kV) is usually more practical given the export current, voltage-rise and protection demands. The governing finding is that connection voltage and viability follow a site-specific network study (feeder thermal limit, voltage rise, fault level, protection grading), not the plant's capacity or nearby consumer demand; the analysis reframed an early demand-matching assumption toward hosting capacity as the real constraint.",
     evidenceStatus:
-      "Complete. Voltage rise, fault level and protection grading are named as inputs to the network study, not computed. The assessment and its clause-level citations are published; the TAFE SA coursework is unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
+      "Complete. No network data was available, so voltage rise, fault level and protection grading are named as inputs to the network study, not computed. The assessment and its clause-level citations are published; the TAFE SA coursework is unrestricted, and standards data is cited by clause rather than reproduced (Standards Australia copyright).",
   },
   {
     slug: "gps-denied-autonomous-uav",
@@ -107,7 +107,7 @@ export const projects: Project[] = [
     imageAlt: "Red-and-white quadcopter bench mock-up with electronics and landing gear on a workshop bench",
     imageNote: "Bench mock-up, shown at 00:04 in my assembly footage. The results below are from simulation.",
     scope: "Autonomy, controls, estimation",
-    role: "Systems planning and verification",
+    role: "Sole developer: planning, simulation and verification, now building the aircraft",
     status: "Active capstone · Phase 0 simulation reviewed",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
     evidenceMarkers: ["Baseline 30/30", "Held-out 30/30", "Clearance 27/30", "Phase 3 / HITL"],
