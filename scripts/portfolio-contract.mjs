@@ -672,10 +672,12 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
 
 // Site screening audit 2026-09-16, F6 (Nathan's call 2026-09-17): plain
 // completion language. The old "Verified / sanitised write-up" vocabulary and
-// the "What still needs proof" heading must not return.
+// the "What still needs proof" heading must not return. Shortened to <= 30ch
+// (Nathan, 2026-10-25): the standards moved out of the pill, since the spec
+// table directly below already lists them.
 for (const [slug, expectedStatus] of [
-  ["lv-cabling-design-commercial-complex", "Coursework design - worked checks to AS/NZS 3000 and 3008.1.1"],
-  ["solar-grid-connection-assessment", "Coursework assessment - argued against TS132/TS133 and AS/NZS 4777.2"],
+  ["lv-cabling-design-commercial-complex", "Coursework · worked checks"],
+  ["solar-grid-connection-assessment", "Coursework · argued assessment"],
 ]) {
   const doc = renderedMain(readExport(`/projects/${slug}.html`));
   check(doc.includes(expectedStatus), `${slug}: status must name the verification basis plainly`);

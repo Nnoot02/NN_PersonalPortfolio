@@ -45,7 +45,7 @@ export const projects: Project[] = [
     imageNote: "I drew the original one-line diagram in Autodesk Inventor; this is a vector redraw of it for the web.",
     scope: "Power design, standards, verification",
     role: "Sole designer (coursework)",
-    status: "Coursework design - worked checks to AS/NZS 3000 and 3008.1.1",
+    status: "Coursework · worked checks",
     tags: ["Power systems", "AS/NZS standards", "Verification"],
     evidenceMarkers: ["400 V 3-ph", "123.6 A design current", "0.74 % voltage drop", "AS/NZS 3008.1.1"],
     spec: [
@@ -76,7 +76,7 @@ export const projects: Project[] = [
     imageIsDiagram: true,
     scope: "Power systems, grid connection, compliance",
     role: "Sole author (coursework technical assessment)",
-    status: "Coursework assessment - argued against TS132/TS133 and AS/NZS 4777.2",
+    status: "Coursework · argued assessment",
     tags: ["Power systems", "Embedded generation", "AS/NZS standards"],
     evidenceMarkers: ["1 MW AC", "SAPN TS132/TS133", "AS/NZS 4777.2", "PCC voltage rise"],
     spec: [
