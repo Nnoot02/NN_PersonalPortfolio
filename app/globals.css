@@ -736,7 +736,9 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-scope .eyebrow { margin-right: .6rem; }
 /* Case-study opening block (site screening audit 2026-09-16, F3): contribution,
    outcome and limits ahead of the spec strip and the write-up. */
-.case-opening { border: 1px solid var(--line); display: grid; gap: 1rem; margin: 1.1rem 0 0; padding: 1.15rem 1.25rem; }
+/* A top rule, not a box: DESIGN.md draws structure with 1px rules, and the
+   boxed block doubled the framing above the ruled spec table (audit 2026-10-25). */
+.case-opening { border-top: 1px solid var(--line); display: grid; gap: 1rem; margin: 1.1rem 0 0; padding: 1.15rem 0 0; }
 /* The spec table carries a -1.2rem top pull, tuned for a text paragraph; after
    the bordered card it dragged the table back under the card's bottom rule
    (Nathan, 2026-09-17). Neutralise the pull when the card precedes it. */
@@ -1071,6 +1073,9 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 }
 @media (max-width: 360px) {
   .hero-actions { grid-template-columns: 1fr; }
+  /* Stacked full-width, the buttons no longer need the 12px two-column
+     squeeze from the 720px block: back to the button role (audit 2026-10-25). */
+  .hero-actions .button { font-size: var(--text-button); letter-spacing: .06em; }
 }
 
 
