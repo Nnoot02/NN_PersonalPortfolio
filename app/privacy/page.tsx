@@ -19,7 +19,7 @@ export default function PrivacyPage() {
     <SiteHeader />
     <main id="main-content" tabIndex={-1}>
       <section className="page-hero">
-        <p className="eyebrow">Privacy policy</p>
+        <p className="eyebrow">InternalOS · Google data</p>
         <h1>Privacy policy.</h1>
         <p>How InternalOS, including its Command Centre dashboard, accesses, uses, stores, and deletes Google user data. Last updated 17 October 2026.</p>
       </section>

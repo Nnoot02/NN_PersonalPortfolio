@@ -1,4 +1,14 @@
 import { UavFaultResponse, UavResultsGallery } from "./UavSimulationMedia";
+import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
+
+const sections: WriteUpSection[] = [
+  { id: "trials-measured", label: "What the trials measured" },
+  { id: "depth-loss", label: "Depth loss: failure and recovery" },
+  { id: "results-gallery", label: "Results gallery" },
+  { id: "held-out-testing", label: "What held-out testing exposed" },
+  { id: "simulation-limits", label: "Where simulation stops" },
+  { id: "next-gates", label: "Next verification gates" },
+];
 
 export function UavTestGatesWriteUp() {
   return (
@@ -7,9 +17,10 @@ export function UavTestGatesWriteUp() {
         <p className="eyebrow">Phase 0 · simulation evidence</p>
         <h2>Simulation demonstrated.<br />Clearance validation continues.</h2>
         <p>In Gazebo, the GPS-disabled aircraft reached its goal without collision in all 30 baseline trials and all 30 trials on held-out obstacle geometry. However, three held-out trials fell below the 0.5 m centre-clearance requirement, so clearance remains an open validation item for Phase 3 with hardware-in-the-loop (HITL) testing.</p>
+        <WriteUpIndex sections={sections} label="Sections of the simulation evidence" />
       </div>
       <div className="writeup-block">
-        <h3>What the trials measured</h3>
+        <h3 id="trials-measured">What the trials measured</h3>
         <p>The simulation connects ArduPilot SITL and Gazebo to ROS 2 and MAVROS, with a depth-based occupancy grid feeding the D* Lite planner. Both batches used 0.7 m planner inflation, a commanded speed of 0.5 m/s and a 3.0 m sensing range, with ten runs each against a box, pillar and wall.</p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Simulation batch comparison">
           <table className="uav-results-table">
@@ -56,17 +67,17 @@ export function UavTestGatesWriteUp() {
       <UavFaultResponse />
       <UavResultsGallery />
       <div className="writeup-block">
-        <h3>What held-out testing exposed</h3>
+        <h3 id="held-out-testing">What held-out testing exposed</h3>
         <p>The frozen planner was tested on new obstacle positions and sizes without retuning, and the new geometry exposed two box runs at 0.41 m clearance and one pillar run at 0.48 m. Inflation protects the surfaces the camera has observed, so unseen obstacle depth can reduce clearance around corners.</p>
         <p>My advisor recommended finalising clearance in Phase 3 with HITL, which leaves the three misses as open validation work for that phase.</p>
       </div>
       <div className="writeup-block">
-        <h3>Where simulation stops</h3>
+        <h3 id="simulation-limits">Where simulation stops</h3>
         <p>The simulator's estimator, ArduPilot's EKF3, did not respond to the injected vision and IMU errors, so these GPS-disabled trials do not validate real visual-inertial odometry, estimator drift or sensor-source transitions. On the aircraft I am building, EKF3 will take its position from an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor, and that sensor set still needs hardware evidence.</p>
         <p>The latency figures cover the first obstacle detection to publication of an avoidance path on the simulation laptop, excluding real camera, stereo and USB delays. In the baseline batch, 12 of 62 blocking events exceeded 1.0 s, so the first-detection result does not establish a deadline for every event. Raspberry Pi 5 timing and real flight still need validation.</p>
       </div>
       <div className="writeup-block">
-        <h3>Next verification gates</h3>
+        <h3 id="next-gates">Next verification gates</h3>
         <p>Props-off electronics and failsafe checks come before real flight. Position hold and estimator-source transitions need hardware evidence, while final clearance checks are planned for Phase 3/HITL. Integrated obstacle avoidance also depends on measured full-payload thrust margin.</p>
       </div>
     </section>

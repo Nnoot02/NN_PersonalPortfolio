@@ -500,6 +500,10 @@ check(contact.includes("EMAIL WORKS BEST."), "contact must use the approved emai
 check(contact.includes(contactIntro), "contact must use the exact approved intro");
 check(contact.includes('href="mailto:nathannoott@gmail.com"'), "contact must make the visible email the primary mailto action");
 check(contact.includes("Copy address"), "contact must label copy as Copy address");
+// Audit 2026-10-25 (Nathan): a recruiter on /contact gets the résumé in the
+// main content, not only in the compact footer.
+const contactResume = contact.match(/<a[^>]*data-contact-resume[^>]*>/)?.[0] ?? "";
+check(contactResume.includes('href="/nathan-noot-resume.pdf"') && contactResume.includes('target="_blank"'), "contact must offer the résumé PDF in the main content");
 check(contactSnapshot.length > 0, "contact must expose Technical Snapshot");
 const snapshotGroups = [...contactSnapshot.matchAll(/data-snapshot-group="([^"]+)"/g)].map((match) => match[1]);
 check(snapshotGroups.join(",") === "current-role,studying,verified-power,current-build,path", "contact snapshot groups must remain in locked order");
@@ -512,8 +516,8 @@ for (const snapshotValue of [
 ]) {
   check(contactSnapshot.includes(snapshotValue), "contact snapshot must retain: " + snapshotValue);
 }
-check(contactSnapshot.includes('href="/projects/lv-cabling-design-commercial-complex"') && contactSnapshot.includes("400 V commercial LV design ↗"), "contact snapshot must link verified LV work");
-check(contactSnapshot.includes('href="/projects/solar-grid-connection-assessment"') && contactSnapshot.includes("1 MW grid assessment ↗"), "contact snapshot must link verified grid work");
+check(contactSnapshot.includes('href="/projects/lv-cabling-design-commercial-complex"') && contactSnapshot.includes("400 V commercial LV design →"), "contact snapshot must link verified LV work");
+check(contactSnapshot.includes('href="/projects/solar-grid-connection-assessment"') && contactSnapshot.includes("1 MW grid assessment →"), "contact snapshot must link verified grid work");
 check(contactFooter.includes('data-footer-variant="compact"'), "contact must render compact footer variant");
 for (const compactFooterText of ["NATHAN NO-OT · ADELAIDE, SA", "Projects", "LinkedIn", "Résumé", "Workbench"]) {
   check(contactFooter.includes(compactFooterText), "compact contact footer must include: " + compactFooterText);
@@ -736,7 +740,7 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   // Nathan, 2026-10-25: no network data was available, and the plant is one inverter.
   check(solarOpening.includes("No network data was available"), "solar: opening block must say no network data was available");
   const uavWriteUp = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")));
-  const simulationStops = uavWriteUp.match(/<h3>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
+  const simulationStops = uavWriteUp.match(/<h3[^>]*>Where simulation stops<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(simulationStops.includes("The simulator's estimator, ArduPilot's EKF3, did not respond"), "uav: simulation limits must name the EKF3 estimator");
   check(simulationStops.includes("an OAK-D Lite camera supported by a rangefinder and an optical-flow sensor"), "uav: simulation limits must name the planned sensor set");
   // Nathan, 2026-10-25: ArduPilot does the control and EKF3 the estimation, so
@@ -793,6 +797,9 @@ for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connecti
 const writeUpIndexes = {
   "lv-cabling-design-commercial-complex": ["design-basis", "maximum-demand", "consumer-mains", "submains", "final-subcircuits", "earthing-and-protection", "fault-level", "assumptions-and-limits"],
   "solar-grid-connection-assessment": ["three-capacities", "connection-voltage", "power-quality", "hosting-capacity", "south-australia", "storage", "standards-basis", "assumptions-and-limits"],
+  // Indexed 2026-10-25 (Nathan): it grew from three sections to six and became
+  // the longest page on the site, so the old "stays unindexed" rule retired.
+  "gps-denied-autonomous-uav": ["trials-measured", "depth-loss", "results-gallery", "held-out-testing", "simulation-limits", "next-gates"],
 };
 for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
@@ -805,8 +812,6 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   }
   check((writeUp.match(/<h3\b/g) ?? []).length === ids.length, `${slug}: index must cover every section`);
 }
-// The compact UAV results write-up stays unindexed.
-check(!renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")).includes("writeup-index"), "the compact UAV results write-up must stay unindexed");
 
 // Viasat entry page (Nathan, 2026-10-20): the Phase 2 cards only, with the
 // full video held back; the Faculty Verification Letter is never published;
