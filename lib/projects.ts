@@ -108,7 +108,7 @@ export const projects: Project[] = [
     imageNote: "Bench mock-up, shown at 00:04 in my assembly footage. The results below are from simulation.",
     scope: "Autonomy, perception, verification",
     role: "Sole developer: planning, simulation and verification, now building the aircraft",
-    status: "Active capstone · Phase 0 simulation reviewed",
+    status: "Active capstone",
     tags: ["Systems engineering", "Sensor fusion", "Control"],
     evidenceMarkers: ["Baseline 30/30", "Held-out 30/30", "Clearance 27/30", "Phase 3 / HITL"],
     spec: [
@@ -137,7 +137,7 @@ export const projects: Project[] = [
     imageNote: "One of the cards from my Phase 2 video. The rest of the set is below.",
     scope: "Systems concept, satellite backhaul, evidence boundaries",
     role: "Sole entrant: concept, written answers, video and cards",
-    status: "Competition entry · submitted, not selected for Phase 3",
+    status: "Competition entry",
     tags: ["Systems engineering", "Satellite communications", "Disaster response"],
     evidenceMarkers: ["Phase 1 advanced", "Phase 2 submitted", "A$1,084.84 BOM", "HaLow link modelled"],
     spec: [
