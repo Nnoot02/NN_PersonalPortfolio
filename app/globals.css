@@ -391,8 +391,14 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
    the old div's box exactly, so the grid is unchanged; only the affordance is
    new. Zoom-in cursor rather than pointer: it opens a bigger view, not a page. */
 .evidence-trigger { border: 0; cursor: zoom-in; display: block; padding: 0; width: 100%; }
-.evidence-trigger:hover img, .evidence-trigger:focus-visible img { filter: sepia(0); transform: scale(1.02); }
-.evidence-trigger img { transition: transform var(--motion-standard) var(--motion-ease), filter var(--motion-standard) var(--motion-ease); }
+/* Hover zooms only: the sepia(.08) house tone stays on (audit 2026-10-29). */
+.evidence-trigger:hover img, .evidence-trigger:focus-visible img { transform: scale(1.02); }
+.evidence-trigger img { transition: transform var(--motion-standard) var(--motion-ease); }
+/* 4:3 frames, not a 220px min-height under cover: at desktop widths that
+   cropped evidence photos to a thin band (audit 2026-10-29). The ratio
+   replaces the min-height here: with both, a column under 293px keeps 220px
+   of height and widens the frame to hold 4:3, overflowing the page. */
+.workbench-evidence figure > .evidence-trigger { aspect-ratio: 4 / 3; min-height: 0; }
 .workbench-preview-image img, .workbench-evidence figure img { object-fit: cover; filter: sepia(.08); }
 .workbench-preview-copy { align-content: start; display: grid; gap: .85rem; }
 .workbench-preview-copy h2, .workbench-preview-copy h3 { font: 600 clamp(2rem, 3vw, 3rem)/1.1 var(--display); margin: 0; text-transform: uppercase; }
@@ -553,7 +559,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .project-journey-copy { align-content: start; display: grid; gap: .3rem; min-width: 0; }
 .project-journey-state { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .12em; text-transform: uppercase; }
 .project-journey-title { font: 600 clamp(1.25rem, 1.7vw, 1.75rem)/1.1 var(--display); margin: 0; text-transform: uppercase; text-wrap: balance; }
-.project-journey-summary { color: var(--muted); font-size: var(--text-eyebrow); line-height: 1.4; margin: .45rem 0 0; }
+.project-journey-summary { color: var(--muted); font-size: var(--text-principle-body); line-height: 1.4; margin: .45rem 0 0; }
 .project-journey-action { align-items: center; color: var(--accent-dark); display: inline-flex; font: 600 var(--text-tag)/1.2 var(--display); gap: .35rem; letter-spacing: .08em; margin-top: .2rem; text-transform: uppercase; }
 .project-journey-action svg { transition: transform var(--motion-standard) var(--motion-ease); }
 .project-journey-link:hover .project-journey-action svg, .project-journey-link:focus-visible .project-journey-action svg { transform: translateX(3px); }
@@ -566,7 +572,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .project-journey-stages > li[data-journey-stage="future"] { border-top-style: dashed; color: var(--muted); }
 .project-journey-stages > li[data-journey-stage="future"]::before { border-color: var(--muted); border-style: dashed; }
 .project-journey-stage-label { display: block; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .08em; text-transform: uppercase; }
-.project-journey-stages small { color: var(--muted); display: block; font-size: var(--text-eyebrow); line-height: 1.4; margin-top: .45rem; }
+.project-journey-stages small { color: var(--muted); display: block; font-size: var(--text-principle-body); line-height: 1.4; margin-top: .45rem; }
 .project-journey-stage-state { color: var(--accent-dark); display: block; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .1em; margin-top: .6rem; text-transform: uppercase; }
 .project-journey-stages > li[data-journey-stage="future"] .project-journey-stage-state { color: var(--muted); }
 .project-journey-relation { bottom: 0; color: var(--muted); font-size: var(--text-tag); left: calc(var(--journey-anchor) + clamp(.75rem, 1.5vw, 1.5rem)); line-height: 1.35; margin: 0; padding-left: 1rem; position: absolute; right: 0; text-align: left; }
