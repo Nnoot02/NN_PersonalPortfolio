@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import { CaseOpening } from "@/components/CaseOpening";
 import { CaseSpec } from "@/components/CaseSpec";
 import { LvDesignViews, type DesignView } from "@/components/LvDesignViews";
+import { LmeRelayFigure } from "@/components/LmeRelayFigure";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
 import { DrawingTrace } from "@/components/DrawingTrace";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
@@ -195,6 +196,8 @@ export default async function ProjectPage({ params }: ProjectParams) {
           <div className="case-diagram">
             <DrawingTrace svg={solarSvg} stops={SOLAR_ROUTE_STOPS} stopsLabel="Parts of the connection" />
           </div>
+        ) : project.slug === "last-metre-eyes-viasat-entry" ? (
+          <LmeRelayFigure />
         ) : project.slug === "gps-denied-autonomous-uav" ? (
           <UavClearanceFigure />
         ) : (

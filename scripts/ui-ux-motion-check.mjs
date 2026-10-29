@@ -279,6 +279,36 @@ try {
   assert.ok(await solarStill.locator(".case-diagram .drawing-trace-reveal").evaluateAll(ns => ns.every(n => parseFloat(getComputedStyle(n).strokeDashoffset) === 0)), "reduced motion must show the whole solar drawing");
   await solarStill.close();
   checks++;
+  // Last-Metre Eyes relay (docs/lme-relay-animation.md): plays on scroll; the
+  // packet is hidden until it leaves at 1.5 s and gone once delivered.
+  const lmeUrl = `${base}/projects/last-metre-eyes-viasat-entry`;
+  const lmePage = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "no-preference" });
+  await lmePage.goto(lmeUrl, { waitUntil: "networkidle" });
+  await lmePage.locator(".lme-relay-figure .drawing-trace-stage").scrollIntoViewIfNeeded();
+  await lmePage.waitForFunction(() => document.querySelector(".lme-relay-figure .drawing-trace")?.dataset.trace === "play");
+  assert.equal(await lmePage.evaluate(() => document.querySelectorAll(".lme-relay-h .lme-cell").length), await lmePage.evaluate(() => [...document.querySelectorAll(".lme-relay-h .lme-cell")].filter(e => e.getAnimations().length).length), "every map cell must animate");
+  const packetAt = (ms) => lmePage.evaluate((ms) => {
+    const fig = document.querySelector(".lme-relay-figure");
+    fig.getAnimations({ subtree: true }).forEach(a => { a.pause(); a.currentTime = ms; });
+    return getComputedStyle(document.querySelector(".lmeh-packet")).opacity;
+  }, ms);
+  assert.equal(await packetAt(1000), "0", "the packet must stay hidden until it leaves the drone");
+  assert.equal(await packetAt(2300), "1", "the packet must be visible in transit");
+  assert.equal(await packetAt(4200), "0", "the packet must be gone once delivered");
+  await lmePage.evaluate(() => document.querySelector(".lme-relay-figure").getAnimations({ subtree: true }).forEach(a => a.finish()));
+  const lmeStop = lmePage.locator('.lme-relay-figure .drawing-trace-stop[data-stop="lband"]');
+  assert.ok((await lmeStop.boundingBox()).height >= 44, "LME stop misses its 44px target");
+  await lmeStop.click();
+  await lmePage.waitForFunction(() => getComputedStyle(document.querySelector('.lme-relay-h [data-stop="halow"]')).opacity === "0.3", null, { timeout: 1000 });
+  await lmePage.close();
+  const lmeStill = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  await lmeStill.goto(lmeUrl, { waitUntil: "networkidle" });
+  assert.equal(await lmeStill.locator(".lme-relay-figure .drawing-trace").getAttribute("data-trace"), "idle", "reduced motion must not arm the relay");
+  assert.equal(await lmeStill.locator(".lme-relay-v").isVisible(), true, "phones must get the vertical drawing");
+  assert.equal(await lmeStill.locator(".lme-relay-h").isVisible(), false);
+  assert.ok(await lmeStill.locator(".lme-relay-v .lme-cell").evaluateAll(ns => ns.every(n => getComputedStyle(n).opacity === "1")), "reduced motion must show the finished map");
+  await lmeStill.close();
+  checks++;
   console.log(`UI/UX motion checks passed: ${checks} viewport/motion and case-study scenarios, plus Projects/no-JS checks.`);
 } finally {
   await browser.close();

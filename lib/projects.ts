@@ -132,8 +132,9 @@ export const projects: Project[] = [
       "My entry to the Viasat Space for Good Australia 2026 challenge: a GPS-denied search drone paired with a portable satellite relay for disaster response. It advanced from Phase 1, was submitted in full for Phase 2, and was not selected for Phase 3.",
     image: "/images/viasat-entry/journey.webp",
     imageAlt: "Card from the Phase 2 video showing the user journey: relay node switched on at the site perimeter, drone enters the structure, map reaches incident command, entry decision made",
-    imageIsDiagram: true,
-    imageNote: "One of the cards from my Phase 2 video. The rest of the set is below.",
+    // The case-study hero is the relay diagram (components/LmeRelayFigure.tsx);
+    // this card now sits with the rest of the Phase 2 set in the write-up.
+    imageNote: "A schematic of the entry as submitted. Each part carries its evidence level: real, modelled, concept, mock or target.",
     scope: "Systems concept, satellite backhaul, evidence boundaries",
     role: "Sole entrant: concept, written answers, video and cards",
     status: "Competition entry",
