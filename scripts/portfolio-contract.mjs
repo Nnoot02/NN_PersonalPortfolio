@@ -144,6 +144,10 @@ const hero = home.match(/<section[^>]*class="hero"[^>]*>[\s\S]*?<\/section>/)?.[
 // UI/UX 2026-10-04: an immediate path into inspectable work.
 const heroActions = hero.match(/<div class="hero-actions">[\s\S]*?<\/div>/)?.[0] ?? "";
 check(heroActions.includes('href="/projects"') && heroActions.includes("View projects"), "hero actions must offer View projects beside the resume");
+// Codex audit 2026-10-29 (Nathan's call): View projects leads as the primary
+// action; the résumé label is short enough not to wrap in the 390px split.
+check(/^<div class="hero-actions"><a class="button button-primary" href="\/projects"/.test(heroActions), "View projects must be the first, primary hero action");
+check(heroActions.includes('class="button button-secondary" href="/nathan-noot-resume.pdf"') && heroActions.includes("Résumé PDF"), "hero résumé action must be secondary and read Résumé PDF");
 check(heroMedia.includes('class="hero-artifact-full-size text-link" href="/images/lv-cabling-sld.svg"'), "hero must offer direct diagram enlargement");
 // Hero room pass 2026-10-18 (Nathan picked variant B): the link lives on the
 // drawing stage, the hint line is gone, and the rows are names only with the
@@ -511,7 +515,7 @@ for (const snapshotValue of [
   "Electrical Engineering Intern · Tindo Solar",
   "Associate Degree in Electronics Engineering · TAFE SA",
   "GPS-denied autonomous UAV",
-  "SITL / ROS 2 setup + subsystem validation",
+  "60/60 simulated runs reached goal · clearance validation next",
   "Commercial kitchens → power systems",
 ]) {
   check(contactSnapshot.includes(snapshotValue), "contact snapshot must retain: " + snapshotValue);
@@ -668,6 +672,10 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
   if (firstWriteUpId) {
     check(doc.indexOf(firstWriteUpId) > openingIndex, `${slug}: opening block must precede the write-up sections`);
   }
+  // Codex audit 2026-10-29, C2: the problem and approach brief follows the
+  // opening, ahead of the spec, visual and write-up.
+  const briefIndex = doc.indexOf('class="case-sections"');
+  check(briefIndex > openingIndex && (doc.indexOf('class="writeup') < 0 || briefIndex < doc.indexOf('class="writeup')), `${slug}: problem and approach must follow the opening, before the write-up`);
 }
 
 // Site screening audit 2026-09-16, F6 (Nathan's call 2026-09-17): plain

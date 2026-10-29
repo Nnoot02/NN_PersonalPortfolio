@@ -530,6 +530,16 @@ Tindo credential; LV-first Power Systems Work; compact authentic-photo
 epilogue; ink footer. Standalone Tindo, full UAV, and full Workbench homepage
 sections are retired.
 
+Hero actions (Codex audit 2026-10-29, Nathan's call): **View projects** leads
+as `button-primary`; **Résumé PDF** follows as `button-secondary`. The short
+label keeps both on one line in the 390px two-column split ("Download résumé"
+wrapped there). The LV ledger row shows the installation cutaway, not the
+one-line diagram, because the hero already shows the one-line diagram.
+
+Case studies read: title, status, opening (contribution, outcome, where it
+stops), then the problem/approach brief, then spec, visual and write-up. The
+brief comes before the evidence so a reader knows the problem first.
+
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. From

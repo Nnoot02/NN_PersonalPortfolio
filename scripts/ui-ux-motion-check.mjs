@@ -174,7 +174,10 @@ try {
   // shrunk drawing it replaced (measured 1840 -> 2118). 2150 -> 2200 when
   // wrapping display headings moved to line-height 1.1 (Nathan's call,
   // 2026-10-25): the three-line case h1 grew 32px (measured 2118 -> 2150).
-  ["lv-cabling-design-commercial-complex", 2200], ["solar-grid-connection-assessment", 2400], ["gps-denied-autonomous-uav", 2000]]) {
+  // LV 2200 -> 2850 and solar 2400 -> 2950 when the problem/approach brief
+  // moved ahead of the visual (Codex audit 2026-10-29, C2, Nathan's call):
+  // readers get the problem before the evidence (measured 2777 and 2876).
+  ["lv-cabling-design-commercial-complex", 2850], ["solar-grid-connection-assessment", 2950], ["gps-denied-autonomous-uav", 2000]]) {
     await page.goto(`${base}/projects/${slug}`, { waitUntil: "networkidle" });
     assert.equal(await page.locator(".case-meta").count(), 0);
     const headings = await page.locator(".case-sections h2").allTextContents();
