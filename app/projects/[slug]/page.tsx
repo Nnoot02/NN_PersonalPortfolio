@@ -9,6 +9,7 @@ import { CaseOpening } from "@/components/CaseOpening";
 import { CaseSpec } from "@/components/CaseSpec";
 import { LvDesignViews, type DesignView } from "@/components/LvDesignViews";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
+import { LvInstallationTrace } from "@/components/LvInstallationTrace";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -50,23 +51,25 @@ const lvDesignViews: DesignView[] = [
   },
   {
     id: "installation",
-    label: "Installation",
+    label: "Installation · route",
     caption: "Isometric installation view · cutaway · dimensions indicative",
     fullHref: "/images/lv-cabling-installation.svg",
   },
 ];
 
-function LvViewPanel({ svg, caption, href, scrolls = false }: { svg: string; caption: string; href: string; scrolls?: boolean }) {
+function LvViewPanel({ svg, caption, href, scrolls = false, trace = false }: { svg: string; caption: string; href: string; scrolls?: boolean; trace?: boolean }) {
   return (
     <>
       {/* The one-line drawing keeps a 720px floor on phones and pans sideways
           inside the stage; the stage is a named, focusable region so keyboard
           readers can pan it. */}
-      <div
-        className="lv-view-stage"
-        {...(scrolls ? { tabIndex: 0, role: "region", "aria-label": "One-line diagram, scrolls sideways" } : {})}
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
+      {trace ? <LvInstallationTrace svg={svg} /> : (
+        <div
+          className="lv-view-stage"
+          {...(scrolls ? { tabIndex: 0, role: "region", "aria-label": "One-line diagram, scrolls sideways" } : {})}
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      )}
       {scrolls && <p className="lv-scroll-hint">Scroll sideways to see the full drawing</p>}
       <p className="lv-view-meta">
         <span>{caption}</span>
@@ -80,7 +83,7 @@ function LvViewPanel({ svg, caption, href, scrolls = false }: { svg: string; cap
 
 const lvDesignPanels = {
   "one-line": <LvViewPanel svg={lvSldSvg} caption={lvDesignViews[0].caption} href={lvDesignViews[0].fullHref} scrolls />,
-  installation: <LvViewPanel svg={lvInstallSvg} caption={lvDesignViews[1].caption} href={lvDesignViews[1].fullHref} />,
+  installation: <LvViewPanel svg={lvInstallSvg} caption={lvDesignViews[1].caption} href={lvDesignViews[1].fullHref} trace />,
 };
 
 // Write-up section links per case study (the ids live in the write-up

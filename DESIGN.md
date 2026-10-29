@@ -547,6 +547,12 @@ in "Next verification gates", the hardware it belongs to. On phones the plot
 keeps its 860px floor and scrolls sideways, so the held-out misses start off
 screen; the caption and the spec row carry them.
 
+The LV case study's "Installation · route" tab traces the route from supply to
+the boards once, the first time it is seen (about 2.4 s, no loop), then offers
+five stops whose detail comes from `lib/lv-design-basis.ts`, the same source as
+the hero legend. The full design is in `docs/lv-cutaway-route-trace.md`. Under
+reduced motion and without JS, the route is drawn from the start.
+
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. From
