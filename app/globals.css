@@ -838,6 +838,11 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .uav-clearance-figure { margin: 1.5rem 0; }
 .uav-clearance-plot { display: block; width: 100%; min-width: 860px; height: auto; }
 .uav-clearance-figure figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
+.uav-clearance-figure figcaption strong { color: var(--ink); font-weight: 600; }
+.uav-clearance-hero { margin: 0 0 3rem; }
+.uav-bench-figure { margin: 1.5rem 0 0; }
+.uav-bench-figure img { display: block; width: 100%; height: auto; filter: sepia(.08); }
+.uav-bench-figure figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
 .uav-results-table thead th { color: var(--ink); }
 .gate-list { display: grid; gap: 1.8rem; list-style: none; margin: 1.4rem 0 0; padding: 0; }
 .gate-list > li { border-top: 1px solid var(--line); padding-top: 1rem; }

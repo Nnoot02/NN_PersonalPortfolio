@@ -57,12 +57,6 @@ export function UavTestGatesWriteUp() {
           </table>
         </div>
         <p>Collision-free success uses a 0.35 m aircraft envelope; the 0.5 m clearance requirement is a separate, stricter test. Clearance is measured from the aircraft centre to the obstacle surface, not from the propeller tip.</p>
-        <figure className="uav-clearance-figure">
-          <div className="table-scroll" role="region" tabIndex={0} aria-label="Clearance plot, scrollable">
-            <img className="uav-clearance-plot" src="/images/uav-phase0-clearance.svg" width="860" height="270" alt="All 30 baseline trials clear 0.5 m; three of 30 held-out trials fall below it, with a minimum centre clearance of 0.41 m." />
-          </div>
-          <figcaption>Scroll sideways to compare both batches on a narrow screen. All 60 trials are plotted, including the three held-out runs below the clearance requirement. Trial dates: baseline, 2 October 2026; held-out, 8 October 2026.</figcaption>
-        </figure>
       </div>
       <UavFaultResponse />
       <UavResultsGallery />
@@ -79,7 +73,28 @@ export function UavTestGatesWriteUp() {
       <div className="writeup-block">
         <h3 id="next-gates">Next verification gates</h3>
         <p>Props-off electronics and failsafe checks come before real flight. Position hold and estimator-source transitions need hardware evidence, while final clearance checks are planned for Phase 3/HITL. Integrated obstacle avoidance also depends on measured full-payload thrust margin.</p>
+        <figure className="uav-bench-figure">
+          <picture>
+            <source srcSet="/images/gps-denied-uav-960.webp 960w, /images/gps-denied-uav-1280.webp 1280w, /images/gps-denied-uav.webp 1920w" sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 860px)" />
+            <img src="/images/gps-denied-uav.webp" width="1920" height="1080" loading="lazy" alt="Red-and-white quadcopter bench mock-up with electronics and landing gear on a workshop bench" />
+          </picture>
+          <figcaption>The bench mock-up these gates apply to, shown at 00:04 in my assembly footage. Nothing on this page was measured on it yet.</figcaption>
+        </figure>
       </div>
     </section>
+  );
+}
+
+// Case-study hero (Codex audit 2026-10-29, C4, Nathan's call): the plot of all
+// 60 trials leads the page in place of the bench photo, which moved to the
+// next-gates block. The caption keeps goal and clearance as separate results.
+export function UavClearanceFigure() {
+  return (
+    <figure className="uav-clearance-figure uav-clearance-hero">
+      <div className="table-scroll" role="region" tabIndex={0} aria-label="Clearance plot, scrollable">
+        <img className="uav-clearance-plot" src="/images/uav-phase0-clearance.svg" width="860" height="270" alt="All 30 baseline trials clear 0.5 m; three of 30 held-out trials fall below it, with a minimum centre clearance of 0.41 m." />
+      </div>
+      <figcaption><strong>Goal reached without collision: 60 / 60. Centre clearance ≥ 0.5 m: 57 / 60, minimum 0.41 m.</strong> Simulation only. Scroll sideways to compare both batches on a narrow screen. All 60 trials are plotted, including the three held-out runs below the clearance requirement. Trial dates: baseline, 2 October 2026; held-out, 8 October 2026.</figcaption>
+    </figure>
   );
 }

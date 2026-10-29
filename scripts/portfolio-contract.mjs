@@ -1264,7 +1264,14 @@ for (const route of ["/index", "/projects", "/workbench", "/profile", "/about", 
 // gallery without pre-generated widths ships its full-size file to every viewport.
 {
   const uav = renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"));
-  check(uav.includes("gps-denied-uav-960.webp 960w") && uav.includes("gps-denied-uav.webp 1920w"), "uav: hero must offer the 960 and full-width candidates");
+  check(uav.includes("gps-denied-uav-960.webp 960w") && uav.includes("gps-denied-uav.webp 1920w"), "uav: bench photo must offer the 960 and full-width candidates");
+  // Codex audit 2026-10-29, C4 (Nathan's call): the 60-trial clearance plot
+  // leads the page; the bench photo sits with the next verification gates.
+  const plotIndex = uav.indexOf('class="uav-clearance-figure uav-clearance-hero"');
+  check(plotIndex >= 0 && plotIndex < uav.indexOf('class="writeup"') && !uav.includes('class="case-image"'), "uav: clearance plot must replace the hero photo, ahead of the write-up");
+  check((uav.match(/uav-phase0-clearance\.svg/g) ?? []).length === 1, "uav: clearance plot must appear once");
+  check(uav.indexOf('class="uav-bench-figure"') > uav.indexOf('id="next-gates"'), "uav: bench photo must sit in the next verification gates block");
+  check(/Goal reached without collision: 60 \/ 60\. Centre clearance ≥ 0\.5 m: 57 \/ 60/.test(uav), "uav: plot caption must keep goal and clearance results separate");
   const gallery = {
     tarmo5: "tarmo5-800.webp 800w",
     "servo-mini-arm": "servo-mini-arm-800.webp 800w",

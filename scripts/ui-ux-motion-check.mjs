@@ -177,7 +177,9 @@ try {
   // LV 2200 -> 2850 and solar 2400 -> 2950 when the problem/approach brief
   // moved ahead of the visual (Codex audit 2026-10-29, C2, Nathan's call):
   // readers get the problem before the evidence (measured 2777 and 2876).
-  ["lv-cabling-design-commercial-complex", 2850], ["solar-grid-connection-assessment", 2950], ["gps-denied-autonomous-uav", 2000]]) {
+  // UAV 2000 -> 2250 when the clearance plot replaced the shorter bench photo
+  // (C4, same audit, measured 2173); the plot itself is pinned below.
+  ["lv-cabling-design-commercial-complex", 2850], ["solar-grid-connection-assessment", 2950], ["gps-denied-autonomous-uav", 2250]]) {
     await page.goto(`${base}/projects/${slug}`, { waitUntil: "networkidle" });
     assert.equal(await page.locator(".case-meta").count(), 0);
     const headings = await page.locator(".case-sections h2").allTextContents();
@@ -185,6 +187,13 @@ try {
     const top = await page.locator(".writeup").evaluate(e => e.getBoundingClientRect().top);
     assert.ok(top < ceiling, `${slug}: write-up starts at ${top}, budget ${ceiling}`);
     console.log(`${slug}: phone write-up begins ${Math.round(top)}px (budget ${ceiling})`);
+    if (slug === "gps-denied-autonomous-uav") {
+      // C4: the 60-trial evidence leads. Before the move this plot began at
+      // 3459px on this phone and the results table at 3029px (measured).
+      const plotTop = await page.locator(".uav-clearance-hero").evaluate(e => e.getBoundingClientRect().top);
+      assert.ok(plotTop < 1800, `uav: clearance plot starts at ${plotTop}, budget 1800`);
+      console.log(`${slug}: phone clearance plot begins ${Math.round(plotTop)}px (budget 1800)`);
+    }
     await page.screenshot({ path: join(shots, `${slug}-390.png`), fullPage: true });
     checks++;
   }
