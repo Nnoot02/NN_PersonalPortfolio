@@ -177,9 +177,11 @@ try {
   // LV 2200 -> 2850 and solar 2400 -> 2950 when the problem/approach brief
   // moved ahead of the visual (Codex audit 2026-10-29, C2, Nathan's call):
   // readers get the problem before the evidence (measured 2777 and 2876).
+  // Solar 2950 -> 3050 when the diagram gained its six route stops (solar
+  // connection trace, Nathan 2026-10-29; measured 2876 -> 2975).
   // UAV 2000 -> 2250 when the clearance plot replaced the shorter bench photo
   // (C4, same audit, measured 2173); the plot itself is pinned below.
-  ["lv-cabling-design-commercial-complex", 2850], ["solar-grid-connection-assessment", 2950], ["gps-denied-autonomous-uav", 2250]]) {
+  ["lv-cabling-design-commercial-complex", 2850], ["solar-grid-connection-assessment", 3050], ["gps-denied-autonomous-uav", 2250]]) {
     await page.goto(`${base}/projects/${slug}`, { waitUntil: "networkidle" });
     assert.equal(await page.locator(".case-meta").count(), 0);
     const headings = await page.locator(".case-sections h2").allTextContents();
@@ -219,36 +221,63 @@ try {
   const lvUrl = `${base}/projects/lv-cabling-design-commercial-complex`;
   const traced = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "no-preference" });
   await traced.goto(lvUrl, { waitUntil: "networkidle" });
-  const trace = traced.locator(".lv-trace");
+  const trace = traced.locator(".drawing-trace");
   assert.equal(await trace.getAttribute("data-trace"), "armed", "trace must wait while its tab is hidden");
   await traced.locator("label.lv-view-tab").filter({ hasText: "Installation" }).click();
   await traced.locator('.lv-view-panel[data-view="installation"] .lv-view-stage').scrollIntoViewIfNeeded();
-  await traced.waitForFunction(() => document.querySelector(".lv-trace")?.dataset.trace === "play");
+  await traced.waitForFunction(() => document.querySelector(".drawing-trace")?.dataset.trace === "play");
   const traceStart = Date.now();
-  assert.equal(await traced.evaluate(() => [...document.querySelectorAll(".lv-trace-reveal")].filter(e => e.getAnimations().length).length), 29, "every route reveal must animate");
-  await traced.waitForFunction(() => [...document.querySelectorAll(".lv-trace-reveal")].every(e => e.getAnimations().every(a => a.playState === "finished")), null, { timeout: 4000 });
+  assert.equal(await traced.evaluate(() => [...document.querySelectorAll(".drawing-trace-reveal")].filter(e => e.getAnimations().length).length), 29, "every route reveal must animate");
+  await traced.waitForFunction(() => [...document.querySelectorAll(".drawing-trace-reveal")].every(e => e.getAnimations().every(a => a.playState === "finished")), null, { timeout: 4000 });
   assert.ok(Date.now() - traceStart < 3000, `route trace must finish within 3 s (${Date.now() - traceStart} ms)`);
-  const mains = traced.locator('.lv-trace-stop[data-stop="mains"]');
+  const mains = traced.locator('.drawing-trace-stop[data-stop="mains"]');
   assert.ok((await mains.boundingBox()).height >= 44, "route stop misses its 44px target");
   await mains.click();
   assert.equal(await mains.getAttribute("aria-expanded"), "true");
   assert.equal(await traced.locator(`[id="${await mains.getAttribute("aria-controls")}"]`).isVisible(), true, "stop must open its own detail");
   // the opacity fades over --motion-standard; wait for it to settle
-  await traced.waitForFunction(() => getComputedStyle(document.querySelector('.lv-trace svg [data-stop="supply"]')).opacity === "0.3", null, { timeout: 1000 });
-  assert.equal(await traced.locator('.lv-trace svg [data-stop="mains"]').evaluate(e => getComputedStyle(e).opacity), "1", "the chosen stop must stay at full strength");
+  await traced.waitForFunction(() => getComputedStyle(document.querySelector('.drawing-trace svg [data-stop="supply"]')).opacity === "0.3", null, { timeout: 1000 });
+  assert.equal(await traced.locator('.drawing-trace svg [data-stop="mains"]').evaluate(e => getComputedStyle(e).opacity), "1", "the chosen stop must stay at full strength");
   await traced.keyboard.press("Escape");
   assert.equal(await mains.getAttribute("aria-expanded"), "false");
   assert.equal(await traced.evaluate(() => document.activeElement?.dataset.stop), "mains", "Escape must return focus to the stop");
-  await traced.locator(".lv-trace-replay").click();
-  await traced.waitForFunction(() => document.querySelector(".lv-trace")?.dataset.trace === "play");
+  await traced.locator(".drawing-trace-replay").click();
+  await traced.waitForFunction(() => document.querySelector(".drawing-trace")?.dataset.trace === "play");
   await traced.close();
   const stillRoute = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
   await stillRoute.goto(lvUrl, { waitUntil: "networkidle" });
   await stillRoute.locator("label.lv-view-tab").filter({ hasText: "Installation" }).click();
-  assert.equal(await stillRoute.locator(".lv-trace").getAttribute("data-trace"), "idle", "reduced motion must not arm the trace");
-  assert.equal(await stillRoute.locator(".lv-trace-replay").count(), 0, "nothing to replay under reduced motion");
-  assert.ok(await stillRoute.locator(".lv-trace-reveal").evaluateAll(ns => ns.every(n => parseFloat(getComputedStyle(n).strokeDashoffset) === 0)), "reduced motion must show the whole route");
+  assert.equal(await stillRoute.locator(".drawing-trace").getAttribute("data-trace"), "idle", "reduced motion must not arm the trace");
+  assert.equal(await stillRoute.locator(".drawing-trace-replay").count(), 0, "nothing to replay under reduced motion");
+  assert.ok(await stillRoute.locator(".drawing-trace-reveal").evaluateAll(ns => ns.every(n => parseFloat(getComputedStyle(n).strokeDashoffset) === 0)), "reduced motion must show the whole route");
   await stillRoute.close();
+  checks++;
+  // Solar connection trace (docs/solar-connection-trace.md): same component,
+  // no tab, so it plays on scroll into view.
+  const solarUrl = `${base}/projects/solar-grid-connection-assessment`;
+  const solarPage = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "no-preference" });
+  await solarPage.goto(solarUrl, { waitUntil: "networkidle" });
+  const solarTrace = solarPage.locator(".case-diagram .drawing-trace");
+  await solarTrace.locator(".drawing-trace-stage").scrollIntoViewIfNeeded();
+  await solarPage.waitForFunction(() => document.querySelector(".case-diagram .drawing-trace")?.dataset.trace === "play");
+  const solarStart = Date.now();
+  assert.equal(await solarPage.evaluate(() => [...document.querySelectorAll(".case-diagram .drawing-trace-reveal")].filter(e => e.getAnimations().length).length), 6, "every solar reveal must animate");
+  await solarPage.waitForFunction(() => [...document.querySelectorAll(".case-diagram .drawing-trace-reveal")].every(e => e.getAnimations().every(a => a.playState === "finished")), null, { timeout: 4000 });
+  assert.ok(Date.now() - solarStart < 3000, `solar trace must finish within 3 s (${Date.now() - solarStart} ms)`);
+  const lvOption = solarTrace.locator('.drawing-trace-stop[data-stop="lv"]');
+  assert.ok((await lvOption.boundingBox()).height >= 44, "solar stop misses its 44px target");
+  await lvOption.click();
+  await solarPage.waitForFunction(() => getComputedStyle(document.querySelector('.case-diagram svg [data-stop="hv"]')).opacity === "0.3", null, { timeout: 1000 });
+  assert.equal(await solarPage.locator('.case-diagram svg [data-stop="lv"]').evaluate(e => getComputedStyle(e).opacity), "1", "the LV option must stay at full strength while HV steps back");
+  await solarPage.keyboard.press("Escape");
+  assert.equal(await solarPage.evaluate(() => document.activeElement?.dataset.stop), "lv", "Escape must return focus to the stop");
+  await solarPage.waitForFunction(() => getComputedStyle(document.querySelector('.case-diagram svg [data-stop="hv"]')).opacity === "1", null, { timeout: 1000 });
+  await solarPage.close();
+  const solarStill = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  await solarStill.goto(solarUrl, { waitUntil: "networkidle" });
+  assert.equal(await solarStill.locator(".case-diagram .drawing-trace").getAttribute("data-trace"), "idle", "reduced motion must not arm the solar trace");
+  assert.ok(await solarStill.locator(".case-diagram .drawing-trace-reveal").evaluateAll(ns => ns.every(n => parseFloat(getComputedStyle(n).strokeDashoffset) === 0)), "reduced motion must show the whole solar drawing");
+  await solarStill.close();
   checks++;
   console.log(`UI/UX motion checks passed: ${checks} viewport/motion and case-study scenarios, plus Projects/no-JS checks.`);
 } finally {

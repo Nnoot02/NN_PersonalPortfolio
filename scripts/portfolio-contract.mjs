@@ -736,20 +736,40 @@ check(!/<div[^>]*data-view="installation"[\s\S]*?lv-scroll-hint/.test(lvCaseStud
 {
   const installPanel = normalizeTextEntities(lvCaseStudy.slice(lvCaseStudy.indexOf('data-view="installation"')));
   check(lvCaseStudy.includes("Installation · route"), "installation tab must read Installation · route");
-  check(/class="lv-trace"[^>]*data-trace="idle"/.test(installPanel), "trace must ship drawn (idle) so no-JS readers see the full route");
+  check(/class="drawing-trace"[^>]*data-trace="idle"/.test(installPanel), "trace must ship drawn (idle) so no-JS readers see the full route");
   const stops = [...installPanel.matchAll(/<g data-stop="([a-z]+)">/g)].map((m) => m[1]);
   check(stops.join(",") === "mains,supply,msb,submains,trench", `installation svg must carry the five stop groups (${stops})`);
-  const reveals = installPanel.match(/<polyline class="lv-trace-reveal"[^>]*>/g) ?? [];
+  const reveals = installPanel.match(/<polyline class="drawing-trace-reveal"[^>]*>/g) ?? [];
   check(reveals.length === 29 && reveals.every((tag) => tag.includes('pathLength="1"')), `every traced route needs a pathLength reveal copy (${reveals.length})`);
   check((installPanel.match(/mask="url\(#instReveal[1-5]\)"/g) ?? []).length === 29, "every traced route must sit behind its step's mask");
-  const buttons = [...installPanel.matchAll(/class="lv-trace-stop" data-stop="([a-z]+)"/g)].map((m) => m[1]);
+  const buttons = [...installPanel.matchAll(/class="drawing-trace-stop" data-stop="([a-z]+)"/g)].map((m) => m[1]);
   check(buttons.join(",") === "supply,mains,msb,submains,trench", `route stops must follow the route order (${buttons})`);
-  check(/<noscript><style>[^<]*\.lv-trace-detail\[hidden\] \{ display: block; \}/.test(installPanel), "no-JS route must show every stop's detail");
+  check(/<noscript><style>[^<]*\.drawing-trace-detail\[hidden\] \{ display: block; \}/.test(installPanel), "no-JS route must show every stop's detail");
   // One source: the cutaway prints the hero's approved basis verbatim.
   for (const [target, value, detail] of APPROVED) {
     check(installPanel.includes(value) && installPanel.includes(detail), `route detail must carry the approved ${target} basis verbatim`);
   }
   check(installPanel.includes("Trench section A") && installPanel.includes("600 mm · trefoil · k = 1.03"), "trench stop must carry its basis");
+}
+// Solar connection trace (docs/solar-connection-trace.md, Nathan 2026-10-29).
+{
+  const solar = normalizeTextEntities(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")));
+  const diagram = solar.slice(solar.indexOf('class="case-diagram"'), solar.indexOf('class="case-scope"'));
+  check(diagram.length > 0 && !solar.includes('class="case-image"'), "solar case study must lead with the inline traced diagram");
+  check(/class="drawing-trace"[^>]*data-trace="idle"/.test(diagram), "solar trace must ship drawn (idle)");
+  check([...diagram.matchAll(/<g data-stop="([a-z]+)">/g)].map((m) => m[1]).join(",") === "lv,hv,pcc,inverter,pv,bess", "solar svg must carry its six stop groups");
+  const reveals = diagram.match(/<path class="drawing-trace-reveal"[^>]*>/g) ?? [];
+  check(reveals.length === 6 && reveals.every((tag) => tag.includes('pathLength="1"')), `every traced solar line needs a reveal copy (${reveals.length})`);
+  check((diagram.match(/mask="url\(#solReveal[1-4]\)"/g) ?? []).length === 6, "every traced solar line must sit behind its step's mask");
+  const bessGroup = diagram.match(/<g data-stop="bess">[\s\S]*?<\/g>/)?.[0] ?? "";
+  check(bessGroup.includes("BESS") && !bessGroup.includes("mask="), "the optional BESS branch must stay a static stop (D2)");
+  check([...diagram.matchAll(/class="drawing-trace-stop" data-stop="([a-z]+)"/g)].map((m) => m[1]).join(",") === "pv,inverter,pcc,lv,hv,bess", "solar stops must follow the power flow");
+  check(/<noscript><style>[^<]*\.drawing-trace-detail\[hidden\] \{ display: block; \}/.test(diagram), "no-JS solar diagram must show every stop's detail");
+  // One source: each capacity row in the write-up table also appears in a stop.
+  for (const value of ["≈1.2 MWp", "1.0 MW", "≤1.0 MW"]) {
+    check((solar.match(new RegExp(value.replace(/[.]/g, "\\."), "g")) ?? []).length >= 2, `solar capacity ${value} must appear in both the stops and the write-up table`);
+  }
+  check(diagram.includes("400 V · ~1443 A · TS132") && diagram.includes("11 / 33 kV · ~52 / ~17 A · TS133"), "LV and HV stops must carry their currents");
 }
 // Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
 // names the authoring tool and says the page carries a redraw.
@@ -1019,7 +1039,11 @@ const solarSvgText = readFileSync(new URL("../public/images/solar-grid-connectio
 check(!solarSvgText.includes("\u2014"), "solar-grid-connection.svg must contain no U+2014 character");
 check(solarSvgText.includes("not the 1 MW figure"), 'solar-grid-connection.svg must keep the "not the 1 MW figure" note');
 const solarSvgHash = sha256(solarSvgText.replace(/\r\n/g, "\n"));
-check(solarSvgHash === "a315dc577bd570ede624000e72eccd7a4f157f33d0848376c954f4588f4468de", "solar-grid-connection.svg changed: run scripts/build-solar-images.mjs to re-render the hero, 800w thumb and index thumb, then update all four solar hashes");
+// 2026-10-29 (solar connection trace): stop groups and reveal masks added. A
+// pixel diff of the old and new SVG in Chromium found 0 of 1,572,864 pixels
+// changed (the diff caught a 34px change to one mask copy), so the three
+// rasters were kept and only this hash moved.
+check(solarSvgHash === "8863d85d97143d12d8c3847654cd6e3e6c2514f69ee49d07fb125c5ea6d7ceef", "solar-grid-connection.svg changed: run scripts/build-solar-images.mjs to re-render the hero, 800w thumb and index thumb, then update all four solar hashes");
 for (const [file, hash] of [
   ["solar-grid-connection.webp", "8785790ea8a7de821126469205e142797c0517e0997625ba9c8b98c4f4f83c9a"],
   ["thumbs/solar-grid-connection-800.webp", "88ef7eeab595748b91f2acae6b6c6ed3053764e27555f4c90634f110b2439f13"],

@@ -55,7 +55,7 @@ conduit grouping; layer depths stay marked indicative).
   route wherever it crosses an earlier one. Without the page CSS (the
   full-size `<img>`, the homepage thumbnail) the copies are solid and the
   route shows in full.
-- `components/LvInstallationTrace.tsx` arms the trace only under no-preference
+- `components/DrawingTrace.tsx` arms the trace only under no-preference
   motion and plays it when the stage is half visible, which happens when its
   tab is chosen. It reuses the hero's `plot` keyframe; the timing comes from
   `--motion-trace` (520 ms) and `--motion-trace-step` (480 ms).

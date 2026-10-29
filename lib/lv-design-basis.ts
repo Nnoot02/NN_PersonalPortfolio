@@ -60,3 +60,15 @@ export const LV_DESIGN_BASIS: Record<BasisId, BasisEntry> = {
     detail: "Consumer mains: X-90 single-core copper, actives in separate conduits laid in trefoil with N and E, buried 600 mm in 20 °C soil. Corrections k = 1.04 (soil, Table 3.45) × 0.99 (depth, Table 3.46) = 1.03 feed the capacity check. The layer build-up drawn is indicative, not a compliance dimension.",
   },
 };
+
+// Stops on the installation cutaway's route (DrawingTrace). Labels follow the
+// drawing's own callouts (01, 02, 03, A) so a stop can be found on the drawing
+// without hit areas over it.
+const rows = (...ids: BasisId[]) => ids.map((id) => LV_DESIGN_BASIS[id]);
+export const LV_ROUTE_STOPS = [
+  { id: "supply", label: "01 Site supply", rows: rows("supply") },
+  { id: "mains", label: "Consumer mains", rows: rows("mains", "vd") },
+  { id: "msb", label: "02 Main switchboard", rows: rows("device") },
+  { id: "submains", label: "03 Submains", rows: rows("sup", "hai", "but") },
+  { id: "trench", label: "A Trench section", rows: rows("trench") },
+];
