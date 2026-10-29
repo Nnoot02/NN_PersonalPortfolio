@@ -20,8 +20,18 @@ def add(x): s.append(x)
 def p(x,y,z=0): return (230+19.0525588833*(x-y),135+11*(x+y)-22*z)
 def poly(v,fill=paper,stroke=line,w=1.4):
  add('<polygon points="'+ ' '.join(f'{a:.1f},{b:.1f}' for a,b in [p(*q) for q in v])+f'" fill="{fill}" stroke="{stroke}" stroke-width="{w}" stroke-linejoin="round"/>')
-def path(v,color=ink,w=2,dash=''):
- add('<polyline points="'+' '.join(f'{a:.1f},{b:.1f}' for a,b in [p(*q) for q in v])+f'" fill="none" stroke="{color}" stroke-width="{w}" stroke-linejoin="round" stroke-dasharray="{dash}"/>')
+# Route trace (2026-10-29): a path given a step joins mask instReveal{step}.
+# The mask holds a solid copy of it with pathLength="1"; the case study's CSS
+# draws the copy on, so the dashed original is revealed without losing its
+# dashes. One mask per step: a shared mask would reveal a later route wherever
+# it crosses an earlier one. Outside that CSS (the full-size <img>, the
+# homepage thumbnail) the copy is solid and the route shows in full.
+reveal={}
+def path(v,color=ink,w=2,dash='',step=0):
+ pts=' '.join(f'{a:.1f},{b:.1f}' for a,b in [p(*q) for q in v])
+ mask=f' mask="url(#instReveal{step})"' if step else ''
+ add(f'<polyline points="{pts}" fill="none" stroke="{color}" stroke-width="{w}" stroke-linejoin="round" stroke-dasharray="{dash}"{mask}/>')
+ if step: reveal.setdefault(step,[]).append(f'<polyline class="lv-trace-reveal" style="--plot-i:{step}" pathLength="1" points="{pts}" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>')
 def text(x,y,t,size=16,color=ink,weight=400): add(f'<text x="{x}" y="{y}" font-family="Arial,sans-serif" font-size="{size}" fill="{color}" font-weight="{weight}">{escape(t)}</text>')
 def box(x,y,z,w,d,h):
  poly([(x,y,z+h),(x+w,y,z+h),(x+w,y+d,z+h),(x,y+d,z+h)],paper,ink,1.7)
@@ -48,12 +58,15 @@ poly([(18,0,0),(36,0,0),(36,0,2.2),(18,0,2.2)],paper,line)
 for x in (24,28,32):
  poly([(x,0,0),(x,6.5,0),(x,6.5,.65),(x,0,.65)],paper,line)
 # Continuous exposed trench. All coordinates are world-space until projected.
+add('<g data-stop="mains">')
 poly([(3,3,0),(18.5,3,0),(18.5,4.5,0),(3,4.5,0)],deep,line)
 poly([(3,4.5,0),(18.5,4.5,0),(18.5,4.5,-.8),(3,4.5,-.8)],'#ded7ca',line)
 for y,z in ((3.2,-.65),(3.42,-.65),(3.31,-.46),(3.8,-.65),(4.18,-.65)):
- path([(3,y,z),(18.5,y,z)],accent if y<3.5 else muted,1.4)
+ path([(3,y,z),(18.5,y,z)],accent if y<3.5 else muted,1.4,step=2)
+add('</g>')
 # Marker tape is shown in the indicative section A only.
 # Kiosk kept closed so internals do not compete with the route.
+add('<g data-stop="supply">')
 poly([(.7,.7,0),(3.8,.7,0),(3.8,3.1,0),(.7,3.1,0)],deep,line)
 box(1,1,0,2.5,1.8,1.8)
 path([(2.25,2.81,.15),(2.25,2.81,1.65)],ink,1)
@@ -61,8 +74,10 @@ for x in (2.05,2.45): path([(x,2.82,.7),(x,2.82,1)],ink,1.4)
 for z in (.35,.48,.61): path([(1.2,2.82,z),(1.8,2.82,z)],muted,.8)
 # Five exposed conduit ends sweep into the kiosk base.
 for i,(y,z) in enumerate(((3.2,-.65),(3.42,-.65),(3.31,-.46),(3.8,-.65),(4.18,-.65))):
- path([(2.65+i*.08,2.8,.15),(3,y,z)],accent if i<3 else muted,1.4)
+ path([(2.65+i*.08,2.8,.15),(3,y,z)],accent if i<3 else muted,1.4,step=1)
+add('</g>')
 # switchboard access zone; board and service terminations
+add('<g data-stop="msb">')
 poly([(18.8,1.3,.02),(22.3,1.3,.02),(22.3,3,.02),(18.8,3,.02)],'#e5d5c7',accent,1)
 box(19,.35,0,3,.8,2.2)
 for x in (20,21): path([(x,1.16,.15),(x,1.16,2.05)],ink,1)
@@ -70,24 +85,27 @@ for x in (19.8,20.8,21.8): path([(x,1.17,.85),(x,1.17,1.1)],ink,1.5)
 # Continue each conduit from its exposed trench end to an MSB bottom entry.
 for i,(y,z) in enumerate(((3.2,-.65),(3.42,-.65),(3.31,-.46),(3.8,-.65),(4.18,-.65))):
  x=19.25+i*.12
- path([(18.5,y,z),(x,y,z),(x,.8,z),(x,.8,0)],accent if i<3 else muted,1.3,'6 5')
- path([(x,.8,0),(x,.8,.2)],accent if i<3 else muted,1.3)
+ path([(18.5,y,z),(x,y,z),(x,.8,z),(x,.8,0)],accent if i<3 else muted,1.3,'6 5',step=3)
+ path([(x,.8,0),(x,.8,.2)],accent if i<3 else muted,1.3,step=3)
+add('</g>')
 # buried submain bundles: explicit dashed hidden paths, no overhead ghost routes
 tenancies = ((25.6,'SUP',24,28),(29.6,'HAI',28,32),(33.6,'BUT',32,36))
+add('<g data-stop="submains">')
 for i,(x,name,left,right) in enumerate(tenancies):
  assert left < x and x+.8 < right, 'Each DB must sit wholly inside its own tenancy'
  # MSB entry, buried route and tenancy entry form one continuous centreline.
  add(f'<g data-route="{name}">')
  source_x=20.7+i*.3
- path([(source_x,.8,.2),(source_x,.8,0)],accent,1.6)
+ path([(source_x,.8,.2),(source_x,.8,0)],accent,1.6,step=4)
  path([(source_x,.8,0),(source_x,.8,-1),(source_x,5.1+i*.3,-1),
-       (x+.4,5.1+i*.3,-1),(x+.4,.45,-1),(x+.4,.45,0)],accent,1.6,'6 5')
- path([(x+.4,.45,0),(x+.4,.45,1.2)],accent,2)
+       (x+.4,5.1+i*.3,-1),(x+.4,.45,-1),(x+.4,.45,0)],accent,1.6,'6 5',step=4)
+ path([(x+.4,.45,0),(x+.4,.45,1.2)],accent,2,step=5)
  add('</g>')
  box(x,0,1.2,.8,.45,.85)
  a,b=p(x+.8,.45,2.05)
  add(f'<path d="M{a:.1f},{b:.1f} h12" stroke="{muted}" stroke-width="1"/>')
  text(round(a+16),round(b+4),name+'-DB',12,accent,700)
+add('</g>')
 box(22.5,0,1,.65,.45,1)
 a,b=p(23.15,.45,2)
 add(f'<path d="M{a:.1f},{b:.1f} h12" stroke="{muted}" stroke-width="1"/>')
@@ -120,6 +138,7 @@ leader(340,520,(20.5,2.4,.03))
 # Enlarged trench build-up; thicknesses illustrative, not compliance dimensions.
 # The 600 mm design burial basis remains in the main route caption.
 add(f'<defs><pattern id="instSand" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0,7 L7,0" stroke="{line}" stroke-width="1"/></pattern><pattern id="instSoil" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r=".8" fill="{line}"/><circle cx="9" cy="10" r=".7" fill="{line}"/></pattern></defs>')
+add('<g data-stop="trench">')
 add(f'<rect x="46" y="548" width="452" height="210" fill="{paper}" stroke="{line}" stroke-width="1"/>')
 text(60,573,'A / TRENCH SECTION',13,accent,700)
 text(317,573,'Indicative build-up',12,muted)
@@ -140,6 +159,7 @@ for yy,xx,label in ((620,236,'Backfill'),(642,239,'Marker tape'),(687,239,'Sand 
  add(f'<path d="M{xx},{target_y} H262 V{yy-4} H274" fill="none" stroke="{muted}" stroke-width=".9"/>')
  text(282,yy,label,13,muted)
 text(282,718,'ABC trefoil + N + E',13,muted)
+add('</g>')
 # Section reference on the physical trench, kept clear of the route label leader.
 ax,ay=p(8.5,5.2,0)
 path([(8.5,5.2,0),(8.5,4.5,-.3)],muted,1)
@@ -154,6 +174,7 @@ for yy,dash,label in ((709,'','visible / cutaway'),(736,'6 5','buried / hidden')
  add(f'<path d="M934,{yy-4} H969" stroke="{accent}" stroke-width="1.8" stroke-dasharray="{dash}"/>')
  text(982,yy,label,14,muted)
 text(46,782,'Indicative arrangement, not to scale. Roof and front walls removed; partitions cut low.',14,muted)
+add('<defs>'+''.join(f'<mask id="instReveal{k}" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="800">'+''.join(v)+'</mask>' for k,v in sorted(reveal.items()))+'</defs>')
 add('</svg>')
 data='\n'.join(s)+'\n'
 ET.fromstring(data)
