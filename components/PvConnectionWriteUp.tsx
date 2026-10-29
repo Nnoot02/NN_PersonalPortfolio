@@ -1,4 +1,5 @@
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
+import { CAPACITY_BASIS } from "@/lib/solar-design-basis";
 
 // Public URL fragments. Once shipped these ids do not change; the contract
 // pins them so a link sent to a reviewer keeps working.
@@ -13,11 +14,8 @@ const sections: WriteUpSection[] = [
   { id: "assumptions-and-limits", label: "Declared assumptions and limits" },
 ];
 
-const capacityBasis = [
-  ["PV array DC capacity", "≈1.2 MWp", "Installed module capacity; exceeds the inverter rating at a ~1.2 inverter loading ratio."],
-  ["Inverter AC nameplate", "1.0 MW", "The rated AC output assumed for the assessment."],
-  ["Approved export limit", "≤1.0 MW", "Maximum power permitted into the network at the point of common coupling, set by SA Power Networks after the connection study, possibly below the inverter rating."],
-];
+// Shared with the diagram's stops (lib/solar-design-basis.ts).
+const capacityBasis = [CAPACITY_BASIS.dc, CAPACITY_BASIS.ac, CAPACITY_BASIS.export].map((row) => [row.name, row.value, row.detail]);
 
 export function PvConnectionWriteUp() {
   return (

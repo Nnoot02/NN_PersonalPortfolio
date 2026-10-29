@@ -31,7 +31,7 @@ def path(v,color=ink,w=2,dash='',step=0):
  pts=' '.join(f'{a:.1f},{b:.1f}' for a,b in [p(*q) for q in v])
  mask=f' mask="url(#instReveal{step})"' if step else ''
  add(f'<polyline points="{pts}" fill="none" stroke="{color}" stroke-width="{w}" stroke-linejoin="round" stroke-dasharray="{dash}"{mask}/>')
- if step: reveal.setdefault(step,[]).append(f'<polyline class="lv-trace-reveal" style="--plot-i:{step}" pathLength="1" points="{pts}" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>')
+ if step: reveal.setdefault(step,[]).append(f'<polyline class="drawing-trace-reveal" style="--plot-i:{step}" pathLength="1" points="{pts}" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>')
 def text(x,y,t,size=16,color=ink,weight=400): add(f'<text x="{x}" y="{y}" font-family="Arial,sans-serif" font-size="{size}" fill="{color}" font-weight="{weight}">{escape(t)}</text>')
 def box(x,y,z,w,d,h):
  poly([(x,y,z+h),(x+w,y,z+h),(x+w,y+d,z+h),(x,y+d,z+h)],paper,ink,1.7)

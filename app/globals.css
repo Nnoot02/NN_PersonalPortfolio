@@ -56,7 +56,7 @@
   --motion-ping-step: 260ms;
   --motion-plot-lead: 140ms;
   --motion-plot-tail: 320ms;
-  /* LV installation route trace: five steps, about 2.4 s end to end. */
+  /* Drawing route trace: each step 520 ms, a new step every 480 ms. */
   --motion-trace: 520ms;
   --motion-trace-step: 480ms;
   --motion-ease-entrance: cubic-bezier(.22, .61, .36, 1);
@@ -715,27 +715,30 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 }
 /* --ink, not --muted: muted on paper-deep is 4.27:1 at 12px (audit 2026-10-25). */
 .lv-view-meta { align-items: baseline; border-top: 1px solid var(--line); color: var(--ink); display: flex; flex-wrap: wrap; font: 600 var(--text-tag)/1.35 var(--display); gap: .3rem 1rem; justify-content: space-between; letter-spacing: .12em; margin: 0; padding: .6rem .9rem; text-transform: uppercase; }
-/* Installation route trace (docs/lv-cutaway-route-trace.md). The reveal
+/* Drawing route trace (DrawingTrace: docs/lv-cutaway-route-trace.md,
+   docs/solar-connection-trace.md). The reveal
    copies live in the SVG's masks; drawn by default, armed only by JS. */
-.lv-trace-reveal { stroke-dasharray: 1; stroke-dashoffset: 0; }
-.lv-trace-stops { border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: .1rem .25rem; list-style: none; margin: 0; padding: .25rem .4rem; }
-.lv-trace-stop { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; min-height: 44px; padding: .55rem .5rem; text-transform: uppercase; }
-.lv-trace-stop:hover, .lv-trace-stop[aria-expanded="true"] { color: var(--ink); }
-.lv-trace-stop[aria-expanded="true"] { border-bottom-color: var(--accent); }
-.lv-trace-stop:focus-visible, .lv-trace-replay:focus-visible { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
-.lv-trace-replay { background: none; border: 0; cursor: pointer; font-size: .9rem; margin: 0 .9rem; min-height: 44px; padding: 0; }
-.lv-trace-detail { border-top: 1px solid var(--line); padding: .75rem .9rem; }
-.lv-trace-detail dl { display: grid; gap: .75rem; margin: 0; }
-.lv-trace-detail dt { color: var(--ink); font-weight: 600; }
-.lv-trace-value { color: var(--accent-dark); display: block; }
-.lv-trace-detail dd { color: var(--muted); line-height: 1.6; margin: .2rem 0 0; max-width: 70ch; overflow-wrap: break-word; }
-/* A chosen stop keeps its part of the drawing at full strength. */
-.lv-trace[data-active] svg [data-stop] { opacity: .3; }
-.lv-trace[data-active="supply"] svg [data-stop="supply"], .lv-trace[data-active="mains"] svg [data-stop="mains"], .lv-trace[data-active="msb"] svg [data-stop="msb"], .lv-trace[data-active="submains"] svg [data-stop="submains"], .lv-trace[data-active="trench"] svg [data-stop="trench"] { opacity: 1; }
+.drawing-trace-reveal { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.drawing-trace-stops { border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: .1rem .25rem; list-style: none; margin: 0; padding: .25rem .4rem; }
+.drawing-trace-stop { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; min-height: 44px; padding: .55rem .5rem; text-transform: uppercase; }
+.drawing-trace-stop:hover, .drawing-trace-stop[aria-expanded="true"] { color: var(--ink); }
+.drawing-trace-stop[aria-expanded="true"] { border-bottom-color: var(--accent); }
+.drawing-trace-stop:focus-visible, .drawing-trace-replay:focus-visible { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
+.drawing-trace-replay { background: none; border: 0; cursor: pointer; font-size: .9rem; margin: 0 .9rem; min-height: 44px; padding: 0; }
+.drawing-trace-detail { border-top: 1px solid var(--line); padding: .75rem .9rem; }
+.drawing-trace-detail dl { display: grid; gap: .75rem; margin: 0; }
+.drawing-trace-detail dt { color: var(--ink); font-weight: 600; }
+.drawing-trace-value { color: var(--accent-dark); display: block; }
+.drawing-trace-detail dd { color: var(--muted); line-height: 1.6; margin: .2rem 0 0; max-width: 70ch; overflow-wrap: break-word; }
+/* A chosen stop keeps its part of the drawing at full strength (the
+   component marks that group data-on). */
+.drawing-trace[data-active] svg [data-stop]:not([data-on]) { opacity: .3; }
+.drawing-trace-stage svg { display: block; height: auto; width: 100%; }
+.case-diagram { background: var(--paper-deep); border: 1px solid var(--line); }
 @media (prefers-reduced-motion: no-preference) {
-  .lv-trace svg [data-stop] { transition: opacity var(--motion-standard) var(--motion-ease); }
-  .lv-trace[data-trace="armed"] .lv-trace-reveal { stroke-dashoffset: 1; }
-  .lv-trace[data-trace="play"] .lv-trace-reveal { animation: plot var(--motion-trace) var(--motion-ease-entrance) both; animation-delay: calc((var(--plot-i) - 1) * var(--motion-trace-step)); }
+  .drawing-trace svg [data-stop] { transition: opacity var(--motion-standard) var(--motion-ease); }
+  .drawing-trace[data-trace="armed"] .drawing-trace-reveal { stroke-dashoffset: 1; }
+  .drawing-trace[data-trace="play"] .drawing-trace-reveal { animation: plot var(--motion-trace) var(--motion-ease-entrance) both; animation-delay: calc((var(--plot-i) - 1) * var(--motion-trace-step)); }
 }
 .lv-view-meta .text-link { letter-spacing: .06em; min-height: 44px; }
 .lv-view-stage [data-hit] { transition: stroke var(--motion-standard) var(--motion-ease), fill var(--motion-standard) var(--motion-ease); }
@@ -1150,9 +1153,9 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .72rem; color: #555; }
   .project-journey-list { display: block; }
   .project-journey-list > li { break-inside: avoid; margin-bottom: 1rem; }
-  .lv-trace-stops, .lv-trace-replay { display: none !important; }
-  .lv-trace-detail[hidden] { display: block; }
-  .lv-trace-reveal { animation: none !important; stroke-dashoffset: 0 !important; }
-  .lv-trace svg [data-stop] { opacity: 1 !important; }
+  .drawing-trace-stops, .drawing-trace-replay { display: none !important; }
+  .drawing-trace-detail[hidden] { display: block; }
+  .drawing-trace-reveal { animation: none !important; stroke-dashoffset: 0 !important; }
+  .drawing-trace svg [data-stop] { opacity: 1 !important; }
   .hero-copy > *, .hero-name > span, .hero-sld svg [pathLength], .hero-sld svg text, .hero-sld-row, .hero-sld-hit, .hero-sld-detail { animation: none !important; opacity: 1 !important; transform: none !important; clip-path: none !important; stroke-dashoffset: 0 !important; }
 }

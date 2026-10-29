@@ -553,6 +553,16 @@ five stops whose detail comes from `lib/lv-design-basis.ts`, the same source as
 the hero legend. The full design is in `docs/lv-cutaway-route-trace.md`. Under
 reduced motion and without JS, the route is drawn from the start.
 
+The solar case study's single-line concept uses the same `DrawingTrace`
+component (docs/solar-connection-trace.md). Power draws from PV up through the
+inverter and the PCC, and both connection options rise to the grid together,
+so neither is presented as the answer. Six stops follow the power flow. The
+optional BESS is a stop but is never traced. Choosing LV or HV fades the other
+branch. Stop values come from `lib/solar-design-basis.ts`, which the write-up's
+capacity table also reads. Only the case-study hero is inline; the homepage,
+/projects and 800w images stay rasters of the same SVG, unchanged by a pixel
+diff.
+
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. From

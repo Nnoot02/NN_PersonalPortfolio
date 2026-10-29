@@ -9,7 +9,7 @@ import { CaseOpening } from "@/components/CaseOpening";
 import { CaseSpec } from "@/components/CaseSpec";
 import { LvDesignViews, type DesignView } from "@/components/LvDesignViews";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
-import { LvInstallationTrace } from "@/components/LvInstallationTrace";
+import { DrawingTrace } from "@/components/DrawingTrace";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -17,6 +17,8 @@ import { UavClearanceFigure, UavTestGatesWriteUp } from "@/components/UavTestGat
 import { ViasatEntryWriteUp } from "@/components/ViasatEntryWriteUp";
 import { projectStudyNext } from "@/lib/project-index";
 import { projects } from "@/lib/projects";
+import { LV_ROUTE_STOPS } from "@/lib/lv-design-basis";
+import { SOLAR_ROUTE_STOPS } from "@/lib/solar-design-basis";
 import { profile, projectStructuredData, sharedOpenGraph } from "@/lib/site";
 import { routeLastModified } from "@/lib/route-last-modified";
 
@@ -40,6 +42,7 @@ const shareImages: Record<string, { url: string; width: number; height: number }
 // on site. Both SVGs are read at build time and rendered by this server
 // component; two hidden radios toggle the panels in CSS.
 const lvSldSvg = readFileSync(path.join(process.cwd(), "public/images/lv-cabling-sld.svg"), "utf8");
+const solarSvg = readFileSync(path.join(process.cwd(), "public/images/solar-grid-connection.svg"), "utf8");
 const lvInstallSvg = readFileSync(path.join(process.cwd(), "public/images/lv-cabling-installation.svg"), "utf8");
 
 const lvDesignViews: DesignView[] = [
@@ -63,7 +66,7 @@ function LvViewPanel({ svg, caption, href, scrolls = false, trace = false }: { s
       {/* The one-line drawing keeps a 720px floor on phones and pans sideways
           inside the stage; the stage is a named, focusable region so keyboard
           readers can pan it. */}
-      {trace ? <LvInstallationTrace svg={svg} /> : (
+      {trace ? <DrawingTrace svg={svg} stops={LV_ROUTE_STOPS} stageClassName="lv-view-stage" /> : (
         <div
           className="lv-view-stage"
           {...(scrolls ? { tabIndex: 0, role: "region", "aria-label": "One-line diagram, scrolls sideways" } : {})}
@@ -186,6 +189,12 @@ export default async function ProjectPage({ params }: ProjectParams) {
         )}
         {project.slug === "lv-cabling-design-commercial-complex" ? (
           <LvDesignViews views={lvDesignViews} panels={lvDesignPanels} />
+        ) : project.slug === "solar-grid-connection-assessment" ? (
+          // Inline so the power flow can be traced (docs/solar-connection-trace.md);
+          // the homepage and index keep the rasters rendered from this file.
+          <div className="case-diagram">
+            <DrawingTrace svg={solarSvg} stops={SOLAR_ROUTE_STOPS} stopsLabel="Parts of the connection" />
+          </div>
         ) : project.slug === "gps-denied-autonomous-uav" ? (
           <UavClearanceFigure />
         ) : (
