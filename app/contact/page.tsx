@@ -64,7 +64,7 @@ export default function ContactPage() {
             <div className="technical-snapshot-group" data-snapshot-group="current-build">
               <p className="technical-snapshot-label">CURRENT BUILD</p>
               <p className="technical-snapshot-value">GPS-denied autonomous UAV</p>
-              <p className="technical-snapshot-supporting">SITL / ROS 2 setup + subsystem validation</p>
+              <p className="technical-snapshot-supporting">60/60 simulated runs reached goal · clearance validation next</p>
             </div>
             <div className="technical-snapshot-group" data-snapshot-group="path">
               <p className="technical-snapshot-label">PATH</p>
