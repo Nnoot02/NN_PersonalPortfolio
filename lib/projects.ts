@@ -105,7 +105,6 @@ export const projects: Project[] = [
     imageSrcSet: "/images/gps-denied-uav-960.webp 960w, /images/gps-denied-uav-1280.webp 1280w, /images/gps-denied-uav.webp 1920w",
     heroSrcSet: "/images/gps-denied-uav-960.webp 960w, /images/gps-denied-uav-1280.webp 1280w, /images/gps-denied-uav.webp 1920w",
     imageAlt: "Red-and-white quadcopter bench mock-up with electronics and landing gear on a workshop bench",
-    imageNote: "Bench mock-up, shown at 00:04 in my assembly footage. The results below are from simulation.",
     scope: "Autonomy, perception, verification",
     role: "Sole developer: planning, simulation and verification, now building the aircraft",
     status: "Active capstone",

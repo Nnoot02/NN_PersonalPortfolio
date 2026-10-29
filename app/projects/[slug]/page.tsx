@@ -12,7 +12,7 @@ import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
+import { UavClearanceFigure, UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { ViasatEntryWriteUp } from "@/components/ViasatEntryWriteUp";
 import { projectStudyNext } from "@/lib/project-index";
 import { projects } from "@/lib/projects";
@@ -183,6 +183,8 @@ export default async function ProjectPage({ params }: ProjectParams) {
         )}
         {project.slug === "lv-cabling-design-commercial-complex" ? (
           <LvDesignViews views={lvDesignViews} panels={lvDesignPanels} />
+        ) : project.slug === "gps-denied-autonomous-uav" ? (
+          <UavClearanceFigure />
         ) : (
           <div className="case-image" style={{ aspectRatio: `${shareImages[project.slug].width} / ${shareImages[project.slug].height}` }}>
             {/* The box takes the image's own ratio, so cover never crops it.

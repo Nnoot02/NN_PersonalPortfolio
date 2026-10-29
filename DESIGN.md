@@ -540,6 +540,13 @@ Case studies read: title, status, opening (contribution, outcome, where it
 stops), then the problem/approach brief, then spec, visual and write-up. The
 brief comes before the evidence so a reader knows the problem first.
 
+The UAV case study leads with its clearance plot of all 60 trials in the
+visual slot (Codex audit 2026-10-29, C4), with a bold caption that states goal
+(60/60) and clearance (57/60) as separate results. The bench mock-up photo sits
+in "Next verification gates", the hardware it belongs to. On phones the plot
+keeps its 860px floor and scrolls sideways, so the held-out misses start off
+screen; the caption and the spec row carry them.
+
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. From
