@@ -162,6 +162,18 @@ export default async function ProjectPage({ params }: ProjectParams) {
           limitation={project.evidenceStatus}
           links={openingLinks[project.slug] ?? []}
         />
+        <section className="case-sections" aria-label={`${project.title} evidence summary`}>
+          <div>
+            <p className="eyebrow">Problem</p>
+            <h2>What needed solving</h2>
+            <p>{project.problem}</p>
+          </div>
+          <div>
+            <p className="eyebrow">Approach</p>
+            <h2>How the work is framed</h2>
+            <p>{project.approach}</p>
+          </div>
+        </section>
         {project.spec ? (
           <CaseSpec rows={project.spec} title={project.title} />
         ) : (
@@ -199,18 +211,6 @@ export default async function ProjectPage({ params }: ProjectParams) {
         ) : null}
         <p className="case-scope"><span className="eyebrow">Scope</span> {project.scope}</p>
         {WriteUp ? <WriteUp /> : null}
-        <section className="case-sections" aria-label={`${project.title} evidence summary`}>
-          <div>
-            <p className="eyebrow">Problem</p>
-            <h2>What needed solving</h2>
-            <p>{project.problem}</p>
-          </div>
-          <div>
-            <p className="eyebrow">Approach</p>
-            <h2>How the work is framed</h2>
-            <p>{project.approach}</p>
-          </div>
-        </section>
         {projectStudyNext[project.slug] ? (
           <p className="case-next">
             Next in the evidence:{" "}

@@ -29,6 +29,15 @@ function requireHomepageWorkbenchEntry(slug: string) {
   return entry;
 }
 
+// The hero already shows the LV one-line diagram, so the LV row takes the
+// installation cutaway: two views of the design instead of one twice.
+const rowImages: Record<string, { src: string; alt: string }> = {
+  "lv-cabling-design-commercial-complex": {
+    src: "/images/lv-cabling-installation.svg",
+    alt: "Indicative cutaway of the 400 V installation: padmount kiosk, buried submains and risers to three tenancy boards",
+  },
+};
+
 export default function HomePage() {
   const uavProject = requireHomepageProject("gps-denied-autonomous-uav");
   const workbenchEntry = requireHomepageWorkbenchEntry("bench-fume-extractor");
@@ -68,12 +77,12 @@ export default function HomePage() {
             </div>
           </dl>
           <div className="hero-actions">
-            <a className="button button-primary" href={profile.resumePath} target="_blank" rel="noopener">
-              Download résumé<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} aria-hidden="true" />
-            </a>
-            <Link className="button button-secondary" href="/projects">
+            <Link className="button button-primary" href="/projects">
               View projects <ArrowRight size={20} aria-hidden="true" />
             </Link>
+            <a className="button button-secondary" href={profile.resumePath} target="_blank" rel="noopener">
+              Résumé PDF<span className="sr-only"> (PDF, opens in a new tab)</span> <DownloadSimple size={20} aria-hidden="true" />
+            </a>
           </div>
         </div>
         <figure className="hero-image">
@@ -101,7 +110,7 @@ export default function HomePage() {
         </div>
         <ol className="project-list" data-evidence-ledger>
           {verifiedPowerProjects.map((project) => (
-            <li data-project-slug={project.slug} key={project.slug}><ProjectRow project={project} /></li>
+            <li data-project-slug={project.slug} key={project.slug}><ProjectRow project={project} image={rowImages[project.slug]} /></li>
           ))}
         </ol>
       </section>

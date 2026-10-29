@@ -6,9 +6,12 @@ import type { Project } from "@/lib/projects";
 export function ProjectRow({
   project,
   headingLevel: Heading = "h3",
+  image,
 }: {
   project: Project;
   headingLevel?: "h2" | "h3";
+  // Replaces the project's own image (and its srcset) for this row only.
+  image?: { src: string; alt: string };
 }) {
   const markers = project.evidenceMarkers ?? project.tags;
   // Describes, not names: the action reaches screen readers without turning
@@ -40,7 +43,9 @@ export function ProjectRow({
             project has one, a <source> lets the browser pick the smaller file;
             sizes follows the measured box (viewport - 40px up to 720, then
             about a third of it). */}
-        {project.imageSrcSet ? (
+        {image ? (
+          <Image src={image.src} alt={image.alt} fill sizes="(max-width: 960px) 100vw, 34vw" />
+        ) : project.imageSrcSet ? (
           <picture>
             <source srcSet={project.imageSrcSet} sizes="(max-width: 720px) calc(100vw - 40px), (max-width: 960px) 34vw, 30vw" />
             <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 960px) 100vw, 34vw" />

@@ -748,7 +748,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* The spec table carries a -1.2rem top pull, tuned for a text paragraph; after
    the bordered card it dragged the table back under the card's bottom rule
    (Nathan, 2026-09-17). Neutralise the pull when the card precedes it. */
-.case-opening + .case-spec { margin-top: .75rem; }
+.case-sections + .case-spec, .case-sections + .case-tags { margin-top: 0; }
 .case-opening dl { display: grid; gap: .9rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); margin: 0; }
 .case-opening dt { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; margin-bottom: .35rem; text-transform: uppercase; }
 .case-opening dd { color: var(--ink); font-size: var(--text-principle-body); line-height: 1.55; margin: 0; }
@@ -817,7 +817,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-spec__strip-item { color: var(--muted); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-spec__strip-item b { color: var(--ink); font-weight: 600; }
 .case-spec__strip-item + .case-spec__strip-item { border-left: 1px solid var(--line); margin-left: 1rem; padding-left: 1rem; }
-.case-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; padding: 2rem 0 0; }
+.case-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; margin-bottom: 2.5rem; padding: 2rem 0 0; }
 .case-sections > div { border-top: 1px solid var(--line); padding-top: 1.6rem; }
 .writeup { max-width: 860px; padding: 3rem 0 0; }
 .writeup-heading { border-top: 1px solid var(--ink); padding-top: 2rem; }
