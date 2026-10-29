@@ -61,7 +61,7 @@ const definitions = {
     ],
   },
   "gps-denied-autonomous-uav": {
-    stateLabel: "Active capstone · Phase 0 simulation reviewed",
+    stateLabel: "Active capstone",
     summary: "30/30 held-out goals reached in simulation and 27/30 cleared the 0.5 m requirement; the three misses go to Phase 3 hardware-in-the-loop (HITL) testing.",
     ctaLabel: "See current work",
     miniature: {
@@ -75,7 +75,7 @@ const definitions = {
     ],
   },
   "last-metre-eyes-viasat-entry": {
-    stateLabel: "Competition entry · not selected for Phase 3",
+    stateLabel: "Competition entry",
     summary: "GPS-denied search drone with a satellite relay, entered in Viasat Space for Good 2026; the satellite side stayed modelled.",
     ctaLabel: "Read the entry",
     miniature: {
