@@ -104,7 +104,7 @@ check(panelPlotEnd === rootPlotEnd, `reveal panel --plot-end must mirror the svg
 // Verbatim pins (R1 finding 7): phrase-level pins left the brief's own figure
 // (<= 1 %) unpinned and could not tell the three byte-identical submain
 // bodies apart, so every approved string is pinned inside its own block. The
-// list mirrors components/FeaturedSldInteractive.tsx TARGETS -- keep in step.
+// list mirrors lib/lv-design-basis.ts -- keep in step.
 const APPROVED = [
   ["supply", "500 kVA · 400 V 3-ph", "Supply capacity S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity; 85.6 kVA on the heaviest phase (Ib 123.6 A)."],
   ["mains", "25 mm² X-90 Cu · Ib 123.6 A", "I_b = S_demand / (√3 · U₀) with S_demand = 85.6 kVA; I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3."],
@@ -732,6 +732,25 @@ const oneLineHintAt = oneLinePanel.indexOf('<p class="lv-scroll-hint">Scroll sid
 check(oneLineHintAt > oneLinePanel.indexOf('class="lv-view-stage"') && oneLineHintAt > oneLinePanel.indexOf("</svg>") && oneLineHintAt < oneLinePanel.indexOf('class="lv-view-meta"'), "one-line panel must carry the scroll hint after the stage and before the meta row");
 check((oneLinePanel.match(/href="\/images\/lv-cabling-sld\.svg"/g) ?? []).length === 1, "one-line panel must keep exactly one full-size link");
 check(!/<div[^>]*data-view="installation"[\s\S]*?lv-scroll-hint/.test(lvCaseStudy.replace(/[\s\S]*?(?=<div[^>]*data-view="installation")/, "")), "installation panel must not carry the one-line scroll hint");
+// LV cutaway route trace (docs/lv-cutaway-route-trace.md, Nathan 2026-10-29).
+{
+  const installPanel = normalizeTextEntities(lvCaseStudy.slice(lvCaseStudy.indexOf('data-view="installation"')));
+  check(lvCaseStudy.includes("Installation · route"), "installation tab must read Installation · route");
+  check(/class="lv-trace"[^>]*data-trace="idle"/.test(installPanel), "trace must ship drawn (idle) so no-JS readers see the full route");
+  const stops = [...installPanel.matchAll(/<g data-stop="([a-z]+)">/g)].map((m) => m[1]);
+  check(stops.join(",") === "mains,supply,msb,submains,trench", `installation svg must carry the five stop groups (${stops})`);
+  const reveals = installPanel.match(/<polyline class="lv-trace-reveal"[^>]*>/g) ?? [];
+  check(reveals.length === 29 && reveals.every((tag) => tag.includes('pathLength="1"')), `every traced route needs a pathLength reveal copy (${reveals.length})`);
+  check((installPanel.match(/mask="url\(#instReveal[1-5]\)"/g) ?? []).length === 29, "every traced route must sit behind its step's mask");
+  const buttons = [...installPanel.matchAll(/class="lv-trace-stop" data-stop="([a-z]+)"/g)].map((m) => m[1]);
+  check(buttons.join(",") === "supply,mains,msb,submains,trench", `route stops must follow the route order (${buttons})`);
+  check(/<noscript><style>[^<]*\.lv-trace-detail\[hidden\] \{ display: block; \}/.test(installPanel), "no-JS route must show every stop's detail");
+  // One source: the cutaway prints the hero's approved basis verbatim.
+  for (const [target, value, detail] of APPROVED) {
+    check(installPanel.includes(value) && installPanel.includes(detail), `route detail must carry the approved ${target} basis verbatim`);
+  }
+  check(installPanel.includes("Trench section A") && installPanel.includes("600 mm · trefoil · k = 1.03"), "trench stop must carry its basis");
+}
 // Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
 // names the authoring tool and says the page carries a redraw.
 const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");

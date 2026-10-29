@@ -215,6 +215,41 @@ try {
   assert.equal(await noJS.locator(".hero-sld-row-disclosure").first().isVisible(), false, "no-JS page must not promise unavailable disclosure interaction");
   assert.equal(await noJS.locator(".hero-summary").evaluate(e => getComputedStyle(e).opacity), "1");
   await noJS.close();
+  // LV installation route trace (docs/lv-cutaway-route-trace.md).
+  const lvUrl = `${base}/projects/lv-cabling-design-commercial-complex`;
+  const traced = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "no-preference" });
+  await traced.goto(lvUrl, { waitUntil: "networkidle" });
+  const trace = traced.locator(".lv-trace");
+  assert.equal(await trace.getAttribute("data-trace"), "armed", "trace must wait while its tab is hidden");
+  await traced.locator("label.lv-view-tab").filter({ hasText: "Installation" }).click();
+  await traced.locator('.lv-view-panel[data-view="installation"] .lv-view-stage').scrollIntoViewIfNeeded();
+  await traced.waitForFunction(() => document.querySelector(".lv-trace")?.dataset.trace === "play");
+  const traceStart = Date.now();
+  assert.equal(await traced.evaluate(() => [...document.querySelectorAll(".lv-trace-reveal")].filter(e => e.getAnimations().length).length), 29, "every route reveal must animate");
+  await traced.waitForFunction(() => [...document.querySelectorAll(".lv-trace-reveal")].every(e => e.getAnimations().every(a => a.playState === "finished")), null, { timeout: 4000 });
+  assert.ok(Date.now() - traceStart < 3000, `route trace must finish within 3 s (${Date.now() - traceStart} ms)`);
+  const mains = traced.locator('.lv-trace-stop[data-stop="mains"]');
+  assert.ok((await mains.boundingBox()).height >= 44, "route stop misses its 44px target");
+  await mains.click();
+  assert.equal(await mains.getAttribute("aria-expanded"), "true");
+  assert.equal(await traced.locator(`[id="${await mains.getAttribute("aria-controls")}"]`).isVisible(), true, "stop must open its own detail");
+  // the opacity fades over --motion-standard; wait for it to settle
+  await traced.waitForFunction(() => getComputedStyle(document.querySelector('.lv-trace svg [data-stop="supply"]')).opacity === "0.3", null, { timeout: 1000 });
+  assert.equal(await traced.locator('.lv-trace svg [data-stop="mains"]').evaluate(e => getComputedStyle(e).opacity), "1", "the chosen stop must stay at full strength");
+  await traced.keyboard.press("Escape");
+  assert.equal(await mains.getAttribute("aria-expanded"), "false");
+  assert.equal(await traced.evaluate(() => document.activeElement?.dataset.stop), "mains", "Escape must return focus to the stop");
+  await traced.locator(".lv-trace-replay").click();
+  await traced.waitForFunction(() => document.querySelector(".lv-trace")?.dataset.trace === "play");
+  await traced.close();
+  const stillRoute = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+  await stillRoute.goto(lvUrl, { waitUntil: "networkidle" });
+  await stillRoute.locator("label.lv-view-tab").filter({ hasText: "Installation" }).click();
+  assert.equal(await stillRoute.locator(".lv-trace").getAttribute("data-trace"), "idle", "reduced motion must not arm the trace");
+  assert.equal(await stillRoute.locator(".lv-trace-replay").count(), 0, "nothing to replay under reduced motion");
+  assert.ok(await stillRoute.locator(".lv-trace-reveal").evaluateAll(ns => ns.every(n => parseFloat(getComputedStyle(n).strokeDashoffset) === 0)), "reduced motion must show the whole route");
+  await stillRoute.close();
+  checks++;
   console.log(`UI/UX motion checks passed: ${checks} viewport/motion and case-study scenarios, plus Projects/no-JS checks.`);
 } finally {
   await browser.close();
