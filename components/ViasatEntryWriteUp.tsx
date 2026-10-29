@@ -4,6 +4,10 @@ import styles from "./ViasatEntryWriteUp.module.css";
 // re-render of card 05b with its two on-screen em dashes replaced (audit M1).
 // Nathan, 2026-10-20: cards only; the full video is held back for now.
 const cards = {
+  journey: {
+    src: "/images/viasat-entry/journey.webp",
+    alt: "Card from the Phase 2 video showing the user journey: relay node switched on at the site perimeter, drone enters the structure, map reaches incident command, entry decision made",
+  },
   mapFirst: {
     src: "/images/viasat-entry/map-first.webp",
     alt: "Card titled Map first: the occupancy map of the demo survey is 42 kB, measured in the shot 4 demo, against roughly 20 MB for the same 32 seconds of HD video",
@@ -50,6 +54,7 @@ export function ViasatEntryWriteUp() {
         <p>The first segment is the drone, which is designed to navigate without GPS using visual-inertial odometry, stereo depth and D* Lite replanning. This is the aircraft I am building for my <a className="text-link" href="/projects/gps-denied-autonomous-uav">GPS-denied capstone</a>, so the drone in the entry was hardware already on my bench.</p>
         <p>The second is a one-button relay node at the site perimeter, where it has sky view. The drone sends its map, position track and detection events to the relay over a local radio link, and the relay backhauls them over Viasat&apos;s L-band network to incident command. Because the traffic between the segments is MAVLink and ROS 2 over IP, the drone stack is the same whether the backhaul is bench Wi-Fi or a satellite terminal, which is what made a mocked satellite link a fair test of the drone side.</p>
         <p>The demo in the video ran real MAVLink traffic over a link shaped to published L-band latency and bandwidth, with the bearer labelled on screen as a mock.</p>
+        <Card card={cards.journey} caption="The user journey card from my Phase 2 video: relay on, drone in, map out, decision made." />
       </div>
       <div className="writeup-block">
         <h3 id="map-first">Why the autonomy matters to the link</h3>

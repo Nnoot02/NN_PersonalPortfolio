@@ -771,6 +771,29 @@ check(!/<div[^>]*data-view="installation"[\s\S]*?lv-scroll-hint/.test(lvCaseStud
   }
   check(diagram.includes("400 V · ~1443 A · TS132") && diagram.includes("11 / 33 kV · ~52 / ~17 A · TS133"), "LV and HV stops must carry their currents");
 }
+// Last-Metre Eyes relay hero (docs/lme-relay-animation.md, Nathan 2026-10-29).
+{
+  const lme = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html")));
+  const figure = lme.slice(lme.indexOf('class="case-diagram lme-relay-figure"'), lme.indexOf('class="case-scope"'));
+  check(figure.length > 0 && !lme.includes('class="case-image"'), "LME case study must lead with the relay diagram");
+  check(/class="drawing-trace"[^>]*data-trace="idle"/.test(figure), "LME relay must ship in its finished state (idle)");
+  check(figure.includes('class="lme-relay lme-relay-h"') && figure.includes('class="lme-relay lme-relay-v"'), "LME relay must carry the desktop and phone drawings");
+  check([...figure.matchAll(/<g data-stop="([a-z]+)">/g)].map((m) => m[1]).join(",") === "drone,halow,relay,lband,ic,drone,halow,relay,lband,ic", "each LME drawing must carry its five stop groups in chain order");
+  check([...figure.matchAll(/class="drawing-trace-stop" data-stop="([a-z]+)"/g)].map((m) => m[1]).join(",") === "drone,halow,relay,lband,ic", "LME stops must follow the chain");
+  // Evidence styling: solid real, dashed modelled, dotted mock (Nathan's call).
+  for (const kind of ["h", "v"]) {
+    const svg = figure.match(new RegExp(`<svg[^>]*lme-relay-${kind}"[\\s\\S]*?</svg>`))?.[0] ?? "";
+    const group = (id) => svg.match(new RegExp(`<g data-stop="${id}">[\\s\\S]*?</g>`))?.[0] ?? "";
+    check(/<polyline[^>]*stroke-dasharray="7 6"/.test(group("halow")), `LME ${kind}: the HaLow link must be dashed (modelled)`);
+    check((group("lband").match(/<polyline[^>]*stroke-dasharray="2 5"/g) ?? []).length === 2, `LME ${kind}: both L-band legs must be dotted (mock)`);
+  }
+  for (const label of ["Real", "Modelled", "Concept", "Mock in the demo", "Target"]) {
+    check(figure.includes(`<span class="drawing-trace-value">${label}</span>`), `LME stops must state the ${label} evidence level`);
+  }
+  check(figure.includes("Map · 42 kB") && figure.includes("HD video · ~20 MB") && figure.includes("One survey, not a compression ratio for the field."), "LME scale bar must keep both figures and its caveat");
+  check(figure.includes("designed to navigate without GPS") && !figure.includes("navigates without GPS"), "LME drone stop must not claim the drone already navigates without GPS");
+  check(figure.includes("Nothing in the satellite segment was measured."), "LME L-band stop must say the satellite segment was not measured");
+}
 // Audit 2026-09-24, A8 follow-up (Nathan: Autodesk Inventor). The diagram note
 // names the authoring tool and says the page carries a redraw.
 const lvImageNote = normalizeTextEntities(lvCaseStudy.match(/<p[^>]*class="case-image-note"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "");

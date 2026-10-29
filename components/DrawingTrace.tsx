@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 // A drawing whose route draws once, the first time it is seen, then offers
 // stops that open the design basis behind each part of it. Used by the LV
@@ -19,11 +20,14 @@ export function DrawingTrace({
   stops,
   stopsLabel = "Stops on the route",
   stageClassName = "drawing-trace-stage",
+  afterStage,
 }: {
   svg: string;
   stops: TraceStop[];
   stopsLabel?: string;
   stageClassName?: string;
+  // drawing-specific content shown under the drawing, before the stops
+  afterStage?: ReactNode;
 }) {
   const baseId = useId();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -81,6 +85,7 @@ export function DrawingTrace({
   return (
     <div className="drawing-trace" data-trace={trace} data-active={active ?? undefined}>
       {drawing}
+      {afterStage}
       {/* Without JS the stops cannot open, so every detail is shown instead. */}
       <noscript><style>{".drawing-trace-stops { display: none; } .drawing-trace-detail[hidden] { display: block; }"}</style></noscript>
       <ul className="drawing-trace-stops" aria-label={stopsLabel}>

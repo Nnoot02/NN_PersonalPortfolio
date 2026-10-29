@@ -563,6 +563,13 @@ capacity table also reads. Only the case-study hero is inline; the homepage,
 /projects and 800w images stay rasters of the same SVG, unchanged by a pixel
 diff.
 
+The Last-Metre Eyes hero is its relay chain (docs/lme-relay-animation.md):
+a drone maps the structure, then a 42 kB packet travels drone → relay →
+satellite → incident command. Link style carries the evidence level: solid for
+real, dashed for modelled, dotted for a mock in the demo. A to-scale bar
+compares the map with ~20 MB of video. Built with `DrawingTrace`; it runs
+vertically on phones.
+
 `homepage-epilogue` is an exit ramp, not another evidence ledger: a 170px
 context track plus exactly two single-link portals (UAV, then Workbench), using
 118px authentic square photos and a minimum desktop height of 142px. From
