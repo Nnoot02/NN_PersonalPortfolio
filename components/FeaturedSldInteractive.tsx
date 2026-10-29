@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
+import { LV_DESIGN_BASIS, type BasisEntry, type BasisId } from "@/lib/lv-design-basis";
 
 // The hero artifact's interaction island. Hovering a component (or its legend
 // row) paints that component's linework in accent via CSS (:has); clicking a
@@ -10,71 +11,27 @@ import type { CSSProperties, ReactNode } from "react";
 // Without JS the SSR frame still shows the finished drawing and the seven
 // default rows.
 
-type TargetId = "supply" | "mains" | "vd" | "device" | "sup" | "hai" | "but";
+type TargetId = Exclude<BasisId, "trench">;
 
-type Target = {
+type Target = Omit<BasisEntry, "id"> & {
   id: TargetId;
-  name: string;
-  value: string;
-  detail: string;
   // hit area over the feature, as percentages of the 1200x800 stage
   hit: { x: string; y: string; w: string; h: string };
 };
 
-// Copy traced to components/LvCablingWriteUp.tsx and the project brief; the
-// voltage-drop split (brief 1 % vs Cl 3.6.2's 5 %) was verified against the
-// standard's own text (Cl 3.6.2 Value) and the brief's source document.
-const TARGETS: Target[] = [
-  {
-    id: "supply",
-    name: "Supply",
-    value: "500 kVA · 400 V 3-ph",
-    detail: "Supply capacity S = 500 kVA · U₀ = 400 V · I_psc = 15 kA. Maximum demand: AS/NZS 3000:2018 Cl 2.2.2(a), Table C2 diversity; 85.6 kVA on the heaviest phase (Ib 123.6 A).",
-    hit: { x: "11.7%", y: "7.5%", w: "13.3%", h: "14.0%" },
-  },
-  {
-    id: "mains",
-    name: "Consumer mains",
-    value: "25 mm² X-90 Cu · Ib 123.6 A",
-    detail: "I_b = S_demand / (√3 · U₀) with S_demand = 85.6 kVA; I_b ≤ I_n ≤ I_z with I_z from AS/NZS 3008.1.1:2025 Table 3.8 → Table 3.13 Col 19 (buried trefoil); corrections per Cl 3.4.3.",
-    hit: { x: "16.5%", y: "22.5%", w: "6.3%", h: "14.0%" },
-  },
-  {
-    id: "vd",
-    name: "Voltage drop",
-    value: "ΔV 0.74 % vs 1 % brief limit",
-    detail: "ΔV = √3 · I_b · L · R_c / 1000 ≤ 1 % of 400 V (project brief). AS/NZS 3000:2018 Cl 3.6.2 sets the 5 % installation limit.",
-    hit: { x: "35.5%", y: "33.0%", w: "12.5%", h: "5.5%" },
-  },
-  {
-    id: "device",
-    name: "Main switchboard",
-    value: "125 A Type C · 8.0 kA fault",
-    detail: "I_n = 125 A Type C; I_psc 8.0 kA ≤ 10 kA breaking capacity per Cl 2.5.4.2(a). EFLI: Cl 5.7.3, Table 8.1.",
-    hit: { x: "16.5%", y: "36.5%", w: "6.3%", h: "10.0%" },
-  },
-  {
-    id: "sup",
-    name: "Supermarket submain",
-    value: "SUP-DB · 40 A · 6 mm² V-75",
-    detail: "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %.",
-    hit: { x: "43.3%", y: "45.0%", w: "12.5%", h: "37.5%" },
-  },
-  {
-    id: "hai",
-    name: "Hairdresser submain",
-    value: "HAI-DB · 25 A · 6 mm² V-75",
-    detail: "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %.",
-    hit: { x: "61.7%", y: "45.0%", w: "12.1%", h: "37.5%" },
-  },
-  {
-    id: "but",
-    name: "Butcher submain",
-    value: "BUT-DB · 50 A · 10 mm² V-75",
-    detail: "Submain: same chain; Table 3.8 → Table 3.12 Col 17 (one conduit). ΔV adds to the path budget against Cl 3.6.2's 5 %.",
-    hit: { x: "79.6%", y: "45.0%", w: "12.5%", h: "37.5%" },
-  },
-];
+// Names, values and details live in lib/lv-design-basis.ts; only the hit
+// areas belong to this drawing.
+const HITS: Record<TargetId, Target["hit"]> = {
+  supply: { x: "11.7%", y: "7.5%", w: "13.3%", h: "14.0%" },
+  mains: { x: "16.5%", y: "22.5%", w: "6.3%", h: "14.0%" },
+  vd: { x: "35.5%", y: "33.0%", w: "12.5%", h: "5.5%" },
+  device: { x: "16.5%", y: "36.5%", w: "6.3%", h: "10.0%" },
+  sup: { x: "43.3%", y: "45.0%", w: "12.5%", h: "37.5%" },
+  hai: { x: "61.7%", y: "45.0%", w: "12.1%", h: "37.5%" },
+  but: { x: "79.6%", y: "45.0%", w: "12.5%", h: "37.5%" },
+};
+
+const TARGETS: Target[] = (Object.keys(HITS) as TargetId[]).map((id) => ({ ...LV_DESIGN_BASIS[id], id, hit: HITS[id] }));
 
 export function FeaturedSldInteractive({ svg, plotEnd, stageAction }: { svg: string; plotEnd: string; stageAction?: ReactNode }) {
   const panelId = useId();
