@@ -1042,7 +1042,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 
 
 /* UI/UX audit 2026-10-04: discoverable controls and state feedback.
-   The drawing remains memoized and reserved panel space prevents layout jumps. */
+   The drawing remains memoized; the detail panel expands on demand (DESIGN.md Motion). */
 .hero-sld-row-disclosure { display: inline-block; color: var(--accent-dark); font-size: 1rem; line-height: 1; transition: transform var(--motion-standard) var(--motion-ease); }
 .hero-sld-row[aria-expanded="true"] .hero-sld-row-disclosure { transform: rotate(45deg); }
 .copy-email-label { min-width: 9.5em; text-align: center; }
