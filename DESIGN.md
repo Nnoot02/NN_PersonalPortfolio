@@ -374,6 +374,14 @@ the home hero h1, and **always uppercase**. **Inter**
 at weight 400 (600 for inline emphasis and `.text-link`). Inter is never set in
 display roles; Barlow Condensed is never set as body copy.
 
+The UA monospace stack (`{typography.code-family}`) is not a third brand face:
+it is a **functional** face with exactly two roles. One is worked-calculation
+`<pre>` blocks (`{typography.code}`). The other is **diagram labels**: the home
+one-line diagram's legend rows, detail title and body, and detail close button,
+set at `--text-tag` in 600/700. Those are the labels on an engineering drawing,
+and mono reads as drawing annotation rather than site chrome (Nathan,
+2026-10-29). Mono appears nowhere else.
+
 ### Scale
 
 | Role | Family | Size | Weight | Line height | Tracking | Notes |
@@ -577,8 +585,11 @@ on `:root`, so a write-up page without a spec sheet carries no phantom
 reservation) + `--clear-gap` (12px).
 
 The hero figure (`hero-artifact`) is a **link** to the Commercial LV Cabling
-Design case study, at every viewport. It was passive until 2026-09-02, but the
-single-line diagram is unreadable on a phone and needed somewhere to go. The
+Design case study wherever it shows. It was passive until 2026-09-02, but the
+single-line diagram is unreadable on a phone and needed somewhere to go. Since
+2026-10-25 (Nathan) the figure is not rendered at 720px and below at all
+(`display: none`): on phones the hero is copy and actions only, and the case
+study is reached from the power-work rows below. The
 link is not viewport-conditional: that would need either two DOM trees or
 `pointer-events: none` on desktop, and the second breaks keyboard users. No
 hover treatment is added; the global `:focus-visible` outline is the
@@ -780,7 +791,10 @@ enter over 180 ms with a 4 px shift; mobile navigation uses the same timing;
 email-copy success fades a check over 120 ms; the native evidence dialog fades
 its backdrop/image over 200 ms. Small effects use
 `cubic-bezier(.2, 0, 0, 1)` without overshoot and do not delay interaction.
-The drawing is never replayed when a detail opens. Panel space remains reserved.
+The drawing is never replayed when a detail opens. Since 2026-10-18
+(`2b02e9e`) the detail panel is not reserved: it expands on demand by
+transitioning `grid-template-rows` from `0fr` to `1fr` over 180 ms, giving the
+diagram the room the empty reserved row used to take.
 Movement/reveal keyframes are gated by `prefers-reduced-motion: no-preference`;
 the reduced-motion rule removes transition duration and switches scrolling to
 auto. Content and state remain readable immediately.
