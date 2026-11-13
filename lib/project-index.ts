@@ -85,7 +85,7 @@ const definitions = {
       alt: "Thrust stand CAD model: orange printed carriage with the motor plate on two steel rods, rod supports and a timber base",
     },
     stages: [
-      { label: "Design", detail: "Shield schematic and stand CAD", state: "resolved" },
+      { label: "Design", detail: "Shield PCB and stand CAD", state: "resolved" },
       { label: "Current frontier", detail: "RPM front end on the bench", state: "current" },
       { label: "Verification", detail: "Thrust sweep and motor decision", state: "future" },
     ],
