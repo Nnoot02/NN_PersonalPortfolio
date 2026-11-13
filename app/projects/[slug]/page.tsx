@@ -14,6 +14,7 @@ import { DrawingTrace } from "@/components/DrawingTrace";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ThrustStandWriteUp } from "@/components/ThrustStandWriteUp";
 import { UavClearanceFigure, UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { ViasatEntryWriteUp } from "@/components/ViasatEntryWriteUp";
 import { projectStudyNext } from "@/lib/project-index";
@@ -27,6 +28,7 @@ const writeUps: Record<string, React.ComponentType> = {
   "lv-cabling-design-commercial-complex": LvCablingWriteUp,
   "solar-grid-connection-assessment": PvConnectionWriteUp,
   "gps-denied-autonomous-uav": UavTestGatesWriteUp,
+  "thrust-stand": ThrustStandWriteUp,
   "last-metre-eyes-viasat-entry": ViasatEntryWriteUp,
 };
 
@@ -35,6 +37,7 @@ const shareImages: Record<string, { url: string; width: number; height: number }
   "lv-cabling-design-commercial-complex": { url: "/images/project-index/lv-cabling-artifact.webp", width: 1280, height: 720 },
   "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
   "gps-denied-autonomous-uav": { url: "/images/gps-denied-uav.webp", width: 1920, height: 1080 },
+  "thrust-stand": { url: "/images/thrust-stand/thrust-stand-cad.webp", width: 1600, height: 900 },
   "last-metre-eyes-viasat-entry": { url: "/images/viasat-entry/journey.webp", width: 1920, height: 1080 },
 };
 
@@ -102,6 +105,11 @@ const openingLinks: Record<string, Array<{ label: string; href: string }>> = {
     { label: "Three capacities", href: "#three-capacities" },
     { label: "Connection voltage", href: "#connection-voltage" },
     { label: "Hosting capacity", href: "#hosting-capacity" },
+  ],
+  "thrust-stand": [
+    { label: "What it measures", href: "#what-it-measures" },
+    { label: "Validation gates", href: "#validation-gates" },
+    { label: "Bench bring-up", href: "#bench-bring-up" },
   ],
   "last-metre-eyes-viasat-entry": [
     { label: "Two segments", href: "#two-segments" },

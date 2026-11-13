@@ -67,6 +67,14 @@
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],
+  "/projects/thrust-stand": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/ThrustStandWriteUp.tsx",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
   "/projects/last-metre-eyes-viasat-entry": [
     "app/projects/[slug]/page.tsx",
     "lib/projects.ts",

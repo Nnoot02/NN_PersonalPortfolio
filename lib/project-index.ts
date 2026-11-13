@@ -24,6 +24,7 @@ export const projectIndexSlugs = [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
+  "thrust-stand",
   "last-metre-eyes-viasat-entry",
 ] as const;
 
@@ -74,6 +75,20 @@ const definitions = {
       { label: "Verification", detail: "Phase 3/HITL clearance validation", state: "future" },
     ],
   },
+  "thrust-stand": {
+    stateLabel: "Capstone instrument · 0 of 6 gates passed",
+    summary: "Bench instrument for thrust, RPM, current and voltage, built so the motor-upgrade decision rests on measured data.",
+    ctaLabel: "See current work",
+    miniature: {
+      src: "/images/project-index/thrust-stand-artifact.webp",
+      alt: "Thrust stand CAD model: orange printed carriage with the motor plate on two steel rods, rod supports and a timber base",
+    },
+    stages: [
+      { label: "Design", detail: "Shield schematic and stand CAD", state: "resolved" },
+      { label: "Current frontier", detail: "RPM front end on the bench", state: "current" },
+      { label: "Verification", detail: "Thrust sweep and motor decision", state: "future" },
+    ],
+  },
   "last-metre-eyes-viasat-entry": {
     stateLabel: "Competition entry",
     summary: "GPS-denied search drone with a satellite relay, entered in Viasat Space for Good 2026; the satellite side stayed modelled.",
@@ -107,7 +122,7 @@ export const projectIndexEntries: readonly ProjectIndexEntry[] = projectIndexSlu
 });
 
 // Sub-discipline grouping for /projects. Order across all groups must stay
-// LV -> Solar -> UAV -> Viasat, which the contract asserts on the rendered DOM.
+// LV -> Solar -> UAV -> Thrust stand -> Viasat, which the contract asserts on the rendered DOM.
 export const projectIndexGroups = [
   {
     id: "power-systems",
@@ -117,7 +132,7 @@ export const projectIndexGroups = [
   {
     id: "embedded-hardware",
     heading: "Embedded & Hardware",
-    slugs: ["gps-denied-autonomous-uav", "last-metre-eyes-viasat-entry"],
+    slugs: ["gps-denied-autonomous-uav", "thrust-stand", "last-metre-eyes-viasat-entry"],
   },
 ] as const satisfies readonly { id: string; heading: string; slugs: readonly ProjectIndexSlug[] }[];
 
