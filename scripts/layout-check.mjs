@@ -1310,6 +1310,16 @@ async function main() {
           }
         }
 
+        // The miniatures are loading="lazy". With six lanes the last one sits
+        // far enough below the fold that a slow runner read it before it
+        // loaded (CI 2026-11-13: "journey miniature 6 source is 0x0"). Scroll
+        // each into view and wait for its decode before reading natural size.
+        for (let index = 0; index < imageCount; index += 1) {
+          const image = images.nth(index);
+          await image.scrollIntoViewIfNeeded();
+          await image.evaluate((node) => /** @type {HTMLImageElement} */ (node).decode().catch(() => {}));
+        }
+
         const imageMetrics = await images.evaluateAll((nodes) =>
           nodes.map((node) => {
             const image = /** @type {HTMLImageElement} */ (node);
