@@ -4,3 +4,20 @@
 .figure img { display: block; width: 100%; height: auto; }
 .figure figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
 .animation { max-width: 640px; }
+
+/* Dense diagrams: below 720px the figure scrolls inside its own box at a
+   legible minimum width rather than shrinking a 1600px drawing into a 350px
+   slot. Above 720px nothing changes and the wrapper is not focusable (see
+   ScrollPane). The hint is the only text added, and print ignores it. */
+.scrollHint { color: var(--muted); display: none; font-size: .78rem; letter-spacing: .04em; margin: .45rem 0 0; }
+@media (max-width: 720px) {
+  .scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+  .scroll img { min-width: 1000px; }
+  .scroll:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
+  .scrollHint { display: block; }
+}
+@media print {
+  .scroll { overflow: visible; }
+  .scroll img { min-width: 0; }
+  .scrollHint { display: none; }
+}

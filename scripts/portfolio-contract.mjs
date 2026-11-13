@@ -686,14 +686,22 @@ for (const { slug, role, outcome, firstWriteUpId } of caseOpenings) {
   check(!doc.includes('class="case-meta"'), `${slug}: role/status metadata must not repeat below the diagram`);
   const uniqueSummary = doc.match(/<section class="case-sections"[\s\S]*?<\/section>/)?.[0] ?? "";
   check(!uniqueSummary.includes("Current public outcome") && !uniqueSummary.includes("Limits and open items"), `${slug}: result and limits must appear once in the opening`);
-  check(uniqueSummary.includes("What needed solving") && uniqueSummary.includes("How the work is framed"), `${slug}: unique problem and approach must remain`);
+  if (slug === "thrust-stand") {
+    // Nathan, 2026-11-13 (redundancy audit): the write-up lede carries the
+    // problem and the gates section carries the approach, so this brief stated
+    // both twice on one page. Retired there and nowhere else, so pin its
+    // absence rather than leaving the block merely unpinned.
+    check(uniqueSummary === "", "thrust-stand: problem/approach brief is retired (stated once in the write-up lede)");
+  } else {
+    check(uniqueSummary.includes("What needed solving") && uniqueSummary.includes("How the work is framed"), `${slug}: unique problem and approach must remain`);
+    // Codex audit 2026-10-29, C2: the problem and approach brief follows the
+    // opening, ahead of the spec, visual and write-up.
+    const briefIndex = doc.indexOf('class="case-sections"');
+    check(briefIndex > openingIndex && (doc.indexOf('class="writeup') < 0 || briefIndex < doc.indexOf('class="writeup')), `${slug}: problem and approach must follow the opening, before the write-up`);
+  }
   if (firstWriteUpId) {
     check(doc.indexOf(firstWriteUpId) > openingIndex, `${slug}: opening block must precede the write-up sections`);
   }
-  // Codex audit 2026-10-29, C2: the problem and approach brief follows the
-  // opening, ahead of the spec, visual and write-up.
-  const briefIndex = doc.indexOf('class="case-sections"');
-  check(briefIndex > openingIndex && (doc.indexOf('class="writeup') < 0 || briefIndex < doc.indexOf('class="writeup')), `${slug}: problem and approach must follow the opening, before the write-up`);
 }
 
 // Site screening audit 2026-09-16, F6 (Nathan's call 2026-09-17): plain
@@ -971,8 +979,15 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   check(qs.includes("The imported thrust file is sample data"), "QuadSolver app tour must say the imported data is a sample");
   const tsGates = ts.match(/<ol class="gate-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   check((tsGates.match(/<li>/g) ?? []).length === 6, "thrust stand must list exactly six validation gates");
+  check(tsGates.includes("ArduPilot VIBE log") && tsGates.includes("The stand cannot measure that part"), "thrust stand gate 5 must say the VIBE check is aircraft data the stand cannot measure");
   check(!/Status<\/dt><dd>Pass(ed)?\b/.test(tsGates), "thrust stand must not mark any gate passed until one is");
-  check(ts.includes("No gate has passed."), "thrust stand opening must state that no gate has passed");
+  // 2026-11-13 redundancy ruling (Nathan): the gate status lives in the spec row
+  // (its pinned strip is the same tile) and in the gate 1 status detail. It does
+  // not also sit in the opening limitation or the write-up h2, so this pin is a
+  // negative on the sentence the old version required in three places.
+  check(!ts.includes("No gate has passed"), "thrust stand must not repeat the gate status outside the spec row and gate 1");
+  check(ts.includes("0 / 6 passed"), "thrust stand spec row must carry the 0 / 6 gate count");
+  check(/Status<\/dt><dd>Partial\./.test(tsGates), "thrust stand gate 1 status detail must stay on the page");
   check(!ts.includes("—"), "thrust stand copy must contain no em dash");
   const uavGates = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"))).match(/<h3 id="next-gates">[\s\S]*?<\/div>/)?.[0] ?? "";
   check(uavGates.includes('href="/projects/thrust-stand"'), "UAV next-gates block must link to the thrust stand");

@@ -154,7 +154,7 @@ export const projects: Project[] = [
     result:
       "The shield PCB is laid out at Rev02 with no ERC or DRC errors, and the RPM front end is on the bench. Its first real-motor run read about twice the scope frequency at half throttle, and the motor itself turned out to be faulty, so gate 1 has not passed.",
     evidenceStatus:
-      "No gate has passed. Thrust, current and voltage are not calibrated, the shield board is quoted but not ordered, and the printed parts are not printed yet. Every number on this page is a design value or a bench observation, not a validated measurement.",
+      "Thrust, current and voltage are not calibrated, the shield board is quoted but not ordered, and the Rev F parts are not printed yet, so every number on this page is a design value or a bench observation, not a validated measurement.",
   },
   {
     // Unnumbered like the Viasat entry: "04" stays reserved for DFMA.
