@@ -55,7 +55,7 @@ export function ThrustStandWriteUp() {
     <section className="writeup" aria-label="Thrust stand design and bench evidence">
       <div className="writeup-heading">
         <p className="eyebrow">Capstone instrument · bench evidence</p>
-        <h2>Measure first, then buy motors.<br />No gate has passed yet.</h2>
+        <h2>Measure first, then buy motors.</h2>
         <p>
           My <a className="text-link" href="/projects/gps-denied-autonomous-uav">GPS-denied capstone drone</a> carries a
           stereo camera, a Raspberry Pi 5 and sensors on a stock 2212 motor and 1045 propeller kit. Whether those motors
@@ -67,7 +67,8 @@ export function ThrustStandWriteUp() {
           full="/images/thrust-stand/thrust-stand-thrust-need.webp"
           width={1600}
           height={627}
-          alt="Bar chart: total weight 1.27 kg; thrust needed at 2.3 to 1 is 2.92 kg, 0.73 kg per motor; model estimates derived from 1.9 to 2.2 to 1 give 2.4 to 2.8 kg, short by 0.13 to 0.51 kg; measured thrust from the stand is unmeasured"
+          alt="Bar chart: the 1.27 kg aircraft needs 2.92 kg of thrust at 2.3 to 1, models give 2.4 to 2.8 kg, and measured thrust is unmeasured"
+          scroll="Thrust requirement chart"
         >
           The number behind the stand. At my 2.3 : 1 thrust-to-weight target the 1.27 kg aircraft needs 2.92 kg of thrust, and my models put the stock motors at 2.4 to 2.8 kg. That would be 0.13 to 0.51 kg short, but it comes from models, so the stand has to measure it.
         </WriteUpFigure>
@@ -76,18 +77,19 @@ export function ThrustStandWriteUp() {
       <div className="writeup-block">
         <h3 id="what-it-measures">What it measures</h3>
         <p>
-          The stand logs four channels at once against throttle. Thrust comes from a 5 kg bar load cell read by a
-          24-bit NAU7802 ADC. RPM comes from the motor itself: a tap on one phase is clamped, filtered and squared up by
-          an LM393 comparator, giving one edge per electrical cycle, so no optical sensor has to sit near the propeller.
-          Current comes from an off-board ACS758 Hall-effect sensor in the battery lead, and pack voltage from a
-          resistor divider, so every thrust point carries the battery sag behind it.
+          The stand logs four channels at once against throttle. Thrust is a 5 kg bar load cell read by a 24-bit
+          NAU7802 ADC. RPM needs no sensor beside the propeller: a tap on one motor phase is clamped, filtered and
+          squared up by an LM393 comparator, one edge per electrical cycle. Current and pack voltage come from an
+          off-board ACS758 Hall-effect sensor in the battery lead and a resistor divider, so every thrust point carries
+          the battery sag behind it.
         </p>
         <WriteUpFigure
           src="/images/thrust-stand/thrust-stand-wiring-1920.webp"
           full="/images/thrust-stand/thrust-stand-wiring.webp"
           width={1920}
           height={872}
-          alt="Wiring diagram: battery power runs from a Zeee 3S 2200 mAh battery through an Allegro ACS758 current sensor to the ESC and on to a 2212 type 920 KV motor. The thrust stand shield, which plugs on top of an Arduino Mega 2560, takes in motor current, the motor speed pickup, battery voltage and the force signal from an Adafruit 4541 5 kg load cell, and sends throttle to the ESC"
+          alt="Wiring diagram: battery through an ACS758 current sensor to the ESC and motor, with the Mega shield reading force, speed, current and pack voltage"
+          scroll="Wiring diagram"
         >
           How the stand is wired. The orange path is battery power, which carries up to tens of amps and stays off my
           board, so the board only handles signals. The ESC and motor came in a kit with no recorded make or model.
@@ -104,7 +106,8 @@ export function ThrustStandWriteUp() {
           full="/images/thrust-stand/shield-schematic-to-pcb.webp"
           width={1920}
           height={706}
-          alt="The Rev02 shield schematic beside the same circuit as a board render, with five numbered blocks: 1 load cell amplifier, 2 motor speed pickup from one motor wire, 3 battery voltage scaled down to read safely, 4 current sensor input from a separate sensor, 5 throttle out and status lights. The board is split into a 5 V logic side and a battery side"
+          alt="Rev02 shield schematic beside the same circuit as a board layout, split into a 5 V logic side and a battery side"
+          scroll="Shield schematic and board layout"
         >
           The Rev02 schematic and the same circuit in copper, split into a logic side and a battery side.
         </WriteUpFigure>
@@ -148,7 +151,8 @@ export function ThrustStandWriteUp() {
           full="/images/thrust-stand/thrust-stand-phase-tap-stages.webp"
           width={1600}
           height={350}
-          alt="Four analogue stages from the motor phase to the Mega: a clamp with a 22 kilohm resistor and BAT85 diodes keeps the phase inside the rails, a 220 nF AC coupling removes the DC level, a two-pole RC low-pass removes PWM chopping, and an LM393 comparator squares the wave into a Mega D2 interrupt pin that counts edges"
+          alt="Four stages from one motor phase to a Mega interrupt pin: clamp, AC coupling, two-pole RC filter, LM393 comparator"
+          scroll="RPM front-end stages"
         >
           The RPM front end as four stages, from one motor wire to an interrupt pin. The waveforms are illustrative, as I did not save the scope captures.
         </WriteUpFigure>
@@ -163,7 +167,8 @@ export function ThrustStandWriteUp() {
           full="/images/thrust-stand/thrust-stand-filter-response.webp"
           width={1600}
           height={627}
-          alt="Simulated gain against log frequency from 10 Hz to 100 kHz: the built two-pole filter with 3.3 nF capacitors has a 3 dB passband from 21 to 1210 Hz, passes the 1.17 kHz fundamental at minus 12.5 dB and puts 8 kHz PWM at minus 27.9 dB, 15 dB below the rejected one-pole 4.7 nF design"
+          alt="Simulated filter gain: 21 to 1,210 Hz passband, 8 kHz PWM about 28 dB down"
+          scroll="Filter response chart"
         >
           The filter's simulated response: a 3 dB passband from 21 to 1,210 Hz, with 8 kHz PWM about 28 dB down, 15 dB lower than the one-pole design I rejected. It simulates the passive network only, so it is not a bench measurement.
         </WriteUpFigure>
@@ -188,7 +193,7 @@ export function ThrustStandWriteUp() {
           still="/images/thrust-stand/thrust-stand-how-it-works-still.webp"
           width={640}
           height={518}
-          alt="How it works, in three steps: with the motor off the sensor reads zero; thrust pushes the carriage along the rods; the load cell measures that push and the force reading rises. Movement is exaggerated: the real carriage moves under 0.5 mm"
+          alt="Three-step animation: motor off reads zero, thrust pushes the carriage, the load cell measures the push"
         >
           How thrust becomes a reading. The movement is exaggerated, as the real carriage moves less than 0.5 mm.
         </WriteUpFigure>
@@ -203,7 +208,8 @@ export function ThrustStandWriteUp() {
           full="/images/thrust-stand/thrust-stand-revc-revd.webp"
           width={1600}
           height={627}
-          alt="Rev C, printed 5 to 6 November, beside Rev D, not printed, with three numbered faults: 1 the prop hit the base and support, so Rev D raises the motor and moves the front support back; 2 the tower snapped at its root, so Rev D adds bracing at the tower base; 3 the carriage was too heavy, so Rev D uses a ladder frame with 6 % less solid volume"
+          alt="Rev C beside Rev D with three fixes: prop clearance, tower bracing and a lighter carriage"
+          scroll="Rev C and Rev D comparison"
         >
           What broke on Rev C and how Rev D answered it. Rev F keeps the Rev D parts and replaces only the carriage, widening the tower into a tapered flange.
         </WriteUpFigure>

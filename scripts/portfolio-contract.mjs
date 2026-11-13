@@ -972,7 +972,13 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const tsGates = ts.match(/<ol class="gate-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   check((tsGates.match(/<li>/g) ?? []).length === 6, "thrust stand must list exactly six validation gates");
   check(!/Status<\/dt><dd>Pass(ed)?\b/.test(tsGates), "thrust stand must not mark any gate passed until one is");
-  check(ts.includes("No gate has passed."), "thrust stand opening must state that no gate has passed");
+  // 2026-11-13 redundancy ruling (Nathan): the gate status lives in the spec row
+  // (its pinned strip is the same tile) and in the gate 1 status detail. It does
+  // not also sit in the opening limitation or the write-up h2, so this pin is a
+  // negative on the sentence the old version required in three places.
+  check(!ts.includes("No gate has passed"), "thrust stand must not repeat the gate status outside the spec row and gate 1");
+  check(ts.includes("0 / 6 passed"), "thrust stand spec row must carry the 0 / 6 gate count");
+  check(/Status<\/dt><dd>Partial\./.test(tsGates), "thrust stand gate 1 status detail must stay on the page");
   check(!ts.includes("—"), "thrust stand copy must contain no em dash");
   const uavGates = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"))).match(/<h3 id="next-gates">[\s\S]*?<\/div>/)?.[0] ?? "";
   check(uavGates.includes('href="/projects/thrust-stand"'), "UAV next-gates block must link to the thrust stand");
