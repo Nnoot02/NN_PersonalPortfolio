@@ -38,9 +38,9 @@ const gates = [
   },
   {
     n: 5,
-    name: "Vibration",
-    pass: "Ground-run logs stay below about 30 m/s² with zero clipping, and any filter setting is tied to a measured frequency.",
-    status: "Not started.",
+    name: "Vibration and log evidence",
+    pass: "On the bench, any prop or motor balance change is evidenced, and any filter or notch setting is tied to a measured frequency. On the aircraft, the ArduPilot VIBE log stays below about 30 m/s² with a clip count of 0. The stand cannot measure that part, and does not claim to.",
+    status: "Not started. The stand can evidence balance and a filter basis; the VIBE number comes from the aircraft's own log.",
   },
   {
     n: 6,

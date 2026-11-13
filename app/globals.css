@@ -802,6 +802,12 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    the bordered card it dragged the table back under the card's bottom rule
    (Nathan, 2026-09-17). Neutralise the pull when the card precedes it. */
 .case-sections + .case-spec, .case-sections + .case-tags { margin-top: 0; }
+/* The spec sheet's -1.2rem pull is tuned against the brief above it. Where the
+   brief is absent and the sheet follows the opening card directly (thrust
+   stand, 2026-11-13), the pull drags the table into that card: measured 19.2px
+   of overlap at 14 viewports. The opening carries no bottom border or padding,
+   so it needs a real gap rather than a zeroed margin. */
+.case-opening + .case-spec, .case-opening + .case-tags { margin-top: 1.75rem; }
 .case-opening dl { display: grid; gap: .9rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); margin: 0; }
 .case-opening dt { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; margin-bottom: .35rem; text-transform: uppercase; }
 .case-opening dd { color: var(--ink); font-size: var(--text-principle-body); line-height: 1.55; margin: 0; }
