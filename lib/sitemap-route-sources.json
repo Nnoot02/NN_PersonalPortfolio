@@ -75,6 +75,14 @@
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],
+  "/projects/quadsolver-propulsion-sizing": [
+    "app/projects/[slug]/page.tsx",
+    "lib/projects.ts",
+    "lib/project-index.ts",
+    "components/QuadSolverWriteUp.tsx",
+    "components/CaseOpening.tsx",
+    "components/CaseSpec.tsx"
+  ],
   "/projects/last-metre-eyes-viasat-entry": [
     "app/projects/[slug]/page.tsx",
     "lib/projects.ts",

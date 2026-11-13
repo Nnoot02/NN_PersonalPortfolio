@@ -156,6 +156,38 @@ export const projects: Project[] = [
       "No gate has passed. Thrust, current and voltage are not calibrated, the PCB layout has not started, and the printed parts are not printed yet. Every number on this page is a design value or a bench observation, not a validated measurement.",
   },
   {
+    // Unnumbered like the Viasat entry: "04" stays reserved for DFMA.
+    slug: "quadsolver-propulsion-sizing",
+    title: "QuadSolver: Drone Propulsion Sizing",
+    summary:
+      "A propulsion sizing app that checks a quad's motors, props, ESC and battery against nine limits at once. Its results are model estimates until my own thrust-stand data replaces them.",
+    image: "/images/quadsolver-results.webp",
+    imageSrcSet: "/images/quadsolver-results-960.webp 960w, /images/quadsolver-results-1280.webp 1280w, /images/quadsolver-results.webp 1920w",
+    heroSrcSet: "/images/quadsolver-results-960.webp 960w, /images/quadsolver-results-1280.webp 1280w, /images/quadsolver-results.webp 1920w",
+    imageAlt:
+      "QuadSolver Results screen for a 5-inch freestyle quad on the coefficient model: thrust-to-weight 7.69 to 1, 8.8 min hover, 6.6 A hover current, 1.45 kg payload headroom and 4.3 g/W, with every limit passing",
+    imageNote: "The built-in 5-inch preset with 120 g of assumed electronics, solved on the coefficient model. No measured thrust data is loaded.",
+    scope: "Propulsion modelling, software",
+    role: "Sole developer: models, app and tests",
+    status: "Software tool · model-only, hardware pending",
+    tags: ["Propulsion modelling", "Python", "Verification"],
+    evidenceMarkers: ["3 hover methods", "9 limits", "Preset 27 % duty", "Thrust stand pending"],
+    spec: [
+      { label: "Hover methods", value: "3", note: "measured data wins when it matches the hardware" },
+      { label: "Limits", value: "9", note: "motor, ESC, battery, frame and targets, checked together" },
+      { label: "5-inch preset", value: "27 % duty", note: "about 8.8 min hover, model estimate" },
+      { label: "Validation", value: "Pending", note: "my own thrust-stand sweep" },
+    ],
+    problem:
+      "Choosing motors, props, an ESC and a battery for a multirotor means checking thrust, endurance and several electrical ratings against each other, and a spreadsheet rarely shows which limit is reached first.",
+    approach:
+      "Solve hover with the best method the data allows (measured thrust-stand data, then a propeller coefficient model, then momentum theory), label that method on every result, and check every rating at the same operating point.",
+    result:
+      "For the 5-inch preset with 120 g of assumed electronics, the coefficient model gives a 7.7:1 thrust-to-weight ratio, 27 % hover duty and about 8.8 minutes of hover. These are model estimates, since the propeller coefficients are fitted to T-Motor's published thrust test rather than my own measurements.",
+    evidenceStatus:
+      "Model-only. I have not yet imported a thrust-stand sweep of my own; the thrust stand I am building is the planned data source. The source code and Windows build are not public yet.",
+  },
+  {
     // Unnumbered: "04" stays reserved while the DFMA study is unpublished.
     slug: "last-metre-eyes-viasat-entry",
     title: "Last-Metre Eyes: Viasat Space for Good 2026",

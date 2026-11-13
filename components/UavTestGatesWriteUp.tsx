@@ -72,7 +72,7 @@ export function UavTestGatesWriteUp() {
       </div>
       <div className="writeup-block">
         <h3 id="next-gates">Next verification gates</h3>
-        <p>Props-off electronics and failsafe checks come before real flight. Position hold and estimator-source transitions need hardware evidence, while final clearance checks are planned for Phase 3/HITL. Integrated obstacle avoidance also depends on measured full-payload thrust margin, which I am building a <a className="text-link" href="/projects/thrust-stand">thrust stand</a> to measure.</p>
+        <p>Props-off electronics and failsafe checks come before real flight. Position hold and estimator-source transitions need hardware evidence, while final clearance checks are planned for Phase 3/HITL. Integrated obstacle avoidance also depends on measured full-payload thrust margin, which I size with <a className="text-link" href="/projects/quadsolver-propulsion-sizing">QuadSolver</a> and am building a <a className="text-link" href="/projects/thrust-stand">thrust stand</a> to measure.</p>
         <figure className="uav-bench-figure">
           <picture>
             <source srcSet="/images/gps-denied-uav-960.webp 960w, /images/gps-denied-uav-1280.webp 1280w, /images/gps-denied-uav.webp 1920w" sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 860px)" />

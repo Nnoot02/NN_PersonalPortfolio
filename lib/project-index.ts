@@ -25,6 +25,7 @@ export const projectIndexSlugs = [
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
   "thrust-stand",
+  "quadsolver-propulsion-sizing",
   "last-metre-eyes-viasat-entry",
 ] as const;
 
@@ -89,6 +90,20 @@ const definitions = {
       { label: "Verification", detail: "Thrust sweep and motor decision", state: "future" },
     ],
   },
+  "quadsolver-propulsion-sizing": {
+    stateLabel: "Software tool · model-only, hardware pending",
+    summary: "Propulsion sizing that checks nine limits at once and labels its method; results stay model estimates until my own thrust data arrives.",
+    ctaLabel: "Read the case study",
+    miniature: {
+      src: "/images/project-index/quadsolver-artifact.webp",
+      alt: "QuadSolver Results screen for the 5-inch preset: thrust-to-weight, hover time, hover current, payload headroom and specific thrust tiles above the powertrain limit bars",
+    },
+    stages: [
+      { label: "Model", detail: "Three hover methods", state: "resolved" },
+      { label: "Current frontier", detail: "Version 1.0 release", state: "current" },
+      { label: "Verification", detail: "Own thrust-stand sweep", state: "future" },
+    ],
+  },
   "last-metre-eyes-viasat-entry": {
     stateLabel: "Competition entry",
     summary: "GPS-denied search drone with a satellite relay, entered in Viasat Space for Good 2026; the satellite side stayed modelled.",
@@ -122,7 +137,7 @@ export const projectIndexEntries: readonly ProjectIndexEntry[] = projectIndexSlu
 });
 
 // Sub-discipline grouping for /projects. Order across all groups must stay
-// LV -> Solar -> UAV -> Thrust stand -> Viasat, which the contract asserts on the rendered DOM.
+// LV -> Solar -> UAV -> Thrust stand -> QuadSolver -> Viasat, which the contract asserts on the rendered DOM.
 export const projectIndexGroups = [
   {
     id: "power-systems",
@@ -132,7 +147,7 @@ export const projectIndexGroups = [
   {
     id: "embedded-hardware",
     heading: "Embedded & Hardware",
-    slugs: ["gps-denied-autonomous-uav", "thrust-stand", "last-metre-eyes-viasat-entry"],
+    slugs: ["gps-denied-autonomous-uav", "thrust-stand", "quadsolver-propulsion-sizing", "last-metre-eyes-viasat-entry"],
   },
 ] as const satisfies readonly { id: string; heading: string; slugs: readonly ProjectIndexSlug[] }[];
 

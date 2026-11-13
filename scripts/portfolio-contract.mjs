@@ -547,20 +547,22 @@ const expectedProjectJourneySlugs = [
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
   "thrust-stand",
+  "quadsolver-propulsion-sizing",
   "last-metre-eyes-viasat-entry",
 ];
-check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV, Thrust stand, Viasat");
+check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV, Thrust stand, QuadSolver, Viasat");
 for (const slug of expectedProjectJourneySlugs) {
   check(projectJourneys.includes('href="/projects/' + slug + '"'), slug + " journey lane must target its detail route");
 }
 const projectJourneyAnchors = [...projectJourneys.matchAll(/<a\b[^>]*data-project-journey-link[^>]*>[\s\S]*?<\/a>/g)];
-check(projectJourneyAnchors.length === 5, "projects journeys must contain exactly five destination links");
-check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 15, "projects journeys must expose exactly fifteen stage states");
+check(projectJourneyAnchors.length === expectedProjectJourneySlugs.length, "projects journeys must contain one destination link per project");
+check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 3 * expectedProjectJourneySlugs.length, "projects journeys must expose exactly three stage states per project");
 const expectedProjectJourneyStages = new Map([
   ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
   ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
   ["gps-denied-autonomous-uav", ["Simulation:resolved:Baseline and held-out trials", "Current frontier:current:Hardware and software integration", "Verification:future:Phase 3/HITL clearance validation"]],
   ["thrust-stand", ["Design:resolved:Shield schematic and stand CAD", "Current frontier:current:RPM front end on the bench", "Verification:future:Thrust sweep and motor decision"]],
+  ["quadsolver-propulsion-sizing", ["Model:resolved:Three hover methods", "Current frontier:current:Version 1.0 release", "Verification:future:Own thrust-stand sweep"]],
   ["last-metre-eyes-viasat-entry", ["Phase 1:resolved:Written concept advanced", "Phase 2:resolved:Video package submitted", "Measurement:future:Drone-to-relay link on a bench"]],
 ]);
 for (const [slug, expectedStages] of expectedProjectJourneyStages) {
@@ -575,6 +577,7 @@ const projectSpecificAltTerms = new Map([
   ["solar-grid-connection-assessment", "solar grid-connection"],
   ["gps-denied-autonomous-uav", "uav"],
   ["thrust-stand", "thrust stand"],
+  ["quadsolver-propulsion-sizing", "quadsolver"],
   ["last-metre-eyes-viasat-entry", "viasat"],
 ]);
 const projectMiniatureAlts = [];
@@ -659,6 +662,12 @@ const caseOpenings = [
     role: "Sole designer: shield electronics, printed mechanics and bench testing",
     outcome: "so gate 1 has not passed",
     firstWriteUpId: 'id="what-it-measures"',
+  },
+  {
+    slug: "quadsolver-propulsion-sizing",
+    role: "Sole developer: models, app and tests",
+    outcome: "These are model estimates, since the propeller coefficients are fitted to T-Motor",
+    firstWriteUpId: 'id="hover-methods"',
   },
   {
     slug: "last-metre-eyes-viasat-entry",
@@ -882,6 +891,7 @@ const writeUpIndexes = {
   // the longest page on the site, so the old "stays unindexed" rule retired.
   "gps-denied-autonomous-uav": ["trials-measured", "depth-loss", "results-gallery", "held-out-testing", "simulation-limits", "next-gates"],
   "thrust-stand": ["what-it-measures", "validation-gates", "bench-bring-up", "mechanical-stand"],
+  "quadsolver-propulsion-sizing": ["hover-methods", "limits", "preset-result", "model-limits", "next"],
 };
 for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
@@ -893,6 +903,28 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
     check(new RegExp(`<h3[^>]*id="${id}"`).test(writeUp), `${slug}: section #${id} must exist as an h3 target`);
   }
   check((writeUp.match(/<h3\b/g) ?? []).length === ids.length, `${slug}: index must cover every section`);
+}
+
+// QuadSolver page (plan 2026-11-13-001, Nathan's calls): the repo is private and
+// v1.0.0 unreleased, so no repo or download link; the hero is the 5-inch preset
+// on the coefficient model and must say no measured data is loaded (the README
+// screenshot ran on a test fixture and is not used); the write-up links the UAV
+// capstone and the UAV page links back.
+{
+  const qs = normalizeTextEntities(renderedMain(readExport("/projects/quadsolver-propulsion-sizing.html")));
+  check(!/github\.com\/Nnoot02\/QuadSolverApp|\/releases/i.test(qs), "quadsolver: page must not link the private repo or a release");
+  check(qs.includes("/images/quadsolver-results-960.webp 960w"), "quadsolver: hero must carry its responsive widths");
+  check(qs.includes("No measured thrust data is loaded."), "quadsolver: hero note must say no measured thrust data is loaded");
+  check(!qs.includes("thrust-good") && !qs.includes("results.png"), "quadsolver: page must not reuse the fixture-driven README screenshot");
+  check(qs.includes('href="/projects/gps-denied-autonomous-uav"'), "quadsolver: write-up must link the GPS-denied capstone");
+  check(qs.includes('href="/projects/thrust-stand"'), "quadsolver: write-up must link the thrust stand as its planned data source");
+  check(qs.includes("None of the results on this page come from hardware I have measured."), "quadsolver: write-up must keep its evidence boundary");
+  check(!qs.includes("\u2014"), "quadsolver: page must contain no em dash");
+  const uavNext = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"))).match(/<h3[^>]*id="next-gates"[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(uavNext.includes('href="/projects/quadsolver-propulsion-sizing"'), "uav: next verification gates must link QuadSolver");
+  for (const [asset, budget] of [["/images/quadsolver-results.webp", 200], ["/images/quadsolver-results-1280.webp", 120], ["/images/quadsolver-results-960.webp", 80], ["/images/project-index/quadsolver-artifact.webp", 160]]) {
+    check(publicFileSize(asset) < budget * 1024, `quadsolver: ${asset} must stay under ${budget} KB`);
+  }
 }
 
 // Viasat entry page (Nathan, 2026-10-20): the Phase 2 cards only, with the
@@ -1004,6 +1036,12 @@ const caseSpecs = {
     ["Shield PCB", "Schematic Rev01", "0 ERC errors, 10 November 2026; layout not started"],
     ["Validation gates", "0 / 6 passed", "gate 1, RPM, is on the bench"],
     ["Spend", "A$236.55", "against my A$250 cap for the stand; the DigiKey line is an approximate AUD total"],
+  ],
+  "quadsolver-propulsion-sizing": [
+    ["Hover methods", "3", "measured data wins when it matches the hardware"],
+    ["Limits", "9", "motor, ESC, battery, frame and targets, checked together"],
+    ["5-inch preset", "27 % duty", "about 8.8 min hover, model estimate"],
+    ["Validation", "Pending", "my own thrust-stand sweep"],
   ],
 };
 for (const [slug, rows] of Object.entries(caseSpecs)) {
