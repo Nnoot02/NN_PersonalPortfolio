@@ -858,6 +858,7 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   check(projectsDescription.startsWith("Two coursework power studies to AS/NZS standards"), "/projects meta description must call the power studies coursework");
   // Nathan, 2026-11-13: the description names every published lane, incl. the thrust stand.
   check(projectsDescription.includes("the thrust stand that will measure its propulsion"), "/projects meta description must mention the thrust stand");
+  check(projectsDescription.includes("the app I size it with"), "/projects meta description must mention QuadSolver");
   const projectsOgDescription = readExport("/projects.html").match(/<meta property="og:description" content="([^"]*)"/)?.[1] ?? "";
   check(projectsOgDescription === projectsDescription, "/projects Open Graph description must match the meta description");
 }
