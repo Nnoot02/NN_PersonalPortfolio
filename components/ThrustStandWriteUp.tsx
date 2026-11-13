@@ -33,7 +33,7 @@ const gates = [
   {
     n: 4,
     name: "Repeatable sweep",
-    pass: "Three sweeps on the same setup agree within about 5 % thrust, 3 % RPM and 5 % current, with pack voltage logged at every point.",
+    pass: "Three sweeps on the same setup agree within about 5 % thrust, 3 % RPM and 5 % current, with pack voltage logged at every point and the prop, motor, battery and ESC recorded. The motor and ESC stay within safe touch limits for the run.",
     status: "Not started.",
   },
   {
@@ -77,11 +77,12 @@ export function ThrustStandWriteUp() {
       <div className="writeup-block">
         <h3 id="what-it-measures">What it measures</h3>
         <p>
-          The stand logs four channels at once against throttle. Thrust is a 5 kg bar load cell read by a 24-bit
-          NAU7802 ADC. RPM needs no sensor beside the propeller: a tap on one motor phase is clamped, filtered and
-          squared up by an LM393 comparator, one edge per electrical cycle. Current and pack voltage come from an
-          off-board ACS758 Hall-effect sensor in the battery lead and a resistor divider, so every thrust point carries
-          the battery sag behind it.
+          The stand is designed to log four channels at once against throttle, and none of them is calibrated yet, so
+          the bench has produced observations rather than measurements. Thrust is a 5 kg bar load cell read by a 24-bit
+          NAU7802 ADC. RPM comes from a tap on one motor phase rather than an optical sensor: clamped, filtered and
+          squared up by an LM393 comparator, one edge per electrical cycle, with a bell-mark tachometer used once to
+          check it for gate 1. Current and pack voltage come from an off-board ACS758 Hall-effect sensor in the battery
+          lead and a resistor divider, so every thrust point carries the battery sag behind it.
         </p>
         <WriteUpFigure
           src="/images/thrust-stand/thrust-stand-wiring-1920.webp"
@@ -144,7 +145,8 @@ export function ThrustStandWriteUp() {
           On 6 November 2026 I built the RPM front end on a protoboard and ran it on a spare 920 KV motor with a 1045
           propeller, with a Rigol scope on the comparator output and the phase waveform. The first logged run read zero
           RPM because the comparator had no supply. Once it was powered, the scope showed one clean output edge per
-          electrical cycle from 20 to 50 % throttle.
+          electrical cycle from 20 to 50 % throttle. That run had no shield board and no hard stop, and no current or
+          low-voltage trip: the ACS758 was not wired, so only the thrust trip was live.
         </p>
         <WriteUpFigure
           src="/images/thrust-stand/thrust-stand-phase-tap-stages-1600.webp"
@@ -158,9 +160,13 @@ export function ThrustStandWriteUp() {
         </WriteUpFigure>
         <p>
           At 50 % throttle the logger counted 860 edges per second while the scope showed 431 Hz, almost exactly
-          double. My best explanation is chatter: the comparator switches on back-EMF ramps that carry PWM ripple, and
-          its hysteresis took about 100 µs to build, so a ripple cycle could cross the threshold again first. I also
-          counted 12 magnet poles on that motor where the logger assumed 14, which skews every RPM figure on its own.
+          double. Every RPM figure here is a 100 ms edge count, so one miscount is 1.2 % at 86 counts and 4.3 % at 23,
+          the same size as the gate 1 tolerance. My best explanation is chatter: the comparator switches on back-EMF
+          ramps that carry PWM ripple, and its hysteresis took about 100 µs to build, so a ripple cycle could cross the
+          threshold again first. That mechanism is still a hypothesis, because the test that would confirm it, logger
+          edges against scope frequency at one fixed throttle, has not been run, and a faulty winding distorts the same
+          ramps. I also counted 12 magnet poles on that motor where the logger assumed 14, which skews every RPM figure
+          on its own.
         </p>
         <WriteUpFigure
           src="/images/thrust-stand/thrust-stand-filter-response-1600.webp"
