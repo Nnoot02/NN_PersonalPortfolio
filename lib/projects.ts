@@ -125,6 +125,37 @@ export const projects: Project[] = [
     evidenceStatus: "Results cover simulation only; clearance, real VIO, Raspberry Pi 5 timing and flight performance still need validation.",
   },
   {
+    slug: "thrust-stand",
+    number: "05",
+    title: "Propulsion Thrust Stand",
+    summary:
+      "A bench instrument that measures thrust, RPM, current and pack voltage on my capstone drone's motor and propeller, so the decision to keep or upgrade the motors rests on measured data. None of its six validation gates has passed yet.",
+    image: "/images/thrust-stand/thrust-stand-cad.webp",
+    imageSrcSet: "/images/thrust-stand/thrust-stand-cad-960.webp 960w, /images/thrust-stand/thrust-stand-cad-1280.webp 1280w, /images/thrust-stand/thrust-stand-cad.webp 1600w",
+    heroSrcSet: "/images/thrust-stand/thrust-stand-cad-960.webp 960w, /images/thrust-stand/thrust-stand-cad-1280.webp 1280w, /images/thrust-stand/thrust-stand-cad.webp 1600w",
+    imageAlt: "CAD model of the thrust stand: an orange printed carriage holding the motor plate rides on two steel rods between dark rod supports on a timber base, with a translucent disc marking the propeller",
+    imageNote: "CAD assembly mockup of the Rev F printed parts, not the built stand. The motor and propeller are stand-ins.",
+    scope: "Instrumentation, embedded hardware, verification",
+    role: "Sole designer: shield electronics, printed mechanics and bench testing",
+    status: "Active capstone",
+    tags: ["Instrumentation", "Embedded hardware", "Verification"],
+    evidenceMarkers: ["4 channels", "Shield schematic Rev01", "0 / 6 gates passed", "A$250 cap"],
+    spec: [
+      { label: "Channels", value: "Thrust · RPM · current · voltage", note: "5 kg load cell, motor phase tap, ACS758 Hall sensor, pack divider" },
+      { label: "Shield PCB", value: "Schematic Rev01", note: "0 ERC errors, 10 November 2026; layout not started" },
+      { label: "Validation gates", value: "0 / 6 passed", note: "gate 1, RPM, is on the bench" },
+      { label: "Spend", value: "A$236.55", note: "against my A$250 cap for the stand; the DigiKey line is an approximate AUD total" },
+    ],
+    problem:
+      "My capstone drone needs enough thrust margin at full payload to hold position and avoid obstacles indoors. The propulsion models I had only gave estimates, and I did not want to buy new motors on an estimate, so I needed to measure the motor and propeller I already had.",
+    approach:
+      "I set six pass/fail gates before building anything: RPM, load-cell calibration, current and voltage checks, a repeatable sweep, vibration, and finally the motor decision itself. The electronics go on an Arduino Mega shield, which is also my Design for Manufacture project at TAFE, and the mechanics are 3D-printed parts on linear rods behind a polycarbonate guard.",
+    result:
+      "The shield schematic is released at Rev01 with no ERC errors, and the RPM front end is on the bench. Its first real-motor run read about twice the scope frequency at half throttle, and the motor itself turned out to be faulty, so gate 1 has not passed.",
+    evidenceStatus:
+      "No gate has passed. Thrust, current and voltage are not calibrated, the PCB layout has not started, and the printed parts are not printed yet. Every number on this page is a design value or a bench observation, not a validated measurement.",
+  },
+  {
     // Unnumbered: "04" stays reserved while the DFMA study is unpublished.
     slug: "last-metre-eyes-viasat-entry",
     title: "Last-Metre Eyes: Viasat Space for Good 2026",

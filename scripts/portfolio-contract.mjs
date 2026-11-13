@@ -546,19 +546,21 @@ const expectedProjectJourneySlugs = [
   "lv-cabling-design-commercial-complex",
   "solar-grid-connection-assessment",
   "gps-denied-autonomous-uav",
+  "thrust-stand",
   "last-metre-eyes-viasat-entry",
 ];
-check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV, Viasat");
+check(projectJourneySlugs.join(",") === expectedProjectJourneySlugs.join(","), "projects journey DOM order must be LV, Solar, UAV, Thrust stand, Viasat");
 for (const slug of expectedProjectJourneySlugs) {
   check(projectJourneys.includes('href="/projects/' + slug + '"'), slug + " journey lane must target its detail route");
 }
 const projectJourneyAnchors = [...projectJourneys.matchAll(/<a\b[^>]*data-project-journey-link[^>]*>[\s\S]*?<\/a>/g)];
-check(projectJourneyAnchors.length === 4, "projects journeys must contain exactly four destination links");
-check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 12, "projects journeys must expose exactly twelve stage states");
+check(projectJourneyAnchors.length === 5, "projects journeys must contain exactly five destination links");
+check((projectJourneys.match(/data-journey-stage=/g) ?? []).length === 15, "projects journeys must expose exactly fifteen stage states");
 const expectedProjectJourneyStages = new Map([
   ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
   ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
   ["gps-denied-autonomous-uav", ["Simulation:resolved:Baseline and held-out trials", "Current frontier:current:Hardware and software integration", "Verification:future:Phase 3/HITL clearance validation"]],
+  ["thrust-stand", ["Design:resolved:Shield schematic and stand CAD", "Current frontier:current:RPM front end on the bench", "Verification:future:Thrust sweep and motor decision"]],
   ["last-metre-eyes-viasat-entry", ["Phase 1:resolved:Written concept advanced", "Phase 2:resolved:Video package submitted", "Measurement:future:Drone-to-relay link on a bench"]],
 ]);
 for (const [slug, expectedStages] of expectedProjectJourneyStages) {
@@ -572,6 +574,7 @@ const projectSpecificAltTerms = new Map([
   ["lv-cabling-design-commercial-complex", "lv cabling"],
   ["solar-grid-connection-assessment", "solar grid-connection"],
   ["gps-denied-autonomous-uav", "uav"],
+  ["thrust-stand", "thrust stand"],
   ["last-metre-eyes-viasat-entry", "viasat"],
 ]);
 const projectMiniatureAlts = [];
@@ -607,7 +610,7 @@ check(!projectJourneys.includes("solar-manufacturing-dfma"), "manufacturing entr
 check(!existsSync(new URL("../out/projects/solar-manufacturing-dfma.html", import.meta.url)), "pending DFMA route must not be exported");
 check(!sitemap.includes("/projects/solar-manufacturing-dfma"), "sitemap must exclude pending DFMA work");
 check(publicFileSize("/images/solar-manufacturing.webp") < 500 * 1024, "unpublishing DFMA must retain the draft source image");
-for (const [slug, number] of [["lv-cabling-design-commercial-complex", "01"], ["solar-grid-connection-assessment", "02"], ["gps-denied-autonomous-uav", "03"]]) {
+for (const [slug, number] of [["lv-cabling-design-commercial-complex", "01"], ["solar-grid-connection-assessment", "02"], ["gps-denied-autonomous-uav", "03"], ["thrust-stand", "05"]]) {
   check(renderedMain(readExport(`/projects/${slug}.html`)).includes(`Case study ${number}`), `${slug} must keep case-study number ${number}`);
 }
 check(!projectsSource.includes('number: "04"'), "project data must not number the pending DFMA entry");
@@ -650,6 +653,12 @@ const caseOpenings = [
     role: "Sole developer: planning, simulation and verification, now building the aircraft",
     outcome: "GPS-disabled simulation reached the goal without collision in 30/30 baseline trials and 30/30 held-out trials",
     firstWriteUpId: null,
+  },
+  {
+    slug: "thrust-stand",
+    role: "Sole designer: shield electronics, printed mechanics and bench testing",
+    outcome: "so gate 1 has not passed",
+    firstWriteUpId: 'id="what-it-measures"',
   },
   {
     slug: "last-metre-eyes-viasat-entry",
@@ -872,6 +881,7 @@ const writeUpIndexes = {
   // Indexed 2026-10-25 (Nathan): it grew from three sections to six and became
   // the longest page on the site, so the old "stays unindexed" rule retired.
   "gps-denied-autonomous-uav": ["trials-measured", "depth-loss", "results-gallery", "held-out-testing", "simulation-limits", "next-gates"],
+  "thrust-stand": ["what-it-measures", "validation-gates", "bench-bring-up", "mechanical-stand"],
 };
 for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
@@ -889,6 +899,23 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
 // full video held back; the Faculty Verification Letter is never published;
 // the BOM is quoted as submitted with its capstone-cap caveat; the local link
 // stays labelled as modelled.
+{
+  // Thrust stand (plan 2026-11-13-002, Nathan 2026-11-13): an instrument with
+  // no passed gate. Pin the boundary, the CAD label and the UAV link.
+  const ts = normalizeTextEntities(renderedMain(readExport("/projects/thrust-stand.html")));
+  check(ts.includes("Case study 05"), "thrust stand must be case study 05");
+  const tsNote = ts.match(/<p[^>]*class="case-image-note[^"]*"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "";
+  check(tsNote.includes("not the built stand"), "thrust stand hero must say it is CAD, not the built stand");
+  check(ts.includes("/images/thrust-stand/thrust-stand-cad-960.webp 960w"), "thrust stand hero must carry its width variants");
+  const tsGates = ts.match(/<ol class="gate-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
+  check((tsGates.match(/<li>/g) ?? []).length === 6, "thrust stand must list exactly six validation gates");
+  check(!/Status<\/dt><dd>Pass(ed)?\b/.test(tsGates), "thrust stand must not mark any gate passed until one is");
+  check(ts.includes("No gate has passed."), "thrust stand opening must state that no gate has passed");
+  check(!ts.includes("—"), "thrust stand copy must contain no em dash");
+  const uavGates = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"))).match(/<h3 id="next-gates">[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(uavGates.includes('href="/projects/thrust-stand"'), "UAV next-gates block must link to the thrust stand");
+  check(publicFileSize("/images/project-index/thrust-stand-artifact.webp") < 160 * 1024, "thrust stand miniature must stay under 160 KB");
+}
 const viasatEntry = renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"));
 const viasatEntryText = normalizeTextEntities(viasatEntry);
 // Nathan, 2026-10-25: real VIO is unvalidated (UAV page), so the drone is
@@ -971,6 +998,12 @@ const caseSpecs = {
     ["Held-out", "30 / 30", "goal reached, collision-free"],
     ["Clearance", "27 / 30", "held-out trials ≥ 0.5 m, aircraft centre"],
     ["Next", "Phase 3 / HITL", "final clearance validation"],
+  ],
+  "thrust-stand": [
+    ["Channels", "Thrust · RPM · current · voltage", "5 kg load cell, motor phase tap, ACS758 Hall sensor, pack divider"],
+    ["Shield PCB", "Schematic Rev01", "0 ERC errors, 10 November 2026; layout not started"],
+    ["Validation gates", "0 / 6 passed", "gate 1, RPM, is on the bench"],
+    ["Spend", "A$236.55", "against my A$250 cap for the stand; the DigiKey line is an approximate AUD total"],
   ],
 };
 for (const [slug, rows] of Object.entries(caseSpecs)) {
