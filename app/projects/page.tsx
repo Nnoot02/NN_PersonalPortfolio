@@ -7,8 +7,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Two coursework power studies to AS/NZS standards, a GPS-denied UAV capstone in simulation and a satellite-for-good competition entry, each with its evidence boundary stated.",
-  openGraph: { ...sharedOpenGraph, type: "website", title: "Projects", description: "Two coursework power studies to AS/NZS standards, a GPS-denied UAV capstone in simulation and a satellite-for-good competition entry, each with its evidence boundary stated.", url: "/projects" },
+    "Two coursework power studies to AS/NZS standards, a GPS-denied UAV capstone in simulation, the thrust stand that will measure its propulsion and a satellite-for-good competition entry, each with its evidence boundary stated.",
+  openGraph: { ...sharedOpenGraph, type: "website", title: "Projects", description: "Two coursework power studies to AS/NZS standards, a GPS-denied UAV capstone in simulation, the thrust stand that will measure its propulsion and a satellite-for-good competition entry, each with its evidence boundary stated.", url: "/projects" },
 };
 
 export default function ProjectsPage() {
