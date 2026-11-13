@@ -62,6 +62,8 @@
     "lib/projects.ts",
     "lib/project-index.ts",
     "components/UavTestGatesWriteUp.tsx",
+    "components/WriteUpFigure.tsx",
+    "components/WriteUpFigure.module.css",
     "components/UavSimulationMedia.tsx",
     "components/UavSimulationMedia.module.css",
     "components/CaseOpening.tsx",
@@ -72,7 +74,8 @@
     "lib/projects.ts",
     "lib/project-index.ts",
     "components/ThrustStandWriteUp.tsx",
-    "components/ThrustStandWriteUp.module.css",
+    "components/WriteUpFigure.tsx",
+    "components/WriteUpFigure.module.css",
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],
@@ -81,6 +84,8 @@
     "lib/projects.ts",
     "lib/project-index.ts",
     "components/QuadSolverWriteUp.tsx",
+    "components/WriteUpFigure.tsx",
+    "components/WriteUpFigure.module.css",
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],

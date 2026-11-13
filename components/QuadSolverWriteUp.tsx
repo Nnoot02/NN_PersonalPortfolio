@@ -1,6 +1,7 @@
 // QuadSolver write-up (plan 2026-11-13-001). Every figure comes from the
 // QuadSolverApp README and the Results screen for the built-in 5-inch preset;
 // nothing here is a measurement of my own hardware.
+import { WriteUpFigure } from "@/components/WriteUpFigure";
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
 
 const sections: WriteUpSection[] = [
@@ -53,6 +54,15 @@ export function QuadSolverWriteUp() {
           </table>
         </div>
         <p>The CSV headers carry their units, so a plain <code>thrust</code> or <code>current</code> column is rejected rather than guessed.</p>
+        <WriteUpFigure
+          src="/images/quadsolver/quadsolver-app-tour.webp"
+          still="/images/quadsolver/quadsolver-app-tour-still.webp"
+          width={800}
+          height={600}
+          alt="Four screens from the QuadSolver app: 1 pick the motor, propeller, ESC and battery; 2 read thrust-to-weight and hover time from the model; 3 import measured thrust data, here a sample file; 4 the results now use the measured data"
+        >
+          A tour of the app in four steps, captured from the real app with its F450 default setup. The imported thrust file is sample data, and the app marks that run as unqualified.
+        </WriteUpFigure>
       </div>
       <div className="writeup-block">
         <h3 id="limits">Nine limits, checked together</h3>

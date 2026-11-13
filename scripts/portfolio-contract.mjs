@@ -954,6 +954,21 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   check(publicFileSize("/images/thrust-stand/thrust-stand-how-it-works.webp") < 300 * 1024, "thrust stand animation must stay under 300 KB");
   check(!/Rev01|layout not started|layout has not started/.test(ts), "thrust stand must not carry the stale Rev01 shield status");
   check(ts.includes("A$275"), "thrust stand must state the A$275 cap");
+  // Second batch of final-presentation figures (Nathan, 2026-11-13): each page
+  // shows its figures, and the dated or illustrative ones say so.
+  for (const asset of ["thrust-stand-thrust-need-1600.webp", "thrust-stand-phase-tap-stages-1600.webp", "thrust-stand-filter-response-1600.webp", "thrust-stand-revc-revd-1600.webp"]) {
+    check(ts.includes("/images/thrust-stand/" + asset), "thrust stand write-up must show " + asset);
+  }
+  check(ts.includes("It simulates the passive network only"), "thrust stand filter response must be labelled a simulation");
+  const uavFigs = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")));
+  for (const asset of ["uav-mission-1600.webp", "uav-architecture-1600.webp", "uav-clearance-mechanism-1600.webp", "uav-acceptance-gates-1600.webp"]) {
+    check(uavFigs.includes("/images/uav-figures/" + asset), "UAV write-up must show " + asset);
+  }
+  check(uavFigs.includes("as I presented them on 12 November 2026"), "UAV acceptance-gates figure must carry its status date");
+  check(uavFigs.includes("not to scale and not flown data"), "UAV clearance sketch must say it is not flown data");
+  const qs = normalizeTextEntities(renderedMain(readExport("/projects/quadsolver-propulsion-sizing.html")));
+  check(/<source media="\(prefers-reduced-motion: reduce\)" srcSet="\/images\/quadsolver\/quadsolver-app-tour-still\.webp"/i.test(qs), "QuadSolver app tour must fall back to its still under reduced motion");
+  check(qs.includes("The imported thrust file is sample data"), "QuadSolver app tour must say the imported data is a sample");
   const tsGates = ts.match(/<ol class="gate-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   check((tsGates.match(/<li>/g) ?? []).length === 6, "thrust stand must list exactly six validation gates");
   check(!/Status<\/dt><dd>Pass(ed)?\b/.test(tsGates), "thrust stand must not mark any gate passed until one is");
