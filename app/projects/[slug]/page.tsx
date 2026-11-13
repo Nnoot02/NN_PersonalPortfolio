@@ -17,6 +17,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { ThrustStandWriteUp } from "@/components/ThrustStandWriteUp";
 import { UavClearanceFigure, UavTestGatesWriteUp } from "@/components/UavTestGatesWriteUp";
 import { ViasatEntryWriteUp } from "@/components/ViasatEntryWriteUp";
+import { QuadSolverWriteUp } from "@/components/QuadSolverWriteUp";
 import { projectStudyNext } from "@/lib/project-index";
 import { projects } from "@/lib/projects";
 import { LV_ROUTE_STOPS } from "@/lib/lv-design-basis";
@@ -29,6 +30,7 @@ const writeUps: Record<string, React.ComponentType> = {
   "solar-grid-connection-assessment": PvConnectionWriteUp,
   "gps-denied-autonomous-uav": UavTestGatesWriteUp,
   "thrust-stand": ThrustStandWriteUp,
+  "quadsolver-propulsion-sizing": QuadSolverWriteUp,
   "last-metre-eyes-viasat-entry": ViasatEntryWriteUp,
 };
 
@@ -38,6 +40,7 @@ const shareImages: Record<string, { url: string; width: number; height: number }
   "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
   "gps-denied-autonomous-uav": { url: "/images/gps-denied-uav.webp", width: 1920, height: 1080 },
   "thrust-stand": { url: "/images/thrust-stand/thrust-stand-cad.webp", width: 1600, height: 900 },
+  "quadsolver-propulsion-sizing": { url: "/images/quadsolver-results.webp", width: 1920, height: 1080 },
   "last-metre-eyes-viasat-entry": { url: "/images/viasat-entry/journey.webp", width: 1920, height: 1080 },
 };
 
@@ -110,6 +113,11 @@ const openingLinks: Record<string, Array<{ label: string; href: string }>> = {
     { label: "What it measures", href: "#what-it-measures" },
     { label: "Validation gates", href: "#validation-gates" },
     { label: "Bench bring-up", href: "#bench-bring-up" },
+  ],
+  "quadsolver-propulsion-sizing": [
+    { label: "Hover methods", href: "#hover-methods" },
+    { label: "Nine limits", href: "#limits" },
+    { label: "Where the model stops", href: "#model-limits" },
   ],
   "last-metre-eyes-viasat-entry": [
     { label: "Two segments", href: "#two-segments" },

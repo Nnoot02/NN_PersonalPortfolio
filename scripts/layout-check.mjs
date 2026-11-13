@@ -33,6 +33,7 @@ const ROUTES = FAST ? (process.env.LAYOUT_ROUTES?.split(",") ?? ["/"]) : [
   "/projects/lv-cabling-design-commercial-complex",
   "/projects/gps-denied-autonomous-uav",
   "/projects/thrust-stand",
+  "/projects/quadsolver-propulsion-sizing",
   "/projects/last-metre-eyes-viasat-entry",
   "/workbench/bench-fume-extractor",
   // OAuth branding pages (2026-09-23): the Google Cloud project's Branding page
@@ -1207,8 +1208,10 @@ async function main() {
           "solar-grid-connection-assessment",
           "gps-denied-autonomous-uav",
           "thrust-stand",
+          "quadsolver-propulsion-sizing",
           "last-metre-eyes-viasat-entry",
         ];
+        const laneTotal = expectedSlugs.length;
         const journeys = page.locator("[data-project-journeys]");
         const portals = page.locator("[data-project-slug]");
         const links = page.locator("[data-project-journey-link]");
@@ -1217,9 +1220,9 @@ async function main() {
         const linkCount = await links.count();
         const imageCount = await images.count();
         if ((await journeys.count()) !== 1) failures.push(`/projects @ ${width}x${height}: journey map count is not 1`);
-        if (portalCount !== 5) failures.push(`/projects @ ${width}x${height}: lane count is ${portalCount}, expected 5`);
-        if (linkCount !== 5) failures.push(`/projects @ ${width}x${height}: journey link count is ${linkCount}, expected 5`);
-        if (imageCount !== 5) failures.push(`/projects @ ${width}x${height}: journey miniature count is ${imageCount}, expected 5`);
+        if (portalCount !== laneTotal) failures.push(`/projects @ ${width}x${height}: lane count is ${portalCount}, expected ${laneTotal}`);
+        if (linkCount !== laneTotal) failures.push(`/projects @ ${width}x${height}: journey link count is ${linkCount}, expected ${laneTotal}`);
+        if (imageCount !== laneTotal) failures.push(`/projects @ ${width}x${height}: journey miniature count is ${imageCount}, expected ${laneTotal}`);
 
         const renderedSlugs = await portals.evaluateAll((nodes) =>
           nodes.map((node) => node.getAttribute("data-project-slug")),
@@ -1234,14 +1237,14 @@ async function main() {
             return { left: rect.left, top: rect.top, bottom: rect.bottom };
           }),
         );
-        if (portalBoxes.length === 5 && width >= 721) {
+        if (portalBoxes.length === laneTotal && width >= 721) {
           const stageColumns = await page.locator(".project-journey-stages").evaluateAll((nodes) =>
             nodes.map((node) => Array.from(node.children).map((stage) => {
               const rect = stage.getBoundingClientRect();
               return { left: rect.left, width: rect.width, top: rect.top, bottom: rect.bottom };
             })),
           );
-          const alignedStages = stageColumns.length === 5 &&
+          const alignedStages = stageColumns.length === laneTotal &&
             stageColumns.every((columns) => columns.length === 3) &&
             [0, 1, 2].every((column) => {
               const lefts = stageColumns.map((columns) => columns[column].left);
@@ -1262,7 +1265,7 @@ async function main() {
         // title at most two lines (three at 961-1024, where the column is
         // narrower) and each CTA one line. Measured in lines of the element's
         // own computed line-height.
-        if (portalBoxes.length === 5 && width >= 961) {
+        if (portalBoxes.length === laneTotal && width >= 961) {
           const anchorLines = await portals.evaluateAll((nodes) => nodes.map((node) => {
             const lines = (el) => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight));
             return {
@@ -1277,7 +1280,7 @@ async function main() {
             if (metric.action > 1) failures.push(`/projects @ ${width}x${height}: ${metric.slug} CTA wraps to ${metric.action} lines`);
           }
         }
-        if (portalBoxes.length === 5 && width >= 961) {
+        if (portalBoxes.length === laneTotal && width >= 961) {
           const heroHeight = await page.locator(".projects-hero").evaluate((node) => node.getBoundingClientRect().height);
           if (heroHeight > 275) failures.push(`/projects @ ${width}x${height}: compact hero height is ${Math.round(heroHeight)}px`);
           const thirdLaneTop = portalBoxes[2].top;
@@ -1293,7 +1296,7 @@ async function main() {
           if (!gpsCurrent?.includes("Current") || !gpsFuture?.includes("Future")) failures.push(`/projects @ ${width}x${height}: UAV current/future states are not visibly labelled`);
         }
 
-        if (linkCount === 5) {
+        if (linkCount === laneTotal) {
           await links.first().focus();
           for (let index = 0; index < expectedSlugs.length; index += 1) {
             const activeSlug = await page.evaluate(() =>
@@ -1795,7 +1798,7 @@ async function main() {
       return { stageCount: stages.length, stacked, minWidth, clipped };
     }),
   );
-  if (projectsZoomedJourneys.length !== 5) failures.push(`/projects @ 390x844 with 200% root text: journey count is ${projectsZoomedJourneys.length}, expected 5`);
+  if (projectsZoomedJourneys.length !== 6) failures.push(`/projects @ 390x844 with 200% root text: journey count is ${projectsZoomedJourneys.length}, expected 6`);
   for (const [index, journey] of projectsZoomedJourneys.entries()) {
     if (journey.stageCount !== 3 || !journey.stacked || journey.minWidth < 180 || journey.clipped) {
       failures.push(`/projects @ 390x844 with 200% root text: journey ${index + 1} is unreadable (stages ${journey.stageCount}, stacked ${journey.stacked}, min width ${Math.round(journey.minWidth)}px, clipped ${journey.clipped})`);
@@ -1918,6 +1921,7 @@ async function main() {
     "/projects/solar-grid-connection-assessment",
     "/projects/gps-denied-autonomous-uav",
     "/projects/thrust-stand",
+    "/projects/quadsolver-propulsion-sizing",
     "/projects/last-metre-eyes-viasat-entry",
   ];
   const settleScroll = async (p) => {
