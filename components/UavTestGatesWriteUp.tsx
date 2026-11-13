@@ -1,4 +1,5 @@
 import { UavFaultResponse, UavResultsGallery } from "./UavSimulationMedia";
+import { WriteUpFigure } from "@/components/WriteUpFigure";
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
 
 const sections: WriteUpSection[] = [
@@ -21,7 +22,25 @@ export function UavTestGatesWriteUp() {
       </div>
       <div className="writeup-block">
         <h3 id="trials-measured">What the trials measured</h3>
+        <WriteUpFigure
+          src="/images/uav-figures/uav-mission-1600.webp"
+          full="/images/uav-figures/uav-mission.webp"
+          width={1600}
+          height={627}
+          alt="Plan view of the mission on a grid of map cells: the drone's camera view finds an obstacle between start and goal, the face it sees is marked with a safety margin around it, and a new route bends around the margin to reach the goal"
+        >
+          The idea in one picture: the camera sees one face of an obstacle, the planner marks those map cells plus a safety margin, and the route is repaired around them. This is an illustration, not a flown path.
+        </WriteUpFigure>
         <p>The simulation connects ArduPilot SITL and Gazebo to ROS 2 and MAVROS, with a depth-based occupancy grid feeding the D* Lite planner. Both batches used 0.7 m planner inflation, a commanded speed of 0.5 m/s and a 3.0 m sensing range, with ten runs each against a box, pillar and wall.</p>
+        <WriteUpFigure
+          src="/images/uav-figures/uav-architecture-1600.webp"
+          full="/images/uav-figures/uav-architecture.webp"
+          width={1600}
+          height={575}
+          alt="Software stack from left to right: an existing depth camera sees obstacles, an occupancy grid built by me marks cells, a D* Lite planner built by me repairs the route, existing MAVROS sends flight commands, and existing ArduPilot on the flight controller flies the aircraft. A position estimate feeds both the occupancy grid and ArduPilot"
+        >
+          The stack in these trials. I wrote the occupancy grid and the planner, which implements the existing D* Lite algorithm; the depth camera, MAVROS and ArduPilot are existing parts.
+        </WriteUpFigure>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Simulation batch comparison">
           <table className="uav-results-table">
             <caption className="sr-only">Simulation results by batch: baseline and held-out geometry, with goal, clearance and path measures</caption>
@@ -63,6 +82,15 @@ export function UavTestGatesWriteUp() {
       <div className="writeup-block">
         <h3 id="held-out-testing">What held-out testing exposed</h3>
         <p>The frozen planner was tested on new obstacle positions and sizes without retuning, and the new geometry exposed two box runs at 0.41 m clearance and one pillar run at 0.48 m. Inflation protects the surfaces the camera has observed, so unseen obstacle depth can reduce clearance around corners.</p>
+        <WriteUpFigure
+          src="/images/uav-figures/uav-clearance-mechanism-1600.webp"
+          full="/images/uav-figures/uav-clearance-mechanism.webp"
+          width={1600}
+          height={627}
+          alt="Sketch of the clearance mechanism: the observed face of a box gets inflation around its seen cells, the unseen faces behind it get none, and the route passes inside the 0.5 m reference next to the unseen corner, marked too close"
+        >
+          Why the held-out runs came close. Inflation only grows around faces the camera has seen, so the route can pass an unseen face inside the 0.5 m requirement. This is a sketch, not to scale and not flown data.
+        </WriteUpFigure>
         <p>My advisor recommended finalising clearance in Phase 3 with HITL, which leaves the three misses as open validation work for that phase.</p>
       </div>
       <div className="writeup-block">
@@ -73,6 +101,15 @@ export function UavTestGatesWriteUp() {
       <div className="writeup-block">
         <h3 id="next-gates">Next verification gates</h3>
         <p>Props-off electronics and failsafe checks come before real flight. Position hold and estimator-source transitions need hardware evidence, while final clearance checks are planned for Phase 3/HITL. Integrated obstacle avoidance also depends on measured full-payload thrust margin, which I size with <a className="text-link" href="/projects/quadsolver-propulsion-sizing">QuadSolver</a> and am building a <a className="text-link" href="/projects/thrust-stand">thrust stand</a> to measure.</p>
+<WriteUpFigure
+          src="/images/uav-figures/uav-acceptance-gates-1600.webp"
+          full="/images/uav-figures/uav-acceptance-gates.webp"
+          width={1600}
+          height={627}
+          alt="Table of four acceptance gates: simulation avoidance at 8 of 10 or more collision-free goals, recorded with review pending; obstacle clearance of 0.5 m or more at 0.5 m/s, unresolved; physical position hold within 0.3 m for 60 s, flight verification pending; motor decision at 2.3 to 1 thrust-to-weight or more at 1.27 kg, measured thrust pending"
+        >
+          The four acceptance gates and their evidence status as I presented them on 12 November 2026.
+        </WriteUpFigure>
         <figure className="uav-bench-figure">
           <picture>
             <source srcSet="/images/gps-denied-uav-960.webp 960w, /images/gps-denied-uav-1280.webp 1280w, /images/gps-denied-uav.webp 1920w" sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 860px)" />

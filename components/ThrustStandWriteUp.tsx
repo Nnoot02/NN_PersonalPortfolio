@@ -1,5 +1,5 @@
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
-import styles from "./ThrustStandWriteUp.module.css";
+import { WriteUpFigure } from "@/components/WriteUpFigure";
 
 const sections: WriteUpSection[] = [
   { id: "what-it-measures", label: "What it measures" },
@@ -50,20 +50,6 @@ const gates = [
   },
 ] as const;
 
-// Figures from my capstone final presentation (deliverables/drafts/final-2026-11-12).
-// The wiring diagram is the slide version with the manufacturers' product photos
-// replaced by plain labelled boxes for the public site.
-function Figure({ src, full, width, height, alt, children }: { src: string; full: string; width: number; height: number; alt: string; children: React.ReactNode }) {
-  return (
-    <figure className={styles.figure}>
-      <img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" />
-      <figcaption>
-        {children} <a className="text-link" href={full} target="_blank" rel="noopener">Open full size<span className="sr-only"> (opens in a new tab)</span></a>
-      </figcaption>
-    </figure>
-  );
-}
-
 export function ThrustStandWriteUp() {
   return (
     <section className="writeup" aria-label="Thrust stand design and bench evidence">
@@ -76,6 +62,15 @@ export function ThrustStandWriteUp() {
           give enough thrust margin at full payload is a question I wanted to answer with measurements, not a sizing
           model, before spending the budget on an upgrade. This stand is the instrument for that measurement.
         </p>
+        <WriteUpFigure
+          src="/images/thrust-stand/thrust-stand-thrust-need-1600.webp"
+          full="/images/thrust-stand/thrust-stand-thrust-need.webp"
+          width={1600}
+          height={627}
+          alt="Bar chart: total weight 1.27 kg; thrust needed at 2.3 to 1 is 2.92 kg, 0.73 kg per motor; model estimates derived from 1.9 to 2.2 to 1 give 2.4 to 2.8 kg, short by 0.13 to 0.51 kg; measured thrust from the stand is unmeasured"
+        >
+          The number behind the stand. At my 2.3 : 1 thrust-to-weight target the 1.27 kg aircraft needs 2.92 kg of thrust, and my models put the stock motors at 2.4 to 2.8 kg. That would be 0.13 to 0.51 kg short, but it comes from models, so the stand has to measure it.
+        </WriteUpFigure>
         <WriteUpIndex sections={sections} label="Sections of the thrust stand write-up" />
       </div>
       <div className="writeup-block">
@@ -87,7 +82,7 @@ export function ThrustStandWriteUp() {
           Current comes from an off-board ACS758 Hall-effect sensor in the battery lead, and pack voltage from a
           resistor divider, so every thrust point carries the battery sag behind it.
         </p>
-        <Figure
+        <WriteUpFigure
           src="/images/thrust-stand/thrust-stand-wiring-1920.webp"
           full="/images/thrust-stand/thrust-stand-wiring.webp"
           width={1920}
@@ -96,7 +91,7 @@ export function ThrustStandWriteUp() {
         >
           How the stand is wired. The orange path is battery power, which carries up to tens of amps and stays off my
           board, so the board only handles signals. The ESC and motor came in a kit with no recorded make or model.
-        </Figure>
+        </WriteUpFigure>
         <p>
           All four channels land on one Arduino Mega 2560 shield, with an ESC signal output, test points on the key
           signal nodes and three status LEDs for power, logging and armed. The shield is also my Design for
@@ -104,7 +99,7 @@ export function ThrustStandWriteUp() {
           and on 11 November 2026 it passed ERC and DRC with no errors. The board is quoted but not ordered, so all bench
           work so far has been on a protoboard and an Arduino Uno.
         </p>
-        <Figure
+        <WriteUpFigure
           src="/images/thrust-stand/shield-schematic-to-pcb-1920.webp"
           full="/images/thrust-stand/shield-schematic-to-pcb.webp"
           width={1920}
@@ -112,7 +107,7 @@ export function ThrustStandWriteUp() {
           alt="The Rev02 shield schematic beside the same circuit as a board render, with five numbered blocks: 1 load cell amplifier, 2 motor speed pickup from one motor wire, 3 battery voltage scaled down to read safely, 4 current sensor input from a separate sensor, 5 throttle out and status lights. The board is split into a 5 V logic side and a battery side"
         >
           The Rev02 schematic and the same circuit in copper, split into a logic side and a battery side.
-        </Figure>
+        </WriteUpFigure>
       </div>
       <div className="writeup-block">
         <h3 id="validation-gates">Six validation gates</h3>
@@ -148,12 +143,30 @@ export function ThrustStandWriteUp() {
           RPM because the comparator had no supply. Once it was powered, the scope showed one clean output edge per
           electrical cycle from 20 to 50 % throttle.
         </p>
+        <WriteUpFigure
+          src="/images/thrust-stand/thrust-stand-phase-tap-stages-1600.webp"
+          full="/images/thrust-stand/thrust-stand-phase-tap-stages.webp"
+          width={1600}
+          height={350}
+          alt="Four analogue stages from the motor phase to the Mega: a clamp with a 22 kilohm resistor and BAT85 diodes keeps the phase inside the rails, a 220 nF AC coupling removes the DC level, a two-pole RC low-pass removes PWM chopping, and an LM393 comparator squares the wave into a Mega D2 interrupt pin that counts edges"
+        >
+          The RPM front end as four stages, from one motor wire to an interrupt pin. The waveforms are illustrative, as I did not save the scope captures.
+        </WriteUpFigure>
         <p>
           At 50 % throttle the logger counted 860 edges per second while the scope showed 431 Hz, almost exactly
           double. My best explanation is chatter: the comparator switches on back-EMF ramps that carry PWM ripple, and
           its hysteresis took about 100 µs to build, so a ripple cycle could cross the threshold again first. I also
           counted 12 magnet poles on that motor where the logger assumed 14, which skews every RPM figure on its own.
         </p>
+        <WriteUpFigure
+          src="/images/thrust-stand/thrust-stand-filter-response-1600.webp"
+          full="/images/thrust-stand/thrust-stand-filter-response.webp"
+          width={1600}
+          height={627}
+          alt="Simulated gain against log frequency from 10 Hz to 100 kHz: the built two-pole filter with 3.3 nF capacitors has a 3 dB passband from 21 to 1210 Hz, passes the 1.17 kHz fundamental at minus 12.5 dB and puts 8 kHz PWM at minus 27.9 dB, 15 dB below the rejected one-pole 4.7 nF design"
+        >
+          The filter's simulated response: a 3 dB passband from 21 to 1,210 Hz, with 8 kHz PWM about 28 dB down, 15 dB lower than the one-pole design I rejected. It simulates the passive network only, so it is not a bench measurement.
+        </WriteUpFigure>
         <p>
           After the runs I noticed the motor itself was faulty, as it skipped at low throttle, so some of what I
           logged may be the motor rather than the front end. I lowered the hysteresis resistor from 1 MΩ to 470 kΩ, and a re-test
@@ -170,30 +183,30 @@ export function ThrustStandWriteUp() {
           the carriage back into the load cell through an adjustable screw, with a hard stop to protect the cell. The
           guard is three panels of 4.5 mm clear polycarbonate, which I collected on 18 September 2026.
         </p>
-        <figure className={styles.figure}>
-          {/* Under reduced motion the browser picks the still: step 3, thrust pressing on the load cell. */}
-          <picture>
-            <source media="(prefers-reduced-motion: reduce)" srcSet="/images/thrust-stand/thrust-stand-how-it-works-still.webp" />
-            <img
-              className={styles.animation}
-              src="/images/thrust-stand/thrust-stand-how-it-works.webp"
-              width={640}
-              height={518}
-              loading="lazy"
-              decoding="async"
-              alt="How it works, in three steps: with the motor off the sensor reads zero; thrust pushes the carriage along the rods; the load cell measures that push and the force reading rises. Movement is exaggerated: the real carriage moves under 0.5 mm"
-            />
-          </picture>
-          <figcaption>
-            How thrust becomes a reading. The movement is exaggerated, as the real carriage moves less than 0.5 mm.
-          </figcaption>
-        </figure>
+        <WriteUpFigure
+          src="/images/thrust-stand/thrust-stand-how-it-works.webp"
+          still="/images/thrust-stand/thrust-stand-how-it-works-still.webp"
+          width={640}
+          height={518}
+          alt="How it works, in three steps: with the motor off the sensor reads zero; thrust pushes the carriage along the rods; the load cell measures that push and the force reading rises. Movement is exaggerated: the real carriage moves under 0.5 mm"
+        >
+          How thrust becomes a reading. The movement is exaggerated, as the real carriage moves less than 0.5 mm.
+        </WriteUpFigure>
         <p>
           The carriage has been through several revisions. An earlier printed version snapped at the screw tower when knocked, so
           Rev F widens that part into a tapered flange and checks the printed parts and the pusher screw for clashes in the CAD
           assembly before printing. None of the Rev F parts is printed yet. Design for Manufacture only assesses the
           electronics, but the capstone needs the stand built either way.
         </p>
+        <WriteUpFigure
+          src="/images/thrust-stand/thrust-stand-revc-revd-1600.webp"
+          full="/images/thrust-stand/thrust-stand-revc-revd.webp"
+          width={1600}
+          height={627}
+          alt="Rev C, printed 5 to 6 November, beside Rev D, not printed, with three numbered faults: 1 the prop hit the base and support, so Rev D raises the motor and moves the front support back; 2 the tower snapped at its root, so Rev D adds bracing at the tower base; 3 the carriage was too heavy, so Rev D uses a ladder frame with 6 % less solid volume"
+        >
+          What broke on Rev C and how Rev D answered it. Rev F keeps the Rev D parts and replaces only the carriage, widening the tower into a tapered flange.
+        </WriteUpFigure>
       </div>
     </section>
   );
