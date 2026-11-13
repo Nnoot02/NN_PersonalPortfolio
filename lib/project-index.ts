@@ -77,7 +77,7 @@ const definitions = {
     ],
   },
   "thrust-stand": {
-    stateLabel: "Capstone instrument · 0 of 6 gates passed",
+    stateLabel: "Capstone instrument",
     summary: "Bench instrument for thrust, RPM, current and voltage, built so the motor-upgrade decision rests on measured data.",
     ctaLabel: "See current work",
     miniature: {
