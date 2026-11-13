@@ -72,6 +72,7 @@
     "lib/projects.ts",
     "lib/project-index.ts",
     "components/ThrustStandWriteUp.tsx",
+    "components/ThrustStandWriteUp.module.css",
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],

@@ -39,7 +39,7 @@ const shareImages: Record<string, { url: string; width: number; height: number }
   "lv-cabling-design-commercial-complex": { url: "/images/project-index/lv-cabling-artifact.webp", width: 1280, height: 720 },
   "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
   "gps-denied-autonomous-uav": { url: "/images/gps-denied-uav.webp", width: 1920, height: 1080 },
-  "thrust-stand": { url: "/images/thrust-stand/thrust-stand-cad.webp", width: 1600, height: 900 },
+  "thrust-stand": { url: "/images/thrust-stand/thrust-stand-exploded.webp", width: 1950, height: 1290 },
   "quadsolver-propulsion-sizing": { url: "/images/quadsolver-results.webp", width: 1920, height: 1080 },
   "last-metre-eyes-viasat-entry": { url: "/images/viasat-entry/journey.webp", width: 1920, height: 1080 },
 };

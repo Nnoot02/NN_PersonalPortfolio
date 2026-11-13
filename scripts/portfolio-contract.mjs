@@ -561,7 +561,7 @@ const expectedProjectJourneyStages = new Map([
   ["lv-cabling-design-commercial-complex", ["Theory:resolved:AS/NZS requirements", "System decision:resolved:400 V cable and protection design", "Verification:resolved:Voltage drop and fault checks"]],
   ["solar-grid-connection-assessment", ["Theory:resolved:SAPN and AS/NZS requirements", "System decision:resolved:LV and HV connection options", "Verification:resolved:Hosting-capacity conclusion"]],
   ["gps-denied-autonomous-uav", ["Simulation:resolved:Baseline and held-out trials", "Current frontier:current:Hardware and software integration", "Verification:future:Phase 3/HITL clearance validation"]],
-  ["thrust-stand", ["Design:resolved:Shield schematic and stand CAD", "Current frontier:current:RPM front end on the bench", "Verification:future:Thrust sweep and motor decision"]],
+  ["thrust-stand", ["Design:resolved:Shield PCB and stand CAD", "Current frontier:current:RPM front end on the bench", "Verification:future:Thrust sweep and motor decision"]],
   ["quadsolver-propulsion-sizing", ["Model:resolved:Three hover methods", "Current frontier:current:Version 1.0 release", "Verification:future:Own thrust-stand sweep"]],
   ["last-metre-eyes-viasat-entry", ["Phase 1:resolved:Written concept advanced", "Phase 2:resolved:Video package submitted", "Measurement:future:Drone-to-relay link on a bench"]],
 ]);
@@ -856,6 +856,11 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   }
   const projectsDescription = readExport("/projects.html").match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "";
   check(projectsDescription.startsWith("Two coursework power studies to AS/NZS standards"), "/projects meta description must call the power studies coursework");
+  // Nathan, 2026-11-13: the description names every published lane, incl. the thrust stand.
+  check(projectsDescription.includes("the thrust stand that will measure its propulsion"), "/projects meta description must mention the thrust stand");
+  check(projectsDescription.includes("the app I size it with"), "/projects meta description must mention QuadSolver");
+  const projectsOgDescription = readExport("/projects.html").match(/<meta property="og:description" content="([^"]*)"/)?.[1] ?? "";
+  check(projectsOgDescription === projectsDescription, "/projects Open Graph description must match the meta description");
 }
 
 // Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
@@ -937,8 +942,18 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const ts = normalizeTextEntities(renderedMain(readExport("/projects/thrust-stand.html")));
   check(ts.includes("Case study 05"), "thrust stand must be case study 05");
   const tsNote = ts.match(/<p[^>]*class="case-image-note[^"]*"[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "";
-  check(tsNote.includes("not the built stand"), "thrust stand hero must say it is CAD, not the built stand");
-  check(ts.includes("/images/thrust-stand/thrust-stand-cad-960.webp 960w"), "thrust stand hero must carry its width variants");
+  check(tsNote.includes("It is not the built stand."), "thrust stand hero must say it is CAD, not the built stand");
+  check(ts.includes("/images/thrust-stand/thrust-stand-exploded-960.webp 960w"), "thrust stand hero must carry its width variants");
+  // Final-presentation figures (Nathan, 2026-11-13). The wiring diagram ships
+  // without the manufacturers' product photos; the animation has a still for
+  // reduced motion; Rev02 facts replace the stale Rev01 ones.
+  for (const asset of ["shield-schematic-to-pcb-1920.webp", "thrust-stand-wiring-1920.webp", "thrust-stand-how-it-works.webp", "thrust-stand-how-it-works-still.webp"]) {
+    check(ts.includes("/images/thrust-stand/" + asset), "thrust stand write-up must show " + asset);
+  }
+  check(/<source media="\(prefers-reduced-motion: reduce\)" srcSet="\/images\/thrust-stand\/thrust-stand-how-it-works-still\.webp"/i.test(ts), "thrust stand animation must fall back to its still under reduced motion");
+  check(publicFileSize("/images/thrust-stand/thrust-stand-how-it-works.webp") < 300 * 1024, "thrust stand animation must stay under 300 KB");
+  check(!/Rev01|layout not started|layout has not started/.test(ts), "thrust stand must not carry the stale Rev01 shield status");
+  check(ts.includes("A$275"), "thrust stand must state the A$275 cap");
   const tsGates = ts.match(/<ol class="gate-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   check((tsGates.match(/<li>/g) ?? []).length === 6, "thrust stand must list exactly six validation gates");
   check(!/Status<\/dt><dd>Pass(ed)?\b/.test(tsGates), "thrust stand must not mark any gate passed until one is");
@@ -1033,9 +1048,9 @@ const caseSpecs = {
   ],
   "thrust-stand": [
     ["Channels", "Thrust · RPM · current · voltage", "5 kg load cell, motor phase tap, ACS758 Hall sensor, pack divider"],
-    ["Shield PCB", "Schematic Rev01", "0 ERC errors, 10 November 2026; layout not started"],
+    ["Shield PCB", "Rev02 layout", "0 ERC and 0 DRC errors, 11 November 2026; quoted, not ordered"],
     ["Validation gates", "0 / 6 passed", "gate 1, RPM, is on the bench"],
-    ["Spend", "A$236.55", "against my A$250 cap for the stand; the DigiKey line is an approximate AUD total"],
+    ["Spend", "A$236.55", "against my A$275 cap for the stand, raised from A$250 on 30 September 2026 for the shield PCB; the DigiKey line is an approximate AUD total"],
   ],
   "quadsolver-propulsion-sizing": [
     ["Hover methods", "3", "measured data wins when it matches the hardware"],

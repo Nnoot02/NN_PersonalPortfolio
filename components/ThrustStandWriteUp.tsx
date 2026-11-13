@@ -1,4 +1,5 @@
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
+import styles from "./ThrustStandWriteUp.module.css";
 
 const sections: WriteUpSection[] = [
   { id: "what-it-measures", label: "What it measures" },
@@ -49,6 +50,20 @@ const gates = [
   },
 ] as const;
 
+// Figures from my capstone final presentation (deliverables/drafts/final-2026-11-12).
+// The wiring diagram is the slide version with the manufacturers' product photos
+// replaced by plain labelled boxes for the public site.
+function Figure({ src, full, width, height, alt, children }: { src: string; full: string; width: number; height: number; alt: string; children: React.ReactNode }) {
+  return (
+    <figure className={styles.figure}>
+      <img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" />
+      <figcaption>
+        {children} <a className="text-link" href={full} target="_blank" rel="noopener">Open full size<span className="sr-only"> (opens in a new tab)</span></a>
+      </figcaption>
+    </figure>
+  );
+}
+
 export function ThrustStandWriteUp() {
   return (
     <section className="writeup" aria-label="Thrust stand design and bench evidence">
@@ -72,12 +87,32 @@ export function ThrustStandWriteUp() {
           Current comes from an off-board ACS758 Hall-effect sensor in the battery lead, and pack voltage from a
           resistor divider, so every thrust point carries the battery sag behind it.
         </p>
+        <Figure
+          src="/images/thrust-stand/thrust-stand-wiring-1920.webp"
+          full="/images/thrust-stand/thrust-stand-wiring.webp"
+          width={1920}
+          height={872}
+          alt="Wiring diagram: battery power runs from a Zeee 3S 2200 mAh battery through an Allegro ACS758 current sensor to the ESC and on to a 2212 type 920 KV motor. The thrust stand shield, which plugs on top of an Arduino Mega 2560, takes in motor current, the motor speed pickup, battery voltage and the force signal from an Adafruit 4541 5 kg load cell, and sends throttle to the ESC"
+        >
+          How the stand is wired. The orange path is battery power, which carries up to tens of amps and stays off my
+          board, so the board only handles signals. The ESC and motor came in a kit with no recorded make or model.
+        </Figure>
         <p>
           All four channels land on one Arduino Mega 2560 shield, with an ESC signal output, test points on the key
           signal nodes and three status LEDs for power, logging and armed. The shield is also my Design for
-          Manufacture project at TAFE, so its schematic is released and archived as a numbered revision. Rev01 passed
-          ERC with no errors or warnings on 10 November 2026. The PCB layout has not started.
+          Manufacture project at TAFE, so each revision is released and archived. Rev02 carries the full board layout,
+          and on 11 November 2026 it passed ERC and DRC with no errors. The board is quoted but not ordered, so all bench
+          work so far has been on a protoboard and an Arduino Uno.
         </p>
+        <Figure
+          src="/images/thrust-stand/shield-schematic-to-pcb-1920.webp"
+          full="/images/thrust-stand/shield-schematic-to-pcb.webp"
+          width={1920}
+          height={706}
+          alt="The Rev02 shield schematic beside the same circuit as a board render, with five numbered blocks: 1 load cell amplifier, 2 motor speed pickup from one motor wire, 3 battery voltage scaled down to read safely, 4 current sensor input from a separate sensor, 5 throttle out and status lights. The board is split into a 5 V logic side and a battery side"
+        >
+          The Rev02 schematic and the same circuit in copper, split into a logic side and a battery side.
+        </Figure>
       </div>
       <div className="writeup-block">
         <h3 id="validation-gates">Six validation gates</h3>
@@ -108,7 +143,7 @@ export function ThrustStandWriteUp() {
       <div className="writeup-block">
         <h3 id="bench-bring-up">Bench bring-up</h3>
         <p>
-          On 6 November 2026 I built the RPM front end on a breadboard and ran it on a spare 920 KV motor with a 1045
+          On 6 November 2026 I built the RPM front end on a protoboard and ran it on a spare 920 KV motor with a 1045
           propeller, with a Rigol scope on the comparator output and the phase waveform. The first logged run read zero
           RPM because the comparator had no supply. Once it was powered, the scope showed one clean output edge per
           electrical cycle from 20 to 50 % throttle.
@@ -124,8 +159,8 @@ export function ThrustStandWriteUp() {
           logged may be the motor rather than the front end. I lowered the hysteresis resistor from 1 MΩ to 470 kΩ, and a re-test
           at 20 % throttle agreed with an earlier scope capture within 3.4 %. The two readings were not taken at the
           same time, though, and the 2× fault came from 50 %, so this does not prove the fix. The next step is a speed-up
-          capacitor across that resistor and a full re-test on a known-good motor. The Rev01 schematic still shows the
-          1 MΩ value, so the change goes into the next revision.
+          capacitor across that resistor and a full re-test on a known-good motor. Rev02 of the shield carries the
+          470 kΩ value, and the capacitor stays off the board until I have tested it properly.
         </p>
       </div>
       <div className="writeup-block">
@@ -135,6 +170,24 @@ export function ThrustStandWriteUp() {
           the carriage back into the load cell through an adjustable screw, with a hard stop to protect the cell. The
           guard is three panels of 4.5 mm clear polycarbonate, which I collected on 18 September 2026.
         </p>
+        <figure className={styles.figure}>
+          {/* Under reduced motion the browser picks the still: step 3, thrust pressing on the load cell. */}
+          <picture>
+            <source media="(prefers-reduced-motion: reduce)" srcSet="/images/thrust-stand/thrust-stand-how-it-works-still.webp" />
+            <img
+              className={styles.animation}
+              src="/images/thrust-stand/thrust-stand-how-it-works.webp"
+              width={640}
+              height={518}
+              loading="lazy"
+              decoding="async"
+              alt="How it works, in three steps: with the motor off the sensor reads zero; thrust pushes the carriage along the rods; the load cell measures that push and the force reading rises. Movement is exaggerated: the real carriage moves under 0.5 mm"
+            />
+          </picture>
+          <figcaption>
+            How thrust becomes a reading. The movement is exaggerated, as the real carriage moves less than 0.5 mm.
+          </figcaption>
+        </figure>
         <p>
           The carriage has been through several revisions. An earlier printed version snapped at the screw tower when knocked, so
           Rev F widens that part into a tapered flange and checks the printed parts and the pusher screw for clashes in the CAD

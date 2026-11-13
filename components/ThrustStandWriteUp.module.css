@@ -1,0 +1,6 @@
+/* Figures in the thrust stand write-up (final-presentation figures, 2026-11-13).
+   Diagrams keep their own paper ground, so no sepia filter and no backdrop. */
+.figure { margin: 1.5rem 0 0; }
+.figure img { display: block; width: 100%; height: auto; }
+.figure figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
+.animation { max-width: 640px; }
