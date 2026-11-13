@@ -176,7 +176,7 @@ export function ThrustStandWriteUp() {
           alt="Simulated filter gain: 21 to 1,210 Hz passband, 8 kHz PWM about 28 dB down"
           scroll="Filter response chart"
         >
-          The filter's simulated response: a 3 dB passband from 21 to 1,210 Hz, with 8 kHz PWM about 28 dB down, 15 dB lower than the one-pole design I rejected. It simulates the passive network only, so it is not a bench measurement.
+          The filter's simulated response: a 3 dB passband from 21 to 1,210 Hz. The 8 kHz PWM lands 28 dB down, 15 dB below the 1.17 kHz fundamental, where the one-pole design I rejected managed 11 dB. It simulates the passive network only, so it is not a bench measurement.
         </WriteUpFigure>
         <p>
           After the runs I noticed the motor itself was faulty, as it skipped at low throttle, so some of what I

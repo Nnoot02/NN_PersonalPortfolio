@@ -968,6 +968,12 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
     check(ts.includes("/images/thrust-stand/" + asset), "thrust stand write-up must show " + asset);
   }
   check(ts.includes("It simulates the passive network only"), "thrust stand filter response must be labelled a simulation");
+  // Sim re-run 2026-11-13 (rpm-phase-tap-filter-sim.py, C2=C3=3.3n): one-pole
+  // puts 8 kHz 11.2 dB below the 1.17 kHz fundamental, the built two-pole 15.4.
+  // Pin the basis, not just the number, so "15 dB lower than the one-pole"
+  // (which compares two different quantities) cannot come back.
+  check(ts.includes("15 dB below the 1.17 kHz fundamental") && ts.includes("managed 11 dB"), "thrust stand filter caption must compare PWM below the fundamental against the one-pole");
+  check(!ts.includes("15 dB lower than the one-pole"), "thrust stand filter caption must not compare the two-pole separation with the one-pole's absolute gain");
   const uavFigs = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html")));
   for (const asset of ["uav-mission-1600.webp", "uav-architecture-1600.webp", "uav-clearance-mechanism-1600.webp", "uav-acceptance-gates-1600.webp"]) {
     check(uavFigs.includes("/images/uav-figures/" + asset), "UAV write-up must show " + asset);
