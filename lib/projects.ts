@@ -25,6 +25,13 @@ export type Project = {
   evidenceStatus: string;
   evidenceMarkers?: string[];
   spec?: SpecRow[];
+  /**
+   * Case-study eyebrow. DESIGN.md requires it to carry information rather than
+   * restate the h1, and bans uppercase strings past ~30ch, so an unnumbered
+   * page passes its own short discipline line here instead of "Case study"
+   * (audit 2026-11-13, UIUX-07).
+   */
+  eyebrow?: string;
   // Diagram artifacts are unreadable at mobile widths; offer the full-size file.
   imageIsDiagram?: boolean;
   /** Provenance line shown under a diagram, before the full-size link. */
@@ -165,26 +172,30 @@ export const projects: Project[] = [
     image: "/images/quadsolver-results.webp",
     imageSrcSet: "/images/quadsolver-results-960.webp 960w, /images/quadsolver-results-1280.webp 1280w, /images/quadsolver-results.webp 1920w",
     heroSrcSet: "/images/quadsolver-results-960.webp 960w, /images/quadsolver-results-1280.webp 1280w, /images/quadsolver-results.webp 1920w",
+    // Cropped to the summary band (audit 2026-11-13, Nathan): the metric tiles
+    // plus the INFO line stay in frame; the readings table, the empty measured
+    // thrust plot and the clipped Evidence control are cropped out.
     imageAlt:
-      "QuadSolver Results screen for a 5-inch freestyle quad on the coefficient model: thrust-to-weight 7.69 to 1, 8.8 min hover, 6.6 A hover current, 1.45 kg payload headroom and 4.3 g/W, with every limit passing",
-    imageNote: "The built-in 5-inch preset with 120 g of assumed electronics, solved on the coefficient model. No measured thrust data is loaded.",
+      "QuadSolver Results screen for the 5-inch preset, cropped to its summary band: thrust-to-weight 7.69 to 1, 8.8 min hover, 6.6 A hover current, 1.45 kg payload headroom and 4.3 g/W, with the coefficient-model label and the model-only warning line both in frame",
+    imageNote: "Model estimate, not a measurement: the built-in 5-inch preset with 120 g of assumed electronics, solved on the coefficient model. No measured thrust data is loaded.",
     scope: "Propulsion modelling, software",
     role: "Sole developer: models, app and tests",
     status: "Software tool · model-only, hardware pending",
+    eyebrow: "Propulsion modelling, software",
     tags: ["Propulsion modelling", "Python", "Verification"],
-    evidenceMarkers: ["3 hover methods", "9 limits", "Preset 27 % duty", "Thrust stand pending"],
+    evidenceMarkers: ["3 hover methods", "9 limits", "620 g all-up", "Thrust stand pending"],
     spec: [
       { label: "Hover methods", value: "3", note: "measured data wins when it matches the hardware" },
-      { label: "Limits", value: "9", note: "motor, ESC, battery, frame and targets, checked together" },
-      { label: "5-inch preset", value: "27 % duty", note: "about 8.8 min hover, model estimate" },
+      { label: "Limits", value: "9", note: "six decide feasibility, three are warnings; full throttle binds this preset" },
+      { label: "5-inch preset", value: "620 g all-up", note: "120 g of assumed electronics, model estimate" },
       { label: "Validation", value: "Pending", note: "my own thrust-stand sweep" },
     ],
     problem:
       "Choosing motors, props, an ESC and a battery for a multirotor means checking thrust, endurance and several electrical ratings against each other, and a spreadsheet rarely shows which limit is reached first.",
     approach:
-      "Solve hover with the best method the data allows (measured thrust-stand data, then a propeller coefficient model, then momentum theory), label that method on every result, and check every rating at the same operating point.",
+      "Solve hover with the best method the data allows, label that method on every result, and check the electrical ratings and the throttle ceiling at the hover point, with the peak ratings checked at full throttle.",
     result:
-      "For the 5-inch preset with 120 g of assumed electronics, the coefficient model gives a 7.7:1 thrust-to-weight ratio, 27 % hover duty and about 8.8 minutes of hover. These are model estimates, since the propeller coefficients are fitted to T-Motor's published thrust test rather than my own measurements.",
+      "For the 5-inch preset with 120 g of assumed electronics, the coefficient model gives a 7.7:1 thrust-to-weight ratio, 27 % hover throttle and about 8.8 minutes of hover on 80 % of the pack's capacity. These are model estimates, since the propeller coefficients are fitted to T-Motor's published thrust test rather than my own measurements.",
     evidenceStatus:
       "Model-only. I have not yet imported a thrust-stand sweep of my own; the thrust stand I am building is the planned data source. The source code and Windows build are not public yet.",
   },

@@ -865,7 +865,10 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
 
 // Scrollable <pre> and table wrappers are keyboard stops in Chrome. Each must
 // be a named region so the stop announces what it is (WCAG 4.1.2).
-for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"]) {
+// GATE-04 (audit 2026-11-13): this rule used to name two slugs, so the QuadSolver
+// write-up's two regions were correct and unprotected. Every case study with a
+// scrollable block is in scope now; a route with none simply checks nothing.
+for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment", "gps-denied-autonomous-uav", "thrust-stand", "quadsolver-propulsion-sizing", "last-metre-eyes-viasat-entry"]) {
   const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
   for (const block of [...(writeUp.match(/<pre\b[^>]*>/g) ?? []), ...(writeUp.match(/<div[^>]*class="table-scroll"[^>]*>/g) ?? [])]) {
     check(block.includes('role="region"') && /aria-label="[^"]+"/.test(block) && block.includes('tabindex="0"'), `${slug}: scrollable block must be a named focusable region: ${block.slice(0, 60)}`);
@@ -908,6 +911,10 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
     check(new RegExp(`<h3[^>]*id="${id}"`).test(writeUp), `${slug}: section #${id} must exist as an h3 target`);
   }
   check((writeUp.match(/<h3\b/g) ?? []).length === ids.length, `${slug}: index must cover every section`);
+  // GATE-05 (audit 2026-11-13): ids and the h3 count were pinned, the order was
+  // not, so a reordered write-up still passed.
+  const indexOrder = [...index.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]);
+  check(indexOrder.join(",") === ids.join(","), `${slug}: index order must match the pinned section order`);
 }
 
 // QuadSolver page (plan 2026-11-13-001, Nathan's calls): the repo is private and
@@ -919,12 +926,19 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   const qs = normalizeTextEntities(renderedMain(readExport("/projects/quadsolver-propulsion-sizing.html")));
   check(!/github\.com\/Nnoot02\/QuadSolverApp|\/releases/i.test(qs), "quadsolver: page must not link the private repo or a release");
   check(qs.includes("/images/quadsolver-results-960.webp 960w"), "quadsolver: hero must carry its responsive widths");
-  check(qs.includes("No measured thrust data is loaded."), "quadsolver: hero note must say no measured thrust data is loaded");
+  // GATE-07 (audit 2026-11-13): the note was pinned page-wide, so any paragraph
+  // containing the sentence satisfied it. Scope it to the note element.
+  const heroNote = qs.match(/<p class="case-image-note case-image-provenance">([\s\S]*?)<\/p>/)?.[1] ?? "";
+  check(heroNote.includes("No measured thrust data is loaded."), "quadsolver: hero note must say no measured thrust data is loaded");
+  check(heroNote.includes("Model estimate, not a measurement"), "quadsolver: hero note must lead with the model-only qualifier");
+  check(!/passing/i.test(heroNote), "quadsolver: hero note and alt must not claim a pass verdict");
   check(!qs.includes("thrust-good") && !qs.includes("results.png"), "quadsolver: page must not reuse the fixture-driven README screenshot");
   check(qs.includes('href="/projects/gps-denied-autonomous-uav"'), "quadsolver: write-up must link the GPS-denied capstone");
   check(qs.includes('href="/projects/thrust-stand"'), "quadsolver: write-up must link the thrust stand as its planned data source");
   check(qs.includes("None of the results on this page come from hardware I have measured."), "quadsolver: write-up must keep its evidence boundary");
-  check(!qs.includes("\u2014"), "quadsolver: page must contain no em dash");
+  // GATE-06: em dashes are banned by Nathan's rule and by DESIGN.md's cap, so the
+  // pin reads the whole document, not only <main>.
+  check(!readExport("/projects/quadsolver-propulsion-sizing.html").includes("\u2014"), "quadsolver: page must contain no em dash");
   const uavNext = normalizeTextEntities(renderedMain(readExport("/projects/gps-denied-autonomous-uav.html"))).match(/<h3[^>]*id="next-gates"[\s\S]*?<\/div>/)?.[0] ?? "";
   check(uavNext.includes('href="/projects/quadsolver-propulsion-sizing"'), "uav: next verification gates must link QuadSolver");
   for (const [asset, budget] of [["/images/quadsolver-results.webp", 200], ["/images/quadsolver-results-1280.webp", 120], ["/images/quadsolver-results-960.webp", 80], ["/images/project-index/quadsolver-artifact.webp", 160]]) {
@@ -967,8 +981,27 @@ for (const [slug, ids] of Object.entries(writeUpIndexes)) {
   check(uavFigs.includes("as I presented them on 12 November 2026"), "UAV acceptance-gates figure must carry its status date");
   check(uavFigs.includes("not to scale and not flown data"), "UAV clearance sketch must say it is not flown data");
   const qs = normalizeTextEntities(renderedMain(readExport("/projects/quadsolver-propulsion-sizing.html")));
-  check(/<source media="\(prefers-reduced-motion: reduce\)" srcSet="\/images\/quadsolver\/quadsolver-app-tour-still\.webp"/i.test(qs), "QuadSolver app tour must fall back to its still under reduced motion");
-  check(qs.includes("The imported thrust file is sample data"), "QuadSolver app tour must say the imported data is a sample");
+  // GATE-01 (audit 2026-11-13): the pin used to be a regex over all of <main>,
+  // so a <source> anywhere satisfied it and the still file was never opened.
+  // Scope it to the tour figure, prove the file exists, and prove the 2.2.2
+  // control is present.
+  const qsFigures = qs.match(/<figure[\s\S]*?<\/figure>/g) ?? [];
+  const tourFigure = qsFigures.find((figure) => figure.includes("quadsolver-app-tour.webp")) ?? "";
+  check(tourFigure !== "", "QuadSolver app tour must render as a figure");
+  check(/<source media="\(prefers-reduced-motion: reduce\)" srcSet="\/images\/quadsolver\/quadsolver-app-tour-still\.webp"/i.test(tourFigure), "QuadSolver app tour must fall back to its still under reduced motion");
+  check(publicFileSize("/images/quadsolver/quadsolver-app-tour-still.webp") > 0, "QuadSolver reduced-motion still must exist");
+  check(/Pause the four-step tour/.test(tourFigure), "QuadSolver app tour must offer a pause control (WCAG 2.2.2)");
+  check(tourFigure.includes("The imported thrust file is sample data"), "QuadSolver app tour must say the imported data is a sample");
+  check(tourFigure.includes("Open full size"), "QuadSolver app tour must link its full-size file for phone readers");
+  // GATE-03 (audit 2026-11-13): the headline numbers lived in four places and
+  // only the spec strip was pinned, so this table could drift from the strip
+  // silently. Pin the results and the binding limit.
+  for (const cell of ["7.69 : 1", "Hover throttle", "27 %", "8.8 min", "4.3 g/W"]) {
+    check(qs.includes(`>${cell}</td>`) || qs.includes(`>${cell}</th>`), `QuadSolver preset table must carry "${cell}"`);
+  }
+  check(qs.includes("100 % duty at 29,412 rpm"), "QuadSolver limits block must name the limit that binds this preset");
+  check(qs.includes("about 80 % of the pack"), "QuadSolver preset block must state the usable-capacity assumption");
+  check(qs.includes("about 16.9 min against 8.8"), "QuadSolver methods table must give the momentum fallback's magnitude");
   const tsGates = ts.match(/<ol class="gate-list"[\s\S]*?<\/ol>/)?.[0] ?? "";
   check((tsGates.match(/<li>/g) ?? []).length === 6, "thrust stand must list exactly six validation gates");
   check(!/Status<\/dt><dd>Pass(ed)?\b/.test(tsGates), "thrust stand must not mark any gate passed until one is");
@@ -1004,7 +1037,11 @@ for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connecti
 // is homepage copy too. Pin the source file and the built homepage.
 check(!readFileSync(new URL("../public/images/lv-cabling-sld.svg", import.meta.url), "utf8").includes("\u2014"), "lv-cabling-sld.svg must contain no U+2014 character");
 check(!homeDoc.includes("\u2014"), "published homepage must contain no U+2014 character");
-check(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")).includes("with each conclusion argued against AS/NZS inverter standards and SAPN TS132/TS133"), "grid summary must argue each conclusion against the standards");
+// The summary is published on the homepage project row, so pin it there. It used
+// to be satisfied by accident: the JSON-LD block carried project.summary and the
+// old script sat inside <main>, so renderedMain() read the JSON rather than the
+// page (audit 2026-11-13, GATE-06 side effect when the script moved out of <main>).
+check(renderedMain(readExport("/index.html")).includes("with each conclusion argued against AS/NZS inverter standards and SAPN TS132/TS133"), "grid summary must argue each conclusion against the standards");
 check(globalsCss.includes("scroll-margin-top"), "indexed sections must clear the sticky header on a fragment jump");
 
 // PLAN v6 V2. A reviewer gets one direct contact vector from wherever they are
@@ -1069,8 +1106,11 @@ const caseSpecs = {
   ],
   "quadsolver-propulsion-sizing": [
     ["Hover methods", "3", "measured data wins when it matches the hardware"],
-    ["Limits", "9", "motor, ESC, battery, frame and targets, checked together"],
-    ["5-inch preset", "27 % duty", "about 8.8 min hover, model estimate"],
+    // Audit 2026-11-13 (D-01/D-04): nine checks counted, six of them decide
+    // feasibility, and full throttle is what binds this preset.
+    ["Limits", "9", "six decide feasibility, three are warnings; full throttle binds this preset"],
+    // D3: the preset row carries mass, not the results it used to repeat.
+    ["5-inch preset", "620 g all-up", "120 g of assumed electronics, model estimate"],
     ["Validation", "Pending", "my own thrust-stand sweep"],
   ],
 };
@@ -1126,7 +1166,10 @@ for (const [slug, rows] of Object.entries(caseSpecs)) {
   check(!strip.includes("<a ") && !strip.includes("<button"), `${slug}: spec strip must stay non-interactive`);
   for (const [label, value, note] of rows) {
     if (label === "Standards") check(!strip.includes(value), `${slug}: Standards rows must stay out of the strip`);
-    else check(strip.includes(`${value}</b>`), `${slug}: strip must carry the "${label}" value`);
+    // GATE-09 (audit 2026-11-13): a bare `3</b>` suffix also matched "13</b>".
+    // Pin the label to the value it carries. React inserts a `<!-- -->` text
+    // separator between the label and the <b>, so allow it explicitly.
+    else check(strip.includes(`>${label}<!-- --> <b>${value}</b>`) || strip.includes(`>${label} <b>${value}</b>`), `${slug}: strip must carry the "${label}" value`);
     if (note) check(!strip.includes(note), `${slug}: strip must omit notes`);
   }
 }

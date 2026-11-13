@@ -179,9 +179,14 @@ try {
   // readers get the problem before the evidence (measured 2777 and 2876).
   // Solar 2950 -> 3050 when the diagram gained its six route stops (solar
   // connection trace, Nathan 2026-10-29; measured 2876 -> 2975).
-  // UAV 2000 -> 2250 when the clearance plot replaced the shorter bench photo
-  // (C4, same audit, measured 2173); the plot itself is pinned below.
-  ["lv-cabling-design-commercial-complex", 2850], ["solar-grid-connection-assessment", 3050], ["gps-denied-autonomous-uav", 2250]]) {
+  // LV 2850 -> 3050, solar 3050 -> 3300, uav 2250 -> 2400 when the case opening
+  // moved from the 0.88rem principle body to the 1.15rem case-lede role it was
+  // declared for (audit 2026-11-13, UIUX-01: the primary read was the smallest
+  // text on the page; measured on a 390px phone: LV 2983, solar 3270, UAV 2336).
+  // The clearance-plot ceiling moves with it (measured 1839).
+  // UAV 2000 -> 2250 came earlier, when the clearance plot replaced the shorter
+  // bench photo (C4, 2026-10-29 audit, measured 2173).
+  ["lv-cabling-design-commercial-complex", 3050], ["solar-grid-connection-assessment", 3300], ["gps-denied-autonomous-uav", 2400]]) {
     await page.goto(`${base}/projects/${slug}`, { waitUntil: "networkidle" });
     assert.equal(await page.locator(".case-meta").count(), 0);
     const headings = await page.locator(".case-sections h2").allTextContents();
@@ -193,8 +198,8 @@ try {
       // C4: the 60-trial evidence leads. Before the move this plot began at
       // 3459px on this phone and the results table at 3029px (measured).
       const plotTop = await page.locator(".uav-clearance-hero").evaluate(e => e.getBoundingClientRect().top);
-      assert.ok(plotTop < 1800, `uav: clearance plot starts at ${plotTop}, budget 1800`);
-      console.log(`${slug}: phone clearance plot begins ${Math.round(plotTop)}px (budget 1800)`);
+      assert.ok(plotTop < 1880, `uav: clearance plot starts at ${plotTop}, budget 1880`);
+      console.log(`${slug}: phone clearance plot begins ${Math.round(plotTop)}px (budget 1880)`);
     }
     await page.screenshot({ path: join(shots, `${slug}-390.png`), fullPage: true });
     checks++;

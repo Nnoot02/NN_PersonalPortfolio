@@ -10,7 +10,8 @@ export type JourneyStage = {
 
 export type ProjectIndexEntry = {
   project: Project;
-  stateLabel: string;
+  /** Lane label. Omitted when it would only restate `project.status` (F16). */
+  stateLabel?: string;
   summary: string;
   ctaLabel: "Read the case study" | "See current work" | "Read the entry";
   miniature: {
@@ -91,7 +92,7 @@ const definitions = {
     ],
   },
   "quadsolver-propulsion-sizing": {
-    stateLabel: "Software tool · model-only, hardware pending",
+    // stateLabel omitted: it would restate project.status byte for byte (F16).
     summary: "Propulsion sizing that checks nine limits at once and labels its method; results stay model estimates until my own thrust data arrives.",
     ctaLabel: "Read the case study",
     miniature: {
