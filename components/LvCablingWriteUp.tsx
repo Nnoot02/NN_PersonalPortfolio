@@ -72,7 +72,7 @@ export function LvCablingWriteUp() {
           butcher is simultaneously the heaviest-loaded and longest (15 m) submain.
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Maximum demand per board and phase">
-          <table>
+          <table className="writeup-table--schedule">
             <caption className="sr-only">Maximum demand per board and phase, in amperes</caption>
             <thead>
               <tr>
@@ -167,7 +167,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
           the design.
         </p>
         <div className="table-scroll" tabIndex={0} role="region" aria-label="Final subcircuit schedule">
-          <table>
+          <table className="writeup-table--schedule">
             <caption className="sr-only">Final subcircuit schedule: load type, run length, design current, protective device, cable and earth sizes, current-carrying capacity and voltage drop</caption>
             <thead>
               <tr>

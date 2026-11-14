@@ -40,7 +40,7 @@ const shareImages: Record<string, { url: string; width: number; height: number }
   "solar-grid-connection-assessment": { url: "/images/solar-grid-connection.webp", width: 1536, height: 1024 },
   "gps-denied-autonomous-uav": { url: "/images/gps-denied-uav.webp", width: 1920, height: 1080 },
   "thrust-stand": { url: "/images/thrust-stand/thrust-stand-exploded.webp", width: 1950, height: 1290 },
-  "quadsolver-propulsion-sizing": { url: "/images/quadsolver-results.webp", width: 1920, height: 1080 },
+  "quadsolver-propulsion-sizing": { url: "/images/quadsolver-results.webp", width: 1920, height: 632 },
   "last-metre-eyes-viasat-entry": { url: "/images/viasat-entry/journey.webp", width: 1920, height: 1080 },
 };
 
@@ -168,14 +168,17 @@ export default async function ProjectPage({ params }: ProjectParams) {
   return (
     <>
     <SiteHeader />
+    {/* The structured-data script sits outside <main>: it belongs to the
+        document, and the contract's renderedMain() slice carries anything left
+        inside <main> into every gate string (audit 2026-11-13, F5). */}
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify({ ...projectStructuredData(project), dateModified: routeLastModified(`/projects/${project.slug}`).toISOString() }) }}
+    />
     <main id="main-content" tabIndex={-1}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify({ ...projectStructuredData(project), dateModified: routeLastModified(`/projects/${project.slug}`).toISOString() }) }}
-      />
       <article className="case-study">
-        <Link className="back-link" href="/projects"><ArrowLeft size={18} /> Project index</Link>
-        <p className="eyebrow">{project.number ? `Case study ${project.number}` : "Case study"}</p>
+        <Link className="back-link" href="/projects"><ArrowLeft size={18} aria-hidden="true" /> Project index</Link>
+        <p className="eyebrow">{project.number ? `Case study ${project.number}` : project.eyebrow ?? "Case study"}</p>
         <h1>{project.title}</h1>
         <p className="case-status">{project.status}</p>
         {!WriteUp ? <p className="case-lede">{project.summary}</p> : null}
@@ -225,14 +228,19 @@ export default async function ProjectPage({ params }: ProjectParams) {
           <div className="case-image" style={{ aspectRatio: `${shareImages[project.slug].width} / ${shareImages[project.slug].height}` }}>
             {/* The box takes the image's own ratio, so cover never crops it.
                 The export is unoptimized, so next/image emits no srcset. The
-                photographic heroes carry pre-generated widths instead. */}
+                photographic heroes carry pre-generated widths instead.
+                sizes follows the real box: .case-study insets 6vw each side, so
+                the hero is 88vw, not min(100vw, 1240px) (audit 2026-11-13, F1).
+                No priority: the hero sits below the spec sheet, and inside a
+                <picture> the preload names the largest file on every viewport
+                (F2). */}
             {project.heroSrcSet ? (
               <picture>
-                <source srcSet={project.heroSrcSet} sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 1240px)" />
-                <Image src={project.image} alt={project.imageAlt} fill priority sizes="(max-width: 720px) calc(100vw - 40px), min(100vw, 1240px)" />
+                <source srcSet={project.heroSrcSet} sizes="(max-width: 720px) calc(100vw - 40px), 88vw" />
+                <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 720px) calc(100vw - 40px), 88vw" />
               </picture>
             ) : (
-              <Image src={project.image} alt={project.imageAlt} fill priority sizes="100vw" />
+              <Image src={project.image} alt={project.imageAlt} fill sizes="88vw" />
             )}
           </div>
         )}

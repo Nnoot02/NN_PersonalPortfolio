@@ -84,6 +84,10 @@
   --text-table: .84rem;
   --text-tag: .75rem;
   --text-writeup-block-heading: clamp(1.4rem,2.2vw,1.9rem);
+  /* One rhythm for the case-study's sibling blocks. Five undeclared gaps used to
+     separate them (audit 2026-11-13, UIUX-09), and the same relationship read
+     40px in one place and 48px in another. */
+  --case-gap: clamp(2rem, 3vw, 3rem);
   /* Sticky chrome geometry. --header-floor is a rem-affine floor for the
      header's own min-height -- the header is a min-height box whose nav
      content scales with root text (76px at 100% text, 138px at 200%;
@@ -139,7 +143,7 @@ button { font: inherit; }
 .site-nav { display: flex; align-items: center; gap: clamp(1.25rem, 2.8vw, 3.2rem); }
 .nav-link { min-width: 44px; padding: 1.65rem 0 1.45rem; border-bottom: 2px solid transparent; font-size: var(--text-nav-link); }
 .nav-link:hover, .nav-link:focus-visible, .nav-link.is-active { color: var(--accent-dark); border-color: var(--accent); }
-.menu-button { min-width: 44px; min-height: 44px; display: none; border: 0; background: transparent; color: var(--ink); padding: .5rem; }
+.menu-button { min-width: 46px; min-height: 46px; display: none; border: 0; background: transparent; color: var(--ink); padding: .5rem; }
 
 .hero { min-height: 560px; display: grid; grid-template-columns: 46% 54%; position: relative; border-bottom: 1px solid var(--line); }
 .hero-copy { min-width: 0; padding: 4.4rem 6vw 5rem; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1.45rem; }
@@ -197,7 +201,7 @@ a:active { text-decoration: underline; text-decoration-thickness: 2px; }
    same way write-up anchors do (see the .writeup-block h3 scroll-margin rule). */
 #main-content { scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
 #main-content:focus { outline: none; }
-.case-image img, .project-image img { object-fit: cover; filter: sepia(.08); transition: transform var(--motion-slow) var(--motion-ease); }
+.case-image img, .project-image img { object-fit: cover; filter: sepia(.08); }
 .hero-artifact { background: var(--paper-deep); display: flex; flex-direction: column; height: 100%; }
 .hero-artifact-figure { display: block; flex: 1 1 auto; min-height: 0; position: relative; }
 /* Stage: makes the callout layer's coordinate space exactly the SVG's
@@ -663,7 +667,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    2026-09-23: their contact address is a 21-character token with no break
    opportunity, and at 200% text on a 320px viewport it overflowed the document
    by 110px. */
-.prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
+.prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .writeup figcaption, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
 .back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
@@ -802,6 +806,11 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    the bordered card it dragged the table back under the card's bottom rule
    (Nathan, 2026-09-17). Neutralise the pull when the card precedes it. */
 .case-sections + .case-spec, .case-sections + .case-tags { margin-top: 0; }
+/* Three equal auto-fit tracks gave the 50-word outcome one third of the row, so
+   at 1024 it was narrower than at 768 and broke "T-Motor's" across its hyphen
+   (audit 2026-11-13, UIUX-02). Weighted tracks below hold the short role column
+   and give the outcome the room its length asks for; the auto-fit stays for the
+   single-column fallback under 720px. */
 /* The spec sheet's -1.2rem pull is tuned against the brief above it. Where the
    brief is absent and the sheet follows the opening card directly (thrust
    stand, 2026-11-13), the pull drags the table into that card: measured 19.2px
@@ -809,8 +818,14 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    so it needs a real gap rather than a zeroed margin. */
 .case-opening + .case-spec, .case-opening + .case-tags { margin-top: 1.75rem; }
 .case-opening dl { display: grid; gap: .9rem 1.75rem; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); margin: 0; }
+@media (min-width: 900px) {
+  .case-opening dl { grid-template-columns: minmax(0, .8fr) minmax(0, 1.5fr) minmax(0, 1fr); }
+}
 .case-opening dt { color: var(--accent-dark); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; margin-bottom: .35rem; text-transform: uppercase; }
-.case-opening dd { color: var(--ink); font-size: var(--text-principle-body); line-height: 1.55; margin: 0; }
+/* The opening is the page's primary read, so it uses the case-lede role rather
+   than the 0.88rem principle body that made it the smallest running text on the
+   page (audit 2026-11-13, UIUX-01). */
+.case-opening dd { color: var(--ink); font-size: var(--text-case-lede); line-height: 1.55; margin: 0; }
 .case-opening-links { align-items: baseline; display: flex; flex-wrap: wrap; gap: .45rem 1.25rem; margin: 0; }
 .case-opening-links .eyebrow { flex-basis: 100%; }
 /* 24px targets without moving anything (audit U9): the padding grows the hit
@@ -837,7 +852,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    spec data exists. Drawn with 1px hairline rows and meta-label type, the
    vocabulary DESIGN.md already uses: no boxes, no cards. Values are the
    scannable evidence numbers; notes carry the one-line qualifier. */
-.case-spec { margin: -1.2rem 0 3rem; }
+.case-spec { margin: -1.2rem 0 var(--case-gap); }
 .case-spec__table { border-collapse: collapse; width: 100%; }
 .case-spec__table tr { border-bottom: 1px solid var(--line); }
 .case-spec__table tr:first-child { border-top: 1px solid var(--ink); }
@@ -876,9 +891,17 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .case-spec__strip-item { color: var(--muted); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-transform: uppercase; }
 .case-spec__strip-item b { color: var(--ink); font-weight: 600; }
 .case-spec__strip-item + .case-spec__strip-item { border-left: 1px solid var(--line); margin-left: 1rem; padding-left: 1rem; }
-.case-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; margin-bottom: 2.5rem; padding: 2rem 0 0; }
+.case-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 4rem; margin-bottom: var(--case-gap); padding: 2rem 0 0; }
 .case-sections > div { border-top: 1px solid var(--line); padding-top: 1.6rem; }
+/* Centred rail from ~1400px, the width where the empty paper beside it stops
+   reading as a measure cap: at 1920 the article lattice is 1690px and a
+   left-pinned 860px column left half the page empty for the whole write-up
+   (audit 2026-11-13, UIUX-03; Nathan's pick, mock B). At 1280 the same rail
+   already fills 76 % and stays left-aligned with the blocks above it. */
 .writeup { max-width: 860px; padding: 3rem 0 0; }
+@media (min-width: 1400px) {
+  .writeup { margin-inline: auto; }
+}
 .writeup-heading { border-top: 1px solid var(--ink); padding-top: 2rem; }
 /* Section index. Not sticky: .site-header already is, and stacking a second
    sticky bar costs ~120px of chrome on a phone. Drawn with hairlines and
@@ -919,20 +942,28 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: var(--text-code); line-height: 1.65; color: var(--ink); }
 /* Two background layers give the right-edge scroll hint with no JavaScript.
    The paper cover is attached `local` so it travels with the content and lands
-   on top of the shadow once you have scrolled fully right; the shadow is
-   `scroll`, pinned to the scroller's edge, so it shows while there is more
-   table to reach. Fully-opaque rgba stops rather than `transparent` avoid the
-   grey interpolation some engines produce. */
+   on top of the shadow once you have scrolled fully right. The trailing stop is
+   the paper token at zero alpha rather than `transparent`, so engines cannot
+   interpolate through grey. The edge itself is a 1px --line inset hairline, not
+   a tinted scrim: the old rgba(36,35,33,.16) layer sat over glyphs and took
+   muted text to 3.52:1 at the last 16px (audit 2026-11-13, A11Y-04), and a
+   hairline is the depth model DESIGN.md already uses. */
 .table-scroll {
   overflow-x: auto;
-  background-image: linear-gradient(to left, var(--paper) 40%, rgba(243, 240, 233, 0)), linear-gradient(to left, rgba(36, 35, 33, .16), rgba(36, 35, 33, 0));
-  background-position: 100% 0, 100% 0;
-  background-repeat: no-repeat, no-repeat;
-  background-size: 44px 100%, 16px 100%;
-  background-attachment: local, scroll;
+  background-image: linear-gradient(to left, var(--paper) 40%, color-mix(in srgb, var(--paper) 0%, transparent));
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  background-size: 44px 100%;
+  background-attachment: local;
+  box-shadow: inset -1px 0 0 var(--line);
 }
 .writeup table { border-collapse: collapse; width: 100%; font-size: var(--text-table); margin: 1.4rem 0; }
-.writeup th, .writeup td { border-bottom: 1px solid var(--line); padding: .55rem .8rem .55rem 0; text-align: left; white-space: nowrap; }
+.writeup th, .writeup td { border-bottom: 1px solid var(--line); padding: .55rem .8rem .55rem 0; text-align: left; white-space: normal; }
+/* Numeric schedules keep one row per line: the LV tables are 5 and 8 columns of
+   numbers, and wrapping a cell there costs a row its alignment. This was the
+   stylesheet-wide default until 2026-11-13, when it sliced the QuadSolver
+   methods table's third column mid-word at 390px (audit UIUX-05/F20). */
+.writeup .writeup-table--schedule th, .writeup .writeup-table--schedule td { white-space: nowrap; }
 .writeup thead th { font: 600 var(--text-tag)/1.2 var(--display); text-transform: uppercase; letter-spacing: .13em; }
 .writeup tbody th { font-weight: 600; color: var(--ink); }
 /* The schedule is eight nowrap columns, so on a phone it must scroll. Pin the

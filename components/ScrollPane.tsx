@@ -11,7 +11,19 @@ import styles from "./WriteUpFigure.module.css";
 // starts at 0 so hydration matches, then the media query moves it to -1 on
 // desktop, which keeps six extra stops out of the tab order there. The
 // wrapper is a client component so WriteUpFigure stays server-rendered.
-export function ScrollPane({ label, children }: { label: string; children: React.ReactNode }) {
+//
+// minWidth defaults to the 1000px floor a wide diagram needs. The animated
+// app-tour figure passes 720 instead: it is an 800px capture, so 1000 would
+// upscale it (audit 2026-11-13, UIUX-04).
+export function ScrollPane({
+  label,
+  minWidth = 1000,
+  children,
+}: {
+  label: string;
+  minWidth?: number;
+  children: React.ReactNode;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,7 +39,14 @@ export function ScrollPane({ label, children }: { label: string; children: React
   }, []);
 
   return (
-    <div ref={ref} className={styles.scroll} role="group" aria-label={label} tabIndex={0}>
+    <div
+      ref={ref}
+      className={styles.scroll}
+      role="group"
+      aria-label={label}
+      tabIndex={0}
+      style={{ "--scroll-min": `${minWidth}px` } as React.CSSProperties}
+    >
       {children}
     </div>
   );

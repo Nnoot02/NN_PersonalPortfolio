@@ -1,17 +1,21 @@
+import { FigurePlayback } from "./FigurePlayback";
 import { ScrollPane } from "./ScrollPane";
 import styles from "./WriteUpFigure.module.css";
 
 // One figure in a case-study write-up. Diagrams come from my capstone final
 // presentation (deliverables/drafts/final-2026-11-12) and keep their own paper
 // ground. A static figure links to its full-size file; an animated one serves a
-// still under prefers-reduced-motion, with no JavaScript.
+// still under prefers-reduced-motion, with no JavaScript for that fallback.
 //
-// `scroll` marks a dense diagram: below 720px it scrolls inside its own box at
-// a legible minimum width instead of shrinking into the phone column. The
-// string is the region's accessible name, so pass what the diagram is.
+// `scroll` marks a figure that is too dense for a phone column: below 720px it
+// scrolls inside its own box at a legible minimum width. The string is the
+// region's accessible name, so pass what the figure is. Static figures use
+// ScrollPane; the animated variant uses FigurePlayback, which carries the same
+// scroll box plus the WCAG 2.2.2 pause control (audit 2026-11-13, A11Y-01) and
+// may link a `full` file, since a phone reader can otherwise never read it.
 type Base = { width: number; height: number; alt: string; children: React.ReactNode };
 type Static = Base & { src: string; full: string; still?: never; scroll?: string };
-type Animated = Base & { src: string; still: string; full?: never; scroll?: never };
+type Animated = Base & { src: string; still: string; full?: string; scroll?: string; pauseLabel?: string };
 
 export function WriteUpFigure(props: Static | Animated) {
   const { src, width, height, alt, children } = props;
@@ -19,10 +23,15 @@ export function WriteUpFigure(props: Static | Animated) {
   return (
     <figure className={styles.figure}>
       {props.still ? (
-        <picture>
-          <source media="(prefers-reduced-motion: reduce)" srcSet={props.still} />
-          {image}
-        </picture>
+        <FigurePlayback
+          src={src}
+          still={props.still}
+          width={width}
+          height={height}
+          alt={alt}
+          label={props.scroll ?? "Animated figure"}
+          pauseLabel={props.pauseLabel}
+        />
       ) : props.scroll ? (
         <ScrollPane label={props.scroll}>{image}</ScrollPane>
       ) : (

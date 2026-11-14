@@ -3,16 +3,21 @@
 .figure { margin: 1.5rem 0 0; }
 .figure img { display: block; width: 100%; height: auto; }
 .figure figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
+/* An animated figure is capped so its four panels stay at a readable scale on
+   desktop; below 760px it keeps a 720px floor inside a scroll box instead of
+   shrinking to ~87px per panel (audit 2026-11-13, UIUX-04). */
 .animation { max-width: 640px; }
 
 /* Dense diagrams: below 720px the figure scrolls inside its own box at a
    legible minimum width rather than shrinking a 1600px drawing into a 350px
    slot. Above 720px nothing changes and the wrapper is not focusable (see
-   ScrollPane). The hint is the only text added, and print ignores it. */
+   ScrollPane). --scroll-min carries the floor: 1000px for a wide drawing, 720px
+   for the 800px app tour, which would upscale at 1000. The hint is the only
+   text added, and print ignores it. */
 .scrollHint { color: var(--muted); display: none; font-size: .78rem; letter-spacing: .04em; margin: .45rem 0 0; }
 @media (max-width: 720px) {
   .scroll { overflow-x: auto; overscroll-behavior-x: contain; }
-  .scroll img { min-width: 1000px; }
+  .scroll img { min-width: var(--scroll-min, 1000px); }
   .scroll:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
   .scrollHint { display: block; }
 }
@@ -20,4 +25,29 @@
   .scroll { overflow: visible; }
   .scroll img { min-width: 0; }
   .scrollHint { display: none; }
+}
+
+/* Pause control for an animated figure (WCAG 2.2.2). Sits outside the scroll
+   box so it never scrolls away, and is hidden for reduced-motion readers, for
+   whom the picture source already serves the still. */
+.pause {
+  align-items: center;
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--accent-dark);
+  cursor: pointer;
+  display: inline-flex;
+  font: 600 var(--text-tag)/1.2 var(--display);
+  letter-spacing: .13em;
+  margin-top: .65rem;
+  min-height: 44px;
+  padding: .35rem .8rem;
+  text-transform: uppercase;
+  transition: border-color var(--motion-quick) var(--motion-ease), color var(--motion-quick) var(--motion-ease);
+}
+.pause:hover { border-color: var(--ink); color: var(--ink); }
+.pause:active { color: var(--accent-dark); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pause { display: none; }
 }
