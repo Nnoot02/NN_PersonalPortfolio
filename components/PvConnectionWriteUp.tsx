@@ -1,5 +1,5 @@
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
-import { CAPACITY_BASIS } from "@/lib/solar-design-basis";
+import { CAPACITY_BASIS, CONNECTION_CURRENTS } from "@/lib/solar-design-basis";
 
 // Public URL fragments. Once shipped these ids do not change; the contract
 // pins them so a link sent to a reviewer keeps working.
@@ -78,15 +78,46 @@ export function PvConnectionWriteUp() {
           33 kV) is often more practical: lower current, better voltage control,
           simpler protection coordination.
         </p>
-        <pre tabIndex={0} role="region" aria-label="LV versus HV connection comparison">{`Why HV is usually more practical at 1 MW (currents at unity power factor)
-  LV (TS132)   ~1443 A at 400 V 3-phase export  → heavy switchgear/cabling
-  HV (TS133)   ~52 A at 11 kV, ~17 A at 33 kV    → lower current, easier
-                                                   voltage + protection
-
-Connection voltage is NOT chosen by capacity alone. It is set by a
-site-specific SA Power Networks study of:
-  feeder thermal limit | voltage rise | fault level |
-  protection grading   | available transformer capacity`}</pre>
+        <p>Why HV is usually more practical at 1 MW (currents at unity power factor)</p>
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="LV versus HV connection comparison">
+          <table className="calc-table">
+            <caption className="sr-only">LV versus HV connection comparison</caption>
+            <thead>
+              <tr>
+                <th scope="col">Connection</th>
+                <th scope="col">Voltage</th>
+                <th scope="col">Current</th>
+                <th scope="col">Consequence</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">LV (TS132)</th>
+                <td>{`${CONNECTION_CURRENTS.lv.voltage} 3-phase export`}</td>
+                <td>{`${CONNECTION_CURRENTS.lv.amps} A`}</td>
+                <td>heavy switchgear/cabling</td>
+              </tr>
+              <tr>
+                <th scope="row" rowSpan={2}>HV (TS133)</th>
+                <td>{CONNECTION_CURRENTS.hv11.voltage}</td>
+                <td>{`${CONNECTION_CURRENTS.hv11.amps} A`}</td>
+                <td rowSpan={2}>lower current, easier voltage + protection</td>
+              </tr>
+              <tr>
+                <td>{CONNECTION_CURRENTS.hv33.voltage}</td>
+                <td>{`${CONNECTION_CURRENTS.hv33.amps} A`}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Connection voltage is NOT chosen by capacity alone. It is set by a site-specific SA Power Networks study of:</p>
+        <ul>
+          <li>feeder thermal limit</li>
+          <li>voltage rise</li>
+          <li>fault level</li>
+          <li>protection grading</li>
+          <li>available transformer capacity</li>
+        </ul>
         <p>
           The final connection voltage cannot be selected from plant capacity; it
           must be determined by SA Power Networks through a site-specific study. The
@@ -135,7 +166,7 @@ site-specific SA Power Networks study of:
           The assessment began from an intuitive framing: that a plant&apos;s
           viability depends on nearby consumer demand to absorb the generation. That
           assumption was overturned. Suitability is governed by feeder{" "}
-          <strong>hosting capacity</strong> (feeder impedance, transformer loading,
+          hosting capacity (feeder impedance, transformer loading,
           voltage limits, existing solar penetration, protection settings), not by
           demand alone. Residential feeders carry a higher voltage-rise risk because
           solar peaks midday when residential demand is low, so export can be

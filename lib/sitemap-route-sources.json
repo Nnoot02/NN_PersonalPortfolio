@@ -46,7 +46,10 @@
     "components/LvCablingWriteUp.tsx",
     "components/WriteUpIndex.tsx",
     "components/CaseOpening.tsx",
-    "components/CaseSpec.tsx"
+    "components/CaseSpec.tsx",
+    "components/CalcLedger.tsx",
+    "components/VoltageDropBar.tsx",
+    "lib/lv-voltage-drop.ts"
   ],
   "/projects/solar-grid-connection-assessment": [
     "app/projects/[slug]/page.tsx",
@@ -55,7 +58,8 @@
     "components/PvConnectionWriteUp.tsx",
     "components/WriteUpIndex.tsx",
     "components/CaseOpening.tsx",
-    "components/CaseSpec.tsx"
+    "components/CaseSpec.tsx",
+    "lib/solar-design-basis.ts"
   ],
   "/projects/gps-denied-autonomous-uav": [
     "app/projects/[slug]/page.tsx",

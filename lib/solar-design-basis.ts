@@ -11,6 +11,12 @@ export const CAPACITY_BASIS = {
   export: { name: "Approved export limit", value: "≤1.0 MW", detail: "Maximum power permitted into the network at the point of common coupling, set by SA Power Networks after the connection study, possibly below the inverter rating." },
 } as const;
 
+export const CONNECTION_CURRENTS = {
+  lv: { voltage: "400 V", amps: "~1443" },
+  hv11: { voltage: "11 kV", amps: "~52" },
+  hv33: { voltage: "33 kV", amps: "~17" },
+} as const;
+
 // Stop order follows the power flow drawn by the trace; BESS is optional and
 // not traced, so it comes last.
 export const SOLAR_ROUTE_STOPS: TraceStop[] = [
@@ -31,7 +37,7 @@ export const SOLAR_ROUTE_STOPS: TraceStop[] = [
       { name: "Connection equipment", value: "TS134", detail: "Switchgear, ring main units, breakers, isolators, instrument transformers and protection relays, plus metering, telemetry and SCADA-compatible communications where required. Harmonic distortion here must stay within SA Power Networks limits." },
     ],
   },
-  { id: "lv", label: "LV option", rows: [{ name: "Low-voltage connection", value: "400 V · ~1443 A · TS132", detail: "Possible where the local feeder has hosting capacity and voltage rise stays within limits, but a 1 MW three-phase export at 400 V draws about 1443 A, demanding substantial dedicated switchgear, cabling and transformer capacity. The final voltage is set by SA Power Networks' site-specific study." }] },
-  { id: "hv", label: "HV option", rows: [{ name: "High-voltage connection", value: "11 / 33 kV · ~52 / ~17 A · TS133", detail: "Often more practical at 1 MW: lower current, better voltage control, simpler protection coordination. The final voltage is set by SA Power Networks' site-specific study of feeder thermal limit, voltage rise, fault level, protection grading and transformer capacity." }] },
+  { id: "lv", label: "LV option", rows: [{ name: "Low-voltage connection", value: `${CONNECTION_CURRENTS.lv.voltage} · ${CONNECTION_CURRENTS.lv.amps} A · TS132`, detail: "Possible where the local feeder has hosting capacity and voltage rise stays within limits, but a 1 MW three-phase export at 400 V draws about 1443 A, demanding substantial dedicated switchgear, cabling and transformer capacity. The final voltage is set by SA Power Networks' site-specific study." }] },
+  { id: "hv", label: "HV option", rows: [{ name: "High-voltage connection", value: `11 / 33 kV · ${CONNECTION_CURRENTS.hv11.amps} / ${CONNECTION_CURRENTS.hv33.amps} A · TS133`, detail: "Often more practical at 1 MW: lower current, better voltage control, simpler protection coordination. The final voltage is set by SA Power Networks' site-specific study of feeder thermal limit, voltage rise, fault level, protection grading and transformer capacity." }] },
   { id: "bess", label: "BESS (optional)", rows: [{ name: "Battery storage", value: "AS/NZS 5139 · NICC271", detail: "May be recommended where network studies, export constraints or commercial modelling justify the cost: it absorbs midday generation, discharges into evening demand and reduces curtailment." }] },
 ];
