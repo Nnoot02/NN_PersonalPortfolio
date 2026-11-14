@@ -44,6 +44,13 @@ export default async function WorkbenchDetailPage({ params }: WorkbenchParams) {
         <h1>{entry.title}</h1>
         <p className="case-lede">{entry.summary}</p>
         {source ? <div className="workbench-attribution" data-source-attribution><p className="eyebrow">Original source</p><p><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.sourceName}{source.creator ? ` by ${source.creator}` : ""}<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight size={17} /></a></p><p>{source.rightsNote}</p></div> : null}
+        {entry.specs ? (
+          <dl className="spec-readout" data-spec-readout>
+            {entry.specs.map((spec) => (
+              <div data-spec-basis={spec.basis} key={spec.label}><dt>{spec.label}</dt><dd>{`${spec.value} `}<span className="spec-readout__basis">{spec.basis}</span></dd></div>
+            ))}
+          </dl>
+        ) : null}
         <dl className="workbench-reflection" data-workbench-reflection>
           <div><dt>Why I built it</dt><dd>{entry.motivation}</dd></div>
           <div><dt>My contribution</dt><dd>{entry.contribution}</dd></div>

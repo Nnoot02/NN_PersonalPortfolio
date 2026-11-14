@@ -375,6 +375,9 @@ one elevation step down from paper, never a full band.
 - Measured contrast: `#2b5b6c` is **6.55:1** on paper and **5.83:1** on
   paper-deep; `#1f6f4a` is **5.38:1** on paper and **4.79:1** on paper-deep. All
   clear AA for small text on both grounds.
+- The QuadSolver limit-use figure (`.limit-use`) fills feasibility checks in ink
+  and warning checks in figure-info; each group carries its class as a text
+  label, and each row prints its value, limit and share as text.
 - A third hue needs its own measured entry here before use. `#9a6700` measured
   4.28:1 on paper, fails AA as text, and is not adopted.
 

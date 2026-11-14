@@ -32,6 +32,8 @@ type WorkbenchEntryBase = {
   contribution: string;
   constraint: string;
   observedOutcome: string;
+  /** Numbers already stated in observedOutcome, each with how it was obtained. */
+  specs?: readonly { label: string; value: string; basis: "Measured" | "Calculated" | "Observed" }[];
   failure: string;
   nextIteration: string;
   tags: string[];
@@ -67,6 +69,12 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     contribution: "I designed the enclosure in Inventor, printed and assembled it, then started integrating the Pico-based electronics enclosure.",
     constraint: "The first version had to fit around a 12 V fan within a one-week exam-period build window.",
     observedOutcome: "The fan drew 300 mA at 12 V (3.6 W). In bench use, it captured loose smoke roughly 15–30 cm from the intake; formal airflow testing is still pending.",
+    specs: [
+      { label: "Supply", value: "12 V", basis: "Measured" },
+      { label: "Fan current", value: "300 mA", basis: "Measured" },
+      { label: "Fan power", value: "3.6 W", basis: "Calculated" },
+      { label: "Smoke capture", value: "15 to 30 cm", basis: "Observed" },
+    ],
     failure: "Seam leakage reduced capture, and the Pico electronics enclosure remains unfinished.",
     nextIteration: "Add TPU gaskets, finish the electronics enclosure, and run a repeatable airflow test.",
     tags: ["Inventor", "3D printing", "Bench test"],
@@ -165,6 +173,9 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     contribution: "I printed, assembled, and wired the arm, then built the joystick circuit and wrote the control code.",
     constraint: "The original arm geometry and small servos limited stiffness and payload.",
     observedOutcome: "Joystick control worked as intended. The arm could pick up and grab items below 20 g.",
+    specs: [
+      { label: "Payload", value: "below 20 g", basis: "Observed" },
+    ],
     failure: "Payload capability was very limited, and the arm was not stiff enough for heavier objects.",
     nextIteration: "Design a stiffer, more robust arm from scratch.",
     tags: ["Servos", "Joystick control", "Microcontrollers"],

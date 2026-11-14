@@ -158,6 +158,15 @@ export const projectIndexRelation = {
   label: "standards + verification",
 } as const;
 
+// The propulsion loop (plan 2026-11-15-001, Nathan's call C-5): sizing feeds
+// the stand, the stand's data feeds QuadSolver, QuadSolver's choice feeds the
+// UAV. Rendered once, on the first slug's lane.
+export const projectIndexLoop = {
+  slugs: ["gps-denied-autonomous-uav", "thrust-stand", "quadsolver-propulsion-sizing"],
+  names: ["UAV", "Thrust stand", "QuadSolver"],
+  label: "sizing, measurement, motor choice",
+} as const satisfies { slugs: readonly ProjectIndexSlug[]; names: readonly string[]; label: string };
+
 // F8 (site screening audit 2026-09-16, Nathan's go 2026-09-18): the named next
 // case study at each completed study's end, reusing the singular relation
 // label. UAV/DFMA are not completed and get no link.

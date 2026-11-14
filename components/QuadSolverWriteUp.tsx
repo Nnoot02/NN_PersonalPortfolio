@@ -3,6 +3,7 @@
 // the built-in 5-inch preset; nothing here is a measurement of my own hardware.
 // The limits block states which limit binds (full throttle) and which of the
 // nine are warnings, per domain audit D-01 and D-04.
+import { LimitUseFigure } from "@/components/LimitUseFigure";
 import { WriteUpFigure } from "@/components/WriteUpFigure";
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
 
@@ -73,6 +74,7 @@ export function QuadSolverWriteUp() {
         <h3 id="limits">Nine limits, checked together</h3>
         <p>Each result checks nine things: motor current and power, ESC continuous and burst current, the ESC voltage range, the battery C rating, the airframe takeoff mass, and my thrust-to-weight and hover-throttle targets. Six of them decide feasibility, checking the electrical ratings and the throttle ceiling at the hover point and the peak ratings at full throttle. The other three, ESC burst, the ESC voltage range and the airframe mass, are warnings, and the mass band is unset for this preset, so that check passes without testing anything.</p>
         <p>Payload headroom is the smallest of three margins (to the thrust-to-weight target, the throttle ceiling and the electrical limit), so the result names the limit that is reached first. For this preset that limit is full throttle: the propeller reaches 100 % duty at 29,412 rpm, which is what sets the 7.7:1 ratio. When a boundary cannot be found inside the data, the app reports it as unavailable instead of inventing a margin.</p>
+        <LimitUseFigure />
       </div>
       <div className="writeup-block">
         <h3 id="preset-result">The 5-inch preset</h3>

@@ -88,6 +88,8 @@
     "lib/projects.ts",
     "lib/project-index.ts",
     "components/QuadSolverWriteUp.tsx",
+    "components/LimitUseFigure.tsx",
+    "lib/quadsolver-limits.ts",
     "components/WriteUpIndex.tsx",
     "components/WriteUpFigure.tsx",
     "components/WriteUpFigure.module.css",

@@ -11,7 +11,13 @@ export type ProjectJourneyRelation = {
   label: string;
 };
 
-export function ProjectJourneyLane({ entry, relation }: { entry: ProjectIndexEntry; relation?: ProjectJourneyRelation }) {
+export type ProjectJourneyLoop = {
+  slugs: readonly [string, string, string];
+  names: readonly [string, string, string];
+  label: string;
+};
+
+export function ProjectJourneyLane({ entry, relation, loop }: { entry: ProjectIndexEntry; relation?: ProjectJourneyRelation; loop?: ProjectJourneyLoop }) {
   return (
     <>
       <article className="project-journey-lane">
@@ -52,6 +58,13 @@ export function ProjectJourneyLane({ entry, relation }: { entry: ProjectIndexEnt
           {relation.sourceTitle} <span aria-hidden="true">↔</span>{" "}
           <span className="sr-only">relates to </span>
           {relation.targetTitle}: {relation.label}
+        </p>
+      ) : null}
+      {loop ? (
+        <p className="project-journey-relation" data-project-relation data-loop-slugs={loop.slugs.join(" ")}>
+          {`${loop.names[0]} `}<span aria-hidden="true">↔</span>{" "}<span className="sr-only">feeds </span>
+          {`${loop.names[1]} `}<span aria-hidden="true">↔</span>{" "}<span className="sr-only">feeds </span>
+          {loop.names[2]}<span className="sr-only">{`, which feeds the ${loop.names[0]}`}</span>{`: ${loop.label}`}
         </p>
       ) : null}
       <ol className="project-journey-stages" data-complete={entry.stages.every((stage) => stage.state === "resolved") ? "true" : undefined} aria-label={entry.project.title + " project journey"}>

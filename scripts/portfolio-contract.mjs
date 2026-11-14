@@ -629,7 +629,7 @@ check(!projectsSource.includes('slug: "esp32-drone"'), "project data must not re
 
 const projectRelations = [...projectsIndex.matchAll(/data-project-relation/g)];
 const projectRelation = projectsIndex.match(/<p[^>]*data-project-relation[^>]*>[\s\S]*?<\/p>/)?.[0] ?? "";
-check(projectRelations.length === 1, "projects page must expose exactly one project relationship");
+check(projectRelations.length === 2, "projects page must expose exactly two project relationships (LV and Solar, then the propulsion loop)");
 check(projectRelation.includes('data-source-slug="lv-cabling-design-commercial-complex"') && projectRelation.includes('data-target-slug="solar-grid-connection-assessment"'), "projects relationship must name only LV and Solar endpoints");
 check(projectRelation.includes("standards + verification"), "projects relationship must retain approved label");
 check(!projectsIndex.includes("embedded control + staged testing"), "projects page must remove the stale ESP32 relationship");
@@ -1641,6 +1641,159 @@ for (const path of [...caseStudySlugs.map(slug => `/projects/${slug}.html`), ...
 check(exportedHeaders.includes("frame-ancestors 'none'") && exportedHeaders.includes("X-Frame-Options: DENY"), "headers must deny framing");
 check(exportedHeaders.includes("object-src 'none'") && exportedHeaders.includes("base-uri 'self'"), "headers must restrict embedded objects and base URLs");
 check(/\/images\/\*\r?\n  Cache-Control: public, max-age=3600, must-revalidate/.test(exportedHeaders), "mutable images must use bounded caching");
+
+// Plan 2026-11-15-001 (slice 2, static figures). The contract imports nothing
+// from lib/, so each arm parses the data file's literal rows as text and
+// compares them with the rows the build rendered.
+function slice2Source(path) {
+  try {
+    return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+  } catch {
+    failures.push(`missing source file ${path}`);
+    return "";
+  }
+}
+function slice2Text(markup) {
+  return normalizeTextEntities(markup.replace(/<!--[\s\S]*?-->/g, "").replace(/<[^>]+>/g, "")).replaceAll("&amp;", "&").replace(/\s+/g, " ").trim();
+}
+
+// Task 1: the QuadSolver limit-use figure.
+{
+  const source = slice2Source("lib/quadsolver-limits.ts");
+  const rows = [...source.matchAll(/^\s*\{ key: "([^"]+)", label: "([^"]+)", cls: "([^"]+)", at: "([^"]+)", value: "([^"]+)", limit: "([^"]+)", share: (null|[0-9.]+), note: (null|"[^"]*") \},?\s*$/gm)]
+    .map(([, key, label, cls, at, value, limit, share, note]) => ({ key, label, cls, at, value, limit, share: share === "null" ? null : Number(share), note: note === "null" ? null : note.slice(1, -1) }));
+  const literalCount = (source.match(/\{ key: "/g) ?? []).length;
+  check(rows.length === 9 && literalCount === 9, `quadsolver limits: the data file must hold nine parseable rows (parsed ${rows.length} of ${literalCount})`);
+  const page = normalizeTextEntities(renderedMain(readExport("/projects/quadsolver-propulsion-sizing.html")));
+  const figure = page.match(/<figure\b[^>]*data-limit-use[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
+  check(figure !== "", "quadsolver limits: the limit-use figure must be published as figure[data-limit-use]");
+  const groups = [...figure.matchAll(/data-limit-class="([^"]*)"/g)].map((match) => ({ cls: match[1], index: match.index }));
+  const rendered = [...figure.matchAll(/<div\b[^>]*data-limit-key="([^"]*)"[^>]*>[\s\S]*?<\/div>/g)].map((match) => {
+    const body = match[0];
+    const open = body.match(/^<div\b[^>]*>/)[0];
+    const span = (cls) => body.match(new RegExp(`<span class="${cls}"[^>]*>([\\s\\S]*?)</span>`))?.[1] ?? null;
+    const text = (cls) => (span(cls) === null ? null : slice2Text(span(cls)));
+    const fill = body.match(/<span\b[^>]*class="limit-use__fill"[^>]*>/)?.[0] ?? "";
+    const track = body.match(/<span\b[^>]*class="limit-use__track"[^>]*>/)?.[0] ?? "";
+    return {
+      key: match[1],
+      cls: groups.filter((group) => group.index < match.index).at(-1)?.cls ?? "",
+      label: slice2Text((body.match(/<dt\b[^>]*>([\s\S]*?)<\/dt>/)?.[1] ?? "").replace(/<span class="limit-use__at"[^>]*>[\s\S]*?<\/span>/, "")),
+      at: text("limit-use__at"),
+      reading: text("limit-use__reading") ?? "",
+      shareAttr: open.match(/data-limit-share="([^"]*)"/)?.[1] ?? null,
+      width: fill.match(/style="[^"]*\bwidth:\s*([0-9.]+)%/)?.[1] ?? null,
+      shareText: text("limit-use__share"),
+      note: text("limit-use__note"),
+      hasTrack: track !== "",
+      trackHidden: track.includes('aria-hidden="true"'),
+    };
+  });
+  check(rendered.map((row) => row.key).join(",") === rows.map((row) => row.key).join(","), `quadsolver limits: rendered rows must follow the data file's order (found ${rendered.map((row) => row.key).join(",") || "none"})`);
+  rows.forEach((row, index) => {
+    const shown = rendered[index];
+    if (!shown || shown.key !== row.key) return;
+    const name = `quadsolver limits: ${row.key}`;
+    check(shown.label === row.label, `${name} label must read "${row.label}" (found "${shown.label}")`);
+    check(shown.at === row.at, `${name} must be marked ${row.at} (found ${shown.at})`);
+    check(shown.cls === row.cls, `${name} must sit in the ${row.cls} group (found ${shown.cls || "none"})`);
+    check(shown.reading.includes(row.value), `${name} reading must carry its value ${row.value} (found "${shown.reading}")`);
+    if (row.share !== null) {
+      const share = row.share.toFixed(1);
+      check(row.share > 0 && row.share <= 100, `${name} share must be between 0 and 100 (found ${row.share})`);
+      check(shown.reading.includes(row.limit), `${name} reading must carry its limit ${row.limit} (found "${shown.reading}")`);
+      check(shown.shareAttr === share && shown.width === share, `${name} bar width must be its share ${share} % (found attribute ${shown.shareAttr ?? "none"}, width ${shown.width ?? "none"})`);
+      check(shown.shareText === `${Math.round(row.share)} %`, `${name} must print its share as ${Math.round(row.share)} % (found ${shown.shareText ?? "none"})`);
+      check(shown.hasTrack && shown.trackHidden, `${name} track must be present and aria-hidden`);
+      check(shown.note === null, `${name} carries a share, so it must not print a note`);
+    } else {
+      check(shown.shareAttr === null && !shown.hasTrack && shown.shareText === null, `${name} has no share, so it must not draw a bar`);
+      check(shown.note === row.note, `${name} note must read "${row.note}" (found "${shown.note}")`);
+      check(`${shown.reading} ${shown.note ?? ""}`.includes(row.limit), `${name} must name its limit ${row.limit} in its reading or note`);
+    }
+  });
+  const inGroup = (cls) => rendered.filter((row) => row.cls === cls).length;
+  check(inGroup("Feasibility") === 6 && inGroup("Warning") === 3, `quadsolver limits: figure must show six feasibility checks and three warnings (found ${inGroup("Feasibility")} and ${inGroup("Warning")})`);
+  check(slice2Text(figure.match(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption>/)?.[1] ?? "") === "The nine checks for the 5-inch preset. Six decide feasibility and three are warnings. Model estimates, not measurements.", "quadsolver limits: figure must carry its approved caption");
+  // Figure to prose: each bound row must equal the number the page already prints.
+  const outside = page.replace(figure, "");
+  const prose = slice2Text(outside);
+  const byKey = Object.fromEntries(rows.map((row) => [row.key, row]));
+  const cell = (label) => outside.match(new RegExp(`<th scope="row"[^>]*>${label}</th>\\s*<td[^>]*>([^<]*)</td>`))?.[1] ?? "";
+  check(prose.includes("Six of them decide feasibility"), "quadsolver limits: the prose must still say six checks decide feasibility");
+  if (rows.length === 9) {
+    check(prose.includes(`a ${byKey["esc-continuous"]?.limit} 4-in-1 ESC`), `quadsolver limits: esc-continuous limit ${byKey["esc-continuous"]?.limit} must equal the ESC rating in the preset paragraph`);
+    check(prose.includes(`${byKey["hover-throttle"]?.value} against a ${byKey["hover-throttle"]?.limit} ceiling`), `quadsolver limits: hover-throttle ${byKey["hover-throttle"]?.value} of ${byKey["hover-throttle"]?.limit} must equal the preset paragraph`);
+    check(cell("Hover throttle") === byKey["hover-throttle"]?.value, `quadsolver limits: hover-throttle value must equal the preset table cell (${cell("Hover throttle") || "none"})`);
+    check(cell("Thrust-to-weight") === byKey["thrust-to-weight"]?.value, `quadsolver limits: thrust-to-weight value must equal the preset table cell (${cell("Thrust-to-weight") || "none"})`);
+    check(prose.includes(`at ${byKey["battery-current"]?.value} does not read`), `quadsolver limits: battery-current value ${byKey["battery-current"]?.value} must equal the hover current in the hover-time paragraph`);
+    check(prose.includes(`for ${byKey["airframe-mass"]?.value} all-up`), `quadsolver limits: airframe-mass value ${byKey["airframe-mass"]?.value} must equal the all-up mass in the preset paragraph`);
+  }
+}
+
+// Task 2: the workbench spec strip.
+{
+  const source = slice2Source("lib/workbench.ts");
+  const entries = source.split(/\n  \{\n    slug: "/).slice(1).map((chunk) => {
+    const block = chunk.match(/\n    specs: \[\n([\s\S]*?)\n    \],/)?.[1] ?? null;
+    return {
+      slug: chunk.match(/^([^"]+)"/)?.[1] ?? "",
+      outcome: chunk.match(/\n    observedOutcome: "([^"]*)",/)?.[1] ?? "",
+      literals: block === null ? 0 : (block.match(/\{ label: "/g) ?? []).length,
+      specs: block === null ? null : [...block.matchAll(/^\s*\{ label: "([^"]+)", value: "([^"]+)", basis: "([^"]+)" \},?\s*$/gm)].map(([, label, value, basis]) => ({ label, value, basis })),
+    };
+  });
+  check(entries.length === 4, `workbench specs: the data file must hold four entries (parsed ${entries.length})`);
+  for (const slug of ["bench-fume-extractor", "servo-mini-arm"]) {
+    check((entries.find((entry) => entry.slug === slug)?.specs?.length ?? 0) > 0, `workbench specs: ${slug} must carry a specs list`);
+  }
+  const escapeNumber = (value) => value.replace(/[.]/g, "\\.");
+  for (const entry of entries) {
+    const detail = renderedMain(readExport(`/workbench/${entry.slug}.html`));
+    if (entry.specs === null) {
+      check(!detail.includes("data-spec-readout"), `workbench specs: ${entry.slug} has no specs, so it must not render a spec strip`);
+      continue;
+    }
+    check(entry.specs.length === entry.literals && entry.specs.length > 0, `workbench specs: every ${entry.slug} specs row must parse (parsed ${entry.specs.length} of ${entry.literals})`);
+    const strip = detail.match(/<dl\b[^>]*data-spec-readout[^>]*>[\s\S]*?<\/dl>/)?.[0] ?? "";
+    check(strip !== "" && detail.indexOf("data-spec-readout") < detail.indexOf("data-workbench-reflection"), `workbench specs: ${entry.slug} must render its spec strip above the reflection list`);
+    const shown = [...strip.matchAll(/<div\b[^>]*data-spec-basis="([^"]*)"[^>]*>([\s\S]*?)<\/div>/g)].map(([, attribute, body]) => {
+      const dd = body.match(/<dd\b[^>]*>([\s\S]*?)<\/dd>/)?.[1] ?? "";
+      const basis = dd.match(/<span class="spec-readout__basis"[^>]*>([\s\S]*?)<\/span>/)?.[1] ?? "";
+      return { attribute, label: slice2Text(body.match(/<dt\b[^>]*>([\s\S]*?)<\/dt>/)?.[1] ?? ""), value: slice2Text(dd.replace(/<span class="spec-readout__basis"[^>]*>[\s\S]*?<\/span>/, "")), basis: slice2Text(basis) };
+    });
+    const line = (rows) => rows.map((row) => `${row.label}|${row.value}|${row.basis}`).join("; ");
+    check(line(shown) === line(entry.specs), `workbench specs: ${entry.slug} strip must equal its data, in order (data "${line(entry.specs)}", rendered "${line(shown) || "none"}")`);
+    check(shown.every((row) => row.attribute === row.basis), `workbench specs: ${entry.slug} data-spec-basis must match the printed basis`);
+    for (const spec of entry.specs) {
+      check(["Measured", "Calculated", "Observed"].includes(spec.basis), `workbench specs: ${entry.slug} "${spec.label}" basis must be Measured, Calculated or Observed (found ${spec.basis})`);
+      const unit = spec.value.split(" ").at(-1);
+      const numbers = spec.value.match(/\d+(?:\.\d+)?/g) ?? [];
+      const pattern = numbers.length === 1
+        ? new RegExp(`(?<![\\d.])${escapeNumber(numbers[0])}\\s*${unit}\\b`)
+        : numbers.length === 2
+          ? new RegExp(`(?<![\\d.])${escapeNumber(numbers[0])}\\s*(?:–|to)\\s*${escapeNumber(numbers[1])}\\s*${unit}\\b`)
+          : null;
+      check(pattern !== null && pattern.test(entry.outcome), `workbench specs: ${entry.slug} "${spec.label}" value ${spec.value} must be stated in its observed result`);
+    }
+  }
+}
+
+// Task 3: the propulsion loop, the second relation on /projects.
+{
+  const relations = [...projectsIndex.matchAll(/<p[^>]*data-project-relation[^>]*>[\s\S]*?<\/p>/g)].map((match) => ({ markup: match[0], index: match.index }));
+  const loop = relations[1]?.markup ?? "";
+  check(relations.length === 2 && !relations[0].markup.includes("data-loop-slugs"), "projects loop: the LV and Solar relationship must stay first and carry no loop slugs");
+  check(loop.match(/data-loop-slugs="([^"]*)"/)?.[1] === "gps-denied-autonomous-uav thrust-stand quadsolver-propulsion-sizing", `projects loop: the second relationship must list the UAV, thrust stand and QuadSolver slugs in order (found ${loop.match(/data-loop-slugs="([^"]*)"/)?.[1] ?? "none"})`);
+  check(loop !== "" && !/data-source-slug|data-target-slug/.test(loop), "projects loop: the loop must not carry pair endpoints");
+  const lane = [...projectsIndex.matchAll(/<li[^>]*data-project-slug="([^"]*)"/g)].filter((match) => match.index < (relations[1]?.index ?? -1)).at(-1)?.[1] ?? "none";
+  check(lane === "gps-denied-autonomous-uav", `projects loop: the loop line must sit on the UAV lane (found ${lane})`);
+  const visible = slice2Text(loop.replace(/<span class="sr-only"[^>]*>[\s\S]*?<\/span>/g, ""));
+  const accessible = slice2Text(loop.replace(/<span aria-hidden="true"[^>]*>[\s\S]*?<\/span>/g, ""));
+  check(visible === "UAV ↔ Thrust stand ↔ QuadSolver: sizing, measurement, motor choice", `projects loop: visible text must be the approved line (found "${visible}")`);
+  check(accessible === "UAV feeds Thrust stand feeds QuadSolver, which feeds the UAV: sizing, measurement, motor choice", `projects loop: accessible text must name the direction of each link (found "${accessible}")`);
+  check(projectIndexSource.includes("export const projectIndexLoop"), "projects loop: project-index source must export projectIndexLoop");
+}
 
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));
