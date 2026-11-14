@@ -188,18 +188,23 @@ export default async function ProjectPage({ params }: ProjectParams) {
           limitation={project.evidenceStatus}
           links={openingLinks[project.slug] ?? []}
         />
-        <section className="case-sections" aria-label={`${project.title} evidence summary`}>
-          <div>
-            <p className="eyebrow">Problem</p>
-            <h2>What needed solving</h2>
-            <p>{project.problem}</p>
-          </div>
-          <div>
-            <p className="eyebrow">Approach</p>
-            <h2>How the work is framed</h2>
-            <p>{project.approach}</p>
-          </div>
-        </section>
+        {/* Thrust stand (Nathan, 2026-11-13): the write-up lede carries the
+            problem and the gates section carries the approach, so this brief
+            stated both twice. Every other case study keeps it. */}
+        {project.slug === "thrust-stand" ? null : (
+          <section className="case-sections" aria-label={`${project.title} evidence summary`}>
+            <div>
+              <p className="eyebrow">Problem</p>
+              <h2>What needed solving</h2>
+              <p>{project.problem}</p>
+            </div>
+            <div>
+              <p className="eyebrow">Approach</p>
+              <h2>How the work is framed</h2>
+              <p>{project.approach}</p>
+            </div>
+          </section>
+        )}
         {project.spec ? (
           <CaseSpec rows={project.spec} title={project.title} />
         ) : (

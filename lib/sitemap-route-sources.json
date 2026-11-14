@@ -88,7 +88,9 @@
     "components/WriteUpFigure.tsx",
     "components/WriteUpFigure.module.css",
     "components/CaseOpening.tsx",
-    "components/CaseSpec.tsx"
+    "components/CaseSpec.tsx",
+    "components/FigurePlayback.tsx",
+    "components/ScrollPane.tsx"
   ],
   "/projects/last-metre-eyes-viasat-entry": [
     "app/projects/[slug]/page.tsx",

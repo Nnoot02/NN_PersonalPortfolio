@@ -60,6 +60,8 @@ export function QuadSolverWriteUp() {
           src="/images/quadsolver/quadsolver-app-tour.webp"
           still="/images/quadsolver/quadsolver-app-tour-still.webp"
           full="/images/quadsolver/quadsolver-app-tour.webp"
+          scroll="Four-step app tour"
+          pauseLabel="the four-step tour"
           width={800}
           height={600}
           alt="Four screens from the QuadSolver app: 1 pick the motor, propeller, ESC and battery; 2 read thrust-to-weight and hover time from the model; 3 import measured thrust data, here a sample file; 4 the results switch to that imported file"

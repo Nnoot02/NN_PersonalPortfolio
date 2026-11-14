@@ -8,9 +8,28 @@
    shrinking to ~87px per panel (audit 2026-11-13, UIUX-04). */
 .animation { max-width: 640px; }
 
-.scroller { overflow-x: auto; }
-.scroller:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+/* Dense diagrams: below 720px the figure scrolls inside its own box at a
+   legible minimum width rather than shrinking a 1600px drawing into a 350px
+   slot. Above 720px nothing changes and the wrapper is not focusable (see
+   ScrollPane). --scroll-min carries the floor: 1000px for a wide drawing, 720px
+   for the 800px app tour, which would upscale at 1000. The hint is the only
+   text added, and print ignores it. */
+.scrollHint { color: var(--muted); display: none; font-size: .78rem; letter-spacing: .04em; margin: .45rem 0 0; }
+@media (max-width: 720px) {
+  .scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+  .scroll img { min-width: var(--scroll-min, 1000px); }
+  .scroll:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
+  .scrollHint { display: block; }
+}
+@media print {
+  .scroll { overflow: visible; }
+  .scroll img { min-width: 0; }
+  .scrollHint { display: none; }
+}
 
+/* Pause control for an animated figure (WCAG 2.2.2). Sits outside the scroll
+   box so it never scrolls away, and is hidden for reduced-motion readers, for
+   whom the picture source already serves the still. */
 .pause {
   align-items: center;
   background: none;
@@ -30,15 +49,5 @@
 .pause:active { color: var(--accent-dark); }
 
 @media (prefers-reduced-motion: reduce) {
-  /* The still is served by the picture source; a pause control for motion the
-     reader never sees is noise. */
   .pause { display: none; }
-}
-
-.hint { display: none; }
-
-@media (max-width: 760px) {
-  .scroller { overflow-x: auto; }
-  .scroller img { min-width: 720px; max-width: none; }
-  .hint { color: var(--muted); display: block; font-size: .8rem; margin: 0 0 .4rem; }
 }
