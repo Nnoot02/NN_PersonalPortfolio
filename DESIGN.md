@@ -252,7 +252,7 @@ components:
     typography: "{typography.tag}"
     rounded: "{rounded.none}"
   site-header:
-    background: "rgba(243, 240, 233, 0.96)"
+    background: "color-mix(in srgb, {colors.paper} 96%, transparent)"
     borderBottom: "{motifs.hairline}"
     minHeight: 76px
     sticky: true
@@ -338,7 +338,7 @@ one elevation step down from paper, never a full band.
 ### Surface
 
 - **Paper** (`{colors.paper}` — #f3f0e9): The default page floor. The sticky
-  header sits on the same paper at 96% alpha (`rgba(243, 240, 233, 0.96)`).
+  header sits on the same paper at 96% alpha (`color-mix(in srgb, var(--paper) 96%, transparent)`).
 - **Paper-deep** (`{colors.paper-deep}` — #e8e3d9): One step down. Backs
   images/placeholders (`.project-image`, `.case-image`) and the voltage-drop bar
   track (`.vd-bar__track`). Never used as a full-width band.
@@ -472,7 +472,7 @@ Depth is **color-block first, shadow essentially never.**
 | Hairline | 1px `{colors.line}` | Header, section, row, meta, tag structure |
 | Paper-deep backing | `{colors.paper-deep}` fill | Image placeholders, code blocks |
 | Ink surface | `{colors.ink}` fill | Footer only — the single dark band |
-| Shadow (rare) | `0 14px 26px rgba(36,35,33,0.18)` | **Only** the open mobile menu sheet |
+| Shadow (rare) | `0 14px 26px color-mix(in srgb, var(--ink) 18%, transparent)` | **Only** the open mobile menu sheet |
 
 The one shadow exists because the open mobile nav shares the paper background
 with the page beneath it and needs to read as a separate surface. Nothing else
@@ -502,7 +502,7 @@ Project images scale to 1.025 on hover; motion respects
 ### Header & nav
 
 **`site-header`** — Sticky bar, `min-height: 76px`, paper at 96% alpha
-(`rgba(243, 240, 233, 0.96)`), 1px `{colors.line}` bottom border. Carries the
+(`color-mix(in srgb, var(--paper) 96%, transparent)`), 1px `{colors.line}` bottom border. Carries the
 Barlow Condensed wordmark (700, the "." in accent) at left and horizontal nav
 at right. Nav links get a 2px transparent bottom border that turns accent on
 hover / focus / active. Collapses to a hamburger sheet at ≤ 720px.

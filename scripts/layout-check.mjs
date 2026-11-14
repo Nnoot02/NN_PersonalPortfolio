@@ -1770,8 +1770,7 @@ async function main() {
     if (metrics.emailLabel.some((label) => label.rects.some((rect) => !inside(rect, metrics.emailBox)))) failures.push(`${prefix}: email label escapes its action control`);
     if (metrics.copyLabel.some((label) => label.rects.some((rect) => !inside(rect, metrics.copyBox)))) failures.push(`${prefix}: Copy address label escapes its action control`);
     if (metrics.documentOverflow > 1) {
-      if (metrics.navOverflow) informational.push(`${prefix}: document overflow ${Math.round(metrics.documentOverflow)}px attributable to pre-existing .site-nav; Contact/footer containment passed`);
-      else failures.push(`${prefix}: horizontal overflow ${Math.round(metrics.documentOverflow)}px outside known .site-nav defect`);
+      failures.push(`${prefix}: horizontal overflow ${Math.round(metrics.documentOverflow)}px${metrics.navOverflow ? " (owned by .site-nav)" : ""}`);
     }
     await contactTextPage.screenshot({ path: join(SHOT_DIR, `contact-${width}x${height}-text-200.png`), fullPage: true });
     await contactTextPage.close();

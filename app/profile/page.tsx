@@ -72,7 +72,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <dt>Contact</dt>
-            <dd>{profile.contactEmail}</dd>
+            <dd><a className="text-link" href={`mailto:${profile.contactEmail}`}>{profile.contactEmail}</a></dd>
           </div>
           <div>
             <dt>Text copy</dt>

@@ -343,6 +343,22 @@ check(footer.includes('href="/nathan-noot-resume.txt"'), "footer must offer the 
 // page-wide check could never go red from the row alone.
 const profileFacts = profile.match(/<dl[^>]*class="profile-facts"[^>]*>[\s\S]*?<\/dl>/)?.[0] ?? "";
 check(profileFacts.includes('href="/nathan-noot-resume.txt"'), "fact sheet must link the plain-text résumé from its facts list");
+check(/href="mailto:[^"]+"/.test(profileFacts), "fact sheet contact must be a mailto link");
+// Audit 2026-11-14 Tier 1 (T1-2, T1-5, T1-6, T1-7, T1-8): token and state hygiene in globals.css.
+{
+  const cssRules = globalsCss.replace(/\/\*[\s\S]*?\*\//g, "");
+  const rule = (selector) => cssRules.split(/\r?\n/).find((line) => line.startsWith(`${selector} {`)) ?? "";
+  check(!/rgba?\(/.test(cssRules), "globals.css must not carry rgb()/rgba() literals; mix from a token");
+  check(!/#fff(?![0-9a-f])/i.test(cssRules), "globals.css must not carry a pure-white literal; the site has no white surfaces");
+  check(!/outline: 2px solid var\(--accent\)/.test(cssRules), "focus rings must use the 3px accent-dark ring, not 2px accent");
+  check(rule(".hero-sld-detail-close").includes("var(--text-tag)") && !rule(".hero-sld-detail-close").includes(" 11px"), "hero SLD close control must use the tag text token, not 11px");
+  check(rule(".workbench-reflection").includes("repeat(2, minmax(0, 1fr))"), "workbench reflection grid must use minmax(0, 1fr) tracks");
+  check((cssRules.match(/^\.hero-artifact-caption \{[\s\S]*?\}/m)?.[0].match(/display: flex/g) ?? []).length === 1, "hero artifact caption must declare its layout once");
+  for (const press of [".project-row:active .project-link", ".workbench-preview:active .workbench-preview-link", ".drawing-trace-replay:active", ".drawing-trace-stop:active", ".evidence-trigger:active img"]) {
+    check(cssRules.includes(press), `press state must exist for ${press}`);
+  }
+  check(cssRules.includes(".profile-facts div:last-child:nth-child(odd) { grid-column: 1 / -1; }"), "an odd fact count must not leave an orphan half-row on the fact sheet");
+}
 const footerAnchors = [...footer.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
 const footerUtilityLinkIndex = footerAnchors.findIndex((anchor) => anchor.includes("data-footer-utility"));
 check(footerUtilityLinkIndex === footerAnchors.length - 1, "footer recruiter utility must remain the final and quiet action");
