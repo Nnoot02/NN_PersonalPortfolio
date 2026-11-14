@@ -36,6 +36,7 @@ const ROUTES = FAST ? (process.env.LAYOUT_ROUTES?.split(",") ?? ["/"]) : [
   "/projects/quadsolver-propulsion-sizing",
   "/projects/last-metre-eyes-viasat-entry",
   "/workbench/bench-fume-extractor",
+  "/workbench/servo-mini-arm",
   // OAuth branding pages (2026-09-23): the Google Cloud project's Branding page
   // asks for a homepage URL and a privacy policy URL before the OAuth client can
   // be published. They are published routes like any other, so they are swept.
@@ -1301,6 +1302,124 @@ async function main() {
         }
       }
 
+      // Plan 2026-11-15-001 Task 1: the QuadSolver limit-use figure. A missing
+      // figure is a failure, never a skip.
+      if (route === "/projects/quadsolver-propulsion-sizing") {
+        const limitFigure = page.locator("[data-limit-use]");
+        const limitCount = await limitFigure.count();
+        if (limitCount !== 1) failures.push(`${route} @ ${width}x${height}: expected 1 limit-use figure, found ${limitCount}`);
+        else {
+          const limit = await limitFigure.evaluate((figure) => {
+            const resolve = (token) => {
+              const probe = document.createElement("span");
+              probe.style.color = `var(${token})`;
+              figure.append(probe);
+              const colour = getComputedStyle(probe).color;
+              probe.remove();
+              return colour;
+            };
+            const previous = figure.previousElementSibling;
+            const label = figure.querySelector(".limit-use__class");
+            return {
+              scrollW: figure.scrollWidth, clientW: figure.clientWidth,
+              left: figure.getBoundingClientRect().left,
+              previousLeft: previous ? previous.getBoundingClientRect().left : null,
+              rows: [...figure.querySelectorAll("[data-limit-share]")].map((row) => {
+                const track = row.querySelector(".limit-use__track");
+                const fill = row.querySelector(".limit-use__fill");
+                return {
+                  key: row.dataset.limitKey,
+                  share: Number(row.dataset.limitShare),
+                  ratio: track && fill && track.clientWidth > 0 ? (fill.getBoundingClientRect().width / track.clientWidth) * 100 : null,
+                  hidden: track ? track.getAttribute("aria-hidden") : null,
+                  colour: fill ? getComputedStyle(fill).backgroundColor : null,
+                  cls: row.closest("[data-limit-class]")?.dataset.limitClass ?? null,
+                };
+              }),
+              label: label ? getComputedStyle(label).color : null,
+              ink: resolve("--ink"), info: resolve("--figure-info"), muted: resolve("--muted"),
+            };
+          });
+          if (limit.scrollW > limit.clientW) failures.push(`${route} @ ${width}x${height}: limit-use figure scrolls sideways (${limit.scrollW}px in ${limit.clientW}px)`);
+          if (limit.previousLeft === null || Math.abs(limit.left - limit.previousLeft) > 1) failures.push(`${route} @ ${width}x${height}: limit-use figure starts at ${Math.round(limit.left)}px, the paragraph above it at ${limit.previousLeft === null ? "none" : Math.round(limit.previousLeft)}px`);
+          if (limit.rows.length !== 6) failures.push(`${route} @ ${width}x${height}: limit-use figure draws ${limit.rows.length} bars, expected 6`);
+          for (const row of limit.rows) {
+            if (row.ratio === null || Math.abs(row.ratio - row.share) > 0.5) failures.push(`${route} @ ${width}x${height}: limit-use ${row.key} bar fills ${row.ratio === null ? "nothing" : row.ratio.toFixed(1) + " %"} of its track, expected ${row.share} %`);
+            if (row.hidden !== "true") failures.push(`${route} @ ${width}x${height}: limit-use ${row.key} track is not aria-hidden`);
+            if (width === 1440) {
+              const expected = row.cls === "Warning" ? limit.info : limit.ink;
+              if (row.colour !== expected) failures.push(`${route} @ ${width}x${height}: limit-use ${row.key} fill is ${row.colour}, expected the ${row.cls === "Warning" ? "--figure-info" : "--ink"} token ${expected}`);
+            }
+          }
+          if (width === 1440 && (limit.label !== limit.ink || limit.ink === limit.muted)) failures.push(`${route} @ ${width}x${height}: limit-use group label is ${limit.label}, expected the --ink token ${limit.ink}`);
+        }
+      }
+
+      // Plan 2026-11-15-001 Task 2: the workbench spec strip wraps, never scrolls.
+      if (route === "/workbench/bench-fume-extractor" || route === "/workbench/servo-mini-arm") {
+        const strip = page.locator("[data-spec-readout]");
+        const stripCount = await strip.count();
+        if (stripCount !== 1) failures.push(`${route} @ ${width}x${height}: expected 1 spec strip, found ${stripCount}`);
+        else {
+          const spec = await strip.evaluate((list) => {
+            const rows = [...list.children].map((row) => row.getBoundingClientRect());
+            const parent = list.parentElement.getBoundingClientRect();
+            const box = list.getBoundingClientRect();
+            return {
+              scrollW: list.scrollWidth, clientW: list.clientWidth, rows: rows.length,
+              outside: box.left < parent.left - 1 || box.right > parent.right + 1 || rows.some((row) => row.right > box.right + 1 || row.width === 0),
+              overlaps: rows.some((a, i) => rows.some((b, j) => i < j && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom)),
+            };
+          });
+          const expectedRows = route === "/workbench/bench-fume-extractor" ? 4 : 1;
+          if (spec.rows !== expectedRows) failures.push(`${route} @ ${width}x${height}: spec strip has ${spec.rows} rows, expected ${expectedRows}`);
+          if (spec.scrollW > spec.clientW || spec.outside) failures.push(`${route} @ ${width}x${height}: spec strip overflows its block (${spec.scrollW}px in ${spec.clientW}px)`);
+          if (spec.overlaps) failures.push(`${route} @ ${width}x${height}: spec strip rows overlap`);
+        }
+      }
+
+      // Plan 2026-11-15-001 Task 3: two relation notes, neither over its own
+      // stage row; and lane status stays visible on a phone.
+      if (route === "/projects") {
+        const relationBoxes = await page.locator("[data-project-relation]").evaluateAll((nodes) => nodes.map((node) => {
+          const lane = node.closest("li");
+          const note = node.getBoundingClientRect();
+          const stages = lane.querySelector(".project-journey-stages").getBoundingClientRect();
+          return {
+            slug: lane.getAttribute("data-project-slug"),
+            top: note.top, bottom: note.bottom, left: note.left, right: note.right,
+            stageTop: stages.top, stageBottom: stages.bottom, stageLeft: stages.left, stageRight: stages.right,
+            laneBottom: lane.getBoundingClientRect().bottom,
+          };
+        }));
+        if (relationBoxes.length !== 2) failures.push(`/projects @ ${width}x${height}: expected 2 relation notes, found ${relationBoxes.length}`);
+        if (width >= 721) {
+          for (const box of relationBoxes) {
+            const overlap = box.left < box.stageRight && box.stageLeft < box.right && box.top < box.stageBottom - 0.5 && box.stageTop < box.bottom - 0.5;
+            if (overlap) failures.push(`/projects @ ${width}x${height}: ${box.slug} relation note overlaps its stage row (note ${Math.round(box.top)}-${Math.round(box.bottom)}px, stages ${Math.round(box.stageTop)}-${Math.round(box.stageBottom)}px)`);
+            if (box.bottom > box.laneBottom + 1) failures.push(`/projects @ ${width}x${height}: ${box.slug} relation note runs ${Math.round(box.bottom - box.laneBottom)}px below its lane`);
+          }
+        }
+        if (width === 390) {
+          const status = await page.evaluate(() => {
+            const shown = (node) => {
+              const box = node.getBoundingClientRect();
+              const style = getComputedStyle(node);
+              return box.width > 0 && box.height > 0 && style.display !== "none" && style.visibility === "visible" && Number(style.opacity) > 0;
+            };
+            const lanes = [...document.querySelectorAll("[data-project-slug] .project-journey-state")];
+            const stages = [...document.querySelectorAll('[data-project-slug] [data-journey-stage]:not([data-journey-stage="resolved"])')];
+            return {
+              lanes: lanes.length, lanesShown: lanes.filter(shown).length,
+              stages: stages.length,
+              stagesShown: stages.filter((stage) => { const state = stage.querySelector(".project-journey-stage-state"); return state !== null && shown(state); }).length,
+            };
+          });
+          if (status.lanes !== 6 || status.lanesShown !== status.lanes) failures.push(`/projects @ ${width}x${height}: ${status.lanesShown} of ${status.lanes} lane status labels are visible, expected 6 of 6`);
+          if (status.stages === 0 || status.stagesShown !== status.stages) failures.push(`/projects @ ${width}x${height}: ${status.stagesShown} of ${status.stages} current or future stage labels are visible`);
+        }
+      }
+
       if (route === "/projects") {
         const expectedSlugs = [
           "lv-cabling-design-commercial-complex",
@@ -1352,12 +1471,14 @@ async function main() {
           if (!alignedStages) failures.push(`/projects @ ${width}x${height}: process columns are not aligned`);
           // Audit 2026-09-24, S3: the relation note starts at the stage columns,
           // not inside the anchor column.
-          const relationStart = await page.locator("[data-project-relation]").evaluate((node) => {
+          const relationStarts = await page.locator("[data-project-relation]").evaluateAll((nodes) => nodes.map((node) => {
             const stage = node.closest("li").querySelector(".project-journey-stages").getBoundingClientRect();
-            return { relationLeft: node.getBoundingClientRect().left, stageLeft: stage.left };
-          });
-          if (relationStart.relationLeft < relationStart.stageLeft - 1) {
-            failures.push(`/projects @ ${width}x${height}: relation note starts ${Math.round(relationStart.stageLeft - relationStart.relationLeft)}px inside the anchor column`);
+            return { slug: node.closest("li").getAttribute("data-project-slug"), relationLeft: node.getBoundingClientRect().left, stageLeft: stage.left };
+          }));
+          for (const relationStart of relationStarts) {
+            if (relationStart.relationLeft < relationStart.stageLeft - 1) {
+              failures.push(`/projects @ ${width}x${height}: ${relationStart.slug} relation note starts ${Math.round(relationStart.stageLeft - relationStart.relationLeft)}px inside the anchor column`);
+            }
           }
         }
         // Audit 2026-09-24, S3: at desktop widths the anchor column gives each

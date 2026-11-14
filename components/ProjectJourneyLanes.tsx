@@ -1,5 +1,5 @@
 import { ProjectJourneyLane, type ProjectJourneyRelation } from "@/components/ProjectJourneyLane";
-import { projectIndexEntries, projectIndexGroups, projectIndexRelation } from "@/lib/project-index";
+import { projectIndexEntries, projectIndexGroups, projectIndexLoop, projectIndexRelation } from "@/lib/project-index";
 
 export function ProjectJourneyLanes() {
   const source = projectIndexEntries.find((entry) => entry.project.slug === projectIndexRelation.sourceSlug);
@@ -7,6 +7,10 @@ export function ProjectJourneyLanes() {
 
   if (!source || !target) {
     throw new Error("Project journey relationship endpoints must exist in the project index");
+  }
+
+  if (!projectIndexLoop.slugs.every((slug) => projectIndexEntries.some((entry) => entry.project.slug === slug))) {
+    throw new Error("Project journey loop slugs must exist in the project index");
   }
 
   const relation: ProjectJourneyRelation = {
@@ -36,7 +40,7 @@ export function ProjectJourneyLanes() {
             if (!entry) throw new Error(`Project index group references a missing slug: ${slug}`);
             return (
               <li data-project-slug={entry.project.slug} key={entry.project.slug}>
-                <ProjectJourneyLane entry={entry} relation={entry.project.slug === projectIndexRelation.sourceSlug ? relation : undefined} />
+                <ProjectJourneyLane entry={entry} relation={entry.project.slug === projectIndexRelation.sourceSlug ? relation : undefined} loop={entry.project.slug === projectIndexLoop.slugs[0] ? projectIndexLoop : undefined} />
               </li>
             );
           }),
