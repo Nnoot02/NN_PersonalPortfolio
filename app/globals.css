@@ -40,6 +40,10 @@
   --footer-warm: #d88868;
   --footer-line: #5d5a55;
   --white: #fffdfa;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  /* Figure-only. Never on UI chrome; always beside a text label or keyline. */
+  --figure-info: #2b5b6c;
+  --figure-ok: #1f6f4a;
   --display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
   --body: "Inter", Arial, sans-serif;
   --motion-quick: 120ms;
@@ -759,6 +763,32 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .lme-scale-note { color: var(--muted); display: block; font-size: .8rem; margin-top: .2rem; }
 .lme-scale-caption { color: var(--muted); font-size: .8rem; line-height: 1.55; margin: .6rem 0 0; max-width: 70ch; }
 @media (max-width: 480px) { .lme-scale dl > div { grid-template-columns: minmax(0, 1fr); } }
+.vd-bar { margin: 1.4rem 0; }
+.vd-bar__track { background: var(--paper-deep); border: 1px solid var(--line); border-right: 2px solid var(--accent-dark); display: flex; height: 14px; }
+.vd-bar__seg[data-vd-segment="mains"], .vd-bar__key[data-vd-key="mains"] { background: var(--ink); }
+.vd-bar__seg[data-vd-segment="submain"], .vd-bar__key[data-vd-key="submain"] { background: var(--figure-info); }
+.vd-bar__seg[data-vd-segment="final"], .vd-bar__key[data-vd-key="final"] { background: var(--muted); }
+.vd-bar__seg + .vd-bar__seg { border-left: 1px solid var(--paper); }
+/* Wide: label and value sit together and items wrap as a line. Narrow: one
+   column with the values right-aligned. An auto-fit grid orphaned the fifth
+   item on a row of its own and pushed each value a column away from its label. */
+.vd-bar__legend { display: flex; flex-wrap: wrap; gap: .3rem 1.75rem; margin: .7rem 0 0; }
+.vd-bar__legend > div { align-items: baseline; display: flex; gap: .5rem; }
+@media (max-width: 640px) {
+  .vd-bar__legend { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .vd-bar__legend > div { justify-content: space-between; }
+}
+.vd-bar__legend dt { font-size: var(--text-table); }
+.vd-bar__legend dd { font-family: var(--mono); font-size: var(--text-code); font-variant-numeric: tabular-nums; margin: 0; }
+.vd-bar__key { display: inline-block; height: .6rem; margin-right: .45rem; width: .6rem; }
+.vd-bar figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
+@media (forced-colors: active) {
+  .vd-bar__seg, .vd-bar__key { forced-color-adjust: none; }
+  .vd-bar__seg[data-vd-segment="mains"], .vd-bar__key[data-vd-key="mains"] { background: CanvasText; }
+  .vd-bar__seg[data-vd-segment="submain"], .vd-bar__key[data-vd-key="submain"] { background: Highlight; }
+  .vd-bar__seg[data-vd-segment="final"], .vd-bar__key[data-vd-key="final"] { background: GrayText; }
+  .vd-bar__seg + .vd-bar__seg { border-left-color: Canvas; }
+}
 @media (prefers-reduced-motion: no-preference) {
   .drawing-trace[data-trace="armed"] .lme-scale-fill { transform: scaleX(0); }
   .drawing-trace[data-trace="play"] .lme-scale-fill { animation: lme-grow 600ms var(--motion-ease-entrance) 3.2s both; }
@@ -914,7 +944,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 .writeup-index a::before { color: var(--accent-dark); content: counter(writeup-index, decimal-leading-zero); }
 .writeup-index a:hover, .writeup-index a:focus-visible { color: var(--ink); }
 .writeup-heading h2 { font: 600 var(--text-section-heading-sm)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
-/* Tables and <pre> keep the full 860px; prose is capped at the DESIGN.md measure. */
+/* Tables keep the full 860px; prose is capped at the DESIGN.md measure. */
 .writeup p:not(.eyebrow) { color: var(--muted); line-height: 1.65; max-width: 62ch; }
 .writeup-block { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.6rem; }
 .uav-clearance-figure { margin: 1.5rem 0; }
@@ -939,7 +969,25 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    the heading underneath the chrome. --header-h is 76px, 68px under 720px;
    --strip-h is 0 anywhere the strip cannot pin and 44px where it can. */
 .writeup-block h3 { font: 600 var(--text-writeup-block-heading)/1.1 var(--display); text-transform: uppercase; margin: 0 0 .9rem; scroll-margin-top: calc(var(--header-h) + var(--strip-h, 0px) + var(--clear-gap)); }
-.writeup pre { background: var(--paper-deep); padding: 1.2rem 1.4rem; overflow-x: auto; font-size: var(--text-code); line-height: 1.65; color: var(--ink); }
+.calc-table { font-variant-numeric: tabular-nums; }
+.calc-ledger { font-variant-numeric: tabular-nums; }
+.writeup .calc-ledger th[scope="row"] { position: static; white-space: nowrap; width: 1%; }
+.writeup .calc-ledger thead th:first-child { position: static; }
+.writeup .calc-ledger th::after, .writeup .calc-ledger thead th:first-child::after { content: none; }
+.writeup .calc-ledger__check { color: var(--ink); }
+.writeup .calc-ledger__working { color: var(--ink); font-family: var(--mono); font-size: var(--text-code); line-height: 1.65; overflow-wrap: break-word; }
+.calc-ledger__working > span { display: block; }
+.writeup .calc-ledger__ok { color: var(--figure-ok); font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; white-space: nowrap; }
+.writeup .calc-ledger tfoot th, .writeup .calc-ledger tfoot td { border-bottom: 0; border-top: 1px solid var(--ink); color: var(--ink); font-weight: 600; }
+@media (max-width: 640px) {
+  .calc-ledger thead { clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+  .calc-ledger tr { border-bottom: 1px solid var(--line); display: grid; gap: .15rem .6rem; grid-template-columns: auto minmax(0, 1fr); padding: .6rem 0; }
+  .writeup .calc-ledger th, .writeup .calc-ledger td { border-bottom: 0; padding: 0; }
+  .writeup .calc-ledger th[scope="row"] { width: auto; }
+  .writeup .calc-ledger tfoot th, .writeup .calc-ledger tfoot td { border-top: 0; }
+  .calc-ledger tfoot tr { border-bottom: 0; border-top: 1px solid var(--ink); }
+  .calc-ledger tr > .calc-ledger__working { grid-column: 1 / -1; }
+}
 /* Two background layers give the right-edge scroll hint with no JavaScript.
    The paper cover is attached `local` so it travels with the content and lands
    on top of the shadow once you have scrolled fully right. The trailing stop is

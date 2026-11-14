@@ -1,3 +1,5 @@
+import { CalcLedger, type LedgerRow } from "@/components/CalcLedger";
+import { VoltageDropBar } from "@/components/VoltageDropBar";
 import { WriteUpIndex, type WriteUpSection } from "@/components/WriteUpIndex";
 
 // Public URL fragments. Once shipped these ids do not change; the contract
@@ -29,6 +31,81 @@ const finalsSchedule = [
   ["Cooking appliances", "15", "11.3", "16", "4 mm²", "21.4", "0.83 %", "2.5 mm²"],
   ["Air-conditioning (3-ph)", "10", "4.6/ph", "10", "2.5 mm²", "15.8", "0.18 %", "2.5 mm²"],
   ["3-phase 15 A outlet", "10", "15/ph", "20", "4 mm²", "21.4", "0.36 %", "2.5 mm²"],
+];
+
+// Working text is the published chain, moved verbatim out of the old <pre>
+// blocks. Exported so a later scenario switch can reuse the as-designed rows.
+export const consumerMainsLedger: { rows: LedgerRow[]; selection: string[] } = {
+  rows: [
+    { step: "1", check: "Design current", working: ["Ib = 123.6 A (heaviest phase)"] },
+    { step: "2", check: "Protective device", working: ["In = 125 A Type C   (Ib ≤ In)"] },
+    { step: "3", check: "Install method", working: ["Table 3.8 → Table 3.13, Col 19"] },
+    {
+      step: "4",
+      check: "Correction",
+      working: [
+        "k = 1.04 (soil, T3.45) × 0.99 (depth, T3.46) = 1.03",
+        "Required tabulated CCC ≥ 125 / 1.03 = 121.4 A",
+      ],
+    },
+    {
+      step: "5",
+      check: "Cable",
+      working: [
+        "16 mm² → 101 A (fail);  25 mm² → 132 A (pass)",
+        { text: "Iz = 132 × 1.03 = 136 A → Ib 123.6 ≤ In 125 ≤ Iz 136", ok: true },
+      ],
+    },
+    {
+      step: "6",
+      check: "Voltage drop",
+      working: [
+        "(brief limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)",
+        { text: "ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %", ok: true },
+      ],
+    },
+    {
+      step: "7",
+      check: "Fault",
+      working: [
+        { text: "PFC at MSB = 8.0 kA; breaking capacity 10 kA", ok: true },
+        "Fault withstand: X-90 limits 90 °C normal, 250 °C short-circuit (AS/NZS 3000:2018 Table 3.2)",
+        "K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)",
+        "K²S² = 143² × 25² = 12.8 × 10⁶ A²s → t ≤ 0.20 s at 8.0 kA",
+        { text: "8.0 kA = 64 × In, above the Type C instantaneous band (5 to 10 × In)", ok: true },
+      ],
+    },
+  ],
+  selection: ["25 mm² X-90 Cu active and neutral; 6 mm² Cu earth"],
+};
+
+export const submainLedger: { rows: LedgerRow[]; selection: string[] } = {
+  rows: [
+    { step: "1", check: "Design current", working: ["Ib = 41.8 A"] },
+    { step: "2", check: "Protective device", working: ["In = 50 A Type C"] },
+    { step: "4", check: "Correction", working: ["k = 0.9975 requires CCC of at least 50.13 A"] },
+    {
+      step: "5",
+      check: "Cable",
+      working: [
+        "6 mm² → 45 A (fail); 10 mm² → 59 A (pass); Iz = 59 A",
+        { text: "Ib 41.8 ≤ In 50 ≤ Iz 59", ok: true },
+      ],
+    },
+    {
+      step: "6",
+      check: "Voltage drop",
+      working: [{ text: "ΔV = √3 × 41.8 × 15 × 2.23 / 1000 = 2.42 V = 0.61 %", ok: true }],
+    },
+  ],
+  selection: ["10 mm² V-75 Cu; 4 mm² Cu earth", "(16 mm² recommended for practical margin)"],
+};
+
+const faultLevelRows = [
+  ["Source impedance", "Zs = 400 / (√3 × 15 000) = 0.0154 Ω/phase"],
+  ["Consumer mains", "R = 0.884 × 15 / 1000 = 0.0133 Ω (copper at 75 °C)"],
+  ["Z at MSB", "= 0.0154 + 0.0133 = 0.0287 Ω"],
+  ["PFC at MSB", "= 230 / 0.0287 = 8 014 A = 8.0 kA"],
 ];
 
 export function LvCablingWriteUp() {
@@ -67,7 +144,7 @@ export function LvCablingWriteUp() {
           2.2.2(a), using the Table C2 non-domestic diversity method. Every load was
           classified once, allocated to a phase, and group-diversity rules applied
           per phase; three-phase loads add their per-phase current to all three
-          phases. The heaviest phase sets the design current: <strong>123.6 A</strong> on
+          phases. The heaviest phase sets the design current: 123.6 A on
           phase A, against the 118.9 A mean of the three phases (a 7.5 % spread). The
           butcher is simultaneously the heaviest-loaded and longest (15 m) submain.
         </p>
@@ -108,24 +185,7 @@ export function LvCablingWriteUp() {
           soil 20 °C, 15 m route. AS/NZS 3008.1.1:2025 Table 3.8 routes this
           arrangement to Table 3.13, Column 19 (separately enclosed).
         </p>
-        <pre tabIndex={0} role="region" aria-label="Consumer mains selection chain, worked steps">{`Step 1  Design current    Ib = 123.6 A (heaviest phase)
-Step 2  Protective device In = 125 A Type C   (Ib ≤ In)
-Step 3  Install method    Table 3.8 → Table 3.13, Col 19
-Step 4  Correction        k = 1.04 (soil, T3.45) × 0.99 (depth, T3.46)
-                            = 1.03
-        Required tabulated CCC ≥ 125 / 1.03 = 121.4 A
-Step 5  16 mm² → 101 A (fail);  25 mm² → 132 A (pass)
-        Iz = 132 × 1.03 = 136 A → Ib 123.6 ≤ In 125 ≤ Iz 136  OK
-Step 6  Voltage drop (brief limit 1 % = 4.0 V), Rc = 0.927 Ω/km (copper at 90 °C)
-        ΔV = √3 × 123.6 × 15 × 0.927 / 1000 = 2.98 V = 0.74 %  OK
-Step 7  PFC at MSB = 8.0 kA; breaking capacity 10 kA  OK
-        Fault withstand: X-90 limits 90 °C normal, 250 °C short-circuit
-          (AS/NZS 3000:2018 Table 3.2)
-        K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)
-        K²S² = 143² × 25² = 12.8 × 10⁶ A²s → t ≤ 0.20 s at 8.0 kA
-        8.0 kA = 64 × In, above the Type C instantaneous band
-          (5 to 10 × In)  OK
-SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
+        <CalcLedger label="Consumer mains selection chain, worked steps" rows={consumerMainsLedger.rows} selection={consumerMainsLedger.selection} />
         <p>
           A single-conduit arrangement (Column 17) would instead require 35 mm²;
           that is not the arrangement specified. The result is
@@ -144,13 +204,7 @@ SELECT  25 mm² X-90 Cu active and neutral; 6 mm² Cu earth`}</pre>
           = 0.9975, carried unrounded, so the required tabulated capacity is
           50.13 A. The butcher submain governs.
         </p>
-        <pre tabIndex={0} role="region" aria-label="Butcher submain selection chain, worked steps">{`Step 1  Ib = 41.8 A          Step 2  In = 50 A Type C
-Step 4  k = 0.9975 requires CCC of at least 50.13 A
-Step 5  6 mm² → 45 A (fail); 10 mm² → 59 A (pass); Iz = 59 A
-        Ib 41.8 ≤ In 50 ≤ Iz 59  OK
-Step 6  ΔV = √3 × 41.8 × 15 × 2.23 / 1000 = 2.42 V = 0.61 %  OK
-SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
-        (16 mm² recommended for practical margin)`}</pre>
+        <CalcLedger label="Butcher submain selection chain, worked steps" rows={submainLedger.rows} selection={submainLedger.selection} />
       </div>
 
       <div className="writeup-block">
@@ -195,6 +249,7 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
           path (mains + butcher submain + lighting final) sums to 3.0 % against the
           5 % limit.
         </p>
+        <VoltageDropBar />
       </div>
 
       <div className="writeup-block">
@@ -216,10 +271,25 @@ SELECT  10 mm² V-75 Cu; 4 mm² Cu earth
 
       <div className="writeup-block">
         <h3 id="fault-level">Fault level and earth-fault loop</h3>
-        <pre tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">{`Source impedance  Zs = 400 / (√3 × 15 000) = 0.0154 Ω/phase
-Consumer mains    R  = 0.884 × 15 / 1000   = 0.0133 Ω  (copper at 75 °C)
-Z at MSB   = 0.0154 + 0.0133 = 0.0287 Ω
-PFC at MSB = 230 / 0.0287    = 8 014 A = 8.0 kA`}</pre>
+        <div className="table-scroll" tabIndex={0} role="region" aria-label="Fault level and earth-fault loop calculation">
+          <table className="calc-table">
+            <caption className="sr-only">Fault level and earth-fault loop calculation</caption>
+            <thead>
+              <tr>
+                <th scope="col">Quantity</th>
+                <th scope="col">Working</th>
+              </tr>
+            </thead>
+            <tbody>
+              {faultLevelRows.map(([quantity, working]) => (
+                <tr key={quantity}>
+                  <th scope="row">{quantity}</th>
+                  <td className="calc-ledger__working">{working}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <p>
           All device breaking capacities (10 kA) exceed the local prospective fault
           current. Earth-fault-loop impedance was checked for the longest circuit of

@@ -42,6 +42,22 @@ function normalizeTextEntities(markup) {
   return markup.replaceAll("&#x27;", "'").replaceAll("&#39;", "'");
 }
 
+// Plan 2026-11-14-001 1.6: a named table region, from its role/label pair to
+// the next </table>; "" when either is absent, so every caller fails closed.
+// Slices whatever string it is given: pass the raw export where a check reads
+// React's escaped text (&lt;, &gt;, &amp;), the normalised one elsewhere.
+function region(html, label) {
+  const start = html.indexOf(`role="region" aria-label="${label}"`);
+  const end = start === -1 ? -1 : html.indexOf("</table>", start);
+  return end === -1 ? "" : html.slice(start, end);
+}
+
+// Each <tr> of a region, opening tag to the next <tr. A rowSpan cell stays in
+// the row that opens it; the spanned row carries only its own cells.
+function tableRows(slice) {
+  return slice.split(/<tr\b/).slice(1);
+}
+
 const homeDoc = readExport("/index.html");
 const home = renderedMain(homeDoc);
 const aboutDoc = readExport("/about.html");
@@ -831,7 +847,11 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   const lvOpening = normalizeTextEntities(lvCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "");
   check(lvOpening.includes("the longest final subcircuit of each conductor size"), "lv: opening block must say only the longest final subcircuit of each conductor size was checked");
   check(!lvOpening.includes("every final subcircuit was checked"), "lv: opening block must not claim every final subcircuit was checked");
-  check(normalizeTextEntities(lvCaseStudy).includes("Step 6  Voltage drop (brief limit 1 % = 4.0 V)"), "lv: consumer-mains worked check must cite the brief limit for voltage drop");
+  // Plan 2026-11-14-001 1.6 gate 1: the chain is a ledger now, so the pin is
+  // the step-6 row of the consumer-mains region, not a page-wide string.
+  const mainsChain = region(normalizeTextEntities(lvCaseStudy), "Consumer mains selection chain, worked steps");
+  const mainsStep6 = tableRows(mainsChain).filter((row) => /<th scope="row"[^>]*>6<\/th>/.test(row));
+  check(mainsStep6.length === 1 && mainsStep6[0].includes("Voltage drop") && mainsStep6[0].includes("(brief limit 1 % = 4.0 V)"), "lv: consumer-mains worked check must cite the brief limit for voltage drop");
   const solarCaseStudy = normalizeTextEntities(renderedMain(readExport("/projects/solar-grid-connection-assessment.html")));
   const solarOpening = solarCaseStudy.match(/<section class="case-opening"[\s\S]*?<\/section>/)?.[0] ?? "";
   check(solarOpening.includes("named as inputs to the network study, not computed"), "solar: opening block must say voltage rise, fault level and grading are inputs, not computed");
@@ -846,16 +866,27 @@ check(lvImageNote.includes("I drew the original one-line diagram in Autodesk Inv
   check(uavWriteUp.includes("Autonomy, perception, verification"), "uav: scope must read Autonomy, perception, verification");
   // Nathan, 2026-10-25: K = 143 read from AS/NZS 3008.1.1:2017 Table 52; the
   // edition is named because the rest of the page cites the 2025 edition.
-  check(normalizeTextEntities(lvCaseStudy).includes("K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)"), "lv: Step 7 must carry the fault-withstand K and its 2017 source");
+  // Gate 2 (plan 2026-11-14-001 1.6): scoped to the consumer-mains region.
+  check(mainsChain.includes("K = 143 (AS/NZS 3008.1.1:2017 Clause 2.5, Table 52: Cu, 90 → 250 °C)"), "lv: Step 7 must carry the fault-withstand K and its 2017 source");
   check(normalizeTextEntities(lvCaseStudy).includes("Table 52 was not re-checked against the 2025 edition"), "lv: page must say Table 52 was not re-checked against the 2025 edition");
   // Nathan approved the trimmed reflection, 2026-10-25: lesson and plan, not mood.
   const viasatReflection = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html"))).match(/<h3>What I took from it<\/h3>[\s\S]*?<\/div>/)?.[0] ?? "";
   check(viasatReflection.includes("I should have re-recorded scenes to show a more confident delivery"), "viasat: reflection must keep the delivery lesson");
   check(!viasatReflection.includes("really down") && !viasatReflection.includes("!"), "viasat: reflection must not return to mood copy or exclamation marks");
-  const comparisonStart = solarCaseStudy.indexOf('<pre tabindex="0" role="region" aria-label="LV versus HV connection comparison">');
-  const comparison = comparisonStart === -1 ? "" : solarCaseStudy.slice(comparisonStart, solarCaseStudy.indexOf("</pre>", comparisonStart));
-  check(comparison.includes("(currents at unity power factor)"), "solar: LV versus HV comparison must state unity power factor");
-  check(comparison.includes("~52 A at 11 kV, ~17 A at 33 kV"), "solar: LV versus HV comparison must carry the HV currents");
+  // Gate 3 (plan 2026-11-14-001 1.6): the comparison is a table. Each current
+  // is pinned to its own voltage's row (the HV rows share a rowSpan header, so
+  // rows are split on <tr, not on header cells); the unity-power-factor lead
+  // sits between the section heading and the region.
+  const comparisonLabel = "LV versus HV connection comparison";
+  const comparison = region(solarCaseStudy, comparisonLabel);
+  const comparisonStart = solarCaseStudy.indexOf(`role="region" aria-label="${comparisonLabel}"`);
+  const connectionHeading = solarCaseStudy.indexOf('<h3 id="connection-voltage"');
+  const comparisonLead = connectionHeading === -1 || comparisonStart <= connectionHeading ? "" : solarCaseStudy.slice(connectionHeading, comparisonStart);
+  check(comparisonLead.includes("(currents at unity power factor)"), "solar: LV versus HV comparison must state unity power factor");
+  for (const [voltage, current] of [["400 V", "~1443 A"], ["11 kV", "~52 A"], ["33 kV", "~17 A"]]) {
+    const rows = tableRows(comparison).filter((row) => row.includes(voltage));
+    check(rows.length === 1 && rows[0].includes(`>${current}<`), `solar: LV versus HV comparison must carry ${current} on the ${voltage} row`);
+  }
   for (const phrase of ["Coursework case study", "Coursework assessment", "Read the case study", "27/30 cleared the 0.5 m requirement"]) {
     check(projectJourneys.includes(phrase), `projects journeys must carry "${phrase}"`);
   }
@@ -888,13 +919,75 @@ for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connecti
 // Every substitution the item makes is asserted: the draft pinned five of eight
 // and the other three would have regressed silently.
 // React escapes < and > in text, so the export carries &lt;=, &gt;= and -&gt;.
-for (const slug of ["lv-cabling-design-commercial-complex", "solar-grid-connection-assessment"]) {
+// Plan 2026-11-14-001 1.6 gate 5: the chains are tables now. The loop is keyed
+// on the four named regions, each of which must exist and hold a <table, so it
+// cannot go vacuous. It reads the raw export (the blacklist is written in
+// React's escaped form) with every tag replaced by a newline: only text nodes
+// are checked, so attribute values (class names, aria-label, colspan) cannot
+// trip an entry, and no entry can span two cells.
+const calcRegions = {
+  "lv-cabling-design-commercial-complex": { ledgers: 2, tables: 1, labels: ["Consumer mains selection chain, worked steps", "Butcher submain selection chain, worked steps", "Fault level and earth-fault loop calculation"] },
+  "solar-grid-connection-assessment": { ledgers: 0, tables: 1, labels: ["LV versus HV connection comparison"] },
+};
+for (const [slug, { ledgers, tables, labels }] of Object.entries(calcRegions)) {
   const writeUp = renderedMain(readExport(`/projects/${slug}.html`));
-  for (const block of writeUp.match(/<pre\b[^>]*>[\s\S]*?<\/pre>/g) ?? []) {
+  check(!/<pre\b/.test(writeUp), `${slug}: write-up must not carry a <pre> block; worked chains are tables`);
+  for (const label of labels) {
+    const block = region(writeUp, label);
+    // The table must be the region's direct child: a restored <pre> carrying
+    // the same label would otherwise slice through to a later </table>.
+    check(/^[^>]*><table\b/.test(block),`${slug}: worked chain "${label}" must be a table inside its named region`);
+    const text = block.replace(/<[^>]*>/g, "\n");
     for (const ascii of ["sqrt3", "ohm", "mm2", "dV", "&lt;=", "&gt;=", "-&gt;", " x "]) {
-      check(!block.includes(ascii), `${slug}: worked chain must use engineering notation, found "${ascii}"`);
+      check(!text.includes(ascii), `${slug}: worked chain must use engineering notation, found "${ascii}"`);
     }
   }
+  const ledgerCount = (writeUp.match(/class="calc-ledger"/g) ?? []).length;
+  const tableCount = (writeUp.match(/class="calc-table"/g) ?? []).length;
+  check(ledgerCount === ledgers && tableCount === tables, `${slug}: write-up must carry ${ledgers} calc-ledger and ${tables} calc-table (found ${ledgerCount} and ${tableCount})`);
+}
+
+// Plan 2026-11-14-001 1.6 gate 6: the voltage-drop bar. Scoped to its figure;
+// every number is tied to the figure printed on its own surface, so the bar
+// cannot drift from the chains, the schedule or the prose total.
+{
+  const lv = normalizeTextEntities(lvCaseStudy);
+  const figure = lv.match(/<figure\b[^>]*class="vd-bar"[^>]*>[\s\S]*?<\/figure>/)?.[0] ?? "";
+  check(figure !== "", "lv: voltage-drop bar must be published as figure.vd-bar");
+  const limit = 5;
+  const segments = [...figure.matchAll(/<[a-z]+\b[^>]*\bdata-vd-segment="[^"]*"[^>]*>/g)].map(([tag]) => ({
+    id: tag.match(/data-vd-segment="([^"]*)"/)[1],
+    value: tag.match(/data-vd-value="([^"]*)"/)?.[1] ?? "",
+    width: tag.match(/style="[^"]*\bwidth:\s*([0-9.]+%)/)?.[1] ?? "",
+  }));
+  const segmentCount = (figure.match(/data-vd-segment=/g) ?? []).length;
+  check(segmentCount === 3 && segments.map((s) => s.id).join(",") === "mains,submain,final", `lv: voltage-drop bar must carry three segments in path order mains, submain, final (found ${segments.map((s) => s.id).join(",") || "none"})`);
+  check(segments.map((s) => s.value).join(",") === "0.74,0.61,1.66", `lv: voltage-drop bar segment values must read 0.74, 0.61, 1.66 (found ${segments.map((s) => s.value).join(",") || "none"})`);
+  for (const segment of segments) {
+    const expected = `${((Number(segment.value) / limit) * 100).toFixed(1)}%`;
+    check(segment.width === expected, `lv: voltage-drop bar segment ${segment.id} width must be its value over the ${limit} % limit (${expected}, found ${segment.width || "none"})`);
+  }
+  const legend = Object.fromEntries([...figure.matchAll(/<div\b[^>]*data-vd-legend="([^"]*)"[^>]*>([\s\S]*?)<\/div>/g)].map(([, id, body]) => [id, body.match(/<dd\b[^>]*>([\s\S]*?)<\/dd>/)?.[1] ?? ""]));
+  check(Object.keys(legend).join(",") === "mains,submain,final,total,limit", `lv: voltage-drop bar legend must list mains, submain, final, total, limit (found ${Object.keys(legend).join(",") || "none"})`);
+  for (const segment of segments) {
+    check(legend[segment.id] === `${segment.value} %`, `lv: voltage-drop bar legend ${segment.id} must read ${segment.value} % (found ${legend[segment.id] ?? "none"})`);
+  }
+  const escapedValue = (value) => value.replace(/[.]/g, "\\.");
+  const lightingRow = tableRows(region(lv, "Final subcircuit schedule")).find((row) => /<th scope="row"[^>]*>Lighting</.test(row)) ?? "";
+  const surfaces = {
+    mains: ["the consumer-mains chain", (value) => new RegExp(`(?<![\\d.])${escapedValue(value)} %`).test(region(lv, "Consumer mains selection chain, worked steps"))],
+    submain: ["the butcher submain chain", (value) => new RegExp(`(?<![\\d.])${escapedValue(value)} %`).test(region(lv, "Butcher submain selection chain, worked steps"))],
+    final: ["the Lighting row of the final subcircuit schedule", (value) => new RegExp(`<td[^>]*>${escapedValue(value)} %</td>`).test(lightingRow)],
+  };
+  for (const segment of segments) {
+    const [surface, carries] = surfaces[segment.id] ?? ["an unknown surface", () => false];
+    check(carries(segment.value), `lv: voltage-drop bar ${segment.id} value ${segment.value} % must equal the figure on ${surface}`);
+  }
+  const sum = segments.reduce((total, segment) => total + Number(segment.value), 0).toFixed(1);
+  const proseTotal = lv.match(/sums to ([0-9.]+) % against the\s+5 % limit/)?.[1] ?? "";
+  check(legend.total === `${sum} %`, `lv: voltage-drop bar Total must equal the segment sum ${sum} % (found ${legend.total ?? "none"})`);
+  check(proseTotal === sum, `lv: voltage-drop bar segments must sum to the prose total "sums to ${proseTotal || "?"} % against the 5 % limit" (segment sum ${sum} %)`);
+  check(legend.limit === `${limit} %`, `lv: voltage-drop bar Limit must read ${limit} % (found ${legend.limit ?? "none"})`);
 }
 
 // PLAN v6 V1. The long write-ups are indexed at the head and every section is

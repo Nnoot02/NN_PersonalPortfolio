@@ -23,11 +23,15 @@ colors:
   white: "#fffdfa"
   footer-warm: "#d88868"
   footer-line: "#5d5a55"
+  # Figure-only: see Colors > Figures. Never on UI chrome.
+  figure-info: "#2b5b6c"
+  figure-ok: "#1f6f4a"
 
 typography:
   # Font families are declared literally (not as aliases) so tooling reads them.
   # Display = Barlow Condensed; body = Inter; code = the UA monospace stack that
-  # unstyled <pre> renders in (.writeup pre carries no font-family override).
+  # unstyled <pre> renders in; it is exposed as the --mono custom property in
+  # globals.css and used by the calc ledgers and the voltage-drop bar legend.
   display-family: '"Barlow Condensed", "Arial Narrow", sans-serif'
   body-family: '"Inter", Arial, sans-serif'
   code-family: 'ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace'
@@ -336,8 +340,8 @@ one elevation step down from paper, never a full band.
 - **Paper** (`{colors.paper}` — #f3f0e9): The default page floor. The sticky
   header sits on the same paper at 96% alpha (`rgba(243, 240, 233, 0.96)`).
 - **Paper-deep** (`{colors.paper-deep}` — #e8e3d9): One step down. Backs
-  images/placeholders (`.project-image`, `.case-image`) and code blocks
-  (`.writeup pre`). Never used as a full-width band.
+  images/placeholders (`.project-image`, `.case-image`) and the voltage-drop bar
+  track (`.vd-bar__track`). Never used as a full-width band.
 - **Ink** (`{colors.ink}` — #242321): The footer surface and all primary text
   on paper. Warm near-black.
 - **Line** (`{colors.line}` — #d1cbc0): The 1px hairline tone that carries
@@ -362,6 +366,18 @@ one elevation step down from paper, never a full band.
 - **Footer-line** (`{colors.footer-line}` — #5d5a55): The 1px border on footer
   link boxes, the ink-surface analogue of `{colors.line}`.
 
+### Figures
+
+- **Figure-info** (`{colors.figure-info}` -- #2b5b6c) and **Figure-ok**
+  (`{colors.figure-ok}` -- #1f6f4a): figure-only tokens (`--figure-info`,
+  `--figure-ok`). Never on UI chrome (buttons, nav, footer, tags). Always beside
+  a text label or a keyline, so colour is never the only cue.
+- Measured contrast: `#2b5b6c` is **6.55:1** on paper and **5.83:1** on
+  paper-deep; `#1f6f4a` is **5.38:1** on paper and **4.79:1** on paper-deep. All
+  clear AA for small text on both grounds.
+- A third hue needs its own measured entry here before use. `#9a6700` measured
+  4.28:1 on paper, fails AA as text, and is not adopted.
+
 ## Typography
 
 ### Families
@@ -376,7 +392,8 @@ display roles; Barlow Condensed is never set as body copy.
 
 The UA monospace stack (`{typography.code-family}`) is not a third brand face:
 it is a **functional** face with exactly two roles. One is worked-calculation
-`<pre>` blocks (`{typography.code}`). The other is **diagram labels**: the home
+text: the `.calc-ledger` working cells and the `.vd-bar` legend values
+(`{typography.code}`, exposed as `--mono`). The other is **diagram labels**: the home
 one-line diagram's legend rows, detail title and body, and detail close button,
 set at `--text-tag` in 600/700. Those are the labels on an engineering drawing,
 and mono reads as drawing annotation rather than site chrome (Nathan,

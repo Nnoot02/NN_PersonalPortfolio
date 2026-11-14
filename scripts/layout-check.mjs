@@ -989,6 +989,90 @@ async function main() {
             if (/rgba\(0, 0, 0, 0\)|transparent/.test(pinned.background)) failures.push(`${route} @ ${width}x${height}: sticky row header has no background and will show scrolled content through it`);
           }
         }
+        // Plan 2026-11-14-001 1.6: the two calc ledgers and the voltage-drop
+        // bar. A missing ledger or bar is a failure, never a skip.
+        const ledgers = page.locator(".calc-ledger");
+        const ledgerCount = await ledgers.count();
+        if (ledgerCount !== 2) failures.push(`${route} @ ${width}x${height}: expected 2 calc ledgers, found ${ledgerCount}`);
+        const bar = page.locator(".vd-bar");
+        const barCount = await bar.count();
+        if (barCount !== 1) failures.push(`${route} @ ${width}x${height}: expected 1 voltage-drop bar, found ${barCount}`);
+        if (width === 390 || width === 320) {
+          // Below 640px each ledger row stacks, so the ledger must not scroll
+          // sideways, and the stacked rows must still be rows to assistive
+          // tech (plan section 7). Rows are counted twice: by Playwright's role
+          // engine, and in Chrome's own accessibility tree over CDP, which is
+          // the one that sees the display: grid change. Neither is a DOM count.
+          const cdp = await page.context().newCDPSession(page);
+          try {
+            await cdp.send("Accessibility.enable");
+            for (let index = 0; index < ledgerCount; index += 1) {
+              const ledger = ledgers.nth(index);
+              const fit = await ledger.evaluate((table) => {
+                const region = table.closest(".table-scroll");
+                return { label: region?.getAttribute("aria-label") ?? null, scrollW: region?.scrollWidth ?? 0, clientW: region?.clientWidth ?? 0, trs: table.querySelectorAll("tr").length };
+              });
+              const name = fit.label ?? `#${index + 1}`;
+              if (fit.label === null) failures.push(`${route} @ ${width}x${height}: calc ledger ${name} is not inside a .table-scroll region`);
+              else if (fit.scrollW > fit.clientW) failures.push(`${route} @ ${width}x${height}: calc ledger "${name}" scrolls sideways (${fit.scrollW}px in ${fit.clientW}px)`);
+              const roleRows = await ledger.getByRole("row").count();
+              if (roleRows !== fit.trs) failures.push(`${route} @ ${width}x${height}: calc ledger "${name}" exposes ${roleRows} rows by role, expected ${fit.trs} (one per <tr>)`);
+              const { result } = await cdp.send("Runtime.evaluate", { expression: `document.querySelectorAll(".calc-ledger")[${index}]` });
+              const { nodes } = await cdp.send("Accessibility.queryAXTree", { objectId: result.objectId, role: "row" });
+              const axRows = nodes.filter((node) => !node.ignored).length;
+              if (axRows !== fit.trs) failures.push(`${route} @ ${width}x${height}: calc ledger "${name}" has ${axRows} rows in Chrome's accessibility tree, expected ${fit.trs} (one per <tr>)`);
+            }
+          } catch (error) {
+            failures.push(`${route} @ ${width}x${height}: calc ledger accessibility-tree row count failed: ${error.message}`);
+          } finally {
+            await cdp.detach();
+          }
+        }
+        if (barCount === 1 && (width === 390 || width === 320 || width === 1440)) {
+          const barGeometry = await bar.evaluate((figure) => {
+            const box = figure.getBoundingClientRect();
+            const block = figure.parentElement.getBoundingClientRect();
+            const track = figure.querySelector(".vd-bar__track");
+            const rows = [...figure.querySelectorAll(".vd-bar__legend > div")].map((row) => row.getBoundingClientRect());
+            return {
+              left: box.left, right: box.right, blockLeft: block.left, blockRight: block.right,
+              scrollW: figure.scrollWidth, clientW: figure.clientWidth,
+              trackW: track ? Math.round(track.getBoundingClientRect().width) : null,
+              rows: rows.length,
+              overlaps: rows.some((a, i) => rows.some((b, j) => i < j && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom)),
+            };
+          });
+          const minTrack = width === 1440 ? 600 : 240;
+          if (barGeometry.trackW === null) failures.push(`${route} @ ${width}x${height}: voltage-drop bar has no .vd-bar__track`);
+          else if (barGeometry.trackW < minTrack) failures.push(`${route} @ ${width}x${height}: voltage-drop bar track is ${barGeometry.trackW}px wide (min ${minTrack}px)`);
+          if (width !== 1440) {
+            if (barGeometry.left < barGeometry.blockLeft - 1 || barGeometry.right > barGeometry.blockRight + 1 || barGeometry.scrollW > barGeometry.clientW) failures.push(`${route} @ ${width}x${height}: voltage-drop bar overflows its block ${JSON.stringify(barGeometry)}`);
+            if (barGeometry.rows !== 5) failures.push(`${route} @ ${width}x${height}: voltage-drop bar legend has ${barGeometry.rows} rows, expected 5`);
+            if (barGeometry.overlaps) failures.push(`${route} @ ${width}x${height}: voltage-drop bar legend rows overlap`);
+          }
+        }
+        if (width === 1440) {
+          // OK carries the figure-only green; the working cell must be ink. Only
+          // the working cell can catch a lost .writeup scope (.writeup td wins).
+          // Ink is resolved from :root at runtime, not hard-coded.
+          const colours = await page.evaluate(() => {
+            const inkToken = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim();
+            const probe = document.createElement("span");
+            probe.style.color = inkToken;
+            document.body.append(probe);
+            const ink = inkToken ? getComputedStyle(probe).color : "";
+            probe.remove();
+            const colourOf = (selector) => [...document.querySelectorAll(selector)].map((node) => getComputedStyle(node).color);
+            return { ink, ok: colourOf(".calc-ledger__ok"), working: colourOf(".calc-ledger__working") };
+          });
+          if (!colours.ink) failures.push(`${route} @ ${width}x${height}: --ink token does not resolve on :root`);
+          if (colours.ok.length === 0) failures.push(`${route} @ ${width}x${height}: no .calc-ledger__ok marks found`);
+          const offOk = colours.ok.filter((colour) => colour !== "rgb(31, 111, 74)");
+          if (offOk.length) failures.push(`${route} @ ${width}x${height}: .calc-ledger__ok colour must be rgb(31, 111, 74), found ${[...new Set(offOk)].join(", ")}`);
+          if (colours.working.length === 0) failures.push(`${route} @ ${width}x${height}: no .calc-ledger__working cells found`);
+          const offInk = colours.working.filter((colour) => colour !== colours.ink);
+          if (offInk.length) failures.push(`${route} @ ${width}x${height}: .calc-ledger__working colour must be the ink token ${colours.ink}, found ${[...new Set(offInk)].join(", ")}`);
+        }
       }
       if (route === "/contact") {
         const snapshot = page.locator("[data-technical-snapshot]");
@@ -1117,6 +1201,21 @@ async function main() {
           else {
             if (schedule.stickyW > schedule.regionW * 0.45 + 2) failures.push(`${route} @ ${width}x${height}: sticky label column is ${schedule.stickyW}px of ${schedule.regionW}px (limit 45%)`);
             if (schedule.regionW - schedule.stickyW < 100) failures.push(`${route} @ ${width}x${height}: numeric area right of the sticky label is ${schedule.regionW - schedule.stickyW}px (min 100px)`);
+          }
+          // Plan 2026-11-14-001 1.6: the arm above reads only the first region,
+          // so the plain calc tables (fault level, the Solar comparison) get the
+          // same two limits here. They may scroll; the label must leave room.
+          const calcTables = await page.evaluate(() => [...document.querySelectorAll(".table-scroll:has(.calc-table)")].map((region) => {
+            const labels = [...region.querySelectorAll("tbody th")].map((th) => th.getBoundingClientRect().width);
+            return { label: region.getAttribute("aria-label"), regionW: region.clientWidth, stickyW: labels.length ? Math.round(Math.max(...labels)) : null };
+          }));
+          if (calcTables.length !== 1) failures.push(`${route} @ ${width}x${height}: expected 1 calc-table region, found ${calcTables.length}`);
+          for (const table of calcTables) {
+            if (table.stickyW === null) failures.push(`${route} @ ${width}x${height}: calc table "${table.label}" has no row header`);
+            else {
+              if (table.stickyW > table.regionW * 0.45 + 2) failures.push(`${route} @ ${width}x${height}: calc table "${table.label}" sticky label column is ${table.stickyW}px of ${table.regionW}px (limit 45%)`);
+              if (table.regionW - table.stickyW < 100) failures.push(`${route} @ ${width}x${height}: calc table "${table.label}" area right of the sticky label is ${table.regionW - table.stickyW}px (min 100px)`);
+            }
           }
         }
         const nextLink = await page.evaluate(() => {
