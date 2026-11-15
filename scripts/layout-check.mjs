@@ -957,13 +957,87 @@ async function main() {
           });
         }
       }
-      if (route === "/projects/lv-cabling-design-commercial-complex" || route === "/resume") {
+      if (route === "/projects/lv-cabling-design-commercial-complex" || route === "/resume" || route === "/profile") {
         // Standalone links (not inline in a sentence) carry the repo's 44px
         // floor, matching .homepage-epilogue-collection and the contact links.
-        const standalone = page.locator(".back-link, .case-image-note .text-link, .profile-facts .text-link");
+        const standalone = page.locator(".back-link, .case-image-note .text-link, .profile-facts .text-link, .profile-matrix__table .text-link");
         for (let index = 0; index < (await standalone.count()); index += 1) {
           const box = await standalone.nth(index).evaluate((node) => { const rect = node.getBoundingClientRect(); return { height: rect.height, text: node.textContent.trim().slice(0, 30) }; });
           if (box.height < 44) failures.push(`${route} @ ${width}x${height}: standalone link "${box.text}" is ${Math.round(box.height)}px tall, below 44px`);
+        }
+      }
+      if (route === "/profile") {
+        // Plan 2026-11-15-002: the /profile verification matrix. The table owns
+        // no sideways scroll, shows its four heads where it is a table and the
+        // data-label captions where it restacks, the CSS-only lens shows 2, 4
+        // and 6 rows, the keyboard moves it, and the tbody ink rule survives a
+        // lens that hides the first rows.
+        const matrixState = () => page.evaluate(() => {
+          const matrix = document.querySelector("[data-profile-matrix]");
+          const table = matrix?.querySelector(".profile-matrix__table");
+          if (!matrix || !table) return null;
+          const rows = Array.from(table.querySelectorAll("tbody tr[data-matrix-slug]"));
+          const visible = rows.filter((row) => row.getClientRects().length > 0);
+          const heads = Array.from(table.querySelectorAll("thead th")).filter((th) => { const rect = th.getBoundingClientRect(); return rect.width > 2 && rect.height > 2; }).map((th) => th.textContent.trim());
+          const captions = rows.flatMap((row) => Array.from(row.querySelectorAll("td[data-label]")).map((td) => ({ label: td.dataset.label, before: getComputedStyle(td, "::before").content, display: getComputedStyle(td, "::before").display })));
+          const probe = document.createElement("span");
+          probe.style.color = "var(--ink)";
+          document.body.append(probe);
+          const ink = getComputedStyle(probe).color;
+          probe.style.color = "var(--accent-dark)";
+          const accentDark = getComputedStyle(probe).color;
+          probe.remove();
+          const tbody = table.querySelector("tbody");
+          const tbodyStyle = getComputedStyle(tbody);
+          const first = visible[0]?.getBoundingClientRect();
+          const focusedTab = document.activeElement?.closest?.(".profile-lens-tab");
+          const tabStyle = focusedTab ? getComputedStyle(focusedTab) : null;
+          return {
+            overflow: Math.max(table.scrollWidth - matrix.clientWidth, Math.round(table.getBoundingClientRect().right - matrix.getBoundingClientRect().right)),
+            heads,
+            stacked: rows.every((row) => getComputedStyle(row).display === "grid"),
+            captions,
+            visible: visible.length,
+            visibleSlugs: visible.map((row) => row.dataset.matrixSlug),
+            checked: document.querySelector('input[name="profile-lens"]:checked')?.id ?? null,
+            ink,
+            accentDark,
+            tbodyTop: { width: tbodyStyle.borderTopWidth, style: tbodyStyle.borderTopStyle, color: tbodyStyle.borderTopColor, top: tbody.getBoundingClientRect().top },
+            firstTop: first ? first.top : null,
+            focusOutline: tabStyle ? { style: tabStyle.outlineStyle, width: tabStyle.outlineWidth, color: tabStyle.outlineColor } : null,
+          };
+        });
+        const initial = await matrixState();
+        if (!initial) failures.push(`/profile @ ${width}x${height}: verification matrix missing`);
+        else {
+          if (initial.overflow > 1) failures.push(`/profile @ ${width}x${height}: verification matrix overflows its container by ${initial.overflow}px`);
+          if (initial.visible !== 6) failures.push(`/profile @ ${width}x${height}: matrix shows ${initial.visible} rows on load, expected 6`);
+          if (width > 640) {
+            if (initial.heads.join("|") !== "Project|Basis|Key figure|Evidence") failures.push(`/profile @ ${width}x${height}: matrix column heads must be visible (found ${initial.heads.join("|") || "none"})`);
+          } else {
+            if (!initial.stacked) failures.push(`/profile @ ${width}x${height}: matrix rows must restack as grids`);
+            const bad = initial.captions.filter((caption) => caption.before !== `"${caption.label}"` || caption.display !== "block");
+            if (bad.length || initial.captions.length !== 18) failures.push(`/profile @ ${width}x${height}: restacked cells must show their data-label as a block caption (${bad.length} wrong of ${initial.captions.length})`);
+          }
+          if (width === 390 || width === 1440) {
+            const lensCounts = [["Power systems", 2], ["Hardware and autonomy", 4], ["All", 6]];
+            for (const [label, expected] of lensCounts) {
+              await page.locator(".profile-lens-tab", { hasText: new RegExp(`^${label}$`) }).click();
+              const state = await matrixState();
+              if (state?.visible !== expected) failures.push(`/profile @ ${width}x${height}: lens "${label}" shows ${state?.visible} rows, expected ${expected}`);
+              if (label === "Hardware and autonomy" && width === 1440 && state) {
+                const rule = state.tbodyTop;
+                if (rule.width !== "1px" || rule.style !== "solid" || rule.color !== state.ink) failures.push(`/profile @ ${width}x${height}: with the hardware lens the tbody top rule must be 1px solid --ink (found ${rule.width} ${rule.style} ${rule.color})`);
+                if (state.firstTop === null || Math.abs(state.firstTop - (rule.top + 1)) > 1) failures.push(`/profile @ ${width}x${height}: with the hardware lens the first visible row must sit on the ink rule (row top ${state.firstTop}, rule top ${rule.top})`);
+              }
+            }
+            await page.locator("#profile-lens-all").focus();
+            await page.keyboard.press("ArrowRight");
+            const keyed = await matrixState();
+            if (keyed?.checked !== "profile-lens-power" || keyed?.visible !== 2) failures.push(`/profile @ ${width}x${height}: ArrowRight from All must check Power systems and show 2 rows (checked ${keyed?.checked}, rows ${keyed?.visible})`);
+            if (!keyed?.focusOutline || keyed.focusOutline.style !== "solid" || keyed.focusOutline.color !== keyed.accentDark) failures.push(`/profile @ ${width}x${height}: the focused lens tab must show the --accent-dark outline (${JSON.stringify(keyed?.focusOutline)})`);
+            await page.locator(".profile-lens-tab", { hasText: /^All$/ }).click();
+          }
         }
       }
       if (route === "/projects/lv-cabling-design-commercial-complex") {
@@ -1174,7 +1248,7 @@ async function main() {
       }
       // Row order, 2026-09-17 (Option B): desktop keeps the image left of the
       // copy; mobile stacking follows the DOM (title before image).
-      if (route === "/" || route === "/profile") {
+      if (route === "/") {
         const rowGeometry = await page.evaluate(() => {
           const row = document.querySelector(".project-row");
           if (!row) return null;

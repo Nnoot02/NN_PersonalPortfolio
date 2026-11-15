@@ -2,10 +2,9 @@ import { sharedOpenGraph } from "@/lib/site";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
-import { ProjectRow } from "@/components/ProjectRow";
+import { ProfileMatrix } from "@/components/ProfileMatrix";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { featuredProjects } from "@/lib/projects";
 import { absoluteUrl, personStructuredData, profile } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -102,14 +101,8 @@ export default function ProfilePage() {
         <div className="section-heading">
           <p className="eyebrow">Evidence map</p>
           <h2 id="evidence-map-heading">Projects with status</h2>
-          <p>
-            Each case study uses a problem, approach, result, and evidence
-            status structure so the claims are easy to inspect before contact.
-          </p>
         </div>
-        <div className="project-list">
-          {featuredProjects.map((project) => <ProjectRow project={project} key={project.slug} />)}
-        </div>
+        <ProfileMatrix />
       </section>
 
       <section className="disclosure-panel" aria-labelledby="disclosure-heading">

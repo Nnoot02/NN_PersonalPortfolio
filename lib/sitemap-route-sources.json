@@ -21,7 +21,8 @@
   ],
   "/profile": [
     "app/profile/page.tsx",
-    "components/ProjectRow.tsx",
+    "components/ProfileMatrix.tsx",
+    "lib/profile-matrix.ts",
     "lib/projects.ts",
     "lib/site.ts"
   ],
