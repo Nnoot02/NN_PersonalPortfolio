@@ -92,16 +92,6 @@ typography:
     lineHeight: 1
     letterSpacing: "0.08em"
     textTransform: uppercase
-  project-number:
-    fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
-    fontSize: "2.6rem"
-    fontWeight: 600
-    lineHeight: 1
-  project-number-mobile:
-    fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
-    fontSize: "2.2rem"
-    fontWeight: 600
-    lineHeight: 1
   principle-title:
     fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif'
     fontSize: "1.25rem"
@@ -332,7 +322,7 @@ one elevation step down from paper, never a full band.
 - **Accent-dark** (`{colors.accent-dark}` — #9f3510): The small-text accent.
   Measured **6.17:1** on paper and **5.49:1** on paper-deep — both clear AA for
   small text. Every small accent-colored string uses this: `.eyebrow`,
-  `.text-link`, `.row-action`, `.project-number.is-featured`, `.case-status`
+  `.text-link`, `.row-action`, `.case-status`
   text.
 
 ### Surface
@@ -530,8 +520,7 @@ square.
 ### The accent-rule
 
 **`accent-rule`** — A 34×3px `{colors.accent}` bar. The system's signature
-motif: it opens the hero, marks non-featured project rows (as
-`.project-number-rule`), and heads each home principle. **It replaces numbered
+motif: it opens the hero and heads each home principle. **It replaces numbered
 section markers** — see Do's and Don'ts.
 
 ### Project rows
