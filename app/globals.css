@@ -670,7 +670,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
    2026-09-23: their contact address is a 21-character token with no break
    opportunity, and at 200% text on a 320px viewport it overflowed the document
    by 110px. */
-.prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .writeup figcaption, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
+.prose, .contact-intro, .about-story-intro > p, .about-timeline li > p, .about-bench, .writeup p, .writeup figcaption, .case-miniature figcaption, .case-lede, .case-sections p, .page-hero > p:last-of-type, .gate-list dd, .profile-summary p, .disclosure-panel p, .disclosure-panel li { overflow-wrap: break-word; text-wrap: pretty; }
 
 .case-study { padding: 4rem 6vw 7rem; }
 .back-link { display: inline-flex; gap: .45rem; align-items: center; color: var(--muted); margin-bottom: calc(5rem - 24px); min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
@@ -745,6 +745,14 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 /* Last-Metre Eyes relay (components/LmeRelayFigure.tsx): the chain runs
    left to right on wide screens and top to bottom on phones. */
 .lme-relay-figure .lme-relay-v { display: none; }
+/* Slice 4 site miniature: one native 320x224 render at whole multiples only
+   (640 needs a 728px viewport, 960 a 1091px one, as the box is 88vw). No frame
+   chrome; the relay figure's own border is the separation. */
+.case-miniature { margin: 1.4rem 0 0; }
+.case-miniature img { display: block; height: auto; image-rendering: pixelated; max-width: 100%; width: 320px; }
+.case-miniature figcaption { color: var(--muted); font-size: .85rem; line-height: 1.55; margin-top: .65rem; max-width: 62ch; }
+@media (min-width: 800px) { .case-miniature img { width: 640px; } }
+@media (min-width: 1100px) { .case-miniature img { width: 960px; } }
 @media (max-width: 640px) {
   .lme-relay-figure .lme-relay-h { display: none; }
   .lme-relay-figure .lme-relay-v { display: block; }
@@ -1314,7 +1322,7 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 
 @media print {
   .site-header, .hero-actions, .row-action, .scroll-cue, .case-spec__strip { display: none !important; }
-  .project-row, .workbench-preview { break-inside: avoid; }
+  .project-row, .workbench-preview, .case-miniature { break-inside: avoid; }
   .profile-lens-switch { display: none; }
   .profile-matrix__table tr { break-inside: avoid; }
   .featured, .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
