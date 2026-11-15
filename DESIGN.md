@@ -682,6 +682,16 @@ sanitized write-up").
 vertical dividers between). Each cell: an accent-rule, a Barlow Condensed
 uppercase h3, and a muted 0.88rem description.
 
+### Profile verification matrix
+
+**`profile-matrix`** — The `/profile` evidence map: one hairline-ruled table row
+per case study (Project, Basis, Key figure, Evidence) drawn in the case-spec
+vocabulary, with the key figure quoted from that case study's CaseSpec row
+rather than retyped, so a changed figure fails the contract until both agree.
+A CSS-only lens (the LV views switch pattern: hidden radios, `:has()` hide
+rules scoped to screen) filters the rows to All, Power systems or Hardware and
+autonomy; print and browsers without `:has()` show every row.
+
 ### Footer
 
 **`site-footer`** — The single ink band closing every page. Background

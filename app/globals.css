@@ -914,6 +914,41 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
   .case-spec__table tr { display: grid; gap: .25rem; padding: .7rem 0; }
   .case-spec__table th, .case-spec__table td { padding: 0; white-space: normal; }
 }
+/* /profile verification matrix (plan 2026-11-15-002). The lens copies the
+   LV views switch; the table redeclares the case-spec look rather than sharing
+   its class, so a case-spec change cannot move the profile. The ink top rule
+   sits on tbody, not tr:first-child, because a lens can hide the first rows. */
+.profile-lens-radio { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
+.profile-lens-switch { display: flex; flex-wrap: wrap; gap: .1rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+.profile-lens-tab { align-items: center; border-bottom: 2px solid transparent; color: var(--muted); cursor: pointer; display: inline-flex; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; min-height: 44px; padding: .55rem 1rem; text-transform: uppercase; }
+.profile-lens-tab:hover { color: var(--ink); }
+.profile-lens-tab:has(.profile-lens-radio:checked) { border-bottom-color: var(--accent); color: var(--ink); }
+.profile-lens-tab:has(.profile-lens-radio:focus-visible) { outline: 3px solid var(--accent-dark); outline-offset: 2px; }
+@media (forced-colors: active) {
+  .profile-lens-tab:has(.profile-lens-radio:checked) { border-bottom-color: Highlight; color: Highlight; }
+  .profile-lens-tab:has(.profile-lens-radio:not(:checked)) { border-bottom-color: Canvas; }
+}
+@media screen {
+  .profile-matrix:has(#profile-lens-power:checked) tr[data-lens="hardware"],
+  .profile-matrix:has(#profile-lens-hardware:checked) tr[data-lens="power"] { display: none; }
+}
+.profile-matrix__table { border-collapse: collapse; width: 100%; }
+.profile-matrix__table thead th { font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; text-align: left; text-transform: uppercase; padding: 0 1.5rem .6rem 0; vertical-align: bottom; }
+.profile-matrix__table tbody { border-top: 1px solid var(--ink); }
+.profile-matrix__table tbody tr { border-bottom: 1px solid var(--line); }
+.profile-matrix__table tbody th, .profile-matrix__table tbody td { color: var(--ink); padding: .5rem 1.5rem .5rem 0; text-align: left; vertical-align: baseline; }
+.profile-matrix__table tbody th { font-weight: 600; }
+.profile-matrix__table thead th:last-child, .profile-matrix__table tbody td:last-child { padding-right: 0; }
+.profile-matrix__table th .text-link { align-items: center; display: inline-flex; min-height: 44px; }
+.profile-matrix__fig-label { color: var(--muted); }
+.profile-matrix__fig-value { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 500; }
+@media (max-width: 640px) {
+  .profile-matrix__table, .profile-matrix__table tbody { display: block; }
+  .profile-matrix__table thead { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; width: 1px; }
+  .profile-matrix__table tbody tr { display: grid; gap: .5rem; grid-template-columns: minmax(0, 1fr); padding: .6rem 0 .9rem; }
+  .profile-matrix__table tbody th, .profile-matrix__table tbody td { min-width: 0; overflow-wrap: break-word; padding: 0; white-space: normal; }
+  .profile-matrix__table td::before { content: attr(data-label); display: block; font: 600 var(--text-tag)/1.2 var(--display); letter-spacing: .13em; margin-bottom: .15rem; text-transform: uppercase; }
+}
 /* The pinned spec strip (PLAN v7 S2): a duplicate, non-interactive readout of
    the spec rows (Standards excluded), pinned under the header while the
    write-up is read. Desktop only: the media query and the --strip-h scope use
@@ -1280,6 +1315,8 @@ h1, h2, h3, .hero-name, .project-title { max-width: 100%; min-width: 0; overflow
 @media print {
   .site-header, .hero-actions, .row-action, .scroll-cue, .case-spec__strip { display: none !important; }
   .project-row, .workbench-preview { break-inside: avoid; }
+  .profile-lens-switch { display: none; }
+  .profile-matrix__table tr { break-inside: avoid; }
   .featured, .page-hero { padding-top: 1.5rem; padding-bottom: 1.5rem; }
   .site-footer { background: none; color: #000; min-height: 0; }
   .site-footer a { color: #000; }

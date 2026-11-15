@@ -1795,6 +1795,80 @@ function slice2Text(markup) {
   check(projectIndexSource.includes("export const projectIndexLoop"), "projects loop: project-index source must export projectIndexLoop");
 }
 
+// Plan 2026-11-15-002 (slice 3, the /profile verification matrix). Same rule
+// as slice 2: parse the data file's literal rows as text and compare them
+// with the built /profile, then bind each row to the built case study it
+// quotes (h1 title and CaseSpec label/value pair).
+{
+  const source = slice2Source("lib/profile-matrix.ts");
+  const rows = [...source.matchAll(/^\s*\{ slug: "([^"]+)", basis: "([^"]+)", specLabel: "([^"]+)", evidence: "([^"]+)", lens: "(power|hardware)" \},?\s*$/gm)]
+    .map(([, slug, basis, specLabel, evidence, lens]) => ({ slug, basis, specLabel, evidence, lens }));
+  const literalCount = (source.match(/\{ slug: "/g) ?? []).length;
+  check(rows.length === 6 && literalCount === 6, `profile matrix: the data file must hold six parseable rows (parsed ${rows.length} of ${literalCount})`);
+  const page = normalizeTextEntities(renderedMain(profile));
+  const matrix = page.match(/<div\b[^>]*data-profile-matrix[^>]*>[\s\S]*?<\/table>\s*<\/div>/)?.[0] ?? "";
+  check(matrix !== "", "profile matrix: /profile must publish div[data-profile-matrix] with its table");
+  const table = matrix.match(/<table\b[^>]*>/)?.[0] ?? "";
+  check(table.includes('class="profile-matrix__table"') && table.includes('aria-labelledby="evidence-map-heading"') && table.includes('role="table"'), "profile matrix: the table must be named by the evidence-map heading and carry role=table");
+  const count = (pattern) => (matrix.match(pattern) ?? []).length;
+  check(count(/role="rowgroup"/g) === 2 && count(/role="row"/g) === 7 && count(/role="columnheader"/g) === 4 && count(/role="rowheader"/g) === 6 && count(/role="cell"/g) === 18, `profile matrix: explicit table roles must survive the narrow restack (rowgroup ${count(/role="rowgroup"/g)}, row ${count(/role="row"/g)}, columnheader ${count(/role="columnheader"/g)}, rowheader ${count(/role="rowheader"/g)}, cell ${count(/role="cell"/g)})`);
+  const heads = [...matrix.matchAll(/<th\b[^>]*scope="col"[^>]*>([\s\S]*?)<\/th>/g)].map((match) => slice2Text(match[1]));
+  check(heads.join("|") === "Project|Basis|Key figure|Evidence", `profile matrix: column heads must be Project, Basis, Key figure, Evidence (found ${heads.join("|") || "none"})`);
+  const shown = [...matrix.matchAll(/<tr\b([^>]*\bdata-matrix-slug="[^"]*"[^>]*)>([\s\S]*?)<\/tr>/g)].map(([, attrs, body]) => {
+    const cell = (label) => {
+      const inner = body.match(new RegExp(`<td\\b[^>]*data-label="${label}"[^>]*>([\\s\\S]*?)</td>`))?.[1];
+      return inner === undefined ? null : inner;
+    };
+    const link = body.match(/<th\b[^>]*scope="row"[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>\s*<\/th>/);
+    const figure = cell("Key figure") ?? "";
+    return {
+      slug: attrs.match(/data-matrix-slug="([^"]*)"/)[1],
+      lens: attrs.match(/data-lens="([^"]*)"/)?.[1] ?? null,
+      href: link?.[1].match(/href="([^"]*)"/)?.[1] ?? null,
+      title: link ? slice2Text(link[2]) : null,
+      basis: cell("Basis") === null ? null : slice2Text(cell("Basis")),
+      evidence: cell("Evidence") === null ? null : slice2Text(cell("Evidence")),
+      figLabel: slice2Text(figure.match(/<span class="profile-matrix__fig-label"[^>]*>([\s\S]*?)<\/span>/)?.[1] ?? ""),
+      figValue: slice2Text(figure.match(/<span class="profile-matrix__fig-value"[^>]*>([\s\S]*?)<\/span>/)?.[1] ?? ""),
+    };
+  });
+  check(shown.map((row) => row.slug).join(",") === rows.map((row) => row.slug).join(","), `profile matrix: rendered rows must follow the data file's order (found ${shown.map((row) => row.slug).join(",") || "none"})`);
+  const indexOrder = [...projectsIndex.matchAll(/<li[^>]*data-project-slug="([^"]*)"/g)].map((match) => match[1]);
+  check(rows.map((row) => row.slug).join(",") === indexOrder.join(","), `profile matrix: rows must follow the /projects order (data ${rows.map((row) => row.slug).join(",")}; /projects ${indexOrder.join(",")})`);
+  rows.forEach((row, index) => {
+    const name = `profile matrix: ${row.slug}`;
+    const got = shown[index];
+    if (!got || got.slug !== row.slug) return;
+    check(got.lens === row.lens, `${name} must carry data-lens="${row.lens}" (found ${got.lens})`);
+    check(got.basis === row.basis, `${name} Basis must read "${row.basis}" (found "${got.basis}")`);
+    check(got.evidence === row.evidence, `${name} Evidence must read "${row.evidence}" (found "${got.evidence}")`);
+    check(got.href === `/projects/${row.slug}`, `${name} must link /projects/${row.slug} (found ${got.href})`);
+    const study = normalizeTextEntities(renderedMain(readExport(`/projects/${row.slug}.html`)));
+    const h1 = slice2Text(study.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? "");
+    check(h1 !== "" && got.title === h1, `${name} link text must equal the case study's h1 "${h1}" (found "${got.title}")`);
+    const spec = study.match(/<table\b[^>]*class="case-spec__table"[^>]*>[\s\S]*?<\/table>/)?.[0] ?? "";
+    const pairs = [...spec.matchAll(/<th\b[^>]*scope="row"[^>]*>([\s\S]*?)<\/th>\s*<td\b[^>]*>([\s\S]*?)<\/td>/g)].map(([, label, value]) => [slice2Text(label), slice2Text(value)]);
+    const pair = pairs.find(([label]) => label === row.specLabel);
+    check(got.figLabel === row.specLabel, `${name} key figure label must read "${row.specLabel}" (found "${got.figLabel}")`);
+    check(pair !== undefined && got.figValue === pair[1], `${name} key figure must quote the case study's "${row.specLabel}" value "${pair?.[1] ?? "missing"}" (found "${got.figValue}")`);
+  });
+  check(shown.filter((row) => row.lens === "power").map((row) => row.slug).join(",") === "lv-cabling-design-commercial-complex,solar-grid-connection-assessment", `profile matrix: the power lens must hold exactly LV and Solar (found ${shown.filter((row) => row.lens === "power").map((row) => row.slug).join(",")})`);
+  const group = matrix.match(/<div\b[^>]*class="profile-lens-switch"[^>]*>[\s\S]*?<\/div>/)?.[0] ?? "";
+  check(group.includes('role="radiogroup"') && group.includes('aria-label="Show projects for"'), "profile matrix: the lens must be a radiogroup named Show projects for");
+  const radios = [...group.matchAll(/<input\b[^>]*>/g)].map((match) => match[0]);
+  check(radios.length === 3 && radios.every((radio) => radio.includes('type="radio"') && radio.includes('name="profile-lens"')), `profile matrix: the lens must be three radios sharing name profile-lens (found ${radios.length})`);
+  check(radios.map((radio) => radio.match(/id="([^"]*)"/)?.[1]).join(",") === "profile-lens-all,profile-lens-power,profile-lens-hardware", "profile matrix: lens radios must be all, power, hardware in that order");
+  check(/\schecked(=""|\s|>|\/)/.test(radios[0] ?? "") && !radios.slice(1).some((radio) => /\schecked(=""|\s|>|\/)/.test(radio)), "profile matrix: only the All lens may be checked by default");
+  const lensLabels = [...group.matchAll(/<label\b[^>]*class="profile-lens-tab"[^>]*>[\s\S]*?<\/label>/g)].map((match) => slice2Text(match[0]));
+  check(lensLabels.join("|") === "All|Power systems|Hardware and autonomy", `profile matrix: lens labels must be All, Power systems, Hardware and autonomy (found ${lensLabels.join("|") || "none"})`);
+  const css = globalsCss.replace(/\/\*[\s\S]*?\*\//g, "");
+  check(/@media screen\s*\{\s*\.profile-matrix:has\(#profile-lens-power:checked\) tr\[data-lens="hardware"\],\s*\.profile-matrix:has\(#profile-lens-hardware:checked\) tr\[data-lens="power"\]\s*\{\s*display:\s*none;\s*\}\s*\}/.test(css), "profile matrix: the two lens hide rules must sit inside @media screen in globals.css");
+  check((css.match(/#profile-lens-(power|hardware):checked/g) ?? []).length === 2, "profile matrix: the lens hide selectors must appear only in the screen block");
+  check(!page.includes("project-row"), "profile matrix: /profile must not render project rows");
+  check(!page.includes("Each case study uses a problem"), "profile matrix: the deleted evidence-map paragraph must stay deleted");
+  check(!/export const featuredProjects\b/.test(projectsSource), "profile matrix: lib/projects.ts must not export featuredProjects");
+}
+
 if (failures.length) {
   console.error("Portfolio contract failures:\n- " + failures.join("\n- "));
   process.exit(1);

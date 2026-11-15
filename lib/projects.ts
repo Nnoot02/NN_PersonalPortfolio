@@ -246,5 +246,3 @@ export const verifiedPowerProjects: Project[] = verifiedPowerSlugs
 export const broaderEngineeringProjects: Project[] = projects.filter(
   (project) => !verifiedPowerSlugs.includes(project.slug as (typeof verifiedPowerSlugs)[number]),
 );
-
-export const featuredProjects = verifiedPowerProjects;
