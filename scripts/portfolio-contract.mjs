@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 
@@ -832,7 +832,8 @@ check(!/<div[^>]*data-view="installation"[\s\S]*?lv-scroll-hint/.test(lvCaseStud
 // Last-Metre Eyes relay hero (docs/lme-relay-animation.md, Nathan 2026-10-29).
 {
   const lme = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html")));
-  const figure = lme.slice(lme.indexOf('class="case-diagram lme-relay-figure"'), lme.indexOf('class="case-scope"'));
+  const relayEnd = lme.includes('class="case-miniature"') ? lme.indexOf('class="case-miniature"') : lme.indexOf('class="case-scope"');
+  const figure = lme.slice(lme.indexOf('class="case-diagram lme-relay-figure"'), relayEnd);
   check(figure.length > 0 && !lme.includes('class="case-image"'), "LME case study must lead with the relay diagram");
   check(/class="drawing-trace"[^>]*data-trace="idle"/.test(figure), "LME relay must ship in its finished state (idle)");
   check(figure.includes('class="lme-relay lme-relay-h"') && figure.includes('class="lme-relay lme-relay-v"'), "LME relay must carry the desktop and phone drawings");
@@ -1793,6 +1794,43 @@ function slice2Text(markup) {
   check(visible === "UAV ↔ Thrust stand ↔ QuadSolver: sizing, measurement, motor choice", `projects loop: visible text must be the approved line (found "${visible}")`);
   check(accessible === "UAV feeds Thrust stand feeds QuadSolver, which feeds the UAV: sizing, measurement, motor choice", `projects loop: accessible text must name the direction of each link (found "${accessible}")`);
   check(projectIndexSource.includes("export const projectIndexLoop"), "projects loop: project-index source must export projectIndexLoop");
+}
+
+// Slice 4: the Last-Metre Eyes site miniature (plan 2026-11-15-003, DESIGN.md
+// miniature exception). Hashes are literals: rerender per
+// scripts/miniatures/lme-site/README.md, then update source, PNG and these together.
+{
+  const lme = normalizeTextEntities(renderedMain(readExport("/projects/last-metre-eyes-viasat-entry.html")));
+  const count = (lme.match(/data-miniature="/g) ?? []).length;
+  check(count === 1, `LME site miniature: the Viasat case study must carry exactly one [data-miniature] (found ${count})`);
+  const relayAt = lme.indexOf('class="case-diagram lme-relay-figure"');
+  const miniAt = lme.indexOf('<figure class="case-miniature" data-miniature="lme-site"');
+  check(relayAt !== -1 && miniAt > relayAt, "LME site miniature must come after the relay figure");
+  const noteAt = lme.indexOf('class="case-image-note case-image-provenance">A schematic of the entry as submitted.');
+  check(noteAt > relayAt && miniAt > noteAt, "LME site miniature must follow the relay figure's note, so the note stays with its figure");
+  const mini = miniAt === -1 ? "" : lme.slice(miniAt, lme.indexOf("</figure>", miniAt));
+  const img = mini.match(/<img[^>]*>/)?.[0] ?? "";
+  check(img.includes('src="/images/viasat-entry/site-miniature.png"') && img.includes('width="320"') && img.includes('height="224"'), "LME site miniature img must be site-miniature.png at width 320, height 224");
+  check(img !== "" && !/\sloading=/.test(img), "LME site miniature img must not set loading (eager by design)");
+  check(/\salt="Illustrative[^"]*"/.test(img), "LME site miniature alt must start with Illustrative");
+  const caption = mini.match(/<figcaption[^>]*>([\s\S]*?)<\/figcaption>/)?.[1] ?? "";
+  check(caption === "Illustrative, concept not built. The drone works inside the collapsed building; the relay sits at the perimeter, where it has sky view.", `LME site miniature caption must be the approved text (found "${caption}")`);
+  const others = readdirSync(new URL("../out", import.meta.url), { recursive: true })
+    .map((file) => String(file).replaceAll("\\", "/"))
+    .filter((file) => file.endsWith(".html") && file !== "projects/last-metre-eyes-viasat-entry.html")
+    .filter((file) => { const html = readFileSync(new URL(`../out/${file}`, import.meta.url), "utf8"); return html.includes("data-miniature") || html.includes("site-miniature.png"); });
+  check(others.length === 0, `LME site miniature must appear on no other page (found ${others.join(", ")})`);
+  const png = readBytes("public", "/images/viasat-entry/site-miniature.png");
+  check(png !== null && png.readUInt32BE(16) === 320 && png.readUInt32BE(20) === 224, "site-miniature.png IHDR must read 320 x 224");
+  const lf = (path) => sha256(readFileSync(new URL(`../scripts/miniatures/lme-site/${path}`, import.meta.url), "utf8").replace(/\r\n/g, "\n"));
+  const rerender = "rerender per scripts/miniatures/lme-site/README.md and update the source, the PNG and the three hash literals together";
+  check(png !== null && sha256(png) === "bd33a78761dd898e97239ef72cef315d8722c107e5e0fbeaaf65c1c041d6c7ca", `site-miniature.png changed without its pinned source: ${rerender}`);
+  check(lf("scene.py") === "2ebe304c45b3ca969381ef772d832887cd56fbce41ad829818e8b9ece097c140", `lme-site scene.py changed without a re-render: ${rerender}`);
+  check(lf("spec.json") === "235fd1170e5d6d9a2c1df2f3d20acd680416b1cb3c8f9cfbd67a070e88b3123a", `lme-site spec.json changed without a re-render: ${rerender}`);
+  check(/\.case-miniature img \{[^}]*image-rendering: pixelated;/.test(globalsCss), "globals.css .case-miniature img must set image-rendering: pixelated");
+  const designLines = readFileSync(new URL("../DESIGN.md", import.meta.url), "utf8").replace(/\r\n/g, "\n").split("\n");
+  check(!designLines.includes("- Project-detail pages retain authentic evidence and receive no miniature coda."), "DESIGN.md must not carry the unamended no-miniature-coda bullet");
+  check(designLines.some((line) => line.startsWith("- Project-detail pages retain authentic evidence and receive no miniature coda, with one")), "DESIGN.md must carry the amended miniature-exception bullet");
 }
 
 if (failures.length) {

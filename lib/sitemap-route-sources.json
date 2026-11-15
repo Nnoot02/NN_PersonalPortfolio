@@ -104,6 +104,7 @@
     "lib/project-index.ts",
     "components/ViasatEntryWriteUp.tsx",
     "components/ViasatEntryWriteUp.module.css",
+    "components/LmeSiteMiniature.tsx",
     "components/CaseOpening.tsx",
     "components/CaseSpec.tsx"
   ],

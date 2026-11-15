@@ -1,0 +1,166 @@
+{
+  "name": "lme-site-scene",
+  "native_size": [
+    320,
+    224
+  ],
+  "preview_scale": 3,
+  "palette": {
+    "ground": [
+      "#c9c2b5",
+      "#e8e3d9",
+      "#f3f0e9"
+    ],
+    "concrete": [
+      "#8f877a",
+      "#b5ad9f",
+      "#d8d1c4"
+    ],
+    "slab": [
+      "#6f685d",
+      "#958d80",
+      "#bbb3a5"
+    ],
+    "ink": [
+      "#242321",
+      "#3a3835",
+      "#5d5a55"
+    ],
+    "info": [
+      "#1e4350",
+      "#2b5b6c",
+      "#4a7d8f"
+    ]
+  },
+  "emissive": {
+    "status": "#c84b1a"
+  },
+  "background": "#f3f0e9",
+  "outline": "#242321",
+  "camera": {
+    "position": [
+      26.5,
+      24.5,
+      21.0
+    ],
+    "target": [
+      7.2,
+      4.0,
+      1.2
+    ],
+    "ortho_scale": 18.4
+  },
+  "light_rotation": [
+    50,
+    0,
+    -20
+  ],
+  "objects": [
+    {
+      "id": "ground",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "must_show": [
+        "ground plate"
+      ]
+    },
+    {
+      "id": "building",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "must_show": [
+        "jagged back walls",
+        "low front wall stubs",
+        "floor"
+      ]
+    },
+    {
+      "id": "slab",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "must_show": [
+        "collapsed roof slab dropping from the back wall onto a column"
+      ]
+    },
+    {
+      "id": "rubble",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "must_show": [
+        "rubble blocks inside and outside"
+      ]
+    },
+    {
+      "id": "drone",
+      "position": [
+        3.2,
+        4.95,
+        0.7
+      ],
+      "must_show": [
+        "X frame",
+        "four rotors",
+        "inside the void under the slab"
+      ]
+    },
+    {
+      "id": "relay",
+      "position": [
+        11.4,
+        6.6,
+        0
+      ],
+      "must_show": [
+        "mast",
+        "node box",
+        "orange status light"
+      ]
+    },
+    {
+      "id": "link-local",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "must_show": [
+        "dashed drone to relay link"
+      ]
+    },
+    {
+      "id": "link-backhaul",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "must_show": [
+        "dashed relay to satellite link"
+      ]
+    },
+    {
+      "id": "satellite",
+      "position": [
+        13.5,
+        1.2,
+        8.5
+      ],
+      "must_show": [
+        "body",
+        "two panels"
+      ]
+    }
+  ]
+}

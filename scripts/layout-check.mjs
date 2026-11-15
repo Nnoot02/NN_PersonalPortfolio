@@ -1355,6 +1355,40 @@ async function main() {
         }
       }
 
+      // Plan 2026-11-15-003 Task 2: the Last-Metre Eyes site miniature shows the
+      // native 320x224 render at a whole multiple (1x below 800, 2x to 1099, 3x
+      // above), under the relay figure, and owns no sideways scroll. At 320 the
+      // content box is narrower than 320px, so max-width clamps it; that width is
+      // accepted in the plan and only the overflow is asserted there.
+      if (route === "/projects/last-metre-eyes-viasat-entry") {
+        const miniature = page.locator("[data-miniature]");
+        const miniCount = await miniature.count();
+        if (miniCount !== 1) failures.push(`${route} @ ${width}x${height}: expected 1 site miniature, found ${miniCount}`);
+        else {
+          const mini = await miniature.evaluate((figure) => {
+            const img = figure.querySelector("img");
+            const box = img ? img.getBoundingClientRect() : null;
+            const relay = document.querySelector(".lme-relay-figure");
+            return {
+              natural: img ? [img.naturalWidth, img.naturalHeight] : null,
+              w: box ? box.width : null, h: box ? box.height : null,
+              rendering: img ? getComputedStyle(img).imageRendering : null,
+              top: figure.getBoundingClientRect().top,
+              relayBottom: relay ? relay.getBoundingClientRect().bottom : null,
+              scrollW: figure.scrollWidth, clientW: figure.clientWidth,
+            };
+          });
+          if (!mini.natural || mini.natural[0] !== 320 || mini.natural[1] !== 224) failures.push(`${route} @ ${width}x${height}: site miniature image did not load at 320x224 (${mini.natural ?? "no img"})`);
+          if (mini.rendering !== "pixelated") failures.push(`${route} @ ${width}x${height}: site miniature image-rendering is ${mini.rendering}, expected pixelated`);
+          if (width >= 375) {
+            const expected = width >= 1100 ? 960 : width >= 800 ? 640 : 320;
+            if (mini.w === null || Math.abs(mini.w - expected) > 0.5 || Math.abs(mini.h - expected * 0.7) > 1) failures.push(`${route} @ ${width}x${height}: site miniature renders ${mini.w}x${mini.h}, expected ${expected}x${expected * 0.7} (integer scale)`);
+          }
+          if (mini.relayBottom === null || mini.top < mini.relayBottom) failures.push(`${route} @ ${width}x${height}: site miniature top ${Math.round(mini.top)}px is above the relay figure bottom ${mini.relayBottom === null ? "none" : Math.round(mini.relayBottom)}px`);
+          if (mini.scrollW > mini.clientW) failures.push(`${route} @ ${width}x${height}: site miniature scrolls sideways (${mini.scrollW}px in ${mini.clientW}px)`);
+        }
+      }
+
       // Plan 2026-11-15-001 Task 2: the workbench spec strip wraps, never scrolls.
       if (route === "/workbench/bench-fume-extractor" || route === "/workbench/servo-mini-arm") {
         const strip = page.locator("[data-spec-readout]");

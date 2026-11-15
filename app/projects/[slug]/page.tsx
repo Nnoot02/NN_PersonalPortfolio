@@ -9,6 +9,7 @@ import { CaseOpening } from "@/components/CaseOpening";
 import { CaseSpec } from "@/components/CaseSpec";
 import { LvDesignViews, type DesignView } from "@/components/LvDesignViews";
 import { LmeRelayFigure } from "@/components/LmeRelayFigure";
+import { LmeSiteMiniature } from "@/components/LmeSiteMiniature";
 import { LvCablingWriteUp } from "@/components/LvCablingWriteUp";
 import { DrawingTrace } from "@/components/DrawingTrace";
 import { PvConnectionWriteUp } from "@/components/PvConnectionWriteUp";
@@ -255,6 +256,8 @@ export default async function ProjectPage({ params }: ProjectParams) {
             </a>
           </p>
         ) : null}
+        {/* Below the relay figure and its note, so the note stays with the figure it captions. */}
+        {project.slug === "last-metre-eyes-viasat-entry" ? <LmeSiteMiniature /> : null}
         <p className="case-scope"><span className="eyebrow">Scope</span> {project.scope}</p>
         {WriteUp ? <WriteUp /> : null}
         {projectStudyNext[project.slug] ? (
