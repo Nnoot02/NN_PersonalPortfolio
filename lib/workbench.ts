@@ -102,7 +102,7 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
   {
     slug: "tarmo5",
     title: "TARMO5 RC Car",
-    summary: "A printed RC-car build used to learn assembly, electronics integration, tuning, and repair through a capable but unfinished chassis.",
+    summary: "A printed RC-car build used to learn assembly, electronics integration, tuning, and repair on a chassis that drives and steers but is not finished.",
     buildType: "Adapted build",
     motivation: "I wanted a hands-on way to learn how a printed RC car behaves once drivetrain, controls, and repairs are part of the build.",
     contribution: "I printed, assembled, tuned, wired, and repaired the car, and made the controls interchangeable between RC, ESP32 Bluetooth, and Arduino Bluetooth setups.",
@@ -140,7 +140,7 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
     motivation: "I wanted practical microcontroller programming experience tied to a physical system that made movement immediately visible.",
     contribution: "I printed, assembled, wired, configured, and programmed the robot without modifying the original source design.",
     constraint: "The compact, nonstandard battery bay made a portable power solution difficult.",
-    observedOutcome: "The programmed movement sequence worked visibly during bench testing.",
+    observedOutcome: "The programmed movement sequence ran during bench testing.",
     failure: "It still depends on a bench supply and laptop, so the build is not yet self-contained.",
     nextIteration: "Complete battery-powered autonomous operation and add phone-based manual control.",
     tags: ["Microcontrollers", "Assembly", "Programming"],
@@ -190,7 +190,7 @@ export const workbenchEntries: readonly WorkbenchEntry[] = [
         image: "/images/workbench/servo-mini-arm/servo-mini-arm.webp",
         srcSet: "/images/workbench/servo-mini-arm/servo-mini-arm-800.webp 800w, /images/workbench/servo-mini-arm/servo-mini-arm.webp 1200w",
         alt: "Servo Mini Arm on a floor beside its breadboard joystick-control circuit",
-        caption: "Current build evidence; a cleaner documentation photo is planned.",
+        caption: "The printed arm, its micro servos and gripper, wired to the breadboard joystick-control circuit.",
       },
     ],
     source: {

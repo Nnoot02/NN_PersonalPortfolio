@@ -78,7 +78,7 @@ export function ThrustStandWriteUp() {
         <h3 id="what-it-measures">What it measures</h3>
         <p>
           The stand is designed to log four channels at once against throttle, and none of them is calibrated yet, so
-          the bench has produced observations rather than measurements. Thrust is a 5 kg bar load cell read by a 24-bit
+          the bench has produced observations, not measurements. Thrust is a 5 kg bar load cell read by a 24-bit
           NAU7802 ADC. RPM comes from a tap on one motor phase rather than an optical sensor: clamped, filtered and
           squared up by an LM393 comparator, one edge per electrical cycle, with a bell-mark tachometer used once to
           check it for gate 1. Current and pack voltage come from an off-board ACS758 Hall-effect sensor in the battery

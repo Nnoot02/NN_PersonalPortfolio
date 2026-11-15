@@ -45,7 +45,7 @@ export function HomepageEpilogue({
         <div className="homepage-portal-copy">
           <span className="homepage-portal-status">After hours</span>
           <h3 className="homepage-portal-title">Workbench</h3>
-          <p className="homepage-portal-summary">Builds, failures, and next iterations.</p>
+          <p className="homepage-portal-summary">Four bench builds, what failed on each, and what comes next.</p>
         </div>
         <ArrowRight className="homepage-portal-arrow" size={20} aria-hidden="true" />
       </Link>

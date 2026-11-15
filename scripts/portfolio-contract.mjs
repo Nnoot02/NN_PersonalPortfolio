@@ -299,7 +299,7 @@ check(uavPortal.includes('href="/projects/gps-denied-autonomous-uav"'), "UAV por
 check(uavPortal.includes("In progress") && uavPortal.includes("GPS-Denied UAV") && uavPortal.includes("Indoor autonomy and staged verification."), "UAV portal must use approved visible copy");
 check(uavPortal.includes("/images/thumbs/gps-denied-uav-236.webp"), "UAV portal must use the 236px crop of the authentic project photo");
 check(workbenchPortal.includes('href="/workbench"'), "Workbench portal must target Workbench collection");
-check(workbenchPortal.includes("After hours") && workbenchPortal.includes("Builds, failures, and next iterations."), "Workbench portal must use approved visible copy");
+check(workbenchPortal.includes("After hours") && workbenchPortal.includes("Four bench builds, what failed on each, and what comes next."), "Workbench portal must use approved visible copy");
 check(workbenchPortal.includes("/images/thumbs/bench-fume-extractor-236.webp"), "Workbench portal must use the 236px crop of the approved fume-extractor photo");
 for (const [kind, portal] of [["uav", uavPortal], ["workbench", workbenchPortal]]) {
   check((portal.match(/<a\b/g) ?? []).length === 1, `${kind} portal must contain one anchor and no nested link`);
@@ -527,7 +527,7 @@ for (const workbenchSlug of ["tarmo5", "sesame-robot", "servo-mini-arm"]) {
 // Print styles are excluded: the only remaining .72rem is inside @media print.
 const screenCss = globalsCss.replace(/@media print \{[\s\S]*?\n\}/, "");
 check(!/font(?:-size)?:[^;]*\s\.7[0-4]?rem/.test(screenCss), "screen labels must not set a font size below .75rem (12px)");
-const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and practical electrical engineering.";
+const contactIntro = "Adelaide-based electrical engineering student open to placements, internships, and project conversations, especially around power systems, grid integration, and hands-on hardware.";
 const contactSnapshot = contact.match(/<aside[^>]*data-technical-snapshot[^>]*>[\s\S]*?<\/aside>/)?.[0] ?? "";
 const contactFooter = contactDoc.match(/<footer[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
 check(contact.includes('class="page-hero contact-hero contact-hero--compact"'), "contact must use the compact hero treatment");

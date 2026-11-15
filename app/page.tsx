@@ -106,7 +106,7 @@ export default function HomePage() {
         <div className="section-heading">
           <p className="eyebrow">AS/NZS 3000 and 3008.1.1</p>
           <h2 id="verified-work-heading">Power Systems Work</h2>
-          <p>Completed studies showing decisions, standards, calculations, and limitations.</p>
+          <p>Two completed power studies, each with its decisions, standards, calculations, and stated limits.</p>
         </div>
         <ol className="project-list" data-evidence-ledger>
           {verifiedPowerProjects.map((project) => (
