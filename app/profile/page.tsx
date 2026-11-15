@@ -49,12 +49,6 @@ export default function ProfilePage() {
         <div>
           <p className="eyebrow">Fit</p>
           <h2 id="profile-fit-heading">Student and internship fit</h2>
-          <p>
-            This page exists so recruiters, search engines, and AI agents can
-            extract the same facts a human visitor sees: student and internship target, location,
-            technical strengths, project evidence, public disclosure limits,
-            resume path, and contact path.
-          </p>
         </div>
         <dl className="profile-facts">
           <div>
@@ -110,7 +104,7 @@ export default function ProfilePage() {
         <h2 id="disclosure-heading">Public, sanitised, and pending content</h2>
         <p>{profile.publicBoundary}</p>
         <ul>
-          <li>Resume and email contact are public; phone number and street address are intentionally omitted.</li>
+          <li>Résumé and email contact are public; phone number and street address are intentionally omitted.</li>
           <li>Project metrics must be measured, defensible, and safe to publish.</li>
           <li>Images support the design, but important claims also appear as text.</li>
         </ul>
