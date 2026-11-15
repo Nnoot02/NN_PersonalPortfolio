@@ -778,7 +778,11 @@ design cycle approves it.
   `Reproduction` entry remains unpublished until Nathan supplies an owned photo
   of the assembled replica. Third-party product graphics, existing illustrative
   assets, generated art, and empty evidence galleries cannot satisfy that gate.
-- Project-detail pages retain authentic evidence and receive no miniature coda.
+- Project-detail pages retain authentic evidence and receive no miniature coda, with one
+  exception approved on 2026-11-15: a concept-only case study, where nothing in the concept is
+  built, may carry one isometric voxel miniature in its own band below its real figure, captioned
+  "Illustrative, concept not built", shown at an integer scale with `image-rendering: pixelated`.
+  Last-Metre Eyes is the only case study that does.
 
 - Selected personality direction: **curious systems world-builder**. Use an
   occasional, project-specific isometric low-resolution miniature engineering
